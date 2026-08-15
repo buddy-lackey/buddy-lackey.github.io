@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alef-93 | Cyber Security</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #10251f 0%,
+                    #070b0a 55%,
+                    #020303 100%
+                );
+
+            color: #d8fff2;
+            font-family: Consolas, "Courier New", monospace;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        img {
+            max-width: 80vw;
+            max-height: 65vh;
+
+            filter:
+                drop-shadow(0 0 25px rgba(0, 255, 170, 0.18));
+        }
+
+        .status {
+            margin-top: 30px;
+            color: #00e89d;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <img src="alef93.png" alt="Alef-93">
+
+        <div class="status">
+            [ SYSTEM ONLINE ]<span class="cursor">_</span>
+        </div>
+
+    </div>
+
+
+    <!--
+        Curious?
+
+        FLAG{source_code_matters}
+    -->
+
+
+    <script>
+        console.log(
+            "%cALEF-93",
+            "color:#00e89d;font-size:32px;font-weight:bold"
+        );
+
+        console.log(
+            "%cYou found the console. FLAG{inspect_everything}",
+            "color:#00e89d;font-size:14px"
+        );
+    </script>
+
+</body>
+</html>
