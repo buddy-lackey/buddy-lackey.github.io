@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Alef-93 | Lecture 2</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #05070a;
+      --panel: #080d0c;
+      --panel2: #0b1411;
+      --green: #00e89d;
+      --green-soft: #7dffcf;
+      --text: #d8eee7;
+      --muted: #77968b;
+      --border: #163c31;
+      --orange: #ffb454;
+      --red: #ff6b6b;
+      --blue: #72b7ff;
+      --purple: #b889ff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, #101613 0%, #05070a 45%),
+        #05070a;
+      color: var(--text);
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(960px, 92%);
+      margin: 0 auto;
+      padding: 50px 0 100px;
+    }
+
+    header {
+      margin-bottom: 55px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 30px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+    }
+
+    .status {
+      color: var(--green);
+    }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 232, 157, 0.8);
+    }
+
+    .cursor {
+      animation: blink 1.1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      color: white;
+      font-size: clamp(30px, 5vw, 50px);
+      margin: 0 0 8px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--green);
+      font-size: 16px;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    .intro {
+      max-width: 760px;
+      color: var(--muted);
+    }
+
+    .model {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 35px;
+    }
+
+    .model-box {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(8, 13, 12, 0.75);
+    }
+
+    .model-box strong {
+      display: block;
+      color: var(--green);
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .model-box span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section-label {
+      margin: 60px 0 20px;
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: 3px;
+    }
+
+    .challenge {
+      margin: 20px 0;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 232, 157, 0.025),
+          rgba(0, 232, 157, 0)
+        ),
+        var(--panel);
+    }
+
+    .challenge:hover {
+      border-color: #235a49;
+    }
+
+    .challenge-number {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .challenge h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      color: white;
+    }
+
+    .scenario {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 3px solid var(--green);
+      background: var(--panel2);
+      color: #c9ddd6;
+    }
+
+    .task {
+      color: var(--green-soft);
+    }
+
+    .warning {
+      color: var(--orange);
+    }
+
+    .danger {
+      color: var(--red);
+    }
+
+    code {
+      color: var(--green-soft);
+      background: #020403;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    details {
+      margin-top: 18px;
+      border-top: 1px dashed var(--border);
+      padding-top: 12px;
+    }
+
+    summary {
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    summary:hover {
+      color: var(--green);
+    }
+
+    .answer {
+      color: #a9c5bb;
+      margin-top: 12px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .mini {
+      padding: 12px 14px;
+      border: 1px solid #142c25;
+      background: #070b09;
+      color: #a7beb6;
+      border-radius: 6px;
+    }
+
+    .terminal {
+      margin-top: 18px;
+      padding: 18px;
+      background: #020403;
+      border: 1px solid #173429;
+      border-radius: 7px;
+      color: #9bd4bf;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .terminal .prompt {
+      color: var(--green);
+    }
+
+    .actor {
+      display: inline-block;
+      padding: 3px 7px;
+      margin: 2px 4px 2px 0;
+      border: 1px solid #284d41;
+      border-radius: 5px;
+      color: #a8d7c7;
+      background: #07100d;
+      font-size: 12px;
+    }
+
+    .final {
+      border-color: #315347;
+      background:
+        radial-gradient(circle at right top, rgba(0,232,157,0.07), transparent 40%),
+        var(--panel);
+    }
+
+    .hidden-flag {
+      position: fixed;
+      left: 7px;
+      bottom: 7px;
+      color: #05070a;
+      font-size: 9px;
+      user-select: text;
+    }
+
+    footer {
+      margin-top: 70px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
+      color: #47645a;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 700px) {
+      .model,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <header>
+
+    <div class="topline">
+
+      <a href="index.html">&lt; RETURN TO HOME</a>
+
+      <div class="status">
+        <span class="dot"></span>
+        THREAT MONITOR ONLINE<span class="cursor">_</span>
+      </div>
+
+    </div>
+
+    <h1>Lecture 02</h1>
+
+    <div class="subtitle">
+      ONLINE THREATS & ATTACK SURFACE
+    </div>
+
+    <p class="intro">
+      The Internet is a shared environment. Systems are reachable by
+      legitimate users, but also visible to scanners, opportunistic
+      attackers, criminal groups, activists and state-backed actors.
+      Security starts with understanding what is exposed, who may be
+      interested in it, and how weaknesses can be exploited.
+    </p>
+
+    <div class="model">
+
+      <div class="model-box">
+        <strong>THREAT</strong>
+        <span>
+          Something capable of causing harm to an asset.
+        </span>
+      </div>
+
+      <div class="model-box">
+        <strong>VULNERABILITY</strong>
+        <span>
+          A weakness that can be used or triggered.
+        </span>
+      </div>
+
+      <div class="model-box">
+        <strong>EXPLOIT</strong>
+        <span>
+          A method or technique used to take advantage of a vulnerability.
+        </span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!--
+      Someone inspected the source.
+
+      Good instinct.
+
+      FLAG{threats_are_not_the_same_as_vulnerabilities}
+
+      Next clue:
+      Some answers are stored where developers look for errors.
+  -->
+
+
+  <div class="section-label">
+    // THE INTERNET IS A SHARED MEDIUM
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 01
+    </div>
+
+    <h2>Who else can see the server?</h2>
+
+    <div class="scenario">
+      A company publishes a new web server to the Internet.
+      Employees use it for normal business, but within minutes it
+      receives connection attempts from many unrelated IP addresses.
+    </div>
+
+    <p class="task">
+      Why can this happen even if nobody has advertised the server?
+    </p>
+
+    <p>
+      Think about scanning, shared infrastructure and automated discovery.
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Internet-facing services are exposed to a shared global network.
+        Automated scanners continuously search address ranges and ports.
+        A system does not need to be publicly advertised to be discovered.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // TERMS: THREAT, ACTOR, VULNERABILITY, EXPLOIT
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 02
+    </div>
+
+    <h2>Put the terms in the right place</h2>
+
+    <div class="scenario">
+      A criminal group discovers an unpatched remote-code-execution flaw
+      in a public-facing VPN appliance. They use exploit code to gain
+      access to the internal network.
+    </div>
+
+    <div class="mini-grid">
+      <div class="mini">Threat actor = ?</div>
+      <div class="mini">Vulnerability = ?</div>
+      <div class="mini">Exploit = ?</div>
+      <div class="mini">Asset = ?</div>
+    </div>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Threat actor: the criminal group.<br>
+        Vulnerability: the unpatched RCE flaw.<br>
+        Exploit: the code or technique used to trigger the flaw.<br>
+        Asset: the VPN appliance, credentials, internal systems and data.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 03
+    </div>
+
+    <h2>Zero-day or not?</h2>
+
+    <div class="scenario">
+      A vulnerability is actively exploited in the wild before the vendor
+      has released a patch.
+    </div>
+
+    <p class="task">
+      Why is this especially difficult to defend against?
+    </p>
+
+    <p>
+      Bonus: does “zero-day” necessarily mean the vulnerability was
+      discovered today?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        A zero-day is dangerous because defenders may not yet have a patch
+        or mature detection rules. The term generally refers to a
+        vulnerability or exploit for which defenders had no effective
+        patch available at the time of exploitation. It does not literally
+        mean the flaw was created that day.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // WHO MIGHT ATTACK?
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 04
+    </div>
+
+    <h2>Threat actor profiles</h2>
+
+    <p>
+      Match the scenario with the most plausible threat actor.
+    </p>
+
+    <p>
+      <span class="actor">State actor</span>
+      <span class="actor">Hacktivist</span>
+      <span class="actor">Cybercriminal</span>
+      <span class="actor">Opportunistic attacker</span>
+      <span class="actor">Insider</span>
+    </p>
+
+    <div class="mini-grid">
+
+      <div class="mini">
+        A government research institute is quietly compromised for
+        long-term intelligence collection.
+      </div>
+
+      <div class="mini">
+        A public website is defaced because of the organisation's
+        political position.
+      </div>
+
+      <div class="mini">
+        Thousands of exposed systems are scanned automatically for a
+        known vulnerability.
+      </div>
+
+      <div class="mini">
+        Files are encrypted and the organisation is asked to pay.
+      </div>
+
+      <div class="mini">
+        An employee deliberately copies confidential customer data.
+      </div>
+
+    </div>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        State actor: intelligence collection.<br>
+        Hacktivist: politically motivated defacement.<br>
+        Opportunistic attacker: large-scale scanning.<br>
+        Cybercriminal: ransomware/extortion.<br>
+        Insider: employee misuse.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // ASSETS ARE DIFFERENT
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 05
+    </div>
+
+    <h2>What is valuable?</h2>
+
+    <p>
+      Choose the most important assets for each organisation.
+    </p>
+
+    <div class="mini-grid">
+
+      <div class="mini">
+        Hospital
+        <br><br>
+        What could matter most?
+      </div>
+
+      <div class="mini">
+        Bank
+        <br><br>
+        What could matter most?
+      </div>
+
+      <div class="mini">
+        Manufacturing company
+        <br><br>
+        What could matter most?
+      </div>
+
+      <div class="mini">
+        News organisation
+        <br><br>
+        What could matter most?
+      </div>
+
+    </div>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        There is no single correct answer. Hospitals may prioritize
+        patient safety and system availability. Banks may prioritize
+        transaction integrity, financial assets and customer data.
+        Manufacturers may prioritize production availability, OT systems
+        and intellectual property. News organisations may prioritize
+        publishing availability, source confidentiality and content
+        integrity.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // ATTACK SURFACE
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 06
+    </div>
+
+    <h2>Find the attack surface</h2>
+
+    <div class="scenario">
+      An organisation has:
+      <br><br>
+      • a public web server<br>
+      • VPN access<br>
+      • employee laptops<br>
+      • cloud storage<br>
+      • email<br>
+      • remote administration<br>
+      • third-party suppliers<br>
+      • unused services still enabled
+    </div>
+
+    <p class="task">
+      Which of these contribute to the attack surface?
+    </p>
+
+    <p>
+      Bonus: what could the organisation remove or reduce?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        All of them can contribute to the attack surface. Attack surface
+        includes exposed services, identities, applications, endpoints,
+        third-party connections and unnecessary functionality. Reducing
+        unused services, excessive permissions and unnecessary exposure
+        can reduce the attack surface.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // COMMON ATTACKS & CIA
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 07
+    </div>
+
+    <h2>Which security property is affected?</h2>
+
+    <div class="mini-grid">
+
+      <div class="mini">
+        DDoS makes a public service unreachable.
+        <br><br>
+        CIA = ?
+      </div>
+
+      <div class="mini">
+        Ransomware encrypts the file server.
+        <br><br>
+        CIA = ?
+      </div>
+
+      <div class="mini">
+        An attacker steals customer records.
+        <br><br>
+        CIA = ?
+      </div>
+
+      <div class="mini">
+        An attacker modifies financial records.
+        <br><br>
+        CIA = ?
+      </div>
+
+    </div>
+
+    <p class="task">
+      Can one attack affect several CIA properties at the same time?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        DDoS primarily affects Availability. Data theft affects
+        Confidentiality. Unauthorized modification affects Integrity.
+        Ransomware commonly affects Availability and may also affect
+        Integrity and Confidentiality if attackers alter or exfiltrate data.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // APPLY THE SECURITY PRINCIPLES
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 08
+    </div>
+
+    <h2>Reduce the blast radius</h2>
+
+    <div class="scenario">
+      An employee account is compromised through phishing.
+      The account can access file shares, remote administration,
+      development systems and several production servers.
+    </div>
+
+    <p class="task">
+      Which security principles could have reduced the impact?
+    </p>
+
+    <p>
+      Consider:
+      <code>Least Privilege</code>,
+      <code>Defense in Depth</code>,
+      <code>Zero Trust</code>,
+      <code>Segmentation</code>,
+      <code>Secure by Default</code>
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Least Privilege could reduce account permissions. Segmentation
+        could limit lateral movement. Zero Trust principles could require
+        stronger verification for sensitive access. Defense in Depth could
+        add additional controls. Secure by Default could reduce unnecessary
+        access and services.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 09
+    </div>
+
+    <h2>The unknown service</h2>
+
+    <div class="terminal">
+      <span class="prompt">$</span> external-scan target.example<br><br>
+
+      22/tcp&nbsp;&nbsp;&nbsp;&nbsp;open&nbsp;&nbsp;&nbsp;ssh<br>
+      80/tcp&nbsp;&nbsp;&nbsp;&nbsp;open&nbsp;&nbsp;&nbsp;http<br>
+      443/tcp&nbsp;&nbsp;&nbsp;open&nbsp;&nbsp;&nbsp;https<br>
+      8080/tcp&nbsp;&nbsp;open&nbsp;&nbsp;&nbsp;unknown-admin-service<br>
+      3389/tcp&nbsp;&nbsp;open&nbsp;&nbsp;&nbsp;rdp
+    </div>
+
+    <p class="task">
+      What questions should a defender ask after seeing this?
+    </p>
+
+    <p>
+      Think about necessity, exposure, authentication, patching and
+      attack surface.
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Are all services required? Should RDP be Internet-facing?
+        What is running on 8080? Are services patched? Is strong
+        authentication enabled? Can network access be restricted?
+        Any unnecessary exposed service increases attack surface.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge final">
+
+    <div class="challenge-number">
+      FINAL CHALLENGE
+    </div>
+
+    <h2>Think like an investigator</h2>
+
+    <p>
+      This page contains several flags.
+    </p>
+
+    <p class="task">
+      Find at least four.
+    </p>
+
+    <p>
+      You may need more than one browser feature.
+    </p>
+
+    <p>
+      Hint:
+      <code>source</code>,
+      <code>console</code>,
+      <code>styles</code>,
+      <code>encoding</code>
+    </p>
+
+  </div>
+
+
+  <footer>
+    ALEF-93 // CYBER SECURITY TRAINING // LECTURE 02
+  </footer>
+
+</div>
+
+
+<div class="hidden-flag">
+  FLAG{hidden_in_the_rendered_page}
+</div>
+
+
+<script>
+
+  console.log(
+    "%cALEF-93 // THREAT MONITOR",
+    "color:#00e89d;font-size:20px;font-weight:bold;"
+  );
+
+  console.log(
+    "%cFLAG{attack_surface_includes_the_browser}",
+    "color:#00e89d;font-size:15px;font-weight:bold;"
+  );
+
+  console.log(
+    "%cA threat is not the same thing as a vulnerability.",
+    "color:#7dffcf;font-size:12px;"
+  );
+
+  const encoded = "RkxBR3t6ZXJvX2RheXNfYXJlX25vdF9tYWdpY30=";
+
+  console.log(
+    "%cENCODED INTELLIGENCE: " + encoded,
+    "color:#ffb454;font-size:12px;"
+  );
+
+  /*
+      Analyst note:
+
+      robots.txt
+
+      Maybe check whether the site contains one.
+
+      FLAG{comments_are_not_access_control}
+  */
+
+</script>
+
+</body>
+</html>
