@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Alef-93 | Lecture 3</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #05070a;
+      --panel: #080d0c;
+      --panel2: #0b1411;
+      --green: #00e89d;
+      --green-soft: #7dffcf;
+      --text: #d8eee7;
+      --muted: #77968b;
+      --border: #163c31;
+      --orange: #ffb454;
+      --red: #ff6b6b;
+      --blue: #72b7ff;
+      --purple: #b889ff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, #0b1814 0%, #05070a 45%),
+        #05070a;
+      color: var(--text);
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(960px, 92%);
+      margin: 0 auto;
+      padding: 50px 0 100px;
+    }
+
+    header {
+      margin-bottom: 55px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 30px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+    }
+
+    .status {
+      color: var(--green);
+    }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 232, 157, 0.8);
+    }
+
+    .cursor {
+      animation: blink 1.1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      color: white;
+      font-size: clamp(30px, 5vw, 50px);
+      margin: 0 0 8px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--green);
+      font-size: 16px;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    .intro {
+      max-width: 760px;
+      color: var(--muted);
+    }
+
+    .section-label {
+      margin: 60px 0 20px;
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: 3px;
+    }
+
+    .challenge {
+      margin: 20px 0;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 232, 157, 0.025),
+          rgba(0, 232, 157, 0)
+        ),
+        var(--panel);
+    }
+
+    .challenge:hover {
+      border-color: #235a49;
+    }
+
+    .challenge-number {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .challenge h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      color: white;
+    }
+
+    .scenario {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 3px solid var(--green);
+      background: var(--panel2);
+      color: #c9ddd6;
+    }
+
+    .task {
+      color: var(--green-soft);
+    }
+
+    code {
+      color: var(--green-soft);
+      background: #020403;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    details {
+      margin-top: 18px;
+      border-top: 1px dashed var(--border);
+      padding-top: 12px;
+    }
+
+    summary {
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    summary:hover {
+      color: var(--green);
+    }
+
+    .answer {
+      color: #a9c5bb;
+      margin-top: 12px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .mini {
+      padding: 12px 14px;
+      border: 1px solid #142c25;
+      background: #070b09;
+      color: #a7beb6;
+      border-radius: 6px;
+    }
+
+    .terminal {
+      margin-top: 18px;
+      padding: 18px;
+      background: #020403;
+      border: 1px solid #173429;
+      border-radius: 7px;
+      color: #9bd4bf;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .prompt {
+      color: var(--green);
+    }
+
+    /* OSI stack */
+
+    .osi-stack {
+      max-width: 620px;
+      margin: 30px auto;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 60px 150px 1fr;
+      align-items: center;
+      min-height: 52px;
+      margin: 5px 0;
+      padding: 8px 15px;
+      border-radius: 6px;
+      background: #09120f;
+      border: 1px solid #173c31;
+    }
+
+    .layer:hover {
+      background: #0c1c17;
+      border-color: var(--green);
+    }
+
+    .layer-number {
+      color: var(--green);
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .layer-name {
+      color: white;
+      font-weight: bold;
+    }
+
+    .layer-protocols {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    /* Encapsulation diagram */
+
+    .packet {
+      margin: 25px 0;
+      padding: 20px;
+      border: 1px solid #18372e;
+      background: #030605;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .packet-row {
+      display: flex;
+      min-width: 600px;
+      margin: 8px 0;
+    }
+
+    .field {
+      padding: 10px 12px;
+      border: 1px solid #274c40;
+      color: #b9d8cd;
+      text-align: center;
+    }
+
+    .data {
+      flex: 1;
+      color: white;
+    }
+
+    .tcp {
+      background: rgba(114,183,255,0.10);
+      color: var(--blue);
+    }
+
+    .ip {
+      background: rgba(184,137,255,0.10);
+      color: var(--purple);
+    }
+
+    .ethernet {
+      background: rgba(0,232,157,0.08);
+      color: var(--green);
+    }
+
+    .trailer {
+      background: rgba(255,180,84,0.08);
+      color: var(--orange);
+    }
+
+    /* Firewall table */
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #17372e;
+      text-align: left;
+    }
+
+    th {
+      color: var(--green);
+      background: #07100d;
+    }
+
+    td {
+      color: #abc6bc;
+    }
+
+    .final {
+      border-color: #315347;
+      background:
+        radial-gradient(
+          circle at right top,
+          rgba(0,232,157,0.07),
+          transparent 40%
+        ),
+        var(--panel);
+    }
+
+    /*
+       This is definitely just boring CSS.
+
+       FLAG{layers_exist_everywhere}
+    */
+
+    .ghost {
+      position: fixed;
+      right: 5px;
+      bottom: 5px;
+      color: #05070a;
+      font-size: 8px;
+      user-select: text;
+    }
+
+    footer {
+      margin-top: 70px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
+      color: #47645a;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 700px) {
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .layer {
+        grid-template-columns: 40px 1fr;
+      }
+
+      .layer-protocols {
+        grid-column: 2;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+  <header>
+
+    <div class="topline">
+
+      <a href="index.html">&lt; RETURN TO HOME</a>
+
+      <div class="status">
+        <span class="dot"></span>
+        NETWORK STACK ONLINE<span class="cursor">_</span>
+      </div>
+
+    </div>
+
+    <h1>Lecture 03</h1>
+
+    <div class="subtitle">
+      OSI MODEL, ENCAPSULATION & FIREWALLS
+    </div>
+
+    <p class="intro">
+      Networks become easier to understand when communication is
+      divided into layers. Each layer has a responsibility, uses
+      information from the layer below, and provides services to the
+      layer above.
+    </p>
+
+  </header>
+
+
+  <!--
+
+      PACKET INSPECTION DETECTED
+
+      You skipped the presentation layer
+      and went directly to the source.
+
+      FLAG{inspect_all_the_layers}
+
+      There may be more than one layer to this page.
+
+  -->
+
+
+  <div class="section-label">
+    // THE OSI MODEL
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 01
+    </div>
+
+    <h2>Know your layers</h2>
+
+    <div class="osi-stack">
+
+      <div class="layer">
+        <span class="layer-number">7</span>
+        <span class="layer-name">Application</span>
+        <span class="layer-protocols">HTTP · DNS · SMTP · SSH</span>
+      </div>
+
+      <div class="layer">
+        <span class="layer-number">6</span>
+        <span class="layer-name">Presentation</span>
+        <span class="layer-protocols">encoding · representation</span>
+      </div>
+
+      <div class="layer">
+        <span class="layer-number">5</span>
+        <span class="layer-name">Session</span>
+        <span class="layer-protocols">session management</span>
+      </div>
+
+      <div class="layer">
+        <span class="layer-number">4</span>
+        <span class="layer-name">Transport</span>
+        <span class="layer-protocols">TCP · UDP</span>
+      </div>
+
+      <div class="layer">
+        <span class="layer-number">3</span>
+        <span class="layer-name">Network</span>
+        <span class="layer-protocols">IPv4 · IPv6 · ICMP</span>
+      </div>
+
+      <div class="layer">
+        <span class="layer-number">2</span>
+        <span class="layer-name">Data Link</span>
+        <span class="layer-protocols">Ethernet · MAC · VLAN</span>
+      </div>
+
+      <div class="layer">
+        <span class="layer-number">1</span>
+        <span class="layer-name">Physical</span>
+        <span class="layer-protocols">copper · fibre · radio</span>
+      </div>
+
+    </div>
+
+    <p class="task">
+      At which layer would you primarily associate each of these?
+    </p>
+
+    <div class="mini-grid">
+
+      <div class="mini">MAC address = ?</div>
+      <div class="mini">IP address = ?</div>
+      <div class="mini">TCP port = ?</div>
+      <div class="mini">HTTP request = ?</div>
+      <div class="mini">Ethernet frame = ?</div>
+      <div class="mini">Electrical / optical signal = ?</div>
+
+    </div>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        MAC address → Layer 2<br>
+        IP address → Layer 3<br>
+        TCP port → Layer 4<br>
+        HTTP → Layer 7<br>
+        Ethernet frame → Layer 2<br>
+        Physical signal → Layer 1
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 02
+    </div>
+
+    <h2>Protocol detective</h2>
+
+    <div class="terminal">
+      14:02:11&nbsp;&nbsp;192.168.10.15:51542 → 93.184.216.34:443&nbsp;&nbsp;TCP<br>
+      14:02:11&nbsp;&nbsp;192.168.10.15 → 192.168.10.1&nbsp;&nbsp;ARP<br>
+      14:02:12&nbsp;&nbsp;192.168.10.15 → 8.8.8.8&nbsp;&nbsp;DNS query<br>
+      14:02:13&nbsp;&nbsp;192.168.10.15 → 93.184.216.34&nbsp;&nbsp;ICMP
+    </div>
+
+    <p class="task">
+      Place TCP, ARP, DNS and ICMP at the most appropriate OSI layers.
+    </p>
+
+    <p>
+      Bonus: why can mapping real-world protocols perfectly onto the
+      seven-layer OSI model sometimes become messy?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        TCP → Layer 4.<br>
+        ARP → commonly associated with Layer 2 / the boundary of 2 and 3.<br>
+        DNS → Layer 7.<br>
+        ICMP → Layer 3.
+        <br><br>
+        The OSI model is a conceptual model. Real protocol stacks were
+        not necessarily designed to fit perfectly into seven strict
+        boxes.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // ENCAPSULATION
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 03
+    </div>
+
+    <h2>The packet gets dressed</h2>
+
+    <p>
+      An application wants to send:
+    </p>
+
+    <div class="terminal">
+      <span class="prompt">DATA:</span> GET /index.html
+    </div>
+
+    <div class="packet">
+
+      <div class="packet-row">
+        <div class="field data">
+          APPLICATION DATA
+        </div>
+      </div>
+
+      <div class="packet-row">
+        <div class="field tcp">
+          TCP HEADER
+        </div>
+        <div class="field data">
+          APPLICATION DATA
+        </div>
+      </div>
+
+      <div class="packet-row">
+        <div class="field ip">
+          IP HEADER
+        </div>
+        <div class="field tcp">
+          TCP HEADER
+        </div>
+        <div class="field data">
+          APPLICATION DATA
+        </div>
+      </div>
+
+      <div class="packet-row">
+        <div class="field ethernet">
+          ETH HEADER
+        </div>
+        <div class="field ip">
+          IP HEADER
+        </div>
+        <div class="field tcp">
+          TCP HEADER
+        </div>
+        <div class="field data">
+          DATA
+        </div>
+        <div class="field trailer">
+          FCS
+        </div>
+      </div>
+
+    </div>
+
+    <p class="task">
+      Explain what happens as the data travels down the stack.
+    </p>
+
+    <p>
+      What happens when the receiving computer performs
+      <strong>decapsulation</strong>?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Each layer adds information needed for its job. TCP adds
+        transport information, IP adds network addressing, and Ethernet
+        adds local-link information and a trailer.
+        <br><br>
+        The receiver processes and removes the corresponding information
+        as the data moves back up the stack until the application
+        receives the original application data.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 04
+    </div>
+
+    <h2>Which address survives?</h2>
+
+    <div class="scenario">
+      A packet travels from a laptop through several routers before
+      reaching a server on another network.
+    </div>
+
+    <p class="task">
+      What happens to the Layer 2 source/destination MAC addresses at
+      each routed hop?
+    </p>
+
+    <p>
+      What normally happens to the Layer 3 source/destination IP
+      addresses while routing the packet?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        The Layer 2 frame is replaced for each routed link, so the MAC
+        addresses change from hop to hop.
+        <br><br>
+        The IP source and destination normally remain associated with
+        the end hosts while the packet is routed, although technologies
+        such as NAT can modify IP addressing.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // OSI VS TCP/IP
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 05
+    </div>
+
+    <h2>Seven layers become four</h2>
+
+    <table>
+      <tr>
+        <th>OSI</th>
+        <th>TCP/IP</th>
+      </tr>
+
+      <tr>
+        <td>7 Application</td>
+        <td rowspan="3">Application</td>
+      </tr>
+
+      <tr>
+        <td>6 Presentation</td>
+      </tr>
+
+      <tr>
+        <td>5 Session</td>
+      </tr>
+
+      <tr>
+        <td>4 Transport</td>
+        <td>Transport</td>
+      </tr>
+
+      <tr>
+        <td>3 Network</td>
+        <td>Internet</td>
+      </tr>
+
+      <tr>
+        <td>2 Data Link</td>
+        <td rowspan="2">Network Access / Link</td>
+      </tr>
+
+      <tr>
+        <td>1 Physical</td>
+      </tr>
+    </table>
+
+    <p class="task">
+      Why do security professionals still talk about OSI layers when
+      real Internet communication is normally described using TCP/IP?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        OSI provides a useful conceptual vocabulary. Saying "Layer 3
+        filtering" or "Layer 7 inspection" quickly communicates what
+        information or function is being discussed, even though the
+        Internet itself uses the TCP/IP protocol suite.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // FIREWALLS
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 06
+    </div>
+
+    <h2>What can the firewall see?</h2>
+
+    <div class="scenario">
+      A firewall receives the following packet:
+    </div>
+
+    <div class="terminal">
+      Source MAC&nbsp;&nbsp;&nbsp;&nbsp;00:11:22:33:44:55<br>
+      Destination MAC&nbsp;&nbsp;AA:BB:CC:DD:EE:FF<br><br>
+
+      Source IP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;192.168.10.25<br>
+      Destination IP&nbsp;203.0.113.50<br><br>
+
+      Protocol&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TCP<br>
+      Source Port&nbsp;&nbsp;&nbsp;51542<br>
+      Destination Port&nbsp;443
+    </div>
+
+    <p class="task">
+      Which information belongs to Layer 2, Layer 3 and Layer 4?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        MAC addresses → Layer 2.<br>
+        IP addresses → Layer 3.<br>
+        TCP and port numbers → Layer 4.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 07
+    </div>
+
+    <h2>Stateless firewall</h2>
+
+    <p>
+      Consider this rule:
+    </p>
+
+    <div class="terminal">
+      <span class="prompt">ALLOW</span>
+      TCP FROM any TO 203.0.113.50 PORT 443
+    </div>
+
+    <p class="task">
+      What information does a simple stateless packet filter need to
+      inspect to make this decision?
+    </p>
+
+    <p>
+      Does it necessarily know whether this packet belongs to an
+      established connection?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        It can make the decision from information such as protocol,
+        source/destination IP and source/destination port.
+        <br><br>
+        A purely stateless filter evaluates packets individually and
+        does not maintain a connection state table describing previous
+        traffic.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 08
+    </div>
+
+    <h2>Stateful firewall</h2>
+
+    <div class="terminal">
+      CONNECTION TABLE<br>
+      ------------------------------------------------------------<br>
+      TCP&nbsp;&nbsp;10.0.0.25:51542&nbsp;&nbsp;→&nbsp;&nbsp;203.0.113.50:443&nbsp;&nbsp;ESTABLISHED<br>
+      TCP&nbsp;&nbsp;10.0.0.31:51891&nbsp;&nbsp;→&nbsp;&nbsp;198.51.100.20:22&nbsp;&nbsp;&nbsp;ESTABLISHED
+    </div>
+
+    <p class="task">
+      What additional capability does the state table give the
+      firewall?
+    </p>
+
+    <p>
+      Why is this useful for return traffic?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        A stateful firewall remembers active flows/connections and can
+        relate packets to previous traffic.
+        <br><br>
+        For example, when an internal client initiates an allowed
+        connection, the firewall can recognize corresponding return
+        traffic instead of treating every incoming packet as completely
+        unrelated.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 09
+    </div>
+
+    <h2>Which layer is the firewall?</h2>
+
+    <div class="mini-grid">
+
+      <div class="mini">
+        Filter by IP address
+        <br><br>
+        Layer = ?
+      </div>
+
+      <div class="mini">
+        Filter by TCP/UDP port
+        <br><br>
+        Layer = ?
+      </div>
+
+      <div class="mini">
+        Inspect HTTP request paths
+        <br><br>
+        Layer = ?
+      </div>
+
+      <div class="mini">
+        Inspect Ethernet MAC addresses
+        <br><br>
+        Layer = ?
+      </div>
+
+    </div>
+
+    <p class="task">
+      Is it correct to say that "a firewall operates at one OSI layer"?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        IP filtering → Layer 3.<br>
+        TCP/UDP port filtering → Layer 4.<br>
+        HTTP-aware inspection → Layer 7.<br>
+        MAC filtering → Layer 2.
+        <br><br>
+        Different firewall technologies operate at different layers.
+        Modern firewalls can inspect information from several layers.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 10
+    </div>
+
+    <h2>Port 443 does not mean HTTPS</h2>
+
+    <div class="scenario">
+      A firewall sees a TCP connection to destination port 443.
+    </div>
+
+    <p class="task">
+      Can a Layer 3/4 firewall prove that the application is actually
+      HTTPS simply because the destination port is 443?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        No. Port 443 is conventionally associated with HTTPS, but a
+        port number alone does not prove which application protocol is
+        actually being carried.
+        <br><br>
+        This distinction becomes important when comparing simple
+        packet filtering with application-aware inspection.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // PACKET ANALYSIS
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 11
+    </div>
+
+    <h2>Read the packet</h2>
+
+    <div class="terminal">
+      Ethernet II<br>
+      &nbsp;&nbsp;Src: 00:16:3e:11:22:33<br>
+      &nbsp;&nbsp;Dst: 00:16:3e:aa:bb:cc<br><br>
+
+      Internet Protocol Version 4<br>
+      &nbsp;&nbsp;Src: 10.10.10.25<br>
+      &nbsp;&nbsp;Dst: 192.0.2.80<br><br>
+
+      Transmission Control Protocol<br>
+      &nbsp;&nbsp;Src Port: 49152<br>
+      &nbsp;&nbsp;Dst Port: 80<br><br>
+
+      Hypertext Transfer Protocol<br>
+      &nbsp;&nbsp;GET /secret.txt HTTP/1.1
+    </div>
+
+    <p class="task">
+      Identify the Layer 2, Layer 3, Layer 4 and Layer 7 information.
+    </p>
+
+    <p>
+      Bonus: which pieces could a traditional Layer 3/4 firewall use
+      without understanding HTTP?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Layer 2 → Ethernet / MAC addresses.<br>
+        Layer 3 → IPv4 / IP addresses.<br>
+        Layer 4 → TCP / port numbers.<br>
+        Layer 7 → HTTP / GET request.
+        <br><br>
+        A traditional Layer 3/4 firewall can primarily make decisions
+        using IP addresses, protocol and port information without
+        parsing the HTTP request itself.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge final">
+
+    <div class="challenge-number">
+      FINAL CHALLENGE
+    </div>
+
+    <h2>There are always more layers</h2>
+
+    <p>
+      This page contains several pieces of information that are not
+      visible during normal browsing.
+    </p>
+
+    <p class="task">
+      Find at least four hidden flags.
+    </p>
+
+    <p>
+      Hints:
+      <code>source</code>
+      <code>CSS</code>
+      <code>console</code>
+      <code>encoding</code>
+    </p>
+
+    <p>
+      Bonus question:
+      <strong>
+        At which OSI layer do HTML comments exist?
+      </strong>
+    </p>
+
+  </div>
+
+
+  <footer>
+    ALEF-93 // CYBER SECURITY TRAINING // LECTURE 03
+  </footer>
+
+</div>
+
+
+<div class="ghost">
+  FLAG{sometimes_data_is_present_but_not_visible}
+</div>
+
+
+<script>
+
+  console.log(
+    "%cALEF-93 // PACKET ANALYZER",
+    "color:#00e89d;font-size:20px;font-weight:bold;"
+  );
+
+  console.log(
+    "%cLayers are abstractions. Packets are real.",
+    "color:#7dffcf;font-size:13px;"
+  );
+
+  console.log(
+    "%cFLAG{console_operates_above_layer_four}",
+    "color:#00e89d;font-size:15px;font-weight:bold;"
+  );
+
+
+  /*
+      CAPTURED PAYLOAD
+
+      Protocol: ???
+
+      52 6b 78 42 52 33 74 6c 62 6d 4e 68 63 48 4e 31
+      62 47 46 30 61 57 39 75 58 32 6c 7a 58 32 78 68
+      65 57 56 79 61 57 35 6e 66 51 3d 3d
+
+      Perhaps the payload has been encapsulated more than once.
+  */
+
+
+  const payload =
+    "RkxBR3tlbmNhcHN1bGF0aW9uX2lzX2xheWVyaW5nfQ==";
+
+  console.log(
+    "%cCaptured application payload: " + payload,
+    "color:#ffb454;font-size:12px;"
+  );
+
+
+  /*
+      FIREWALL DEBUG MESSAGE
+
+      action=ALLOW
+      protocol=TCP
+      destination_port=443
+      application=UNKNOWN
+
+      FLAG{port_number_is_not_application_identity}
+  */
+
+</script>
+
+</body>
+</html>
