@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Alef-93 | Lecture 1</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #05070a;
+      --panel: #080d0c;
+      --panel2: #0b1411;
+      --green: #00e89d;
+      --green-soft: #7dffcf;
+      --text: #d8eee7;
+      --muted: #77968b;
+      --border: #163c31;
+      --orange: #ffb454;
+      --red: #ff6b6b;
+      --blue: #72b7ff;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, #0b1814 0%, #05070a 45%),
+        #05070a;
+      color: var(--text);
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(920px, 92%);
+      margin: 0 auto;
+      padding: 50px 0 100px;
+    }
+
+    header {
+      margin-bottom: 55px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 30px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+    }
+
+    .status {
+      color: var(--green);
+    }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 232, 157, 0.8);
+    }
+
+    .cursor {
+      animation: blink 1.1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      color: white;
+      font-size: clamp(30px, 5vw, 50px);
+      margin: 0 0 8px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--green);
+      font-size: 16px;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    .intro {
+      max-width: 720px;
+      color: var(--muted);
+    }
+
+    .model {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 35px;
+    }
+
+    .model-box {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(8, 13, 12, 0.75);
+    }
+
+    .model-box strong {
+      display: block;
+      color: var(--green);
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .model-box span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section-label {
+      margin: 60px 0 20px;
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: 3px;
+    }
+
+    .challenge {
+      margin: 20px 0;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 232, 157, 0.025),
+          rgba(0, 232, 157, 0)
+        ),
+        var(--panel);
+    }
+
+    .challenge:hover {
+      border-color: #235a49;
+    }
+
+    .challenge-number {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .challenge h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      color: white;
+    }
+
+    .challenge p {
+      margin: 10px 0;
+    }
+
+    .scenario {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 3px solid var(--green);
+      background: var(--panel2);
+      color: #c9ddd6;
+    }
+
+    .task {
+      color: var(--green-soft);
+    }
+
+    code {
+      color: var(--green-soft);
+      background: #020403;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    details {
+      margin-top: 18px;
+      border-top: 1px dashed var(--border);
+      padding-top: 12px;
+    }
+
+    summary {
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    summary:hover {
+      color: var(--green);
+    }
+
+    .answer {
+      color: #a9c5bb;
+      margin-top: 12px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .mini {
+      padding: 12px 14px;
+      border: 1px solid #142c25;
+      background: #070b09;
+      color: #a7beb6;
+      border-radius: 6px;
+    }
+
+    .terminal {
+      margin-top: 18px;
+      padding: 18px;
+      background: #020403;
+      border: 1px solid #173429;
+      border-radius: 7px;
+      color: #9bd4bf;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .terminal .prompt {
+      color: var(--green);
+    }
+
+    .final {
+      border-color: #315347;
+      background:
+        radial-gradient(circle at right top, rgba(0,232,157,0.07), transparent 40%),
+        var(--panel);
+    }
+
+    footer {
+      margin-top: 70px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
+      color: #47645a;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 700px) {
+      .model,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <header>
+
+    <div class="topline">
+
+      <a href="index.html">&lt; RETURN TO HOME</a>
+
+      <div class="status">
+        <span class="dot"></span>
+        TRAINING NODE ONLINE<span class="cursor">_</span>
+      </div>
+
+    </div>
+
+    <h1>Lecture 01</h1>
+
+    <div class="subtitle">
+      INTRODUCTION TO CYBER SECURITY
+    </div>
+
+    <p class="intro">
+      Cyber security becomes easier to reason about if we start with
+      three simple questions: What are we trying to protect? Why does
+      it need protection? How do we protect it?
+    </p>
+
+    <div class="model">
+
+      <div class="model-box">
+        <strong>WHAT?</strong>
+        <span>
+          Security properties such as confidentiality,
+          integrity and availability.
+        </span>
+      </div>
+
+      <div class="model-box">
+        <strong>WHY?</strong>
+        <span>
+          Assets exist. Threats exist. Vulnerabilities create
+          opportunities for those threats.
+        </span>
+      </div>
+
+      <div class="model-box">
+        <strong>HOW?</strong>
+        <span>
+          Principles, mechanisms and concrete security controls.
+        </span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!--
+
+       You are reading the source code.
+
+       That is usually a useful habit in security.
+
+       FLAG{look_beyond_the_interface}
+
+  -->
+
+
+  <div class="section-label">
+    // WHAT ARE WE PROTECTING?
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 01
+    </div>
+
+    <h2>The disappearing server</h2>
+
+    <div class="scenario">
+      A company's customer portal is attacked and becomes unreachable
+      for six hours. No customer information is stolen and no data is
+      modified.
+    </div>
+
+    <p class="task">
+      Which property of the CIA triad has primarily been affected?
+    </p>
+
+    <p>
+      Bonus: Can confidentiality and integrity still be intact while
+      security has failed?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Availability is the primary property affected. Yes — the data
+        can remain confidential and correct while the service is
+        unavailable. Security is not only about secrecy.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 02
+    </div>
+
+    <h2>One incident, three properties</h2>
+
+    <div class="scenario">
+      An attacker gains access to a student database, reads exam
+      results, changes several grades, and finally deletes the
+      database.
+    </div>
+
+    <p class="task">
+      Identify what happened to Confidentiality, Integrity and
+      Availability.
+    </p>
+
+    <div class="mini-grid">
+
+      <div class="mini">
+        Reading information without permission = ?
+      </div>
+
+      <div class="mini">
+        Changing information without permission = ?
+      </div>
+
+      <div class="mini">
+        Deleting the database = ?
+      </div>
+
+      <div class="mini">
+        Could more than one property fail in the same incident?
+      </div>
+
+    </div>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Unauthorized reading affects Confidentiality. Unauthorized
+        modification affects Integrity. Deleting the database affects
+        Availability. A single attack can affect all three.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // WHY DO WE NEED SECURITY?
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 03
+    </div>
+
+    <h2>Asset, threat or vulnerability?</h2>
+
+    <div class="scenario">
+      A company has an Internet-facing VPN server containing an
+      unpatched vulnerability. An attacker on the Internet discovers
+      the server and attempts to exploit it to access internal systems.
+    </div>
+
+    <p class="task">
+      Identify the asset, threat and vulnerability in this scenario.
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Possible assets include the VPN service, credentials, internal
+        systems and business information. The attacker represents the
+        threat. The unpatched flaw is the vulnerability.
+
+        The vulnerability alone is not the threat, and the attacker
+        alone is not the asset.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 04
+    </div>
+
+    <h2>Which one matters most?</h2>
+
+    <div class="scenario">
+      System A contains a serious vulnerability but is disconnected
+      from all networks and contains no valuable information.
+
+      System B contains employee payroll information and is reachable
+      from several internal networks.
+    </div>
+
+    <p class="task">
+      Which system should receive more security attention?
+    </p>
+
+    <p>
+      There is deliberately no perfect one-line answer. Discuss what
+      information you would need before deciding.
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Vulnerability severity alone does not determine risk. Asset
+        value, exposure, likelihood, existing controls and potential
+        impact all matter.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="section-label">
+    // HOW DO WE CREATE SECURITY?
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 05
+    </div>
+
+    <h2>AAA investigation</h2>
+
+    <p>
+      Match each event to Authentication, Authorization or Accounting.
+    </p>
+
+    <div class="terminal">
+
+      <span class="prompt">09:41:03</span>
+      User alice submits password and security key
+      <br><br>
+
+      <span class="prompt">09:41:05</span>
+      System confirms identity: alice
+      <br><br>
+
+      <span class="prompt">09:41:12</span>
+      alice attempts to open /finance/payroll.xlsx
+      <br><br>
+
+      <span class="prompt">09:41:12</span>
+      ACCESS DENIED — insufficient privileges
+      <br><br>
+
+      <span class="prompt">09:41:12</span>
+      Event written to security audit log
+
+    </div>
+
+    <p class="task">
+      Where can you see Authentication, Authorization and Accounting?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Authentication establishes that the user is Alice.
+        Authorization determines whether Alice is permitted to access
+        payroll.xlsx. Accounting records the security event for later
+        auditing or investigation.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge">
+
+    <div class="challenge-number">
+      CHALLENGE 06
+    </div>
+
+    <h2>One lock or many?</h2>
+
+    <div class="scenario">
+      An organisation says:
+
+      "Our firewall protects the network. If the firewall works, we
+      don't need additional protection."
+    </div>
+
+    <p class="task">
+      Which security principle challenges this way of thinking?
+    </p>
+
+    <p>
+      Give at least four different layers that could protect an
+      important server.
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <div class="answer">
+        Defense in Depth. Possible layers include network filtering,
+        segmentation, authentication, authorization, endpoint
+        protection, hardening, monitoring, encryption and backups.
+
+        The important idea is that failure of one control should not
+        automatically mean total compromise.
+      </div>
+    </details>
+
+  </div>
+
+
+  <div class="challenge final">
+
+    <div class="challenge-number">
+      FINAL CHALLENGE
+    </div>
+
+    <h2>The page is part of the lesson</h2>
+
+    <p>
+      Security analysts rarely limit themselves to what the interface
+      chooses to show them.
+    </p>
+
+    <p class="task">
+      This page contains two flags that are not visible during normal
+      browsing.
+    </p>
+
+    <p>
+      Find both.
+    </p>
+
+    <p>
+      Hint: your browser is more than a renderer.
+    </p>
+
+  </div>
+
+
+  <footer>
+    ALEF-93 // CYBER SECURITY TRAINING // LECTURE 01
+  </footer>
+
+</div>
+
+
+<script>
+
+  console.log(
+    "%cALEF-93 // LECTURE 01",
+    "color:#00e89d;font-size:20px;font-weight:bold;"
+  );
+
+  console.log(
+    "%cGood. You opened the console.",
+    "color:#7dffcf;font-size:13px;"
+  );
+
+  console.log(
+    "%cFLAG{the_browser_is_a_tool}",
+    "color:#00e89d;font-size:15px;font-weight:bold;"
+  );
+
+  console.log(
+    "%cQuestion: Is hiding information in JavaScript a security control?",
+    "color:#77968b;font-size:12px;"
+  );
+
+</script>
+
+</body>
+</html>
