@@ -1,98 +1,176 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Alef-93 | Cyber Security</title>
+  <title>Alef-93</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #05070a;
+      overflow: hidden;
+      font-family: monospace;
+    }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-            background:
-                radial-gradient(
-                    circle at center,
-                    #10251f 0%,
-                    #070b0a 55%,
-                    #020303 100%
-                );
+    /* Huvudbilden */
+    .main-image {
+      max-width: 94vw;
+      max-height: 94vh;
+      object-fit: contain;
+      filter: drop-shadow(0 0 25px rgba(0,255,170,0.12));
+    }
 
-            color: #d8fff2;
-            font-family: Consolas, "Courier New", monospace;
+    /* QR-kod */
+    #qr-container {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      padding: 10px;
 
-        .container {
-            text-align: center;
-        }
+      background: white;
+      border-radius: 8px;
 
-        img {
-            max-width: 80vw;
-            max-height: 65vh;
+      opacity: 0.13;
+      transition: 0.3s;
 
-            filter:
-                drop-shadow(0 0 25px rgba(0, 255, 170, 0.18));
-        }
+      cursor: crosshair;
+    }
 
-        .status {
-            margin-top: 30px;
-            color: #00e89d;
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
+    #qr-container:hover {
+      opacity: 1;
+      box-shadow:
+        0 0 15px #00ffaa,
+        0 0 35px rgba(0,255,170,0.5);
+    }
 
-        .cursor {
-            animation: blink 1s infinite;
-        }
+    /* Något finns här... */
+    .invisible-message {
+      position: fixed;
+      left: 10px;
+      top: 10px;
 
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-    </style>
+      color: #05070a;
+
+      user-select: text;
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-    <div class="container">
-
-        <img src="alef93.png" alt="Alef-93">
-
-        <div class="status">
-            [ SYSTEM ONLINE ]<span class="cursor">_</span>
-        </div>
-
-    </div>
+  <img class="main-image" src="alef93.png" alt="Alef-93">
 
 
-    <!--
-        Curious?
+  <!--
+  ======================================================
 
-        FLAG{source_code_matters}
-    -->
+  CHALLENGE 1
+
+  Bra jobbat.
+  Du tittade i källkoden.
+
+  FLAG{source_code_is_not_secret}
+
+  Ledtråd till nästa:
+  Webbläsaren kan säga mer än vad sidan visar.
+
+  ======================================================
+  -->
 
 
-    <script>
+  <!-- Challenge 3 -->
+  <div class="invisible-message">
+    FLAG{hidden_in_plain_sight}
+  </div>
+
+
+  <!-- QR challenge -->
+  <div id="qr-container">
+    <div id="qrcode"></div>
+  </div>
+
+
+  <!-- QR-generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+  <script>
+
+    /*
+      Det här är inte challenge 2.
+      Fortsätt leta...
+    */
+
+
+    console.log(`
+%c
+    █████╗ ██╗     ███████╗███████╗      █████╗ ██████╗
+   ██╔══██╗██║     ██╔════╝██╔════╝     ██╔══██╗╚════██╗
+   ███████║██║     █████╗  █████╗ █████╗╚██████║ █████╔╝
+   ██╔══██║██║     ██╔══╝  ██╔══╝ ╚════╝ ╚═══██║ ╚═══██╗
+   ██║  ██║███████╗███████╗██║          █████╔╝██████╔╝
+   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝          ╚════╝ ╚═════╝
+
+
+   CHALLENGE 2
+
+   FLAG{console_detective}
+
+   Nästa ledtråd:
+
+   RkxBR3tiYXNlNjRfaXNfbm90X2VuY3J5cHRpb259
+
+   `, "color:#00ffaa");
+
+
+    /*
+       Challenge 4 finns ovanför.
+
+       Eller gör den?
+    */
+
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: "FLAG{qr_codes_are_data_too}",
+      width: 110,
+      height: 110,
+      colorDark: "#050505",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+
+    // Bonus
+    const secret = [97,108,101,102,57,51];
+
+    document.addEventListener("keydown", function(e) {
+
+      if(e.key === "`") {
+
         console.log(
-            "%cALEF-93",
-            "color:#00e89d;font-size:32px;font-weight:bold"
+          "%cBONUS: " +
+          String.fromCharCode(...secret),
+          "color:#ff00aa;font-size:20px"
         );
 
-        console.log(
-            "%cYou found the console. FLAG{inspect_everything}",
-            "color:#00e89d;font-size:14px"
-        );
-    </script>
+      }
+
+    });
+
+  </script>
 
 </body>
 </html>
