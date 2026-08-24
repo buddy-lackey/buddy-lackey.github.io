@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTU-17 Remote Terminal</title>
+<link rel="stylesheet" href="css/rtu.css">
+</head>
 
+<body>
+
+<div class="screen">
+
+<header class="header">
+    <div>
+        <div class="system-title">RTU-17 REMOTE TERMINAL INTERFACE</div>
+        <div class="system-subtitle">NORTH PUMP STATION // UNIT 04</div>
+    </div>
+
+    <div class="header-status">
+        <span class="ok">● LINK ONLINE</span><br>
+        NODE: 10.44.17.20
+    </div>
+</header>
+
+<section class="login-view">
+
+    <div class="login-box">
+
+        <div class="login-title">
+            REMOTE OPERATOR AUTHENTICATION
+        </div>
+
+        <div class="login-content">
+
+            <div class="banner">
+                WARNING: AUTHORIZED PERSONNEL ONLY<br>
+                ALL ACCESS ATTEMPTS ARE MONITORED
+            </div>
+
+            <form id="loginForm">
+
+                <label for="username">OPERATOR ID</label>
+                <input id="username" type="text" autocomplete="off">
+
+                <label for="password">ACCESS KEY</label>
+                <input id="password" type="password" autocomplete="off">
+
+                <button class="login-button" type="submit">
+                    [ AUTHENTICATE ]
+                </button>
+
+            </form>
+
+            <div id="loginMessage" class="login-message"></div>
+
+        </div>
+
+        <div class="console" id="bootConsole">
+            SYS&gt; RTU WEB SERVICES READY<br>
+            SYS&gt; AUTH MODULE REV 2.3.7<br>
+            SYS&gt; LOADING STATION CONFIGURATION...
+        </div>
+
+    </div>
+
+</section>
+
+<footer class="footer">
+    <span>FIRMWARE 2.3.7-R // RTU-17</span>
+    <span>SESSION: NOT AUTHENTICATED</span>
+</footer>
+
+</div>
+
+<script src="js/auth.js"></script>
+
+</body>
+</html>
