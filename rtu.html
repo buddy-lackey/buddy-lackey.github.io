@@ -1,0 +1,1040 @@
+```html
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RTU Remote Access Terminal</title>
+
+<style>
+:root {
+    --bg: #050505;
+    --panel: #0b0b08;
+    --panel2: #111108;
+    --amber: #ffd84a;
+    --amber2: #c6a72e;
+    --amber-dark: #5c4e19;
+    --green: #8cff66;
+    --red: #ff554d;
+    --dim: #84783c;
+    --border: #64571c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--amber);
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+}
+
+body {
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255, 216, 74, 0.018) 0px,
+            rgba(255, 216, 74, 0.018) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+        #050505;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.screen {
+    width: min(1180px, 96%);
+    margin: 24px auto;
+    border: 1px solid var(--border);
+    box-shadow:
+        0 0 20px rgba(255, 216, 74, 0.08),
+        inset 0 0 20px rgba(255, 216, 74, 0.025);
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #090905;
+}
+
+.system-title {
+    font-size: 1.05rem;
+    letter-spacing: 0.16em;
+    font-weight: bold;
+}
+
+.system-subtitle {
+    margin-top: 3px;
+    color: var(--dim);
+    font-size: 0.72rem;
+}
+
+.header-status {
+    text-align: right;
+    font-size: 0.75rem;
+    line-height: 1.7;
+}
+
+.ok {
+    color: var(--green);
+}
+
+.warn {
+    color: var(--amber);
+}
+
+.alarm {
+    color: var(--red);
+}
+
+.dim {
+    color: var(--dim);
+}
+
+.login-view {
+    min-height: 600px;
+    display: grid;
+    place-items: center;
+    padding: 40px 20px;
+}
+
+.login-box {
+    width: min(460px, 100%);
+    border: 1px solid var(--border);
+    background: rgba(10, 10, 6, 0.96);
+}
+
+.login-title {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.12em;
+    font-size: 0.85rem;
+    background: #111108;
+}
+
+.login-content {
+    padding: 28px;
+}
+
+.banner {
+    border: 1px solid var(--amber-dark);
+    color: var(--amber2);
+    padding: 11px;
+    font-size: 0.72rem;
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    color: var(--amber2);
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    background: #030303;
+    color: var(--amber);
+    border: 1px solid var(--border);
+    padding: 11px 12px;
+    outline: none;
+    margin-bottom: 18px;
+}
+
+input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 8px rgba(255, 216, 74, 0.13);
+}
+
+.login-button,
+.control-button {
+    background: #171407;
+    color: var(--amber);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    cursor: pointer;
+}
+
+.login-button {
+    width: 100%;
+}
+
+.login-button:hover,
+.control-button:hover {
+    background: var(--amber);
+    color: #050505;
+}
+
+.login-message {
+    margin-top: 16px;
+    min-height: 24px;
+    font-size: 0.75rem;
+}
+
+.console {
+    background: #030303;
+    border-top: 1px solid var(--border);
+    padding: 12px 15px;
+    color: var(--dim);
+    font-size: 0.7rem;
+}
+
+.dashboard {
+    display: none;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.toolbar div {
+    padding: 9px 16px;
+    border-right: 1px solid var(--border);
+    font-size: 0.72rem;
+}
+
+.toolbar .active {
+    background: var(--amber);
+    color: #050505;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    min-height: 650px;
+}
+
+.sidebar {
+    border-right: 1px solid var(--border);
+    background: #080805;
+}
+
+.sidebar-title {
+    color: var(--amber2);
+    font-size: 0.7rem;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-item {
+    padding: 11px 14px;
+    border-bottom: 1px solid #2e2912;
+    font-size: 0.76rem;
+    color: var(--amber2);
+}
+
+.nav-item.active {
+    color: var(--amber);
+    background: #151207;
+}
+
+.main-panel {
+    padding: 18px;
+}
+
+.section-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.metric {
+    border: 1px solid var(--border);
+    background: #090906;
+    padding: 13px;
+}
+
+.metric-label {
+    color: var(--dim);
+    font-size: 0.67rem;
+}
+
+.metric-value {
+    font-size: 1.45rem;
+    margin-top: 5px;
+}
+
+.metric-unit {
+    color: var(--dim);
+    font-size: 0.7rem;
+}
+
+.process {
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 18px;
+    min-height: 215px;
+    position: relative;
+}
+
+.process-title {
+    font-size: 0.72rem;
+    color: var(--dim);
+    margin-bottom: 25px;
+}
+
+.process-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-top: 25px;
+}
+
+.pipe {
+    height: 6px;
+    width: 90px;
+    background: var(--amber-dark);
+    border-top: 1px solid var(--amber2);
+    border-bottom: 1px solid var(--amber2);
+}
+
+.device {
+    min-width: 105px;
+    text-align: center;
+    border: 1px solid var(--amber2);
+    padding: 13px 10px;
+    background: #0c0c06;
+}
+
+.device.running {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+.device.stopped {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.device-name {
+    font-size: 0.7rem;
+}
+
+.device-state {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.io-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.panel {
+    border: 1px solid var(--border);
+    background: #090906;
+}
+
+.panel-title {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.72rem;
+    background: #111108;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+th,
+td {
+    text-align: left;
+    border-bottom: 1px solid #2d2812;
+    padding: 8px 10px;
+}
+
+th {
+    color: var(--dim);
+    font-weight: normal;
+}
+
+.controls {
+    padding: 12px;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #2d2812;
+    font-size: 0.72rem;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.control-button {
+    padding: 5px 8px;
+    font-size: 0.68rem;
+}
+
+.alarm-panel {
+    margin-top: 18px;
+    border: 1px solid var(--border);
+}
+
+.alarm-row {
+    display: grid;
+    grid-template-columns: 90px 90px 1fr;
+    padding: 8px 10px;
+    border-bottom: 1px solid #2d2812;
+    font-size: 0.7rem;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid var(--border);
+    padding: 9px 14px;
+    color: var(--dim);
+    font-size: 0.67rem;
+}
+
+.badge {
+    padding: 2px 6px;
+    border: 1px solid currentColor;
+}
+
+@media (max-width: 800px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .io-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .process-line {
+        transform: scale(0.82);
+    }
+}
+
+@media (max-width: 500px) {
+    .metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        grid-template-columns: 1fr;
+    }
+
+    .header-status {
+        text-align: left;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="screen">
+
+    <header class="header">
+
+        <div>
+            <div class="system-title">
+                RTU-17 REMOTE TERMINAL INTERFACE
+            </div>
+
+            <div class="system-subtitle">
+                NORTH PUMP STATION // UNIT 04
+            </div>
+        </div>
+
+        <div class="header-status">
+            <span class="ok">● LINK ONLINE</span><br>
+            NODE: 10.44.17.20
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         LOGIN
+         ========================================================= -->
+
+    <section class="login-view" id="loginView">
+
+        <div class="login-box">
+
+            <div class="login-title">
+                REMOTE OPERATOR AUTHENTICATION
+            </div>
+
+            <div class="login-content">
+
+                <div class="banner">
+                    WARNING: AUTHORIZED PERSONNEL ONLY<br>
+                    ALL ACCESS ATTEMPTS ARE MONITORED
+                </div>
+
+                <form id="loginForm">
+
+                    <label for="username">
+                        OPERATOR ID
+                    </label>
+
+                    <input
+                        id="username"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="operator"
+                    >
+
+                    <label for="password">
+                        ACCESS KEY
+                    </label>
+
+                    <input
+                        id="password"
+                        type="password"
+                        autocomplete="off"
+                        placeholder="********"
+                    >
+
+                    <button
+                        class="login-button"
+                        type="submit"
+                    >
+                        [ AUTHENTICATE ]
+                    </button>
+
+                </form>
+
+                <div
+                    class="login-message"
+                    id="loginMessage"
+                ></div>
+
+            </div>
+
+            <div class="console">
+                SYS&gt; RTU WEB SERVICES READY<br>
+                SYS&gt; AUTH MODULE REV 2.3.7<br>
+                SYS&gt; MAINTENANCE SERVICE ENABLED
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         DASHBOARD
+         ========================================================= -->
+
+    <section class="dashboard" id="dashboard">
+
+        <div class="toolbar">
+            <div class="active">OVERVIEW</div>
+            <div>PROCESS</div>
+            <div>I/O STATUS</div>
+            <div>ALARMS</div>
+            <div>EVENT LOG</div>
+            <div>CONFIGURATION</div>
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <aside class="sidebar">
+
+                <div class="sidebar-title">
+                    STATION NAVIGATION
+                </div>
+
+                <div class="nav-item active">
+                    RTU-17 / OVERVIEW
+                </div>
+
+                <div class="nav-item">
+                    PUMP CONTROL
+                </div>
+
+                <div class="nav-item">
+                    DIGITAL INPUTS
+                </div>
+
+                <div class="nav-item">
+                    ANALOG INPUTS
+                </div>
+
+                <div class="nav-item">
+                    COMMUNICATION
+                </div>
+
+                <div class="nav-item">
+                    SYSTEM EVENTS
+                </div>
+
+            </aside>
+
+
+            <main class="main-panel">
+
+                <div class="section-header">
+                    PROCESS OVERVIEW // NORTH PUMP STATION
+                </div>
+
+
+                <div class="metrics">
+
+                    <div class="metric">
+                        <div class="metric-label">
+                            INLET PRESSURE
+                        </div>
+
+                        <div class="metric-value">
+                            3.82
+                            <span class="metric-unit">BAR</span>
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-label">
+                            OUTLET PRESSURE
+                        </div>
+
+                        <div class="metric-value">
+                            5.14
+                            <span class="metric-unit">BAR</span>
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-label">
+                            FLOW RATE
+                        </div>
+
+                        <div class="metric-value">
+                            184
+                            <span class="metric-unit">M³/H</span>
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-label">
+                            RESERVOIR LEVEL
+                        </div>
+
+                        <div class="metric-value">
+                            72
+                            <span class="metric-unit">%</span>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <section class="process">
+
+                    <div class="process-title">
+                        PROCESS FLOW DIAGRAM
+                    </div>
+
+                    <div class="process-line">
+
+                        <div class="device">
+                            <div class="device-name">
+                                INLET
+                            </div>
+
+                            <div class="device-state">
+                                OPEN
+                            </div>
+                        </div>
+
+                        <div class="pipe"></div>
+
+                        <div
+                            class="device running"
+                            id="pumpDevice"
+                        >
+                            <div class="device-name">
+                                PUMP P-101
+                            </div>
+
+                            <div
+                                class="device-state"
+                                id="pumpState"
+                            >
+                                RUNNING
+                            </div>
+                        </div>
+
+                        <div class="pipe"></div>
+
+                        <div class="device">
+                            <div class="device-name">
+                                OUTLET
+                            </div>
+
+                            <div class="device-state">
+                                OPEN
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <div class="io-grid">
+
+                    <section class="panel">
+
+                        <div class="panel-title">
+                            ANALOG INPUTS
+                        </div>
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>TAG</th>
+                                    <th>VALUE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>AI-001</td>
+                                    <td>3.82 BAR</td>
+                                    <td class="ok">GOOD</td>
+                                </tr>
+
+                                <tr>
+                                    <td>AI-002</td>
+                                    <td>5.14 BAR</td>
+                                    <td class="ok">GOOD</td>
+                                </tr>
+
+                                <tr>
+                                    <td>AI-003</td>
+                                    <td>184 M³/H</td>
+                                    <td class="ok">GOOD</td>
+                                </tr>
+
+                                <tr>
+                                    <td>AI-004</td>
+                                    <td>72 %</td>
+                                    <td class="ok">GOOD</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </section>
+
+
+                    <section class="panel">
+
+                        <div class="panel-title">
+                            REMOTE CONTROL
+                        </div>
+
+                        <div class="controls">
+
+                            <div class="control-row">
+
+                                <span>PUMP P-101</span>
+
+                                <div class="control-buttons">
+
+                                    <button
+                                        class="control-button"
+                                        onclick="setPump(true)"
+                                    >
+                                        START
+                                    </button>
+
+                                    <button
+                                        class="control-button"
+                                        onclick="setPump(false)"
+                                    >
+                                        STOP
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="control-row">
+                                <span>VALVE XV-101</span>
+                                <span class="ok">OPEN</span>
+                            </div>
+
+
+                            <div class="control-row">
+                                <span>CONTROL MODE</span>
+                                <span>AUTO</span>
+                            </div>
+
+
+                            <div class="control-row">
+                                <span>REMOTE ENABLE</span>
+                                <span class="ok">TRUE</span>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <section class="alarm-panel">
+
+                    <div class="panel-title">
+                        ACTIVE / RECENT EVENTS
+                    </div>
+
+                    <div class="alarm-row">
+                        <span>11:42:08</span>
+                        <span class="ok">INFO</span>
+                        <span>Telemetry connection established</span>
+                    </div>
+
+                    <div class="alarm-row">
+                        <span>11:39:17</span>
+                        <span class="warn">WARN</span>
+                        <span>Remote maintenance interface active</span>
+                    </div>
+
+                    <div class="alarm-row">
+                        <span>10:51:03</span>
+                        <span class="ok">INFO</span>
+                        <span>P-101 automatic start command</span>
+                    </div>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </section>
+
+
+    <footer class="footer">
+
+        <span>
+            FIRMWARE 2.3.7-R // RTU-17
+        </span>
+
+        <span id="sessionStatus">
+            SESSION: NOT AUTHENTICATED
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+/*
+    ===============================================================
+    TRAINING LAB - INTENTIONALLY VULNERABLE AUTHENTICATION
+    ===============================================================
+
+    This page is intentionally insecure.
+
+    The maintenance interface contains a client-side authentication
+    bypass intended for a classroom / CTF exercise.
+
+    Everything on this page is simulated.
+*/
+
+
+const loginView =
+    document.getElementById("loginView");
+
+const dashboard =
+    document.getElementById("dashboard");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const sessionStatus =
+    document.getElementById("sessionStatus");
+
+
+function openDashboard(method) {
+
+    loginView.style.display = "none";
+    dashboard.style.display = "block";
+
+    sessionStatus.innerHTML =
+        "SESSION: <span class='ok'>OPERATOR</span>" +
+        " // AUTH=" + method;
+}
+
+
+/*
+    ---------------------------------------------------------------
+    INTENTIONALLY VULNERABLE CODE
+
+    Legacy maintenance mode bypasses normal authentication.
+    ---------------------------------------------------------------
+*/
+
+const params =
+    new URLSearchParams(window.location.search);
+
+if (params.get("maintenance") === "1") {
+
+    openDashboard("MAINTENANCE");
+
+}
+
+
+/*
+    ---------------------------------------------------------------
+    Normal login
+    ---------------------------------------------------------------
+*/
+
+document
+    .getElementById("loginForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const username =
+            document.getElementById("username").value;
+
+        const password =
+            document.getElementById("password").value;
+
+
+        /*
+            Demo credentials exist only so the normal login
+            path can also be tested.
+
+            This is NOT secure authentication.
+        */
+
+        if (
+            username === "operator" &&
+            password === "rtu-demo-17"
+        ) {
+
+            loginMessage.innerHTML =
+                "<span class='ok'>AUTHENTICATION ACCEPTED</span>";
+
+            setTimeout(function() {
+
+                openDashboard("PASSWORD");
+
+            }, 450);
+
+        }
+
+        else {
+
+            loginMessage.innerHTML =
+                "<span class='alarm'>" +
+                "AUTHENTICATION FAILURE // INVALID ACCESS KEY" +
+                "</span>";
+
+        }
+
+    });
+
+
+/*
+    ---------------------------------------------------------------
+    Simulated process control
+    ---------------------------------------------------------------
+*/
+
+function setPump(running) {
+
+    const device =
+        document.getElementById("pumpDevice");
+
+    const state =
+        document.getElementById("pumpState");
+
+
+    if (running) {
+
+        device.classList.remove("stopped");
+        device.classList.add("running");
+
+        state.textContent = "RUNNING";
+
+    }
+
+    else {
+
+        device.classList.remove("running");
+        device.classList.add("stopped");
+
+        state.textContent = "STOPPED";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
+```
