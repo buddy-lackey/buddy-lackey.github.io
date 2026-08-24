@@ -1,0 +1,29 @@
+{
+    "events": [
+        {
+            "time": "11:42:08",
+            "severity": "INFO",
+            "message": "Telemetry connection established"
+        },
+        {
+            "time": "11:39:17",
+            "severity": "WARN",
+            "message": "Legacy field maintenance interface active"
+        },
+        {
+            "time": "11:39:17",
+            "severity": "WARN",
+            "message": "Authentication verification disabled for SERVICE context"
+        },
+        {
+            "time": "10:51:03",
+            "severity": "INFO",
+            "message": "P-101 automatic start command"
+        },
+        {
+            "time": "09:12:44",
+            "severity": "INFO",
+            "message": "Training flag: FLAG{legacy_service_bypassed_authentication}"
+        }
+    ]
+}
