@@ -1,1 +1,840 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>CIA-triaden | Baalstorm</title>
+
+<style>
+:root {
+    --bg: #07110d;
+    --panel: #0b1913;
+    --panel2: #10241b;
+    --green: #6cff9a;
+    --green-dim: #2d9d58;
+    --text: #d9e5dd;
+    --muted: #819189;
+    --yellow: #ffd166;
+    --red: #ff6b6b;
+    --blue: #6cbcff;
+    --border: #173c29;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at top right, #102419 0%, transparent 35%),
+        var(--bg);
+    color: var(--text);
+    font-family: "Courier New", Courier, monospace;
+    line-height: 1.65;
+}
+
+main {
+    width: min(920px, 92%);
+    margin: 0 auto;
+    padding: 60px 0 100px;
+}
+
+.topline {
+    display: flex;
+    justify-content: space-between;
+    color: var(--green);
+    font-size: 0.8rem;
+    margin-bottom: 55px;
+}
+
+.hero {
+    margin-bottom: 55px;
+}
+
+.hero h1 {
+    color: #fff;
+    font-size: clamp(2.4rem, 7vw, 5rem);
+    margin: 0;
+    line-height: 1;
+}
+
+.hero h1 span {
+    color: var(--green);
+}
+
+.hero p {
+    color: var(--muted);
+    max-width: 680px;
+    margin-top: 25px;
+}
+
+.command {
+    color: var(--green);
+}
+
+.box {
+    background: rgba(11, 25, 19, 0.85);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin: 26px 0;
+}
+
+.box h2,
+.box h3 {
+    margin-top: 0;
+}
+
+.cia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.cia-card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    padding: 18px;
+}
+
+.cia-card strong {
+    display: block;
+    color: var(--green);
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+}
+
+.section-title {
+    margin-top: 70px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    color: #fff;
+}
+
+.task {
+    margin: 28px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green-dim);
+    padding: 24px;
+}
+
+.task-number {
+    color: var(--green);
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+}
+
+.task h3 {
+    color: #fff;
+    margin: 4px 0 12px;
+}
+
+.points {
+    float: right;
+    color: var(--yellow);
+    font-size: 0.8rem;
+}
+
+.question {
+    margin: 18px 0;
+    color: #fff;
+}
+
+.hint {
+    color: var(--muted);
+    border-left: 2px solid var(--border);
+    padding-left: 14px;
+    margin-top: 18px;
+}
+
+button {
+    font-family: inherit;
+    color: var(--green);
+    background: transparent;
+    border: 1px solid var(--green-dim);
+    padding: 9px 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #102b1c;
+}
+
+.answer {
+    display: none;
+    border-top: 1px dashed var(--border);
+    margin-top: 18px;
+    padding-top: 18px;
+}
+
+.answer.visible {
+    display: block;
+}
+
+.answer strong {
+    color: var(--yellow);
+}
+
+.challenge {
+    border-left-color: var(--yellow);
+}
+
+.boss {
+    border-left-color: var(--red);
+}
+
+.tag {
+    display: inline-block;
+    padding: 3px 7px;
+    margin-right: 5px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding-top: 25px;
+    margin-top: 80px;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+.score {
+    color: var(--yellow);
+}
+
+@media (max-width: 700px) {
+    .cia-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .points {
+        float: none;
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<div class="topline">
+    <span>← RETURN TO HOME</span>
+    <span>BAALSTORM // CIA LAB</span>
+</div>
+
+<section class="hero">
+    <div class="command">$ ./cia-training --difficulty tricky</div>
+
+    <h1>CIA<span>.</span></h1>
+
+    <p>
+        Konfidentialitet. Riktighet. Tillgänglighet.
+        Tre ord som verkar enkla tills verkligheten börjar bli stökig.
+        I uppgifterna nedan är målet inte bara att identifiera bokstaven,
+        utan att kunna motivera <em>varför</em>.
+    </p>
+</section>
+
+
+<section class="box">
+
+<h2>Snabbrepetition</h2>
+
+<div class="cia-grid">
+
+    <div class="cia-card">
+        <strong>C</strong>
+        <b>Konfidentialitet</b><br>
+        Informationen ska skyddas från obehöriga parter.
+    </div>
+
+    <div class="cia-card">
+        <strong>I</strong>
+        <b>Riktighet / Integrity</b><br>
+        Informationen ska vara korrekt och inte obehörigen förändrad.
+    </div>
+
+    <div class="cia-card">
+        <strong>A</strong>
+        <b>Tillgänglighet</b><br>
+        Informationen eller funktionen ska finnas när den behövs.
+    </div>
+
+</div>
+
+<p class="hint">
+Tips: En incident kan påverka flera delar av CIA-triaden samtidigt.
+Försök därför skilja mellan <b>primär</b> och <b>sekundär</b> påverkan.
+</p>
+
+</section>
+
+
+<h2 class="section-title">01 // Klassificera incidenten</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 01
+<span class="points">2 poäng</span>
+</div>
+
+<h3>Den nyfikna praktikanten</h3>
+
+<p>
+Ett företag har en fil med samtliga anställdas löner.
+Filen är korrekt, servern fungerar perfekt och ingen har ändrat informationen.
+En praktikant upptäcker däremot att filen ligger i en katalog som alla
+anställda kan läsa.
+</p>
+
+<p class="question">
+Vilken del av CIA-triaden har framför allt brustit?
+</p>
+
+<button onclick="toggleAnswer('a1')">Visa facit</button>
+
+<div class="answer" id="a1">
+<strong>Svar: Konfidentialitet.</strong>
+
+<p>
+Problemet är att personer som inte ska ha åtkomst kan läsa informationen.
+Att informationen fortfarande är korrekt innebär inte att den är säker.
+</p>
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 02
+<span class="points">2 poäng</span>
+</div>
+
+<h3>Den perfekta backupen</h3>
+
+<p>
+En databas innehåller kunders leveransadresser.
+En angripare ändrar postnumret på 800 kunder men gör inget annat.
+Systemet fortsätter fungera och ingen kundinformation läcker.
+</p>
+
+<p class="question">
+Vilken egenskap påverkas?
+</p>
+
+<button onclick="toggleAnswer('a2')">Visa facit</button>
+
+<div class="answer" id="a2">
+<strong>Svar: Riktighet / Integrity.</strong>
+
+<p>
+Informationen finns kvar och är tillgänglig, men den går inte längre
+att lita på eftersom den har modifierats på ett obehörigt sätt.
+</p>
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 03
+<span class="points">2 poäng</span>
+</div>
+
+<h3>Allt är säkert. Ingen kommer åt det.</h3>
+
+<p>
+Ett journalsystem är krypterat, hårt segmenterat och endast behörig
+personal får läsa informationen. Efter en felaktig uppdatering går
+systemet dock inte att starta under sex timmar.
+</p>
+
+<p class="question">
+Vilken del av CIA-triaden är huvudproblemet?
+</p>
+
+<button onclick="toggleAnswer('a3')">Visa facit</button>
+
+<div class="answer" id="a3">
+<strong>Svar: Tillgänglighet.</strong>
+
+<p>
+Information kan vara både konfidentiell och korrekt men ändå vara
+oanvändbar om användarna inte kan nå funktionen när den behövs.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section-title">02 // Mer än en bokstav</h2>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 04 // CHALLENGE
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Ransomware</h3>
+
+<p>
+Ett ransomware tar sig in på en filserver och krypterar företagets dokument.
+Angriparen kopierar dessutom filerna till sin egen server innan krypteringen.
+</p>
+
+<p class="question">
+Vilka delar av CIA-triaden påverkas? Rangordna dem och motivera.
+</p>
+
+<button onclick="toggleAnswer('a4')">Visa facit</button>
+
+<div class="answer" id="a4">
+
+<strong>Svar: Minst C och A.</strong>
+
+<p>
+<b>Konfidentialitet:</b> Informationen har kopierats till en obehörig part.
+</p>
+
+<p>
+<b>Tillgänglighet:</b> Organisationen kan inte längre använda sina dokument.
+</p>
+
+<p>
+<b>Riktighet</b> kan också diskuteras beroende på hur man betraktar den
+obehöriga förändringen av filernas innehåll.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 05 // CHALLENGE
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Det osynliga kontonumret</h3>
+
+<p>
+Alice skickar en betalningsinstruktion till Bob:
+</p>
+
+<div class="box">
+Överför 10 000 SEK till konto 1234-5678
+</div>
+
+<p>
+En angripare kan inte läsa meddelandet eftersom kommunikationen är krypterad.
+Angriparen lyckas däremot modifiera trafiken så att Bob får:
+</p>
+
+<div class="box">
+Överför 10 000 SEK till konto 9999-9999
+</div>
+
+<p class="question">
+Är konfidentialiteten fortfarande intakt? Vilken CIA-egenskap är det
+stora problemet?
+</p>
+
+<button onclick="toggleAnswer('a5')">Visa facit</button>
+
+<div class="answer" id="a5">
+
+<strong>Konfidentialiteten kan fortfarande vara intakt.</strong>
+
+<p>
+Angriparen behöver inte nödvändigtvis kunna läsa informationen för att
+riktigheten ska kunna brytas. Problemet är framför allt
+<b>Integrity / riktighet</b>: mottagaren måste kunna vara säker på att
+informationen kom fram korrekt.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 06 // CHALLENGE
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Den väldigt hjälpsamma administratören</h3>
+
+<p>
+En administratör felsöker en webbserver och ändrar rättigheterna så att
+alla användare får läs- och skrivrättigheter till konfigurationsfilerna.
+Ingen angripare har ännu utnyttjat detta.
+</p>
+
+<p class="question">
+Har CIA redan brutits, eller har organisationen framför allt fått en
+sårbarhet och en risk?
+</p>
+
+<button onclick="toggleAnswer('a6')">Visa facit</button>
+
+<div class="answer" id="a6">
+
+<strong>Svar: Framför allt en sårbarhet och därmed ökad risk.</strong>
+
+<p>
+Om ingen obehörig faktiskt har läst eller modifierat informationen behöver
+ingen CIA-egenskap ännu ha brutits. Den felaktiga åtkomstkontrollen gör
+däremot att ett hot lättare kan påverka både konfidentialitet och riktighet.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">03 // Tänk som säkerhetsanalytiker</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 07
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Vad skyddar kontrollen?</h3>
+
+<p>
+Koppla varje säkerhetsmekanism till den CIA-egenskap den
+<strong>främst</strong> hjälper till att skydda.
+</p>
+
+<div class="box">
+
+<p>1. Kryptering av en laptop</p>
+<p>2. Backup av databasen</p>
+<p>3. Hash/verifiering av nedladdade filer</p>
+<p>4. Reservinternet från två leverantörer</p>
+<p>5. Filrättigheter som hindrar användare från att läsa HR-filer</p>
+
+</div>
+
+<button onclick="toggleAnswer('a7')">Visa facit</button>
+
+<div class="answer" id="a7">
+
+<p>1. <strong>C</strong> – konfidentialitet</p>
+<p>2. <strong>A</strong> – tillgänglighet / återställning</p>
+<p>3. <strong>I</strong> – riktighet</p>
+<p>4. <strong>A</strong> – tillgänglighet</p>
+<p>5. <strong>C</strong> – konfidentialitet</p>
+
+<p>
+I verkligheten kan samma kontroll bidra till flera säkerhetsegenskaper.
+Uppgiften frågar efter den primära kopplingen.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 08 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Bankens dilemma</h3>
+
+<p>
+En bank får bara välja <strong>en</strong> av följande förbättringar denna månad:
+</p>
+
+<div class="box">
+<p><b>A:</b> Kryptera alla gamla backupdiskar.</p>
+<p><b>B:</b> Införa redundans för bankens betalningsplattform.</p>
+<p><b>C:</b> Införa teknisk verifiering som upptäcker obehöriga ändringar av transaktioner.</p>
+</div>
+
+<p class="question">
+Vilken CIA-egenskap förbättrar respektive alternativ?
+Vilket alternativ tycker du banken ska prioritera?
+</p>
+
+<p class="hint">
+Det finns inget fullständigt facit på prioriteringen. Motiveringen är det viktiga.
+</p>
+
+<button onclick="toggleAnswer('a8')">Visa diskussionsstöd</button>
+
+<div class="answer" id="a8">
+
+<p><b>A → Konfidentialitet</b></p>
+<p><b>B → Tillgänglighet</b></p>
+<p><b>C → Riktighet</b></p>
+
+<p>
+Prioriteringen kräver en riskbedömning: sannolikhet, konsekvens,
+tillgångarnas värde och vilka skydd som redan finns.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">04 // OT twist</h2>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 09 // OT
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Vattenreningsverket</h3>
+
+<p>
+Ett vattenreningsverk har ett styrsystem som reglerar pumpar.
+En säkerhetsuppdatering kräver att systemet stängs av i fyra timmar.
+Det finns ingen reservstyrning.
+</p>
+
+<p class="question">
+Varför kan en säkerhetsåtgärd som är självklar i en vanlig IT-miljö
+bli mer komplicerad här?
+</p>
+
+<button onclick="toggleAnswer('a9')">Visa facit</button>
+
+<div class="answer" id="a9">
+
+<strong>Tillgänglighet kan vara extremt viktig i OT.</strong>
+
+<p>
+Om styrsystemets funktion påverkar en fysisk process kan ett driftstopp
+få andra konsekvenser än när exempelvis ett vanligt kontorssystem är nere.
+Åtgärder måste därför planeras så att skyddet inte skapar en oacceptabel
+tillgänglighetsrisk.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">05 // Boss level</h2>
+
+
+<section class="task boss">
+
+<div class="task-number">
+TASK 10 // BOSS
+<span class="points">8 poäng</span>
+</div>
+
+<h3>Incidentrapport 03:17</h3>
+
+<p>
+Du arbetar i ett SOC. Följande händer under samma natt:
+</p>
+
+<div class="box">
+
+<p><b>03:17</b> – En extern IP loggar in på ett administratörskonto.</p>
+
+<p><b>03:19</b> – 14 000 kundposter exporteras.</p>
+
+<p><b>03:24</b> – Flera konton får sina e-postadresser ändrade.</p>
+
+<p><b>03:31</b> – Databasservern startas om.</p>
+
+<p><b>03:33–04:02</b> – Webbplatsen svarar inte.</p>
+
+<p><b>04:10</b> – Säkerhetskopian visar sig fungera och tjänsten återställs.</p>
+
+</div>
+
+<p class="question">
+Beskriv händelserna i termer av CIA-triaden.
+För varje del av CIA: peka ut minst en konkret observation som stödjer din bedömning.
+</p>
+
+<button onclick="toggleAnswer('a10')">Visa facit</button>
+
+<div class="answer" id="a10">
+
+<p>
+<strong>C – Konfidentialitet:</strong>
+14 000 kundposter exporterades och kan ha lämnats till en obehörig part.
+</p>
+
+<p>
+<strong>I – Riktighet:</strong>
+Kunders e-postadresser ändrades. Informationen kan därför inte längre
+antas vara korrekt.
+</p>
+
+<p>
+<strong>A – Tillgänglighet:</strong>
+Webbplatsen var otillgänglig mellan 03:33 och 04:02.
+</p>
+
+<p>
+Backupen bidrog till organisationens förmåga att återställa tjänsten,
+vilket också är nära kopplat till resiliens.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task boss">
+
+<div class="task-number">
+TASK 11 // FINAL BOSS
+<span class="points">10 poäng</span>
+</div>
+
+<h3>Designa skyddet</h3>
+
+<p>
+Ett mindre företag driver en webbshop. Följande tillgångar finns:
+</p>
+
+<div class="box">
+<p>• Kunddatabas</p>
+<p>• Webbserver</p>
+<p>• Administratörskonton</p>
+<p>• Orderhistorik</p>
+<p>• Backup</p>
+</div>
+
+<p>
+Företaget har bara budget för <strong>tre säkerhetsåtgärder</strong>.
+</p>
+
+<p class="question">
+Välj tre åtgärder. För varje åtgärd ska du beskriva:
+</p>
+
+<div class="box">
+<p>1. Vilken tillgång du skyddar.</p>
+<p>2. Vilket hot eller problem du försöker minska.</p>
+<p>3. Vilken del av CIA-triaden åtgärden främst skyddar.</p>
+<p>4. Varför just denna åtgärd bör prioriteras.</p>
+</div>
+
+<p class="hint">
+Exempel på mekanismer från kursen: autentisering, auktorisering,
+åtkomstkontroll, kryptering, segmentering, loggning,
+detektering och backup.
+</p>
+
+<button onclick="toggleAnswer('a11')">Visa ett möjligt resonemang</button>
+
+<div class="answer" id="a11">
+
+<p>
+Det finns flera korrekta lösningar.
+Ett exempel:
+</p>
+
+<p>
+<b>1. MFA för administratörer</b><br>
+Skyddar administratörskonton och minskar risken för kontokapning.
+Kan indirekt skydda både C och I.
+</p>
+
+<p>
+<b>2. Regelbunden offline-backup</b><br>
+Skyddar möjligheten att återställa kunddata och orderhistorik.
+Främst A.
+</p>
+
+<p>
+<b>3. Åtkomstkontroll till kunddatabasen</b><br>
+Begränsar vilka identiteter som får läsa eller ändra kundinformation.
+Skyddar framför allt C och I.
+</p>
+
+<p>
+Den bästa lösningen beror på företagets hotbild, sårbarheter,
+konsekvenser och befintliga skydd.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="box">
+
+<h2>Poäng</h2>
+
+<p>
+Maxpoäng: <span class="score">51</span>
+</p>
+
+<p>
+<b>0–20:</b> Repetera CIA-triaden.<br>
+<b>21–35:</b> Du ser skillnaden mellan C, I och A.<br>
+<b>36–45:</b> Security analyst energy detected.<br>
+<b>46–51:</b> CIA triad boss defeated.
+</p>
+
+</section>
+
+
+<footer>
+
+<p>
+$ echo "security is rarely only one letter"
+</p>
+
+<p>
+Baalstorm Security Labs // CIA-triaden
+</p>
+
+</footer>
+
+</main>
+
+
+<script>
+function toggleAnswer(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle("visible");
+}
+</script>
+
+</body>
+</html>
