@@ -1,0 +1,1399 @@
+```html
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Risk, hot & tillgångar | Baalstorm</title>
+
+<style>
+:root {
+    --bg: #07110d;
+    --panel: #0b1913;
+    --panel2: #10241b;
+    --green: #6cff9a;
+    --green-dim: #2d9d58;
+    --text: #d9e5dd;
+    --muted: #819189;
+    --yellow: #ffd166;
+    --orange: #ff9f43;
+    --red: #ff6b6b;
+    --blue: #6cbcff;
+    --border: #173c29;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at top right, #102419 0%, transparent 35%),
+        var(--bg);
+    color: var(--text);
+    font-family: "Courier New", Courier, monospace;
+    line-height: 1.65;
+}
+
+main {
+    width: min(920px, 92%);
+    margin: 0 auto;
+    padding: 60px 0 100px;
+}
+
+.topline {
+    display: flex;
+    justify-content: space-between;
+    color: var(--green);
+    font-size: 0.8rem;
+    margin-bottom: 55px;
+}
+
+.hero {
+    margin-bottom: 55px;
+}
+
+.hero h1 {
+    color: #fff;
+    font-size: clamp(2.3rem, 7vw, 5rem);
+    margin: 0;
+    line-height: 1;
+}
+
+.hero h1 span {
+    color: var(--green);
+}
+
+.hero p {
+    color: var(--muted);
+    max-width: 720px;
+    margin-top: 25px;
+}
+
+.command {
+    color: var(--green);
+}
+
+.box {
+    background: rgba(11, 25, 19, 0.9);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin: 26px 0;
+}
+
+.term-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.term-card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    padding: 18px;
+}
+
+.term-card strong {
+    display: block;
+    color: var(--green);
+    margin-bottom: 6px;
+}
+
+.section-title {
+    margin-top: 70px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    color: #fff;
+}
+
+.task {
+    margin: 28px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green-dim);
+    padding: 24px;
+}
+
+.task-number {
+    color: var(--green);
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+}
+
+.task h3 {
+    color: #fff;
+    margin: 4px 0 12px;
+}
+
+.points {
+    float: right;
+    color: var(--yellow);
+    font-size: 0.8rem;
+}
+
+.question {
+    margin: 18px 0;
+    color: #fff;
+}
+
+.hint {
+    color: var(--muted);
+    border-left: 2px solid var(--border);
+    padding-left: 14px;
+    margin-top: 18px;
+}
+
+.challenge {
+    border-left-color: var(--yellow);
+}
+
+.boss {
+    border-left-color: var(--red);
+}
+
+button {
+    font-family: inherit;
+    color: var(--green);
+    background: transparent;
+    border: 1px solid var(--green-dim);
+    padding: 9px 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #102b1c;
+}
+
+.answer {
+    display: none;
+    border-top: 1px dashed var(--border);
+    margin-top: 18px;
+    padding-top: 18px;
+}
+
+.answer.visible {
+    display: block;
+}
+
+.answer strong {
+    color: var(--yellow);
+}
+
+.asset {
+    color: var(--blue);
+}
+
+.threat {
+    color: var(--red);
+}
+
+.vulnerability {
+    color: var(--orange);
+}
+
+.control {
+    color: var(--green);
+}
+
+.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.matrix th,
+.matrix td {
+    border: 1px solid var(--border);
+    padding: 12px 6px;
+}
+
+.matrix th {
+    background: #10241b;
+}
+
+.low {
+    background: #123922;
+}
+
+.medium {
+    background: #55471b;
+}
+
+.high {
+    background: #612c21;
+}
+
+.critical {
+    background: #681f2c;
+}
+
+code {
+    color: var(--green);
+}
+
+.score {
+    color: var(--yellow);
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding-top: 25px;
+    margin-top: 80px;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 700px) {
+    .term-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .points {
+        float: none;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .matrix {
+        font-size: 0.75rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<div class="topline">
+    <span>← RETURN TO HOME</span>
+    <span>BAALSTORM // RISK LAB</span>
+</div>
+
+
+<section class="hero">
+
+<div class="command">$ ./risk-analysis --mode analyst</div>
+
+<h1>KNOW YOUR <span>RISK.</span></h1>
+
+<p>
+En sårbarhet är inte samma sak som ett hot.
+Ett hot är inte automatiskt en risk.
+Och allt som kan gå sönder är inte lika viktigt.
+</p>
+
+<p>
+Här tränar du på att identifiera tillgångar, hot, sårbarheter,
+skyddsvärde och konsekvenser — och på att prioritera vad som faktiskt
+behöver hanteras först.
+</p>
+
+</section>
+
+
+<section class="box">
+
+<h2>Snabbrepetition</h2>
+
+<div class="term-grid">
+
+<div class="term-card">
+<strong>Tillgång</strong>
+Något som har ett värde för individen eller verksamheten.
+</div>
+
+<div class="term-card">
+<strong>Skyddsvärde</strong>
+Hur viktigt det är att tillgången skyddas.
+</div>
+
+<div class="term-card">
+<strong>Informationsvärde</strong>
+Information som tillgång eller som del av ett tekniskt system.
+</div>
+
+<div class="term-card">
+<strong>Konsekvens</strong>
+Vad händer om tillgången förstörs, förändras, avslöjas eller blir otillgänglig?
+</div>
+
+<div class="term-card">
+<strong>Tillgångsägare</strong>
+Någon som ansvarar för tillgångens värde, klassificering och skyddsbehov.
+</div>
+
+<div class="term-card">
+<strong>Hot</strong>
+Något som kan orsaka skada på en tillgång.
+</div>
+
+<div class="term-card">
+<strong>Sårbarhet</strong>
+En svaghet som ett hot kan utnyttja.
+</div>
+
+<div class="term-card">
+<strong>Skydd</strong>
+En åtgärd som minskar sannolikheten och/eller konsekvensen.
+</div>
+
+</div>
+
+<div class="box">
+<code>Risk = Hot × Sårbarhet × Värde</code>
+<br><br>
+En risk uppstår när ett hot kan utnyttja en sårbarhet
+i något som har värde.
+</div>
+
+</section>
+
+
+<h2 class="section-title">01 // Vad är vad?</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 01
+<span class="points">3 poäng</span>
+</div>
+
+<h3>Webbshoppen</h3>
+
+<p>
+Ett företag driver en webbshop.
+Kunddatabasen innehåller namn, adresser och orderhistorik.
+Webbapplikationen saknar autentisering till ett administrativt API.
+En extern angripare hittar API:et.
+</p>
+
+<p class="question">
+Identifiera:
+</p>
+
+<div class="box">
+<p>1. Tillgång</p>
+<p>2. Sårbarhet</p>
+<p>3. Hot/hotaktör</p>
+<p>4. Risk</p>
+</div>
+
+<button onclick="toggleAnswer('a1')">Visa facit</button>
+
+<div class="answer" id="a1">
+
+<p>
+<span class="asset"><b>Tillgång:</b></span>
+kunddatabasen och informationen i den.
+</p>
+
+<p>
+<span class="vulnerability"><b>Sårbarhet:</b></span>
+det administrativa API:et saknar autentisering.
+</p>
+
+<p>
+<span class="threat"><b>Hot:</b></span>
+den externa angriparen kan utnyttja svagheten.
+</p>
+
+<p>
+<strong>Risk:</strong>
+kundinformationen kan läsas eller ändras av en obehörig användare.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 02
+<span class="points">3 poäng</span>
+</div>
+
+<h3>Det öppna fönstret</h3>
+
+<p>
+Ett kontor har ett fönster som inte går att låsa.
+Ingen har försökt ta sig in.
+</p>
+
+<p class="question">
+Vilket av följande beskriver bäst det olåsta fönstret?
+</p>
+
+<div class="box">
+A. Hot<br>
+B. Sårbarhet<br>
+C. Risk<br>
+D. Konsekvens
+</div>
+
+<button onclick="toggleAnswer('a2')">Visa facit</button>
+
+<div class="answer" id="a2">
+
+<strong>B. Sårbarhet.</strong>
+
+<p>
+Det olåsta fönstret är en svaghet som ett hot skulle kunna utnyttja.
+</p>
+
+<p>
+En person som försöker bryta sig in kan vara hotet.
+Risken uppstår när hotet kan utnyttja svagheten mot något som har ett värde.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 03 // CHALLENGE
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Är det verkligen en risk?</h3>
+
+<p>
+En gammal server har en allvarlig sårbarhet.
+Servern är avstängd, frånkopplad från nätverket och innehåller ingen
+information som organisationen behöver.
+</p>
+
+<p class="question">
+Kan man automatiskt säga att organisationen har en hög risk bara
+för att sårbarheten är allvarlig?
+</p>
+
+<button onclick="toggleAnswer('a3')">Visa facit</button>
+
+<div class="answer" id="a3">
+
+<strong>Nej.</strong>
+
+<p>
+En sårbarhet är bara en del av riskbilden.
+I kursens modell binds risk ihop av:
+</p>
+
+<div class="box">
+Hot × Sårbarhet × Värde
+</div>
+
+<p>
+Om tillgången har mycket lågt värde och det är svårt för ett hot att nå
+eller utnyttja systemet behöver den faktiska risken inte vara hög.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">02 // Tillgång och skyddsvärde</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 04
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Två laptops</h3>
+
+<p>
+Företaget har två laptops.
+</p>
+
+<div class="box">
+
+<p>
+<b>Laptop A</b><br>
+Används bara för presentationer.
+Innehåller inga unika filer.
+</p>
+
+<p>
+<b>Laptop B</b><br>
+Innehåller företagets enda kopia av dokumentationen
+för en viktig kundinstallation.
+</p>
+
+</div>
+
+<p class="question">
+Är båda datorerna tillgångar? Har de samma skyddsvärde?
+</p>
+
+<button onclick="toggleAnswer('a4')">Visa facit</button>
+
+<div class="answer" id="a4">
+
+<p>
+<strong>Båda kan vara tillgångar</strong>, eftersom båda har ett värde
+för verksamheten.
+</p>
+
+<p>
+Men de behöver inte ha samma <strong>skyddsvärde</strong>.
+Laptop B kan exempelvis få högre skyddsvärde eftersom förlusten av den
+unika dokumentationen kan ge större konsekvenser.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 05 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Vad är egentligen tillgången?</h3>
+
+<p>
+En databas körs på en fysisk server.
+Databasen innehåller kundregister.
+</p>
+
+<p class="question">
+Vilka av följande kan betraktas som tillgångar?
+</p>
+
+<div class="box">
+<p>A. Servern</p>
+<p>B. Databasen</p>
+<p>C. Kundinformationen</p>
+<p>D. Alla ovanstående</p>
+</div>
+
+<button onclick="toggleAnswer('a5')">Visa facit</button>
+
+<div class="answer" id="a5">
+
+<strong>D. Alla ovanstående.</strong>
+
+<p>
+Tillgångar kan finnas på olika nivåer.
+Den fysiska servern har ett värde, databassystemet har ett värde
+och informationen i databasen har ett värde.
+</p>
+
+<p>
+Det viktiga i en analys är att vara tydlig med
+<strong>vad det faktiskt är man försöker skydda</strong>.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 06
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Vem bestämmer?</h3>
+
+<p>
+Ett utvecklingsteam använder en databas med känslig affärsinformation.
+Systemadministratören ansvarar för den tekniska driften.
+En verksamhetschef ansvarar för informationen och bestämmer hur viktig
+den är och vilka skyddsbehov som finns.
+</p>
+
+<p class="question">
+Vem är närmast rollen som tillgångsägare enligt lektionens modell?
+</p>
+
+<button onclick="toggleAnswer('a6')">Visa facit</button>
+
+<div class="answer" id="a6">
+
+<strong>Verksamhetschefen.</strong>
+
+<p>
+Tillgångsägaren ansvarar för tillgångens värde,
+klassificering och skyddsbehov.
+</p>
+
+<p>
+Den som tekniskt administrerar systemet behöver alltså inte automatiskt
+vara tillgångsägaren.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">03 // Konsekvens och risk</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 07
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Samma fel — olika konsekvens</h3>
+
+<p>
+Två webbservrar slutar fungera i fyra timmar.
+</p>
+
+<div class="box">
+
+<p>
+<b>Server A:</b>
+intern sida med lunchmenyn.
+</p>
+
+<p>
+<b>Server B:</b>
+företagets system för kundbeställningar.
+</p>
+
+</div>
+
+<p class="question">
+Är konsekvensen automatiskt lika stor eftersom driftstoppet är lika långt?
+</p>
+
+<button onclick="toggleAnswer('a7')">Visa facit</button>
+
+<div class="answer" id="a7">
+
+<strong>Nej.</strong>
+
+<p>
+Konsekvens handlar om vad som händer för verksamheten när en tillgång
+förstörs, förändras, avslöjas eller blir otillgänglig.
+</p>
+
+<p>
+Fyra timmars driftstopp kan därför ha helt olika betydelse beroende på
+vilken tillgång som påverkas.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 08 // CHALLENGE
+<span class="points">6 poäng</span>
+</div>
+
+<h3>Tre händelser</h3>
+
+<p>
+Organisationen identifierar följande scenarier:
+</p>
+
+<div class="box">
+
+<p>
+<b>Scenario A:</b>
+En presentationsdator blir stulen.
+Inga känsliga eller unika filer finns på datorn.
+</p>
+
+<p>
+<b>Scenario B:</b>
+En kunddatabas blir tillgänglig utan autentisering.
+</p>
+
+<p>
+<b>Scenario C:</b>
+Ett testsystem går ner i tio minuter.
+Ingen verksamhet påverkas.
+</p>
+
+</div>
+
+<p class="question">
+Vilket scenario skulle du undersöka först ur risksynpunkt?
+Motivera med tillgång, sårbarhet/hot och konsekvens.
+</p>
+
+<p class="hint">
+Det viktiga är resonemanget, inte bara bokstaven.
+</p>
+
+<button onclick="toggleAnswer('a8')">Visa diskussionsstöd</button>
+
+<div class="answer" id="a8">
+
+<p>
+<strong>Scenario B</strong> är ett naturligt förstaval.
+</p>
+
+<p>
+Tillgången — kundinformationen — kan ha högt skyddsvärde.
+Avsaknaden av autentisering är en tydlig sårbarhet och kan göra det
+möjligt för en obehörig part att komma åt informationen.
+Konsekvensen kan därför vara betydande.
+</p>
+
+<p>
+A och C är fortfarande händelser som kan behöva hanteras,
+men informationen i scenariot antyder lägre konsekvens.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">04 // Riskmatrisen</h2>
+
+
+<section class="box">
+
+<h3>Exempel på enkel 5 × 5-modell</h3>
+
+<p>
+I lektionen beskrivs risk som:
+</p>
+
+<div class="box">
+<code>Risk = sannolikhet × konsekvens</code>
+</div>
+
+<p>
+Använd skalan 1–5 i uppgifterna nedan.
+</p>
+
+<table class="matrix">
+<tr>
+    <th>Sannolikhet ↓ / Konsekvens →</th>
+    <th>1</th>
+    <th>2</th>
+    <th>3</th>
+    <th>4</th>
+    <th>5</th>
+</tr>
+
+<tr>
+    <th>5</th>
+    <td class="medium">5</td>
+    <td class="medium">10</td>
+    <td class="high">15</td>
+    <td class="critical">20</td>
+    <td class="critical">25</td>
+</tr>
+
+<tr>
+    <th>4</th>
+    <td class="low">4</td>
+    <td class="medium">8</td>
+    <td class="medium">12</td>
+    <td class="high">16</td>
+    <td class="critical">20</td>
+</tr>
+
+<tr>
+    <th>3</th>
+    <td class="low">3</td>
+    <td class="low">6</td>
+    <td class="medium">9</td>
+    <td class="medium">12</td>
+    <td class="high">15</td>
+</tr>
+
+<tr>
+    <th>2</th>
+    <td class="low">2</td>
+    <td class="low">4</td>
+    <td class="low">6</td>
+    <td class="medium">8</td>
+    <td class="medium">10</td>
+</tr>
+
+<tr>
+    <th>1</th>
+    <td class="low">1</td>
+    <td class="low">2</td>
+    <td class="low">3</td>
+    <td class="low">4</td>
+    <td class="medium">5</td>
+</tr>
+</table>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 09
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Räkna risken</h3>
+
+<p>
+En risk bedöms ha:
+</p>
+
+<div class="box">
+Sannolikhet = 4<br>
+Konsekvens = 5
+</div>
+
+<p class="question">
+Vilket riskvärde får scenariot?
+</p>
+
+<button onclick="toggleAnswer('a9')">Visa facit</button>
+
+<div class="answer" id="a9">
+
+<strong>20.</strong>
+
+<p>
+<code>4 × 5 = 20</code>
+</p>
+
+<p>
+Riskmatrisen används för att hjälpa organisationen att
+värdera och prioritera identifierade risker.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 10 // CHALLENGE
+<span class="points">6 poäng</span>
+</div>
+
+<h3>Vilken tar du först?</h3>
+
+<p>
+Du har bara resurser att hantera en risk idag.
+</p>
+
+<div class="box">
+
+<p>
+<b>Risk A</b><br>
+Sannolikhet: 5<br>
+Konsekvens: 2
+</p>
+
+<p>
+<b>Risk B</b><br>
+Sannolikhet: 2<br>
+Konsekvens: 5
+</p>
+
+<p>
+<b>Risk C</b><br>
+Sannolikhet: 4<br>
+Konsekvens: 4
+</p>
+
+</div>
+
+<p class="question">
+Beräkna riskvärdet och rangordna riskerna.
+</p>
+
+<button onclick="toggleAnswer('a10')">Visa facit</button>
+
+<div class="answer" id="a10">
+
+<p>
+<b>A:</b> 5 × 2 = <strong>10</strong>
+</p>
+
+<p>
+<b>B:</b> 2 × 5 = <strong>10</strong>
+</p>
+
+<p>
+<b>C:</b> 4 × 4 = <strong>16</strong>
+</p>
+
+<p>
+Med den enkla modellen får C högst riskvärde.
+A och B får samma numeriska värde trots att deras riskprofiler ser olika ut.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 11 // CHALLENGE
+<span class="points">6 poäng</span>
+</div>
+
+<h3>Riskvärdet ljuger inte... eller?</h3>
+
+<p>
+Två risker får båda värdet 5.
+</p>
+
+<div class="box">
+
+<p>
+<b>Risk X</b><br>
+Sannolikhet: 5<br>
+Konsekvens: 1
+</p>
+
+<p>
+<b>Risk Y</b><br>
+Sannolikhet: 1<br>
+Konsekvens: 5
+</p>
+
+</div>
+
+<p class="question">
+Är riskerna identiska bara för att produkten är samma?
+</p>
+
+<button onclick="toggleAnswer('a11')">Visa diskussionsstöd</button>
+
+<div class="answer" id="a11">
+
+<strong>Nej, deras profil är olika.</strong>
+
+<p>
+Risk X beskriver något som inträffar ofta men har liten konsekvens.
+Risk Y beskriver något ovanligt men med mycket stor konsekvens.
+</p>
+
+<p>
+En riskmatris hjälper framför allt till med värdering och prioritering,
+men sannolikhet och konsekvens behöver fortfarande förstås var för sig.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">05 // Mitigera eller acceptera?</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 12
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Ny säkerhetskontroll</h3>
+
+<p>
+En webbserver saknar skydd mot obehöriga inloggningsförsök.
+Organisationen inför en skyddsåtgärd som gör det betydligt svårare
+att lyckas med attacken.
+</p>
+
+<p class="question">
+Vad har åtgärden gjort med risken?
+</p>
+
+<button onclick="toggleAnswer('a12')">Visa facit</button>
+
+<div class="answer" id="a12">
+
+<p>
+Skyddsåtgärden har <strong>mitigerat risken</strong> genom att minska
+sannolikheten för att scenariot inträffar.
+</p>
+
+<p>
+En mitigerande åtgärd kan enligt lektionen minska:
+</p>
+
+<div class="box">
+sannolikheten<br>
+och/eller<br>
+konsekvensen
+</div>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 13 // CHALLENGE
+<span class="points">6 poäng</span>
+</div>
+
+<h3>Risken försvann... nästan</h3>
+
+<p>
+En organisation identifierar en risk med värdet 20.
+Efter en skyddsåtgärd sjunker sannolikheten från 4 till 1.
+Konsekvensen är fortfarande 5.
+</p>
+
+<p class="question">
+Vad är riskvärdet efter åtgärden?
+Har risken försvunnit?
+</p>
+
+<button onclick="toggleAnswer('a13')">Visa facit</button>
+
+<div class="answer" id="a13">
+
+<p>
+Nytt riskvärde:
+</p>
+
+<div class="box">
+<code>1 × 5 = 5</code>
+</div>
+
+<p>
+Risken har alltså minskat men inte nödvändigtvis försvunnit.
+Det finns fortfarande en <strong>kvarvarande risk</strong>.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 14 // CHALLENGE
+<span class="points">6 poäng</span>
+</div>
+
+<h3>Skyddet kostar mer än problemet</h3>
+
+<p>
+En intern informationsskärm kan sluta fungera ungefär en gång vartannat år.
+När det händer tar det cirka tio minuter att starta om den.
+</p>
+
+<p>
+Ett nytt redundant system skulle nästan eliminera driftstoppen men kostar
+250 000 kronor.
+</p>
+
+<p class="question">
+Måste organisationen mitigera risken?
+</p>
+
+<button onclick="toggleAnswer('a14')">Visa facit</button>
+
+<div class="answer" id="a14">
+
+<strong>Inte nödvändigtvis.</strong>
+
+<p>
+I lektionen beskrivs att risker kan <strong>mitigeras eller accepteras</strong>.
+</p>
+
+<p>
+Om konsekvens och sannolikhet bedöms som tillräckligt låga kan
+organisationen välja att acceptera risken istället för att införa
+en dyr skyddsåtgärd.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">06 // Boss level</h2>
+
+
+<section class="task boss">
+
+<div class="task-number">
+TASK 15 // BOSS
+<span class="points">10 poäng</span>
+</div>
+
+<h3>Riskanalys: Kundportalen</h3>
+
+<p>
+Du får följande information:
+</p>
+
+<div class="box">
+
+<p>
+Företaget driver en kundportal där kunder kan se fakturor.
+</p>
+
+<p>
+Portalen använder ett administratörskonto med ett enkelt lösenord.
+</p>
+
+<p>
+Administrationsgränssnittet är tillgängligt från Internet.
+</p>
+
+<p>
+Databasen innehåller fakturor och kontaktuppgifter för 40 000 kunder.
+</p>
+
+<p>
+Det finns en fungerande backup som tas varje natt.
+</p>
+
+<p>
+Företaget bedömer att försök till intrång sker regelbundet.
+</p>
+
+</div>
+
+<p class="question">
+Gör en mini-riskanalys och identifiera:
+</p>
+
+<div class="box">
+<p>1. Minst två tillgångar.</p>
+<p>2. Minst en sårbarhet.</p>
+<p>3. Minst ett hot.</p>
+<p>4. En möjlig konsekvens.</p>
+<p>5. En riskformulering.</p>
+<p>6. En möjlig mitigerande åtgärd.</p>
+<p>7. Vilken del av risken åtgärden främst minskar.</p>
+</div>
+
+<button onclick="toggleAnswer('a15')">Visa ett möjligt resonemang</button>
+
+<div class="answer" id="a15">
+
+<p>
+<span class="asset"><b>Tillgångar:</b></span><br>
+Kundinformationen, fakturorna, databasen och kundportalen.
+</p>
+
+<p>
+<span class="vulnerability"><b>Sårbarhet:</b></span><br>
+Administratörskontot använder ett enkelt lösenord och
+administrationsgränssnittet är tillgängligt från Internet.
+</p>
+
+<p>
+<span class="threat"><b>Hot:</b></span><br>
+En extern angripare försöker få obehörig åtkomst.
+</p>
+
+<p>
+<b>Konsekvens:</b><br>
+Kundinformation kan avslöjas eller förändras,
+eller tjänsten kan påverkas.
+</p>
+
+<p>
+<b>Risk:</b><br>
+En extern angripare kan utnyttja den svaga autentiseringen för
+att få administrativ åtkomst och påverka kundinformationen.
+</p>
+
+<p>
+<span class="control"><b>Skydd:</b></span><br>
+Förbättra autentiseringen och begränsa åtkomsten till
+administrationsgränssnittet.
+</p>
+
+<p>
+Åtgärden syftar framför allt till att minska sannolikheten för
+att hotet lyckas utnyttja sårbarheten.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task boss">
+
+<div class="task-number">
+TASK 16 // FINAL BOSS
+<span class="points">12 poäng</span>
+</div>
+
+<h3>Du har bara budget för två</h3>
+
+<p>
+Ett mindre företag identifierar fyra risker:
+</p>
+
+<div class="box">
+
+<p>
+<b>R1 — Kunddatabas exponeras</b><br>
+Sannolikhet: 3<br>
+Konsekvens: 5
+</p>
+
+<p>
+<b>R2 — Lunchmenyns webbserver går ner</b><br>
+Sannolikhet: 5<br>
+Konsekvens: 1
+</p>
+
+<p>
+<b>R3 — Orderdatabasen blir otillgänglig</b><br>
+Sannolikhet: 3<br>
+Konsekvens: 4
+</p>
+
+<p>
+<b>R4 — Testserver får malware</b><br>
+Sannolikhet: 2<br>
+Konsekvens: 2
+</p>
+
+</div>
+
+<p>
+Organisationen har bara resurser att mitigera två av riskerna just nu.
+</p>
+
+<p class="question">
+För varje risk:
+</p>
+
+<div class="box">
+<p>1. Beräkna riskvärdet.</p>
+<p>2. Rangordna riskerna.</p>
+<p>3. Välj två som du skulle prioritera.</p>
+<p>4. Motivera varför.</p>
+<p>5. Beskriv vad organisationen kan göra med de återstående riskerna.</p>
+</div>
+
+<button onclick="toggleAnswer('a16')">Visa diskussionsstöd</button>
+
+<div class="answer" id="a16">
+
+<p>
+<b>R1:</b> 3 × 5 = <strong>15</strong>
+</p>
+
+<p>
+<b>R2:</b> 5 × 1 = <strong>5</strong>
+</p>
+
+<p>
+<b>R3:</b> 3 × 4 = <strong>12</strong>
+</p>
+
+<p>
+<b>R4:</b> 2 × 2 = <strong>4</strong>
+</p>
+
+<p>
+En naturlig prioritering utifrån den enkla modellen blir:
+</p>
+
+<div class="box">
+R1 → 15<br>
+R3 → 12<br>
+R2 → 5<br>
+R4 → 4
+</div>
+
+<p>
+R1 och R3 skulle därför kunna prioriteras först.
+</p>
+
+<p>
+De återstående riskerna behöver inte ignoreras.
+Organisationen kan införa ytterligare skydd senare eller
+välja att acceptera en risk om den bedöms vara på en acceptabel nivå.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="box">
+
+<h2>Poäng</h2>
+
+<p>
+Maxpoäng: <span class="score">89</span>
+</p>
+
+<p>
+<b>0–30:</b> Hot ≠ sårbarhet. Repetera begreppen.<br>
+<b>31–55:</b> Du börjar se hur riskkedjan hänger ihop.<br>
+<b>56–75:</b> Risk analyst detected.<br>
+<b>76–89:</b> Du prioriterar innan du patchar allt i panik.
+</p>
+
+</section>
+
+
+<footer>
+
+<p>
+$ echo "a vulnerability is not automatically a risk"
+</p>
+
+<p>
+Baalstorm Security Labs // Risk, hot & tillgångar
+</p>
+
+</footer>
+
+</main>
+
+
+<script>
+function toggleAnswer(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle("visible");
+}
+</script>
+
+</body>
+</html>
+```
