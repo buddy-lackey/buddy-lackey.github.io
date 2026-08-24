@@ -1,0 +1,14 @@
+{
+    "station": "RTU-17",
+    "site": "North Pump Station",
+    "firmware": "2.3.7-R",
+    "authentication": {
+        "provider": "LOCAL",
+        "revision": "2.3.7"
+    },
+    "legacyMaintenance": {
+        "enabled": true,
+        "description": "Temporary field service compatibility",
+        "route": "dashboard.html?mode=service"
+    }
+}
