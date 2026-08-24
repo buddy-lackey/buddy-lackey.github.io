@@ -31,10 +31,7 @@ body {
     min-height: 100%;
     background: var(--bg);
     color: var(--amber);
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
+    font-family: "Courier New", Courier, monospace;
 }
 
 body {
@@ -68,7 +65,6 @@ input {
     grid-template-columns: 1fr auto;
     gap: 20px;
     align-items: center;
-
     padding: 13px 18px;
     border-bottom: 1px solid var(--border);
     background: #090905;
@@ -165,7 +161,8 @@ input:focus {
 }
 
 .login-button,
-.control-button {
+.control-button,
+.logout-button {
     background: #171407;
     color: var(--amber);
     border: 1px solid var(--border);
@@ -178,7 +175,8 @@ input:focus {
 }
 
 .login-button:hover,
-.control-button:hover {
+.control-button:hover,
+.logout-button:hover {
     background: var(--amber);
     color: #050505;
 }
@@ -203,20 +201,37 @@ input:focus {
 
 .toolbar {
     display: flex;
+    justify-content: space-between;
+    align-items: stretch;
     flex-wrap: wrap;
-    gap: 0;
     border-bottom: 1px solid var(--border);
 }
 
-.toolbar div {
+.toolbar-menu {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.toolbar-menu div {
     padding: 9px 16px;
     border-right: 1px solid var(--border);
     font-size: 0.72rem;
 }
 
-.toolbar .active {
+.toolbar-menu .active {
     background: var(--amber);
     color: #050505;
+}
+
+.logout-wrap {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+}
+
+.logout-button {
+    padding: 5px 10px;
+    font-size: 0.7rem;
 }
 
 .dashboard-grid {
@@ -294,7 +309,6 @@ input:focus {
     padding: 20px;
     margin-bottom: 18px;
     min-height: 215px;
-    position: relative;
 }
 
 .process-title {
@@ -429,11 +443,6 @@ th {
     font-size: 0.67rem;
 }
 
-.badge {
-    padding: 2px 6px;
-    border: 1px solid currentColor;
-}
-
 @media (max-width: 800px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
@@ -472,108 +481,99 @@ th {
 </style>
 </head>
 
-
 <body>
 
 <div class="screen">
 
-    <header class="header">
-
-        <div>
-            <div class="system-title">
-                RTU-17 REMOTE TERMINAL INTERFACE
-            </div>
-
-            <div class="system-subtitle">
-                NORTH PUMP STATION // UNIT 04
-            </div>
+<header class="header">
+    <div>
+        <div class="system-title">
+            RTU-17 REMOTE TERMINAL INTERFACE
         </div>
 
-        <div class="header-status">
-            <span class="ok">● LINK ONLINE</span><br>
-            NODE: 10.44.17.20
+        <div class="system-subtitle">
+            NORTH PUMP STATION // UNIT 04
+        </div>
+    </div>
+
+    <div class="header-status">
+        <span class="ok">● LINK ONLINE</span><br>
+        NODE: 10.44.17.20
+    </div>
+</header>
+
+
+<section class="login-view" id="loginView">
+
+    <div class="login-box">
+
+        <div class="login-title">
+            REMOTE OPERATOR AUTHENTICATION
         </div>
 
-    </header>
+        <div class="login-content">
 
-
-    <!-- =========================================================
-         LOGIN
-         ========================================================= -->
-
-    <section class="login-view" id="loginView">
-
-        <div class="login-box">
-
-            <div class="login-title">
-                REMOTE OPERATOR AUTHENTICATION
+            <div class="banner">
+                WARNING: AUTHORIZED PERSONNEL ONLY<br>
+                ALL ACCESS ATTEMPTS ARE MONITORED
             </div>
 
-            <div class="login-content">
+            <form id="loginForm">
 
-                <div class="banner">
-                    WARNING: AUTHORIZED PERSONNEL ONLY<br>
-                    ALL ACCESS ATTEMPTS ARE MONITORED
-                </div>
+                <label for="username">
+                    OPERATOR ID
+                </label>
 
-                <form id="loginForm">
+                <input
+                    id="username"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="operator"
+                >
 
-                    <label for="username">
-                        OPERATOR ID
-                    </label>
+                <label for="password">
+                    ACCESS KEY
+                </label>
 
-                    <input
-                        id="username"
-                        type="text"
-                        autocomplete="off"
-                        placeholder="operator"
-                    >
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="off"
+                    placeholder="********"
+                >
 
-                    <label for="password">
-                        ACCESS KEY
-                    </label>
+                <button
+                    class="login-button"
+                    type="submit"
+                >
+                    [ AUTHENTICATE ]
+                </button>
 
-                    <input
-                        id="password"
-                        type="password"
-                        autocomplete="off"
-                        placeholder="********"
-                    >
+            </form>
 
-                    <button
-                        class="login-button"
-                        type="submit"
-                    >
-                        [ AUTHENTICATE ]
-                    </button>
-
-                </form>
-
-                <div
-                    class="login-message"
-                    id="loginMessage"
-                ></div>
-
-            </div>
-
-            <div class="console">
-                SYS&gt; RTU WEB SERVICES READY<br>
-                SYS&gt; AUTH MODULE REV 2.3.7<br>
-                SYS&gt; MAINTENANCE SERVICE ENABLED
-            </div>
+            <div
+                class="login-message"
+                id="loginMessage"
+            ></div>
 
         </div>
 
-    </section>
+        <div class="console">
+            SYS&gt; RTU WEB SERVICES READY<br>
+            SYS&gt; AUTH MODULE REV 2.3.7<br>
+            SYS&gt; MAINTENANCE SERVICE ENABLED
+        </div>
+
+    </div>
+
+</section>
 
 
-    <!-- =========================================================
-         DASHBOARD
-         ========================================================= -->
+<section class="dashboard" id="dashboard">
 
-    <section class="dashboard" id="dashboard">
+    <div class="toolbar">
 
-        <div class="toolbar">
+        <div class="toolbar-menu">
             <div class="active">OVERVIEW</div>
             <div>PROCESS</div>
             <div>I/O STATUS</div>
@@ -582,306 +582,313 @@ th {
             <div>CONFIGURATION</div>
         </div>
 
-
-        <div class="dashboard-grid">
-
-            <aside class="sidebar">
-
-                <div class="sidebar-title">
-                    STATION NAVIGATION
-                </div>
-
-                <div class="nav-item active">
-                    RTU-17 / OVERVIEW
-                </div>
-
-                <div class="nav-item">
-                    PUMP CONTROL
-                </div>
-
-                <div class="nav-item">
-                    DIGITAL INPUTS
-                </div>
-
-                <div class="nav-item">
-                    ANALOG INPUTS
-                </div>
-
-                <div class="nav-item">
-                    COMMUNICATION
-                </div>
-
-                <div class="nav-item">
-                    SYSTEM EVENTS
-                </div>
-
-            </aside>
-
-
-            <main class="main-panel">
-
-                <div class="section-header">
-                    PROCESS OVERVIEW // NORTH PUMP STATION
-                </div>
-
-
-                <div class="metrics">
-
-                    <div class="metric">
-                        <div class="metric-label">
-                            INLET PRESSURE
-                        </div>
-
-                        <div class="metric-value">
-                            3.82
-                            <span class="metric-unit">BAR</span>
-                        </div>
-                    </div>
-
-
-                    <div class="metric">
-                        <div class="metric-label">
-                            OUTLET PRESSURE
-                        </div>
-
-                        <div class="metric-value">
-                            5.14
-                            <span class="metric-unit">BAR</span>
-                        </div>
-                    </div>
-
-
-                    <div class="metric">
-                        <div class="metric-label">
-                            FLOW RATE
-                        </div>
-
-                        <div class="metric-value">
-                            184
-                            <span class="metric-unit">M³/H</span>
-                        </div>
-                    </div>
-
-
-                    <div class="metric">
-                        <div class="metric-label">
-                            RESERVOIR LEVEL
-                        </div>
-
-                        <div class="metric-value">
-                            72
-                            <span class="metric-unit">%</span>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <section class="process">
-
-                    <div class="process-title">
-                        PROCESS FLOW DIAGRAM
-                    </div>
-
-                    <div class="process-line">
-
-                        <div class="device">
-                            <div class="device-name">
-                                INLET
-                            </div>
-
-                            <div class="device-state">
-                                OPEN
-                            </div>
-                        </div>
-
-                        <div class="pipe"></div>
-
-                        <div
-                            class="device running"
-                            id="pumpDevice"
-                        >
-                            <div class="device-name">
-                                PUMP P-101
-                            </div>
-
-                            <div
-                                class="device-state"
-                                id="pumpState"
-                            >
-                                RUNNING
-                            </div>
-                        </div>
-
-                        <div class="pipe"></div>
-
-                        <div class="device">
-                            <div class="device-name">
-                                OUTLET
-                            </div>
-
-                            <div class="device-state">
-                                OPEN
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <div class="io-grid">
-
-                    <section class="panel">
-
-                        <div class="panel-title">
-                            ANALOG INPUTS
-                        </div>
-
-                        <table>
-
-                            <thead>
-                                <tr>
-                                    <th>TAG</th>
-                                    <th>VALUE</th>
-                                    <th>STATUS</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td>AI-001</td>
-                                    <td>3.82 BAR</td>
-                                    <td class="ok">GOOD</td>
-                                </tr>
-
-                                <tr>
-                                    <td>AI-002</td>
-                                    <td>5.14 BAR</td>
-                                    <td class="ok">GOOD</td>
-                                </tr>
-
-                                <tr>
-                                    <td>AI-003</td>
-                                    <td>184 M³/H</td>
-                                    <td class="ok">GOOD</td>
-                                </tr>
-
-                                <tr>
-                                    <td>AI-004</td>
-                                    <td>72 %</td>
-                                    <td class="ok">GOOD</td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </section>
-
-
-                    <section class="panel">
-
-                        <div class="panel-title">
-                            REMOTE CONTROL
-                        </div>
-
-                        <div class="controls">
-
-                            <div class="control-row">
-
-                                <span>PUMP P-101</span>
-
-                                <div class="control-buttons">
-
-                                    <button
-                                        class="control-button"
-                                        onclick="setPump(true)"
-                                    >
-                                        START
-                                    </button>
-
-                                    <button
-                                        class="control-button"
-                                        onclick="setPump(false)"
-                                    >
-                                        STOP
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="control-row">
-                                <span>VALVE XV-101</span>
-                                <span class="ok">OPEN</span>
-                            </div>
-
-
-                            <div class="control-row">
-                                <span>CONTROL MODE</span>
-                                <span>AUTO</span>
-                            </div>
-
-
-                            <div class="control-row">
-                                <span>REMOTE ENABLE</span>
-                                <span class="ok">TRUE</span>
-                            </div>
-
-                        </div>
-
-                    </section>
-
-                </div>
-
-
-                <section class="alarm-panel">
-
-                    <div class="panel-title">
-                        ACTIVE / RECENT EVENTS
-                    </div>
-
-                    <div class="alarm-row">
-                        <span>11:42:08</span>
-                        <span class="ok">INFO</span>
-                        <span>Telemetry connection established</span>
-                    </div>
-
-                    <div class="alarm-row">
-                        <span>11:39:17</span>
-                        <span class="warn">WARN</span>
-                        <span>Remote maintenance interface active</span>
-                    </div>
-
-                    <div class="alarm-row">
-                        <span>10:51:03</span>
-                        <span class="ok">INFO</span>
-                        <span>P-101 automatic start command</span>
-                    </div>
-
-                </section>
-
-            </main>
-
+        <div class="logout-wrap">
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                [ LOGOUT ]
+            </button>
         </div>
 
-    </section>
+    </div>
 
 
-    <footer class="footer">
+    <div class="dashboard-grid">
 
-        <span>
-            FIRMWARE 2.3.7-R // RTU-17
-        </span>
+        <aside class="sidebar">
 
-        <span id="sessionStatus">
-            SESSION: NOT AUTHENTICATED
-        </span>
+            <div class="sidebar-title">
+                STATION NAVIGATION
+            </div>
 
-    </footer>
+            <div class="nav-item active">
+                RTU-17 / OVERVIEW
+            </div>
+
+            <div class="nav-item">
+                PUMP CONTROL
+            </div>
+
+            <div class="nav-item">
+                DIGITAL INPUTS
+            </div>
+
+            <div class="nav-item">
+                ANALOG INPUTS
+            </div>
+
+            <div class="nav-item">
+                COMMUNICATION
+            </div>
+
+            <div class="nav-item">
+                SYSTEM EVENTS
+            </div>
+
+        </aside>
+
+
+        <main class="main-panel">
+
+            <div class="section-header">
+                PROCESS OVERVIEW // NORTH PUMP STATION
+            </div>
+
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <div class="metric-label">
+                        INLET PRESSURE
+                    </div>
+
+                    <div class="metric-value">
+                        3.82
+                        <span class="metric-unit">BAR</span>
+                    </div>
+                </div>
+
+
+                <div class="metric">
+                    <div class="metric-label">
+                        OUTLET PRESSURE
+                    </div>
+
+                    <div class="metric-value">
+                        5.14
+                        <span class="metric-unit">BAR</span>
+                    </div>
+                </div>
+
+
+                <div class="metric">
+                    <div class="metric-label">
+                        FLOW RATE
+                    </div>
+
+                    <div class="metric-value">
+                        184
+                        <span class="metric-unit">M³/H</span>
+                    </div>
+                </div>
+
+
+                <div class="metric">
+                    <div class="metric-label">
+                        RESERVOIR LEVEL
+                    </div>
+
+                    <div class="metric-value">
+                        72
+                        <span class="metric-unit">%</span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <section class="process">
+
+                <div class="process-title">
+                    PROCESS FLOW DIAGRAM
+                </div>
+
+                <div class="process-line">
+
+                    <div class="device">
+                        <div class="device-name">
+                            INLET
+                        </div>
+
+                        <div class="device-state">
+                            OPEN
+                        </div>
+                    </div>
+
+                    <div class="pipe"></div>
+
+                    <div
+                        class="device running"
+                        id="pumpDevice"
+                    >
+                        <div class="device-name">
+                            PUMP P-101
+                        </div>
+
+                        <div
+                            class="device-state"
+                            id="pumpState"
+                        >
+                            RUNNING
+                        </div>
+                    </div>
+
+                    <div class="pipe"></div>
+
+                    <div class="device">
+                        <div class="device-name">
+                            OUTLET
+                        </div>
+
+                        <div class="device-state">
+                            OPEN
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <div class="io-grid">
+
+                <section class="panel">
+
+                    <div class="panel-title">
+                        ANALOG INPUTS
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TAG</th>
+                                <th>VALUE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>AI-001</td>
+                                <td>3.82 BAR</td>
+                                <td class="ok">GOOD</td>
+                            </tr>
+
+                            <tr>
+                                <td>AI-002</td>
+                                <td>5.14 BAR</td>
+                                <td class="ok">GOOD</td>
+                            </tr>
+
+                            <tr>
+                                <td>AI-003</td>
+                                <td>184 M³/H</td>
+                                <td class="ok">GOOD</td>
+                            </tr>
+
+                            <tr>
+                                <td>AI-004</td>
+                                <td>72 %</td>
+                                <td class="ok">GOOD</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </section>
+
+
+                <section class="panel">
+
+                    <div class="panel-title">
+                        REMOTE CONTROL
+                    </div>
+
+                    <div class="controls">
+
+                        <div class="control-row">
+
+                            <span>PUMP P-101</span>
+
+                            <div class="control-buttons">
+
+                                <button
+                                    class="control-button"
+                                    onclick="setPump(true)"
+                                >
+                                    START
+                                </button>
+
+                                <button
+                                    class="control-button"
+                                    onclick="setPump(false)"
+                                >
+                                    STOP
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="control-row">
+                            <span>VALVE XV-101</span>
+                            <span class="ok">OPEN</span>
+                        </div>
+
+
+                        <div class="control-row">
+                            <span>CONTROL MODE</span>
+                            <span>AUTO</span>
+                        </div>
+
+
+                        <div class="control-row">
+                            <span>REMOTE ENABLE</span>
+                            <span class="ok">TRUE</span>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <section class="alarm-panel">
+
+                <div class="panel-title">
+                    ACTIVE / RECENT EVENTS
+                </div>
+
+                <div class="alarm-row">
+                    <span>11:42:08</span>
+                    <span class="ok">INFO</span>
+                    <span>Telemetry connection established</span>
+                </div>
+
+                <div class="alarm-row">
+                    <span>11:39:17</span>
+                    <span class="warn">WARN</span>
+                    <span>Remote maintenance interface active</span>
+                </div>
+
+                <div class="alarm-row">
+                    <span>10:51:03</span>
+                    <span class="ok">INFO</span>
+                    <span>P-101 automatic start command</span>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</section>
+
+
+<footer class="footer">
+
+    <span>
+        FIRMWARE 2.3.7-R // RTU-17
+    </span>
+
+    <span id="sessionStatus">
+        SESSION: NOT AUTHENTICATED
+    </span>
+
+</footer>
 
 </div>
 
@@ -892,13 +899,6 @@ th {
     ===============================================================
     TRAINING LAB - INTENTIONALLY VULNERABLE AUTHENTICATION
     ===============================================================
-
-    This page is intentionally insecure.
-
-    The maintenance interface contains a client-side authentication
-    bypass intended for a classroom / CTF exercise.
-
-    Everything on this page is simulated.
 */
 
 
@@ -914,6 +914,12 @@ const loginMessage =
 const sessionStatus =
     document.getElementById("sessionStatus");
 
+const usernameField =
+    document.getElementById("username");
+
+const passwordField =
+    document.getElementById("password");
+
 
 function openDashboard(method) {
 
@@ -928,9 +934,66 @@ function openDashboard(method) {
 
 /*
     ---------------------------------------------------------------
-    INTENTIONALLY VULNERABLE CODE
+    LOGOUT
+    ---------------------------------------------------------------
+*/
 
-    Legacy maintenance mode bypasses normal authentication.
+function logout() {
+
+    /*
+        Return UI to unauthenticated state.
+    */
+
+    dashboard.style.display = "none";
+    loginView.style.display = "grid";
+
+
+    /*
+        Clear credentials and status messages.
+    */
+
+    usernameField.value = "";
+    passwordField.value = "";
+    loginMessage.textContent = "";
+
+
+    /*
+        Reset session indicator.
+    */
+
+    sessionStatus.textContent =
+        "SESSION: NOT AUTHENTICATED";
+
+
+    /*
+        IMPORTANT:
+        Remove maintenance=1 from the URL.
+
+        Otherwise a page refresh would immediately trigger
+        the intentional authentication bypass again.
+    */
+
+    const cleanUrl =
+        window.location.pathname;
+
+    window.history.replaceState(
+        {},
+        document.title,
+        cleanUrl
+    );
+
+
+    /*
+        Put cursor back in the username field.
+    */
+
+    usernameField.focus();
+}
+
+
+/*
+    ---------------------------------------------------------------
+    INTENTIONALLY VULNERABLE AUTHENTICATION BYPASS
     ---------------------------------------------------------------
 */
 
@@ -957,17 +1020,14 @@ document
         event.preventDefault();
 
         const username =
-            document.getElementById("username").value;
+            usernameField.value;
 
         const password =
-            document.getElementById("password").value;
+            passwordField.value;
 
 
         /*
-            Demo credentials exist only so the normal login
-            path can also be tested.
-
-            This is NOT secure authentication.
+            Demo credentials.
         */
 
         if (
@@ -976,7 +1036,9 @@ document
         ) {
 
             loginMessage.innerHTML =
-                "<span class='ok'>AUTHENTICATION ACCEPTED</span>";
+                "<span class='ok'>" +
+                "AUTHENTICATION ACCEPTED" +
+                "</span>";
 
             setTimeout(function() {
 
