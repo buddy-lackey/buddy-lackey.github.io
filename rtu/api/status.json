@@ -1,0 +1,15 @@
+{
+    "station": "RTU-17",
+    "communications": "ONLINE",
+    "process": {
+        "inletPressure": "3.82 BAR",
+        "outletPressure": "5.14 BAR",
+        "flowRate": "184 M3/H",
+        "reservoirLevel": "72 %"
+    },
+    "pump": {
+        "tag": "P-101",
+        "state": "RUNNING"
+    },
+    "eventSource": "./api/events.json"
+}
