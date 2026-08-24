@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTU-17 Process Control</title>
+<link rel="stylesheet" href="css/rtu.css">
+</head>
+
+<body>
+
+<div class="screen" id="dashboardScreen">
+
+<header class="header">
+
+    <div>
+        <div class="system-title">RTU-17 REMOTE TERMINAL INTERFACE</div>
+        <div class="system-subtitle">NORTH PUMP STATION // UNIT 04</div>
+    </div>
+
+    <div class="header-status">
+        <span class="ok">● LINK ONLINE</span><br>
+        <span id="authStatus">SESSION ACTIVE</span>
+    </div>
+
+</header>
+
+
+<div class="toolbar">
+
+    <button class="tab active" data-panel="overview">
+        OVERVIEW
+    </button>
+
+    <button class="tab" data-panel="events">
+        EVENT LOG
+    </button>
+
+    <button class="tab" data-panel="system">
+        SYSTEM
+    </button>
+
+    <button class="logout" id="logoutButton">
+        [ LOGOUT ]
+    </button>
+
+</div>
+
+
+<div class="dashboard-grid">
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+        STATION NAVIGATION
+    </div>
+
+    <div class="nav-item active">
+        RTU-17 / OVERVIEW
+    </div>
+
+    <div class="nav-item">
+        PUMP CONTROL
+    </div>
+
+    <div class="nav-item">
+        DIGITAL INPUTS
+    </div>
+
+    <div class="nav-item">
+        ANALOG INPUTS
+    </div>
+
+    <div class="nav-item">
+        COMMUNICATION
+    </div>
+
+</aside>
+
+
+<main class="main-panel">
+
+<section id="overview" class="content-panel active-panel">
+
+    <div class="section-header">
+        PROCESS OVERVIEW // NORTH PUMP STATION
+    </div>
+
+    <div class="metrics">
+
+        <div class="metric">
+            <div class="metric-label">INLET PRESSURE</div>
+            <div class="metric-value" id="pressureIn">---</div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-label">OUTLET PRESSURE</div>
+            <div class="metric-value" id="pressureOut">---</div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-label">FLOW RATE</div>
+            <div class="metric-value" id="flowRate">---</div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-label">RESERVOIR LEVEL</div>
+            <div class="metric-value" id="reservoir">---</div>
+        </div>
+
+    </div>
+
+
+    <section class="process">
+
+        <div class="process-title">
+            PROCESS FLOW DIAGRAM
+        </div>
+
+        <div class="process-line">
+
+            <div class="device">
+                <div class="device-name">INLET</div>
+                <div class="device-state">OPEN</div>
+            </div>
+
+            <div class="pipe"></div>
+
+            <div class="device running" id="pumpDevice">
+                <div class="device-name">PUMP P-101</div>
+                <div class="device-state" id="pumpState">
+                    RUNNING
+                </div>
+            </div>
+
+            <div class="pipe"></div>
+
+            <div class="device">
+                <div class="device-name">OUTLET</div>
+                <div class="device-state">OPEN</div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="panel">
+
+        <div class="panel-title">
+            REMOTE CONTROL
+        </div>
+
+        <div class="controls">
+
+            <button id="pumpStart" class="control-button">
+                START P-101
+            </button>
+
+            <button id="pumpStop" class="control-button">
+                STOP P-101
+            </button>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<section id="events" class="content-panel">
+
+    <div class="section-header">
+        SYSTEM EVENT LOG
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-title">
+            RECENT EVENTS
+        </div>
+
+        <div id="eventLog" class="event-log">
+            Loading event history...
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="system" class="content-panel">
+
+    <div class="section-header">
+        SYSTEM INFORMATION
+    </div>
+
+    <div class="system-info">
+
+        <p>NODE: RTU-17</p>
+        <p>FIRMWARE: 2.3.7-R</p>
+        <p>CONTROL MODE: AUTO</p>
+        <p>REMOTE ACCESS: ENABLED</p>
+
+        <p>
+            AUTH CONTEXT:
+            <span id="systemAuthContext">UNKNOWN</span>
+        </p>
+
+    </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<footer class="footer">
+    <span>RTU-17 // PROCESS CONTROL</span>
+    <span id="footerSession"></span>
+</footer>
+
+</div>
+
+<script src="js/rtu.js"></script>
+
+</body>
+</html>
