@@ -1,0 +1,1190 @@
+```html
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AAA | Baalstorm</title>
+
+<style>
+:root {
+    --bg: #07110d;
+    --panel: #0b1913;
+    --panel2: #10241b;
+    --green: #6cff9a;
+    --green-dim: #2d9d58;
+    --text: #d9e5dd;
+    --muted: #819189;
+    --yellow: #ffd166;
+    --red: #ff6b6b;
+    --blue: #6cbcff;
+    --orange: #ff9f43;
+    --border: #173c29;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at top right, #102419 0%, transparent 35%),
+        var(--bg);
+    color: var(--text);
+    font-family: "Courier New", Courier, monospace;
+    line-height: 1.65;
+}
+
+main {
+    width: min(920px, 92%);
+    margin: 0 auto;
+    padding: 60px 0 100px;
+}
+
+.topline {
+    display: flex;
+    justify-content: space-between;
+    color: var(--green);
+    font-size: 0.8rem;
+    margin-bottom: 55px;
+}
+
+.hero {
+    margin-bottom: 55px;
+}
+
+.hero h1 {
+    color: #fff;
+    font-size: clamp(3rem, 9vw, 6rem);
+    margin: 0;
+    line-height: 1;
+}
+
+.hero h1 span { color: var(--green); }
+
+.hero p {
+    color: var(--muted);
+    max-width: 720px;
+    margin-top: 25px;
+}
+
+.command { color: var(--green); }
+
+.box {
+    background: rgba(11,25,19,.9);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin: 26px 0;
+}
+
+.aaa-grid,
+.factor-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.aaa-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.factor-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    padding: 18px;
+}
+
+.card strong {
+    display: block;
+    color: var(--green);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.section-title {
+    margin-top: 70px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    color: #fff;
+}
+
+.task {
+    margin: 28px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green-dim);
+    padding: 24px;
+}
+
+.task-number {
+    color: var(--green);
+    font-size: .8rem;
+    margin-bottom: 8px;
+}
+
+.task h3 {
+    color: #fff;
+    margin: 4px 0 12px;
+}
+
+.points {
+    float: right;
+    color: var(--yellow);
+    font-size: .8rem;
+}
+
+.question {
+    margin: 18px 0;
+    color: #fff;
+}
+
+.hint {
+    color: var(--muted);
+    border-left: 2px solid var(--border);
+    padding-left: 14px;
+    margin-top: 18px;
+}
+
+.challenge { border-left-color: var(--yellow); }
+.boss { border-left-color: var(--red); }
+
+button {
+    font-family: inherit;
+    color: var(--green);
+    background: transparent;
+    border: 1px solid var(--green-dim);
+    padding: 9px 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover { background: #102b1c; }
+
+.answer {
+    display: none;
+    border-top: 1px dashed var(--border);
+    margin-top: 18px;
+    padding-top: 18px;
+}
+
+.answer.visible { display: block; }
+
+.answer strong { color: var(--yellow); }
+
+.authn { color: var(--blue); }
+.authz { color: var(--orange); }
+.accounting { color: var(--green); }
+
+code {
+    color: var(--green);
+    background: #07110d;
+    padding: 2px 5px;
+}
+
+.score { color: var(--yellow); }
+
+footer {
+    border-top: 1px solid var(--border);
+    padding-top: 25px;
+    margin-top: 80px;
+    color: var(--muted);
+    font-size: .8rem;
+}
+
+@media (max-width: 700px) {
+    .aaa-grid,
+    .factor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .points {
+        float: none;
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<div class="topline">
+    <span>← RETURN TO HOME</span>
+    <span>BAALSTORM // AAA LAB</span>
+</div>
+
+
+<section class="hero">
+
+<div class="command">$ ./aaa --who-are-you --what-can-you-do</div>
+
+<h1>AAA<span>.</span></h1>
+
+<p>
+Vem är du? Vad får du göra? Vad gjorde du?
+</p>
+
+<p>
+Tre frågor. Tre olika säkerhetsfunktioner.
+De blandas ofta ihop — vilket är precis vad den här övningen
+ska försöka råda bot på.
+</p>
+
+</section>
+
+
+<section class="box">
+
+<h2>Snabbrepetition</h2>
+
+<div class="aaa-grid">
+
+<div class="card">
+<strong>Authentication</strong>
+<b>Autentisering</b><br><br>
+Processen att bekräfta en användares identitet.
+<br><br>
+<em>Vem är du?</em>
+</div>
+
+<div class="card">
+<strong>Authorization</strong>
+<b>Auktorisering</b><br><br>
+Vilka resurser får den identifierade användaren komma åt?
+<br><br>
+<em>Vad får du göra?</em>
+</div>
+
+<div class="card">
+<strong>Accounting</strong>
+<b>Loggning</b><br><br>
+Registrering av vad som gjordes och när.
+<br><br>
+<em>Vad gjorde du?</em>
+</div>
+
+</div>
+
+<p class="hint">
+Kom ihåg ordningen: systemet behöver först veta vem du är innan
+det kan avgöra vad du får göra.
+</p>
+
+</section>
+
+
+<h2 class="section-title">01 // Vilket A?</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 01
+<span class="points">3 poäng</span>
+</div>
+
+<h3>Inloggningen</h3>
+
+<p>
+Alice skriver sitt användarnamn och lösenord.
+Systemet kontrollerar uppgifterna och bekräftar att hon är Alice.
+</p>
+
+<p class="question">
+Vilket av de tre A:na handlar detta om?
+</p>
+
+<button onclick="toggleAnswer('a1')">Visa facit</button>
+
+<div class="answer" id="a1">
+
+<strong>Autentisering.</strong>
+
+<p>
+Systemet försöker bekräfta användarens identitet:
+<em>Är du verkligen Alice?</em>
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 02
+<span class="points">3 poäng</span>
+</div>
+
+<h3>Access denied</h3>
+
+<p>
+Alice är redan inloggad.
+Hon försöker öppna administrationspanelen men får:
+</p>
+
+<div class="box">
+<code>403 Forbidden</code>
+</div>
+
+<p class="question">
+Vilket A är framför allt inblandat?
+</p>
+
+<button onclick="toggleAnswer('a2')">Visa facit</button>
+
+<div class="answer" id="a2">
+
+<strong>Auktorisering.</strong>
+
+<p>
+Systemet vet redan vem Alice är.
+Frågan är nu om Alice har rätt att komma åt resursen.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 03
+<span class="points">3 poäng</span>
+</div>
+
+<h3>14:37</h3>
+
+<p>
+Efter arbetsdagen hittar administratören följande:
+</p>
+
+<div class="box">
+<code>
+14:37 alice DELETE /customers/481<br>
+14:38 alice GET /customers/482<br>
+14:41 bob LOGIN SUCCESS
+</code>
+</div>
+
+<p class="question">
+Vilket av de tre A:na representeras tydligast?
+</p>
+
+<button onclick="toggleAnswer('a3')">Visa facit</button>
+
+<div class="answer" id="a3">
+
+<strong>Accounting / loggning.</strong>
+
+<p>
+Loggen hjälper oss att se vem som gjorde vad och när.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 04 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Bob är Bob — men Bob ser för mycket</h3>
+
+<p>
+Bob loggar in med rätt användarnamn och lösenord.
+Systemet identifierar honom korrekt.
+</p>
+
+<p>
+Bob arbetar på ekonomiavdelningen men upptäcker att han kan öppna
+HR-avdelningens känsliga personalfiler.
+</p>
+
+<p class="question">
+Vad fungerade och vad verkar vara fel?
+</p>
+
+<button onclick="toggleAnswer('a4')">Visa facit</button>
+
+<div class="answer" id="a4">
+
+<p>
+<span class="authn"><b>Autentiseringen fungerade.</b></span>
+Systemet kunde identifiera Bob.
+</p>
+
+<p>
+<span class="authz"><b>Auktoriseringen verkar vara fel.</b></span>
+Bob har fått tillgång till resurser som han inte ska ha tillgång till.
+</p>
+
+<p>
+Det är en viktig skillnad:
+<strong>en korrekt inloggning betyder inte automatiskt korrekta behörigheter.</strong>
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">02 // Autentiseringsfaktorer</h2>
+
+
+<section class="box">
+
+<h3>Hur kan du bevisa vem du är?</h3>
+
+<div class="factor-grid">
+
+<div class="card">
+<strong>Något du vet</strong>
+Exempel: lösenord eller PIN-kod.
+</div>
+
+<div class="card">
+<strong>Något du har</strong>
+Exempel: telefon, kort eller säkerhetsnyckel.
+</div>
+
+<div class="card">
+<strong>Något du är</strong>
+Exempel: biometrisk egenskap.
+</div>
+
+<div class="card">
+<strong>Någonstans du är</strong>
+Plats kan användas som en faktor eller signal.
+</div>
+
+</div>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 05
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Sortera faktorerna</h3>
+
+<p>
+Koppla varje exempel till rätt typ:
+</p>
+
+<div class="box">
+<p>1. Lösenord</p>
+<p>2. Fingeravtryck</p>
+<p>3. Mobiltelefon</p>
+<p>4. PIN-kod</p>
+</div>
+
+<button onclick="toggleAnswer('a5')">Visa facit</button>
+
+<div class="answer" id="a5">
+
+<p>
+1. Lösenord → <strong>Något du vet</strong>
+</p>
+
+<p>
+2. Fingeravtryck → <strong>Något du är</strong>
+</p>
+
+<p>
+3. Mobiltelefon → <strong>Något du har</strong>
+</p>
+
+<p>
+4. PIN-kod → <strong>Något du vet</strong>
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 06 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Två saker = 2FA?</h3>
+
+<p>
+Ett system kräver:
+</p>
+
+<div class="box">
+Lösenord + PIN-kod
+</div>
+
+<p class="question">
+Är detta två olika autentiseringsfaktorer?
+</p>
+
+<button onclick="toggleAnswer('a6')">Visa facit</button>
+
+<div class="answer" id="a6">
+
+<strong>Nej.</strong>
+
+<p>
+Både lösenordet och PIN-koden är
+<strong>något du vet</strong>.
+</p>
+
+<p>
+Det är två uppgifter, men de tillhör samma typ av faktor.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 07 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Vilken är annorlunda?</h3>
+
+<p>
+Vilket alternativ använder två olika typer av faktorer?
+</p>
+
+<div class="box">
+<p><b>A:</b> Lösenord + PIN-kod</p>
+<p><b>B:</b> Lösenord + säkerhetsnyckel</p>
+<p><b>C:</b> Två olika lösenord</p>
+</div>
+
+<button onclick="toggleAnswer('a7')">Visa facit</button>
+
+<div class="answer" id="a7">
+
+<strong>B.</strong>
+
+<p>
+Lösenordet är <em>något du vet</em>.
+Säkerhetsnyckeln är <em>något du har</em>.
+</p>
+
+<p>
+Alternativet använder alltså olika typer av autentiseringsfaktorer.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">03 // MFA</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 08
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Lösenordet läcker</h3>
+
+<p>
+Eves lösenord råkar bli känt av en angripare.
+Kontot kräver dessutom en ytterligare autentiseringsfaktor.
+</p>
+
+<p class="question">
+Varför kan detta göra kontot säkrare?
+</p>
+
+<button onclick="toggleAnswer('a8')">Visa facit</button>
+
+<div class="answer" id="a8">
+
+<p>
+Att känna till lösenordet behöver då inte vara tillräckligt
+för att autentisera sig.
+</p>
+
+<p>
+Angriparen behöver även uppfylla den ytterligare faktorn.
+</p>
+
+<p>
+Det är grundidén bakom 2FA/MFA:
+<strong>flera faktorer används vid autentisering.</strong>
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 09 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Fyra användare</h3>
+
+<div class="box">
+
+<p>
+<b>Alice:</b> lösenord
+</p>
+
+<p>
+<b>Bob:</b> lösenord + PIN-kod
+</p>
+
+<p>
+<b>Charlie:</b> lösenord + säkerhetsnyckel
+</p>
+
+<p>
+<b>Diana:</b> lösenord + fingeravtryck
+</p>
+
+</div>
+
+<p class="question">
+Vilka använder olika typer av autentiseringsfaktorer?
+</p>
+
+<button onclick="toggleAnswer('a9')">Visa facit</button>
+
+<div class="answer" id="a9">
+
+<p>
+<strong>Charlie och Diana.</strong>
+</p>
+
+<p>
+Charlie:
+<em>något du vet + något du har</em>.
+</p>
+
+<p>
+Diana:
+<em>något du vet + något du är</em>.
+</p>
+
+<p>
+Bob använder två uppgifter som båda är
+<em>något du vet</em>.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">04 // Auktorisering & åtkomstkontroll</h2>
+
+
+<section class="box">
+
+<h3>Två begrepp som hör ihop</h3>
+
+<p>
+<strong>Auktorisering</strong> svarar på frågan:
+</p>
+
+<div class="box">
+Vad har den här identiteten rätt att göra?
+</div>
+
+<p>
+<strong>Åtkomstkontroll</strong> är mekanismen som upprätthåller
+dessa rättigheter när någon försöker komma åt en resurs.
+</p>
+
+</section>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 10
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Läs men skriv inte</h3>
+
+<p>
+Alice får läsa dokumentet <code>budget.txt</code>
+men får inte ändra det.
+</p>
+
+<p>
+Bob får både läsa och ändra dokumentet.
+</p>
+
+<p class="question">
+Vilket säkerhetsbegrepp beskriver vad Alice respektive Bob har rätt att göra?
+</p>
+
+<button onclick="toggleAnswer('a10')">Visa facit</button>
+
+<div class="answer" id="a10">
+
+<strong>Auktorisering.</strong>
+
+<p>
+Alice och Bob är identifierade användare.
+Frågan gäller vilka resurser och operationer de har rätt till.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 11 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>Rätt regel — fel resultat</h3>
+
+<p>
+Företagets policy säger:
+</p>
+
+<div class="box">
+Vanliga användare får inte öppna /admin.
+</div>
+
+<p>
+Alice är en vanlig användare.
+Trots detta lyckas hon öppna <code>/admin</code>.
+</p>
+
+<p class="question">
+Vad verkar ha misslyckats?
+</p>
+
+<button onclick="toggleAnswer('a11')">Visa facit</button>
+
+<div class="answer" id="a11">
+
+<p>
+Det finns en regel om vad Alice ska ha rätt att göra,
+men systemet upprätthåller den inte korrekt.
+</p>
+
+<p>
+Det pekar på ett problem med
+<strong>åtkomstkontrollen</strong>.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">05 // Accounting</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 12
+<span class="points">4 poäng</span>
+</div>
+
+<h3>Vem raderade filen?</h3>
+
+<p>
+En viktig fil försvinner från en server.
+Fem personer har rätt att radera den.
+</p>
+
+<p>
+Servern sparar inga loggar över användarnas aktiviteter.
+</p>
+
+<p class="question">
+Vilket av de tre A:na hade hjälpt oss att utreda vad som hände?
+</p>
+
+<button onclick="toggleAnswer('a12')">Visa facit</button>
+
+<div class="answer" id="a12">
+
+<strong>Accounting / loggning.</strong>
+
+<p>
+Loggdata kan hjälpa oss att se vem som gjorde vad och när.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 13 // CHALLENGE
+<span class="points">5 poäng</span>
+</div>
+
+<h3>En logg utan användare</h3>
+
+<p>
+Systemet loggar:
+</p>
+
+<div class="box">
+<code>
+14:01 LOGIN SUCCESS<br>
+14:03 FILE DELETED<br>
+14:05 LOGOUT
+</code>
+</div>
+
+<p>
+Men loggen innehåller inte vilken användare som utförde handlingarna.
+</p>
+
+<p class="question">
+Finns det loggning? Och varför är loggen ändå mindre användbar?
+</p>
+
+<button onclick="toggleAnswer('a13')">Visa facit</button>
+
+<div class="answer" id="a13">
+
+<p>
+<strong>Ja, systemet loggar händelser.</strong>
+</p>
+
+<p>
+Men informationen är mindre användbar eftersom vi inte kan koppla
+handlingarna till en viss användare.
+</p>
+
+<p>
+För att kunna följa <em>vem som gjorde vad och när</em>
+behöver loggen innehålla relevant information.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">06 // SSO</h2>
+
+
+<section class="task">
+
+<div class="task-number">
+TASK 14
+<span class="points">4 poäng</span>
+</div>
+
+<h3>En inloggning — flera tjänster</h3>
+
+<p>
+Alice loggar in en gång och kan därefter använda flera av
+organisationens tjänster utan att skriva in sina inloggningsuppgifter igen.
+</p>
+
+<p class="question">
+Vad kallas mekanismen?
+</p>
+
+<button onclick="toggleAnswer('a14')">Visa facit</button>
+
+<div class="answer" id="a14">
+
+<strong>Single Sign-On (SSO).</strong>
+
+<p>
+SSO gör det möjligt att återanvända en autentisering över
+flera tjänster eller system.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<div class="task-number">
+TASK 15 // CHALLENGE
+<span class="points">6 poäng</span>
+</div>
+
+<h3>SSO ger inte automatiskt admin</h3>
+
+<p>
+Bob loggar in via organisationens SSO.
+Han kan öppna både e-postsystemet och ekonomisystemet.
+</p>
+
+<p>
+I ekonomisystemet kan Bob se sina egna uppgifter,
+men han kan inte öppna administrationspanelen.
+</p>
+
+<p class="question">
+Hur kan Bob vara korrekt inloggad men ändå nekas åtkomst?
+</p>
+
+<button onclick="toggleAnswer('a15')">Visa facit</button>
+
+<div class="answer" id="a15">
+
+<p>
+SSO kan hantera eller återanvända
+<strong>autentiseringen</strong>:
+systemen vet vem Bob är.
+</p>
+
+<p>
+Det betyder inte att Bob automatiskt har rätt till alla resurser.
+Tjänsten kan fortfarande avgöra vad Bob får göra genom
+<strong>auktorisering</strong>.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section-title">07 // Boss level</h2>
+
+
+<section class="task boss">
+
+<div class="task-number">
+TASK 16 // BOSS
+<span class="points">8 poäng</span>
+</div>
+
+<h3>Incidenten på filservern</h3>
+
+<p>
+Följande händer:
+</p>
+
+<div class="box">
+
+<p>
+<b>08:01</b> – Alice skriver sitt lösenord.</p>
+
+<p>
+<b>08:01</b> – Systemet bekräftar hennes identitet.</p>
+
+<p>
+<b>08:04</b> – Alice öppnar <code>sales.xlsx</code>.</p>
+
+<p>
+<b>08:05</b> – Alice försöker öppna <code>salary.xlsx</code>.</p>
+
+<p>
+<b>08:05</b> – Systemet nekar åtkomst.</p>
+
+<p>
+<b>08:07</b> – Loggen registrerar att Alice öppnade <code>sales.xlsx</code>.</p>
+
+</div>
+
+<p class="question">
+Identifiera var autentisering, auktorisering,
+åtkomstkontroll och accounting förekommer.
+</p>
+
+<button onclick="toggleAnswer('a16')">Visa facit</button>
+
+<div class="answer" id="a16">
+
+<p>
+<span class="authn"><b>Autentisering:</b></span><br>
+08:01 — systemet bekräftar Alices identitet.
+</p>
+
+<p>
+<span class="authz"><b>Auktorisering:</b></span><br>
+Systemet avgör vilka filer Alice har rätt att komma åt.
+</p>
+
+<p>
+<b>Åtkomstkontroll:</b><br>
+08:05 — systemet upprätthåller rättigheterna genom att neka
+åtkomst till <code>salary.xlsx</code>.
+</p>
+
+<p>
+<span class="accounting"><b>Accounting:</b></span><br>
+08:07 — handlingen registreras i loggen.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="task boss">
+
+<div class="task-number">
+TASK 17 // FINAL BOSS
+<span class="points">10 poäng</span>
+</div>
+
+<h3>Vad är trasigt?</h3>
+
+<p>
+Du får fyra incidentrapporter:
+</p>
+
+<div class="box">
+
+<p>
+<b>Incident A</b><br>
+En person kan logga in på Alices konto utan att känna till
+hennes korrekta inloggningsuppgifter.
+</p>
+
+<p>
+<b>Incident B</b><br>
+Alice loggar in korrekt men kan läsa administratörernas filer.
+</p>
+
+<p>
+<b>Incident C</b><br>
+Systemet fungerar korrekt men ingen aktivitet loggas.
+</p>
+
+<p>
+<b>Incident D</b><br>
+Bob loggar in via SSO och kan använda e-post,
+men nekas administrationspanelen.
+</p>
+
+</div>
+
+<p class="question">
+För varje incident: avgör vilket A som är relevant och om
+situationen verkar vara normal eller ett säkerhetsproblem.
+</p>
+
+<button onclick="toggleAnswer('a17')">Visa facit</button>
+
+<div class="answer" id="a17">
+
+<p>
+<b>Incident A:</b>
+<strong>Autentisering.</strong>
+Det är ett säkerhetsproblem eftersom systemet inte verkar kunna
+bekräfta identiteten korrekt.
+</p>
+
+<p>
+<b>Incident B:</b>
+<strong>Auktorisering / åtkomstkontroll.</strong>
+Alice är korrekt identifierad men har åtkomst till resurser
+hon inte ska ha.
+</p>
+
+<p>
+<b>Incident C:</b>
+<strong>Accounting.</strong>
+Avsaknaden av loggning gör det svårare att i efterhand se
+vem som gjorde vad och när.
+</p>
+
+<p>
+<b>Incident D:</b>
+<strong>Autentisering + auktorisering.</strong>
+Det behöver inte vara något fel. Bob är autentiserad via SSO,
+men har inte rätt att använda administrationspanelen.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="box">
+
+<h2>Poäng</h2>
+
+<p>
+Maxpoäng: <span class="score">88</span>
+</p>
+
+<p>
+<b>0–30:</b> Authentication ≠ Authorization. Kör ett varv till.<br>
+<b>31–55:</b> Identity confirmed.<br>
+<b>56–75:</b> Access granted.<br>
+<b>76–88:</b> AAA boss defeated.
+</p>
+
+</section>
+
+
+<footer>
+
+<p>
+$ whoami<br>
+student
+</p>
+
+<p>
+$ sudo access --resource /admin<br>
+ACCESS DENIED
+</p>
+
+<p>
+Baalstorm Security Labs // AAA
+</p>
+
+</footer>
+
+</main>
+
+
+<script>
+function toggleAnswer(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle("visible");
+}
+</script>
+
+</body>
+</html>
+```
