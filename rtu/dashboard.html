@@ -19,11 +19,36 @@
     </div>
 
     <div class="header-status">
-        <span class="ok">● LINK ONLINE</span><br>
+        <span class="ok" id="linkStatus">● LINK ONLINE</span><br>
         <span id="authStatus">SESSION ACTIVE</span>
     </div>
 
 </header>
+
+
+<div class="status-strip">
+
+    <div>
+        PROCESS:
+        <span id="processStatus" class="ok">NORMAL</span>
+    </div>
+
+    <div>
+        MODE:
+        <span id="controlMode">AUTO</span>
+    </div>
+
+    <div>
+        ALARMS:
+        <span id="alarmCount">0</span>
+    </div>
+
+    <div>
+        SCAN:
+        <span class="ok">1000 ms</span>
+    </div>
+
+</div>
 
 
 <div class="toolbar">
@@ -75,10 +100,47 @@
         COMMUNICATION
     </div>
 
+    <div class="nav-item">
+        SYSTEM EVENTS
+    </div>
+
+
+    <div class="sidebar-status">
+
+        <div class="sidebar-status-title">
+            LIVE STATUS
+        </div>
+
+        <div>
+            DI-001 PUMP RUN
+            <span id="digitalPump" class="ok">1</span>
+        </div>
+
+        <div>
+            DI-002 LOW FLOW
+            <span id="digitalLowFlow">0</span>
+        </div>
+
+        <div>
+            DI-003 CRITICAL
+            <span id="digitalCritical">0</span>
+        </div>
+
+        <div>
+            DO-001 PUMP CMD
+            <span id="digitalCommand" class="ok">1</span>
+        </div>
+
+    </div>
+
 </aside>
 
 
 <main class="main-panel">
+
+<!-- ============================================================
+     OVERVIEW
+     ============================================================ -->
 
 <section id="overview" class="content-panel active-panel">
 
@@ -86,26 +148,62 @@
         PROCESS OVERVIEW // NORTH PUMP STATION
     </div>
 
+
     <div class="metrics">
 
-        <div class="metric">
-            <div class="metric-label">INLET PRESSURE</div>
-            <div class="metric-value" id="pressureIn">---</div>
+        <div class="metric" id="metricInlet">
+            <div class="metric-label">INLET PRESSURE // PT-101</div>
+
+            <div class="metric-value">
+                <span id="pressureIn">3.82</span>
+                <span class="metric-unit">BAR</span>
+            </div>
+
+            <div class="metric-state" id="pressureInState">
+                NORMAL
+            </div>
         </div>
 
-        <div class="metric">
-            <div class="metric-label">OUTLET PRESSURE</div>
-            <div class="metric-value" id="pressureOut">---</div>
+
+        <div class="metric" id="metricOutlet">
+            <div class="metric-label">OUTLET PRESSURE // PT-102</div>
+
+            <div class="metric-value">
+                <span id="pressureOut">5.14</span>
+                <span class="metric-unit">BAR</span>
+            </div>
+
+            <div class="metric-state" id="pressureOutState">
+                NORMAL
+            </div>
         </div>
 
-        <div class="metric">
-            <div class="metric-label">FLOW RATE</div>
-            <div class="metric-value" id="flowRate">---</div>
+
+        <div class="metric" id="metricFlow">
+            <div class="metric-label">FLOW RATE // FT-101</div>
+
+            <div class="metric-value">
+                <span id="flowRate">184</span>
+                <span class="metric-unit">M³/H</span>
+            </div>
+
+            <div class="metric-state" id="flowState">
+                NORMAL
+            </div>
         </div>
 
-        <div class="metric">
-            <div class="metric-label">RESERVOIR LEVEL</div>
-            <div class="metric-value" id="reservoir">---</div>
+
+        <div class="metric" id="metricReservoir">
+            <div class="metric-label">RESERVOIR // LT-101</div>
+
+            <div class="metric-value">
+                <span id="reservoir">72.0</span>
+                <span class="metric-unit">%</span>
+            </div>
+
+            <div class="metric-state" id="reservoirState">
+                NORMAL
+            </div>
         </div>
 
     </div>
@@ -113,60 +211,157 @@
 
     <section class="process">
 
-        <div class="process-title">
-            PROCESS FLOW DIAGRAM
+        <div class="process-header">
+
+            <div class="process-title">
+                PROCESS FLOW DIAGRAM
+            </div>
+
+            <div id="processMessage" class="process-message ok">
+                SYSTEM STABLE
+            </div>
+
         </div>
+
 
         <div class="process-line">
 
-            <div class="device">
+            <div class="device valve-device">
+                <div class="device-tag">XV-101</div>
                 <div class="device-name">INLET</div>
-                <div class="device-state">OPEN</div>
+                <div class="device-state ok">OPEN</div>
             </div>
 
-            <div class="pipe"></div>
+
+            <div class="pipe">
+
+                <div class="flow-track" id="flowTrack1">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+            </div>
+
 
             <div class="device running" id="pumpDevice">
-                <div class="device-name">PUMP P-101</div>
+
+                <div class="device-tag">P-101</div>
+                <div class="pump-icon" id="pumpIcon">
+                    ◉
+                </div>
+
+                <div class="device-name">
+                    MAIN PUMP
+                </div>
+
                 <div class="device-state" id="pumpState">
                     RUNNING
                 </div>
+
             </div>
 
-            <div class="pipe"></div>
 
-            <div class="device">
+            <div class="pipe">
+
+                <div class="flow-track" id="flowTrack2">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+            </div>
+
+
+            <div class="device valve-device">
+                <div class="device-tag">XV-102</div>
                 <div class="device-name">OUTLET</div>
-                <div class="device-state">OPEN</div>
+                <div class="device-state ok">OPEN</div>
             </div>
 
         </div>
 
-    </section>
 
-
-    <section class="panel">
-
-        <div class="panel-title">
-            REMOTE CONTROL
-        </div>
-
-        <div class="controls">
-
-            <button id="pumpStart" class="control-button">
-                START P-101
-            </button>
-
-            <button id="pumpStop" class="control-button">
-                STOP P-101
-            </button>
-
+        <div class="process-flow-readout">
+            PROCESS FLOW:
+            <span id="diagramFlow">184</span> M³/H
         </div>
 
     </section>
+
+
+    <div class="lower-grid">
+
+        <section class="panel">
+
+            <div class="panel-title">
+                REMOTE CONTROL
+            </div>
+
+            <div class="controls">
+
+                <div class="control-status-row">
+
+                    <div>
+                        PUMP P-101
+                    </div>
+
+                    <div id="pumpControlStatus" class="ok">
+                        RUNNING
+                    </div>
+
+                </div>
+
+
+                <div class="control-buttons">
+
+                    <button id="pumpStart" class="control-button start-button">
+                        [ START ]
+                    </button>
+
+                    <button id="pumpStop" class="control-button stop-button">
+                        [ STOP ]
+                    </button>
+
+                </div>
+
+
+                <div class="control-hint">
+                    REMOTE COMMANDS ENABLED
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-title">
+                ACTIVE ALARMS
+            </div>
+
+            <div id="activeAlarmPanel" class="active-alarms">
+
+                <div class="no-alarms">
+                    NO ACTIVE ALARMS
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
 
 </section>
 
+
+
+<!-- ============================================================
+     EVENT LOG
+     ============================================================ -->
 
 <section id="events" class="content-panel">
 
@@ -174,11 +369,21 @@
         SYSTEM EVENT LOG
     </div>
 
+
     <div class="panel">
 
-        <div class="panel-title">
-            RECENT EVENTS
+        <div class="panel-title event-toolbar">
+
+            <span>
+                RECENT EVENTS
+            </span>
+
+            <span>
+                LIVE BUFFER
+            </span>
+
         </div>
+
 
         <div id="eventLog" class="event-log">
             Loading event history...
@@ -189,23 +394,67 @@
 </section>
 
 
+
+<!-- ============================================================
+     SYSTEM
+     ============================================================ -->
+
 <section id="system" class="content-panel">
 
     <div class="section-header">
         SYSTEM INFORMATION
     </div>
 
+
     <div class="system-info">
 
-        <p>NODE: RTU-17</p>
-        <p>FIRMWARE: 2.3.7-R</p>
-        <p>CONTROL MODE: AUTO</p>
-        <p>REMOTE ACCESS: ENABLED</p>
+        <div class="system-grid">
 
-        <p>
-            AUTH CONTEXT:
-            <span id="systemAuthContext">UNKNOWN</span>
-        </p>
+            <div>
+                <span class="dim">NODE</span><br>
+                RTU-17
+            </div>
+
+            <div>
+                <span class="dim">SITE</span><br>
+                NORTH PUMP STATION
+            </div>
+
+            <div>
+                <span class="dim">FIRMWARE</span><br>
+                2.3.7-R
+            </div>
+
+            <div>
+                <span class="dim">SCAN INTERVAL</span><br>
+                1000 ms
+            </div>
+
+            <div>
+                <span class="dim">CONTROL MODE</span><br>
+                AUTO
+            </div>
+
+            <div>
+                <span class="dim">REMOTE ACCESS</span><br>
+                ENABLED
+            </div>
+
+            <div>
+                <span class="dim">AUTH CONTEXT</span><br>
+                <span id="systemAuthContext">
+                    UNKNOWN
+                </span>
+            </div>
+
+            <div>
+                <span class="dim">PROCESS STATE</span><br>
+                <span id="systemProcessState" class="ok">
+                    NORMAL
+                </span>
+            </div>
+
+        </div>
 
     </div>
 
@@ -217,11 +466,21 @@
 
 
 <footer class="footer">
-    <span>RTU-17 // PROCESS CONTROL</span>
+
+    <span>
+        RTU-17 // PROCESS CONTROL
+    </span>
+
     <span id="footerSession"></span>
+
+    <span>
+        <span id="clock"></span>
+    </span>
+
 </footer>
 
 </div>
+
 
 <script src="js/rtu.js"></script>
 
