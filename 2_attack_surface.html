@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lektion 2 - Attackyta | Baalstorm</title>
+<style>
+:root{
+  --bg:#07110d;--panel:#0b1913;--panel2:#10241b;--green:#6cff9a;
+  --green2:#2d9d58;--text:#d9e5dd;--muted:#819189;--yellow:#ffd166;
+  --red:#ff6b6b;--orange:#ff9f43;--border:#173c29;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",monospace;line-height:1.6}
+main{width:min(950px,94%);margin:auto;padding:55px 0 90px}
+h1{font-size:clamp(2.5rem,8vw,5rem);margin:0;color:#fff}
+h1 span{color:var(--green)}
+.hero p{color:var(--muted);max-width:730px}
+.top{display:flex;justify-content:space-between;color:var(--green);font-size:.8rem;margin-bottom:45px}
+.section{margin-top:60px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.box,.task{background:var(--panel);border:1px solid var(--border);padding:22px;margin:24px 0}
+.task{border-left:4px solid var(--green2)}
+.network{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.node{
+  border:1px solid var(--border);padding:18px;background:var(--panel2);cursor:pointer;
+  min-height:120px
+}
+.node:hover{border-color:var(--green)}
+.node.selected{border-color:var(--yellow);box-shadow:0 0 0 1px var(--yellow)}
+.node.correct{border-color:var(--green);background:#102b1c}
+.node.wrong{border-color:var(--red)}
+.node strong{color:#fff}
+.node small{color:var(--muted)}
+button{
+  font:inherit;background:transparent;color:var(--green);border:1px solid var(--green2);
+  padding:9px 13px;cursor:pointer;margin:5px 4px 5px 0
+}
+button:hover{background:#102b1c}
+.result{margin-top:15px;color:var(--yellow)}
+.answer{display:none;border-top:1px dashed var(--border);padding-top:16px;margin-top:16px}
+.answer.show{display:block}
+@media(max-width:700px){.network{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // LESSON 02</span>
+  <span>ATTACK SURFACE LAB</span>
+</div>
+
+<section class="hero">
+  <div style="color:var(--green)">$ enumerate --external</div>
+  <h1>ATTACK <span>SURFACE.</span></h1>
+  <p>
+    Attackytan är summan av de ställen där en angripare potentiellt kan ta sig in,
+    kommunicera med eller påverka ett system.
+  </p>
+</section>
+
+<section class="box">
+<h2>Scenario</h2>
+<p>Företaget Baal Industries har följande miljö:</p>
+<div class="network" id="network">
+  <div class="node exposed" data-exposed="true"><strong>WEB-01</strong><br>HTTPS 443<br><small>Publik webbserver</small></div>
+  <div class="node exposed" data-exposed="true"><strong>VPN-01</strong><br>HTTPS 443<br><small>Remote access</small></div>
+  <div class="node exposed" data-exposed="true"><strong>MAIL-01</strong><br>SMTP 25<br><small>Mail gateway</small></div>
+  <div class="node" data-exposed="false"><strong>DB-01</strong><br>TCP 5432<br><small>Intern databas</small></div>
+  <div class="node exposed" data-exposed="true"><strong>RTU-07</strong><br>TCP 502<br><small>Direkt Internetexponerad</small></div>
+  <div class="node" data-exposed="false"><strong>BACKUP-01</strong><br>SMB<br><small>Internt backupnät</small></div>
+</div>
+</section>
+
+<h2 class="section">01 // Identifiera attackytan</h2>
+
+<section class="task">
+<h3>Vilka system är exponerade?</h3>
+<p>Klicka på de system som ingår i den externa attackytan.</p>
+<button onclick="checkSurface()">Kontrollera</button>
+<button onclick="resetSurface()">Återställ</button>
+<div class="result" id="surfaceResult"></div>
+</section>
+
+<h2 class="section">02 // Vad är mest intressant?</h2>
+
+<section class="task">
+<h3>Du hittar följande:</h3>
+<div class="box">
+<p>WEB-01: uppdaterad webbserver</p>
+<p>VPN-01: MFA aktiverat</p>
+<p>MAIL-01: uppdaterad mailgateway</p>
+<p>RTU-07: gammal firmware, defaultkonto aktivt, TCP/502 öppet mot Internet</p>
+</div>
+<p>Vilket system bör undersökas först?</p>
+<button onclick="toggle('a2')">Visa facit</button>
+<div class="answer" id="a2">
+<p><b>RTU-07</b> är den tydligaste kandidaten eftersom den både är exponerad och har flera kända svagheter.</p>
+</div>
+</section>
+
+<h2 class="section">03 // Reducera attackytan</h2>
+
+<section class="task">
+<h3>Välj bättre lösning</h3>
+<p>RTU-07 behöver inte vara direkt tillgänglig från Internet. Vilken åtgärd reducerar attackytan tydligast?</p>
+<div class="box">
+<p>A. Byt färg på webbgränssnittet</p>
+<p>B. Flytta RTU:n bakom VPN/brandvägg och tillåt bara nödvändig åtkomst</p>
+<p>C. Lägg till fler användarkonton</p>
+</div>
+<button onclick="toggle('a3')">Visa facit</button>
+<div class="answer" id="a3"><b>B.</b> Direkt exponering tas bort och åtkomsten begränsas.</div>
+</section>
+
+<section class="task">
+<h3>Attackyta ≠ sårbarhet</h3>
+<p>Är en öppen port automatiskt en sårbarhet?</p>
+<button onclick="toggle('a4')">Visa facit</button>
+<div class="answer" id="a4">
+<p>
+Nej. En öppen port är en del av attackytan. Tjänsten bakom porten kan däremot innehålla en sårbarhet,
+vara felkonfigurerad eller innebära en onödig exponering.
+</p>
+</div>
+</section>
+
+<h2 class="section">04 // Arbetsgång</h2>
+
+<section class="task">
+<h3>Placera stegen i rätt ordning</h3>
+<div class="box">
+<p>A. Verifiera</p>
+<p>B. Hitta svagheter</p>
+<p>C. Reducera/skydda attackytan</p>
+<p>D. Förstå attackytan</p>
+<p>E. Bedöm risken</p>
+</div>
+<button onclick="toggle('a5')">Visa facit</button>
+<div class="answer" id="a5">
+<p><b>D → B → E → C → A</b></p>
+<p>Förstå attackytan → hitta svagheter → bedöm risken → reducera/skydda → verifiera.</p>
+</div>
+</section>
+
+<section class="task">
+<h3>Vad hjälper sårbarhetsskanning till med?</h3>
+<p>
+Förklara varför en sårbarhetsskanner kan vara användbar när man arbetar med attackytan.
+</p>
+<button onclick="toggle('a6')">Visa diskussionsstöd</button>
+<div class="answer" id="a6">
+<p>
+Den kan hjälpa till att kartlägga existerande tjänster/applikationer och jämföra dem mot kända sårbarheter.
+Den ersätter däremot inte riskbedömningen.
+</p>
+</div>
+</section>
+
+<script>
+document.querySelectorAll(".node").forEach(n=>{
+  n.addEventListener("click",()=>n.classList.toggle("selected"))
+});
+function checkSurface(){
+  let correct=true;
+  document.querySelectorAll(".node").forEach(n=>{
+    const should=n.dataset.exposed==="true";
+    const chosen=n.classList.contains("selected");
+    n.classList.remove("correct","wrong");
+    if(chosen===should)n.classList.add("correct");
+    else{n.classList.add("wrong");correct=false}
+  });
+  document.getElementById("surfaceResult").textContent=
+    correct?"Rätt! Du har identifierat den externa attackytan.":"Inte riktigt. Tänk på vad som faktiskt är nåbart från Internet.";
+}
+function resetSurface(){
+  document.querySelectorAll(".node").forEach(n=>n.classList.remove("selected","correct","wrong"));
+  document.getElementById("surfaceResult").textContent="";
+}
+function toggle(id){document.getElementById(id).classList.toggle("show")}
+</script>
+
+</main>
+</body>
+</html>
