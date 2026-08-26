@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lektion 2 - Hot & hotaktörer | Baalstorm</title>
+<style>
+:root{
+  --bg:#07110d;--panel:#0b1913;--panel2:#10241b;--green:#6cff9a;
+  --green2:#2d9d58;--text:#d9e5dd;--muted:#819189;--yellow:#ffd166;
+  --red:#ff6b6b;--orange:#ff9f43;--blue:#6cbcff;--border:#173c29;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:radial-gradient(circle at top right,#102419 0%,transparent 35%),var(--bg);
+  color:var(--text);font-family:"Courier New",monospace;line-height:1.65
+}
+main{width:min(920px,92%);margin:auto;padding:55px 0 90px}
+.top{display:flex;justify-content:space-between;color:var(--green);font-size:.8rem;margin-bottom:45px}
+h1{font-size:clamp(2.5rem,8vw,5rem);margin:0;color:#fff}
+h1 span{color:var(--green)}
+.hero p{max-width:720px;color:var(--muted)}
+.box,.task{background:var(--panel);border:1px solid var(--border);padding:22px;margin:24px 0}
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+.section{margin-top:60px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.tag{color:var(--green);font-size:.8rem}
+.points{float:right;color:var(--yellow)}
+button{
+  font:inherit;background:transparent;color:var(--green);border:1px solid var(--green2);
+  padding:8px 12px;cursor:pointer
+}
+button:hover{background:#102b1c}
+.answer{display:none;border-top:1px dashed var(--border);margin-top:16px;padding-top:16px}
+.answer.show{display:block}
+.cardgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:var(--panel2);border:1px solid var(--border);padding:16px}
+.card strong{color:var(--green)}
+code{color:var(--green)}
+@media(max-width:700px){.cardgrid{grid-template-columns:1fr}.points{float:none;display:block}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // LESSON 02</span>
+  <span>THREAT LAB</span>
+</div>
+
+<section class="hero">
+  <div class="tag">$ ./threat-model --identify</div>
+  <h1>KNOW THE <span>THREAT.</span></h1>
+  <p>
+    Vad är en tillgång? Vad är ett hot? Vem är hotaktören?
+    Vad är sårbarheten – och vad är egentligen en exploit?
+  </p>
+</section>
+
+<section class="box">
+<h2>Snabbrepetition</h2>
+<div class="cardgrid">
+  <div class="card"><strong>Tillgång</strong><br>Något som har ett värde och behöver skyddas.</div>
+  <div class="card"><strong>Hot</strong><br>Något som kan orsaka skada mot en tillgång.</div>
+  <div class="card"><strong>Hotaktör</strong><br>Den aktör som utgör eller genomför hotet.</div>
+  <div class="card"><strong>Sårbarhet</strong><br>En svaghet som kan utnyttjas.</div>
+  <div class="card"><strong>Exploit</strong><br>Kod, verktyg eller metod som utnyttjar en sårbarhet.</div>
+  <div class="card"><strong>Zero-day</strong><br>En okänd sårbarhet där en fix ännu inte finns tillgänglig.</div>
+</div>
+</section>
+
+<h2 class="section">01 // Vad är vad?</h2>
+
+<section class="task">
+<div class="tag">TASK 01 <span class="points">4p</span></div>
+<h3>Kundportalen</h3>
+<p>
+Ett företag har en kundportal. Ett gammalt plugin innehåller en känd säkerhetsbrist.
+En kriminell grupp använder ett färdigt script för att utnyttja bristen och komma åt kunddata.
+</p>
+<p><b>Identifiera:</b> tillgång, hotaktör, sårbarhet och exploit.</p>
+<button onclick="toggle('a1')">Visa facit</button>
+<div class="answer" id="a1">
+<p><b>Tillgång:</b> kunddata/kundportalen.</p>
+<p><b>Hotaktör:</b> den kriminella gruppen.</p>
+<p><b>Sårbarhet:</b> säkerhetsbristen i pluginet.</p>
+<p><b>Exploit:</b> scriptet som utnyttjar bristen.</p>
+</div>
+</section>
+
+<section class="task challenge">
+<div class="tag">TASK 02 // CHALLENGE <span class="points">4p</span></div>
+<h3>En sårbarhet utan angripare</h3>
+<p>
+En intern testserver innehåller en allvarlig sårbarhet men är inte åtkomlig från Internet.
+Ingen användare har åtkomst till servern utanför testgruppen.
+</p>
+<p>Är sårbarheten automatiskt samma sak som ett aktivt hot?</p>
+<button onclick="toggle('a2')">Visa facit</button>
+<div class="answer" id="a2">
+<p><b>Nej.</b> Sårbarheten är en svaghet. För att skapa ett faktiskt attacksenario krävs också ett hot/hotaktör som kan nå och utnyttja den.</p>
+</div>
+</section>
+
+<h2 class="section">02 // Vem attackerar?</h2>
+
+<section class="task">
+<div class="tag">TASK 03 <span class="points">5p</span></div>
+<h3>Matcha hotaktören</h3>
+<div class="box">
+<p>A. En anställd kopierar kundlistan innan han slutar.</p>
+<p>B. En grupp angriper företag för ekonomisk vinning.</p>
+<p>C. Någon provar automatiskt kända sårbarheter på tusentals servrar.</p>
+<p>D. En statligt finansierad grupp försöker stjäla forskning.</p>
+</div>
+<p>Matcha med: insider, kriminell grupp, opportunistisk angripare, statsaktör.</p>
+<button onclick="toggle('a3')">Visa facit</button>
+<div class="answer" id="a3">
+<p>A = Insider</p>
+<p>B = Kriminell grupp</p>
+<p>C = Opportunistisk angripare</p>
+<p>D = Statsaktör</p>
+</div>
+</section>
+
+<section class="task challenge">
+<div class="tag">TASK 04 // CHALLENGE <span class="points">5p</span></div>
+<h3>Kapabilitet</h3>
+<p>
+Två angripare vill nå samma mål. Den ena använder automatiserade gratisverktyg.
+Den andra har månader på sig, flera specialister och egenutvecklade verktyg.
+</p>
+<p>Varför påverkar angriparens kapabilitet riskbedömningen?</p>
+<button onclick="toggle('a4')">Visa facit</button>
+<div class="answer" id="a4">
+<p>
+Olika hotaktörer har olika resurser, kunskap, tid och motivation.
+En starkare angripare kan ha större möjlighet att hitta eller utnyttja svagheter som en enklare angripare inte klarar.
+</p>
+</div>
+</section>
+
+<h2 class="section">03 // Zero-day</h2>
+
+<section class="task">
+<div class="tag">TASK 05 <span class="points">4p</span></div>
+<h3>Patch Tuesday?</h3>
+<p>
+En angripare hittar en tidigare okänd sårbarhet i ett operativsystem.
+Leverantören känner inte till felet och någon patch finns inte.
+</p>
+<p>Vad kallas detta?</p>
+<button onclick="toggle('a5')">Visa facit</button>
+<div class="answer" id="a5"><b>Zero-day / nolldagars-sårbarhet.</b></div>
+</section>
+
+<section class="task boss">
+<div class="tag">TASK 06 // BOSS <span class="points">8p</span></div>
+<h3>Mini threat model</h3>
+<p>Ett sjukhus har:</p>
+<div class="box">
+<p>• journalsystem</p>
+<p>• Internetansluten VPN</p>
+<p>• gamla användarkonton</p>
+<p>• personal som får phishing-mejl</p>
+</div>
+<p>
+Beskriv två möjliga hotaktörer, två tillgångar och två möjliga sårbarheter.
+Förklara kort varför scenarierna skiljer sig åt.
+</p>
+<button onclick="toggle('a6')">Visa diskussionsstöd</button>
+<div class="answer" id="a6">
+<p>
+Exempel: kriminell grupp + journalsystem + återanvända lösenord.
+Eller insider + patientdata + för breda behörigheter.
+Det viktiga är att skilja mellan vem som angriper, vad som skyddas och vilken svaghet som kan utnyttjas.
+</p>
+</div>
+</section>
+
+<script>
+function toggle(id){document.getElementById(id).classList.toggle("show")}
+</script>
+
+</main>
+</body>
+</html>
