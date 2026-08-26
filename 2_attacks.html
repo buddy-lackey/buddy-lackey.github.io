@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lektion 2 - Vanliga attacker | Baalstorm</title>
+<style>
+:root{
+  --bg:#07110d;--panel:#0b1913;--panel2:#10241b;--green:#6cff9a;
+  --green2:#2d9d58;--text:#d9e5dd;--muted:#819189;--yellow:#ffd166;
+  --red:#ff6b6b;--border:#173c29;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",monospace;line-height:1.65}
+main{width:min(900px,92%);margin:auto;padding:55px 0 90px}
+h1{font-size:clamp(2.5rem,8vw,5rem);margin:0;color:#fff}
+h1 span{color:var(--green)}
+.top{display:flex;justify-content:space-between;color:var(--green);font-size:.8rem;margin-bottom:45px}
+.hero p{max-width:720px;color:var(--muted)}
+.task,.box{background:var(--panel);border:1px solid var(--border);padding:22px;margin:24px 0}
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+.section{margin-top:60px;border-bottom:1px solid var(--border);padding-bottom:10px}
+button{
+ font:inherit;background:transparent;color:var(--green);border:1px solid var(--green2);
+ padding:8px 12px;cursor:pointer
+}
+button:hover{background:#102b1c}
+.answer{display:none;border-top:1px dashed var(--border);padding-top:16px;margin-top:16px}
+.answer.show{display:block}
+.cia{display:flex;gap:10px;flex-wrap:wrap}
+.cia span{border:1px solid var(--border);padding:8px 12px}
+</style>
+</head>
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // LESSON 02</span>
+  <span>INTERNET THREATS</span>
+</div>
+
+<section class="hero">
+<div style="color:var(--green)">$ classify --incident</div>
+<h1>WHAT <span>HAPPENED?</span></h1>
+<p>
+DoS, dataintrång, ransomware och phishing påverkar olika delar av CIA-triaden.
+I verkligheten kan samma incident påverka flera delar samtidigt.
+</p>
+</section>
+
+<h2 class="section">01 // DoS & DDoS</h2>
+
+<section class="task">
+<h3>Webbplatsen svarar inte</h3>
+<p>
+Tusentals förfrågningar skickas till en webbserver tills normala användare inte längre kan nå tjänsten.
+</p>
+<p>Vilken CIA-egenskap påverkas främst?</p>
+<button onclick="toggle('a1')">Visa facit</button>
+<div class="answer" id="a1"><b>Tillgänglighet.</b></div>
+</section>
+
+<section class="task challenge">
+<h3>DoS eller DDoS?</h3>
+<p>Attacktrafiken kommer samtidigt från 25 000 infekterade enheter.</p>
+<button onclick="toggle('a2')">Visa facit</button>
+<div class="answer" id="a2">
+<p><b>DDoS</b> eftersom attacken är distribuerad över många källor.</p>
+</div>
+</section>
+
+<h2 class="section">02 // Dataintrång</h2>
+
+<section class="task">
+<h3>Kunddatabasen</h3>
+<p>
+En angripare tar sig in i ett system och laddar ner kundregistret utan att förändra något.
+</p>
+<button onclick="toggle('a3')">Visa facit</button>
+<div class="answer" id="a3"><b>Konfidentialitet.</b> Obehörig part har fått informationen.</div>
+</section>
+
+<section class="task challenge">
+<h3>Samma intrång, nytt problem</h3>
+<p>
+Efteråt upptäcks att angriparen även ändrade bankkontonummer på flera kundposter.
+</p>
+<button onclick="toggle('a4')">Visa facit</button>
+<div class="answer" id="a4">
+<p>Nu påverkas även <b>riktighet/integrity</b> eftersom informationen har modifierats.</p>
+</div>
+</section>
+
+<h2 class="section">03 // Ransomware</h2>
+
+<section class="task">
+<h3>Filservern krypteras</h3>
+<p>
+Ransomware krypterar organisationens filserver. Ingen information verkar ha stulits.
+</p>
+<p>Vilka CIA-egenskaper kan främst påverkas?</p>
+<button onclick="toggle('a5')">Visa facit</button>
+<div class="answer" id="a5">
+<p><b>Tillgänglighet</b> och potentiellt <b>riktighet</b>, eftersom systemen/data har förändrats och inte längre kan användas normalt.</p>
+</div>
+</section>
+
+<section class="task challenge">
+<h3>Double extortion</h3>
+<p>
+Angriparna visar bevis på att de kopierade kunddata innan krypteringen och hotar att publicera den.
+</p>
+<button onclick="toggle('a6')">Visa facit</button>
+<div class="answer" id="a6">
+<p>Nu påverkas även <b>konfidentialitet</b>.</p>
+</div>
+</section>
+
+<h2 class="section">04 // Phishing</h2>
+
+<section class="task">
+<h3>Microsoft 365?</h3>
+<p>
+Alice får ett mejl som ser ut att komma från IT-avdelningen.
+Länken går till en falsk inloggningssida och Alice skriver in sitt lösenord.
+</p>
+<p>Vilken typ av attack är detta?</p>
+<button onclick="toggle('a7')">Visa facit</button>
+<div class="answer" id="a7">
+<p><b>Phishing/nätfiske</b>, kombinerat med social engineering.</p>
+</div>
+</section>
+
+<section class="task challenge">
+<h3>Vad händer sedan?</h3>
+<p>
+Angriparen använder Alices konto för att läsa hennes e-post och skicka fler phishing-mejl.
+</p>
+<p>Vilka konsekvenser kan uppstå?</p>
+<button onclick="toggle('a8')">Visa diskussionsstöd</button>
+<div class="answer" id="a8">
+<p>
+Konfidentialitet kan påverkas genom obehörig läsning.
+Kontot kan även användas som utgångspunkt för nya attacker.
+</p>
+</div>
+</section>
+
+<h2 class="section">05 // Boss</h2>
+
+<section class="task boss">
+<h3>Incidentrapport</h3>
+<div class="box">
+<p>08:12 – användare rapporterar phishing-mejl.</p>
+<p>09:04 – ett administratörskonto används från okänd IP.</p>
+<p>09:20 – 12 GB kunddata laddas ner.</p>
+<p>09:35 – filservrar börjar krypteras.</p>
+<p>09:40 – interna tjänster blir otillgängliga.</p>
+</div>
+<p>
+Identifiera vilka hot/attacker som förekommer och vilka delar av CIA som påverkas.
+</p>
+<button onclick="toggle('a9')">Visa facit</button>
+<div class="answer" id="a9">
+<p>Phishing → komprometterat konto.</p>
+<p>Datastöld → konfidentialitet.</p>
+<p>Ransomware/kryptering → tillgänglighet och riktighet.</p>
+<p>Tjänster nere → tillgänglighet.</p>
+</div>
+</section>
+
+<script>
+function toggle(id){document.getElementById(id).classList.toggle("show")}
+</script>
+</main>
+</body>
+</html>
