@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lektion 2 - Försvar | Baalstorm</title>
+<style>
+:root{
+  --bg:#07110d;--panel:#0b1913;--panel2:#10241b;--green:#6cff9a;
+  --green2:#2d9d58;--text:#d9e5dd;--muted:#819189;--yellow:#ffd166;
+  --red:#ff6b6b;--border:#173c29;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",monospace;line-height:1.65}
+main{width:min(920px,92%);margin:auto;padding:55px 0 90px}
+h1{font-size:clamp(2.5rem,8vw,5rem);margin:0;color:#fff}
+h1 span{color:var(--green)}
+.top{display:flex;justify-content:space-between;color:var(--green);font-size:.8rem;margin-bottom:45px}
+.hero p{max-width:720px;color:var(--muted)}
+.task,.box{background:var(--panel);border:1px solid var(--border);padding:22px;margin:24px 0}
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+.section{margin-top:60px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.layer{border:1px solid var(--border);padding:12px;margin:8px 0;background:var(--panel2)}
+button{
+  font:inherit;background:transparent;color:var(--green);border:1px solid var(--green2);
+  padding:8px 12px;cursor:pointer
+}
+button:hover{background:#102b1c}
+.answer{display:none;border-top:1px dashed var(--border);padding-top:16px;margin-top:16px}
+.answer.show{display:block}
+.shop{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.control{border:1px solid var(--border);padding:15px;background:var(--panel2);cursor:pointer}
+.control.selected{border-color:var(--green);background:#102b1c}
+#budget{color:var(--yellow)}
+@media(max-width:700px){.shop{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // LESSON 02</span>
+  <span>DEFENSE LAB</span>
+</div>
+
+<section class="hero">
+<div style="color:var(--green)">$ defend --layers</div>
+<h1>BUILD THE <span>DEFENSE.</span></h1>
+<p>
+Minsta privilegium, ansvarsfördelning, varierat skydd, defense in depth,
+Zero Trust och härdning är principer – inte magiska produkter.
+</p>
+</section>
+
+<h2 class="section">01 // Minsta privilegium</h2>
+
+<section class="task">
+<h3>Utvecklaren Alice</h3>
+<p>
+Alice behöver läsa loggar och starta om en testtjänst.
+Hon har samtidigt full administratörsbehörighet till alla produktionsservrar.
+</p>
+<p>Vilken princip bryts?</p>
+<button onclick="toggle('a1')">Visa facit</button>
+<div class="answer" id="a1">
+<p><b>Principen om minsta privilegium.</b> Alice bör bara ha de rättigheter som behövs för hennes uppgift.</p>
+</div>
+</section>
+
+<h2 class="section">02 // Ansvarsfördelning</h2>
+
+<section class="task">
+<h3>En person gör allt</h3>
+<p>
+Samma person kan skapa en betalning, godkänna den och ändra loggarna efteråt.
+</p>
+<p>Vilken princip borde användas?</p>
+<button onclick="toggle('a2')">Visa facit</button>
+<div class="answer" id="a2">
+<p><b>Ansvarsfördelning / segregation of duties.</b></p>
+</div>
+</section>
+
+<h2 class="section">03 // Defense in depth</h2>
+
+<section class="task">
+<h3>Vad händer om ett lager faller?</h3>
+
+<div class="layer">1. Brandvägg</div>
+<div class="layer">2. MFA</div>
+<div class="layer">3. Segmentering</div>
+<div class="layer">4. EDR/detektering</div>
+<div class="layer">5. Backup</div>
+
+<p>
+Varför är detta bättre än att bara ha en mycket dyr brandvägg?
+</p>
+<button onclick="toggle('a3')">Visa facit</button>
+<div class="answer" id="a3">
+<p>
+Försvar i djupled bygger på flera lager.
+Om ett skydd misslyckas kan nästa lager fördröja, upptäcka eller begränsa attacken.
+</p>
+</div>
+</section>
+
+<h2 class="section">04 // Härdning</h2>
+
+<section class="task challenge">
+<h3>Vad skulle du stänga?</h3>
+<p>En ny server har följande:</p>
+<div class="box">
+<p>• SSH används av administratörer</p>
+<p>• gammal FTP-server används inte</p>
+<p>• testkonto med standardlösenord</p>
+<p>• webbserver behövs för applikationen</p>
+<p>• oanvänd Telnet-tjänst</p>
+</div>
+<p>Vad bör en enkel härdning innebära?</p>
+<button onclick="toggle('a4')">Visa facit</button>
+<div class="answer" id="a4">
+<p>Stäng FTP och Telnet om de inte behövs.</p>
+<p>Inaktivera default/testkonto eller byt credentials.</p>
+<p>Behåll bara nödvändiga tjänster och håll dem uppdaterade.</p>
+</div>
+</section>
+
+<h2 class="section">05 // Zero Trust</h2>
+
+<section class="task">
+<h3>Men användaren sitter ju på kontoret?</h3>
+<p>
+Bob sitter på företagets interna nätverk och försöker nå en känslig databas.
+Systemet ger automatiskt åtkomst eftersom Bob befinner sig på LAN:et.
+</p>
+<p>Hur skulle Zero Trust resonera?</p>
+<button onclick="toggle('a5')">Visa facit</button>
+<div class="answer" id="a5">
+<p>
+Ingen implicit tillit bara för att Bob befinner sig i en viss nätverkszon.
+Identitet och behörighet ska verifieras.
+</p>
+</div>
+</section>
+
+<h2 class="section">06 // Budget challenge</h2>
+
+<section class="task boss">
+<h3>Du har 10 säkerhetspoäng</h3>
+<p>Klicka på skydd du vill köpa. Max 10 poäng.</p>
+
+<p>Återstående budget: <b id="budget">10</b></p>
+
+<div class="shop">
+  <div class="control" data-cost="3" data-name="MFA">MFA – 3p</div>
+  <div class="control" data-cost="3" data-name="Segmentering">Segmentering – 3p</div>
+  <div class="control" data-cost="2" data-name="Patchning">Patchning – 2p</div>
+  <div class="control" data-cost="3" data-name="Backup">Backup – 3p</div>
+  <div class="control" data-cost="2" data-name="Loggning">Loggning/övervakning – 2p</div>
+  <div class="control" data-cost="2" data-name="Härdning">Härdning – 2p</div>
+</div>
+
+<br>
+<button onclick="evaluateDefense()">Testa försvaret</button>
+
+<div class="answer show" id="defResult">
+<p>Välj skydd och testa.</p>
+</div>
+</section>
+
+<script>
+function toggle(id){document.getElementById(id).classList.toggle("show")}
+
+let budget=10;
+document.querySelectorAll(".control").forEach(c=>{
+  c.addEventListener("click",()=>{
+    const cost=Number(c.dataset.cost);
+    if(c.classList.contains("selected")){
+      c.classList.remove("selected");
+      budget+=cost;
+    } else {
+      if(budget<cost)return;
+      c.classList.add("selected");
+      budget-=cost;
+    }
+    document.getElementById("budget").textContent=budget;
+  });
+});
+
+function evaluateDefense(){
+  const chosen=[...document.querySelectorAll(".control.selected")].map(x=>x.dataset.name);
+  let text="<b>Ditt försvar:</b> "+(chosen.join(", ")||"inget")+"<br><br>";
+
+  if(chosen.length===0){
+    text+="Du har inte implementerat några skydd.";
+  } else if(chosen.length===1){
+    text+="Du förlitar dig på ett enda lager. Defense in depth saknas.";
+  } else {
+    text+="Du har flera skyddslager. Bra början på defense in depth.";
+  }
+
+  if(chosen.includes("Härdning"))text+="<br>Härdning reducerar attackytan.";
+  if(chosen.includes("MFA"))text+="<br>MFA stärker autentiseringen.";
+  if(chosen.includes("Backup"))text+="<br>Backup förbättrar återställningsförmågan.";
+  if(chosen.includes("Loggning"))text+="<br>Övervakning hjälper till att upptäcka aktivitet.";
+
+  document.getElementById("defResult").innerHTML="<p>"+text+"</p>";
+}
+</script>
+
+</main>
+</body>
+</html>
