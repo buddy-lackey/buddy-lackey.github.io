@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!--
+        CTF MADNEZZ
+        You are looking at the source already.
+        Good.
+
+        FLAG{source_code_never_lies}
+    -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ALEF-93 CTF Engine">
+    <meta name="diagnostic" content="RkxBR3ttZXRhZGF0YV9pc19kYXRhfQ==">
+
+    <title>ALEF-93 // CTF MADNEZZ</title>
+
+    <style>
+        :root {
+            --bg: #05070a;
+            --panel: #080d0c;
+            --panel2: #0b1411;
+            --green: #00e89d;
+            --soft: #7dffcf;
+            --text: #d8eee7;
+            --muted: #77968b;
+            --border: #163c31;
+            --red: #ff5f6d;
+            --yellow: #ffd166;
+
+            /*
+                CSS is code too.
+
+                FLAG{css_is_part_of_the_attack_surface}
+            */
+
+            --fragment-a: "FLAG{";
+            --fragment-b: "variables_";
+            --fragment-c: "can_hide_";
+            --fragment-d: "secrets}";
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Consolas, "Courier New", monospace;
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 22px 80px;
+        }
+
+        .return {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--muted);
+        }
+
+        .eyebrow {
+            color: var(--green);
+            letter-spacing: 0.14em;
+            font-size: 0.84rem;
+        }
+
+        h1 {
+            margin: 7px 0 5px;
+            color: var(--soft);
+            font-size: clamp(2rem, 6vw, 4.2rem);
+            line-height: 1;
+        }
+
+        .status {
+            color: var(--green);
+            margin-bottom: 25px;
+        }
+
+        .blink {
+            animation: blink 1s steps(1) infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .intro {
+            max-width: 780px;
+            color: var(--muted);
+            font-size: 1.02rem;
+            margin-bottom: 25px;
+        }
+
+        .warning {
+            border: 1px solid #5c4b1c;
+            background: #151207;
+            color: #e8dca9;
+            padding: 16px;
+            margin: 25px 0;
+        }
+
+        .tracker {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 20px;
+            margin: 25px 0 40px;
+        }
+
+        .tracker-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tracker strong {
+            color: var(--soft);
+        }
+
+        .progress-shell {
+            height: 10px;
+            margin-top: 15px;
+            border: 1px solid var(--border);
+            background: #020403;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: var(--green);
+            transition: width 0.3s ease;
+        }
+
+        .submit-box {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            flex: 1;
+            min-width: 260px;
+            background: #020504;
+            color: var(--soft);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            font: inherit;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--green);
+        }
+
+        button {
+            background: transparent;
+            color: var(--green);
+            border: 1px solid var(--green);
+            padding: 11px 18px;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        button:hover {
+            color: var(--bg);
+            background: var(--green);
+        }
+
+        #message {
+            min-height: 26px;
+            margin-top: 12px;
+            color: var(--muted);
+        }
+
+        .section-title {
+            color: var(--green);
+            margin: 50px 0 18px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .challenge {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 20px;
+            position: relative;
+            min-height: 230px;
+        }
+
+        .challenge:hover {
+            border-color: #216c54;
+        }
+
+        .number {
+            color: var(--green);
+            font-size: 0.82rem;
+        }
+
+        .challenge h3 {
+            margin: 8px 0;
+            color: var(--soft);
+        }
+
+        .challenge p {
+            color: var(--muted);
+            font-size: 0.94rem;
+        }
+
+        details {
+            margin-top: 15px;
+            color: var(--muted);
+        }
+
+        summary {
+            color: var(--green);
+            cursor: pointer;
+        }
+
+        code,
+        pre {
+            color: var(--soft);
+        }
+
+        pre {
+            border-left: 2px solid var(--border);
+            padding-left: 12px;
+            overflow-x: auto;
+        }
+
+        .difficulty {
+            font-size: 0.72rem;
+            color: var(--muted);
+            position: absolute;
+            right: 14px;
+            top: 14px;
+        }
+
+        .ghost {
+            color: #05070a;
+            font-size: 1px;
+            position: absolute;
+            user-select: text;
+        }
+
+        .solved-list {
+            margin-top: 20px;
+            color: var(--muted);
+        }
+
+        .solved-list span {
+            display: inline-block;
+            border: 1px solid var(--border);
+            margin: 3px;
+            padding: 3px 7px;
+            font-size: 0.75rem;
+        }
+
+        .final-box {
+            margin-top: 50px;
+            border: 1px dashed var(--green);
+            padding: 22px;
+            background: #06100d;
+        }
+
+        footer {
+            margin-top: 70px;
+            color: #3e6257;
+            font-size: 0.8rem;
+        }
+
+        #pseudo-target::after {
+            content: "52 6b 78 42 52 33 74 6f 5a 58 68 66 61 58 4e 66 62 6d 39 30 58 32 46 73 64 32 46 35 63 31 39 30 5a 58 68 30 66 51 3d 3d";
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div
+    class="container"
+    data-telemetry="464c41477b68746d6c5f617474726962757465735f6172655f76697369626c657d"
+>
+    <a class="return" href="index.html">&lt; RETURN TO HOME</a>
+
+    <div class="eyebrow">ALEF-93 // BONUS LAB</div>
+    <h1>CTF MADNEZZ</h1>
+
+    <div class="status">
+        ● CHAOS ENGINE ONLINE<span class="blink">_</span>
+    </div>
+
+    <p class="intro">
+        There are <strong>20 flags</strong> hidden in this page.
+        Some are obvious. Some are encoded. Some live where normal users
+        never look. Some require you to understand what the browser is actually
+        doing.
+    </p>
+
+    <p class="intro">
+        Every valid flag has the form:
+        <code>FLAG{something_here}</code>
+    </p>
+
+    <div class="warning">
+        This is intentionally different from the normal ALEF-93 exercises.
+        There is no intended order. Inspect everything. Decode things.
+        Use the browser developer tools. Question assumptions.
+    </div>
+
+    <div class="tracker">
+
+        <div class="tracker-line">
+            <div>
+                FLAGS FOUND:
+                <strong><span id="solvedCount">0</span> / 20</strong>
+            </div>
+
+            <div id="percentage">
+                0%
+            </div>
+        </div>
+
+        <div class="progress-shell">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="submit-box">
+            <input
+                id="flagInput"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="FLAG{...}"
+            >
+            <button id="submitFlag">SUBMIT FLAG</button>
+        </div>
+
+        <div id="message"></div>
+
+        <div class="solved-list" id="solvedList"></div>
+
+    </div>
+
+
+    <div class="section-title">// THE HUNT</div>
+
+    <div class="grid">
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 01</span>
+            <span class="difficulty">EASY</span>
+            <h3>The browser sees more</h3>
+
+            <p>
+                What the browser displays is not necessarily everything
+                the server sent.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Inspect the original HTML.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 02</span>
+            <span class="difficulty">EASY</span>
+            <h3>Style has substance</h3>
+
+            <p>
+                HTML is not the only source code your browser receives.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Developers leave notes in strange places.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 03</span>
+            <span class="difficulty">EASY</span>
+            <h3>Talk to the browser</h3>
+
+            <p>
+                Sometimes software talks even when the user interface does not.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                F12 → Console.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 04</span>
+            <span class="difficulty">EASY</span>
+            <h3>Metadata</h3>
+
+            <p>
+                Information describing a page is still information.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Look near the top of the document.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 05</span>
+            <span class="difficulty">EASY</span>
+            <h3>Attributes</h3>
+
+            <p>
+                Elements can carry information that is never rendered.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Inspect the large container surrounding this page.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 06</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>64 reasons</h3>
+
+            <p>
+                Encoding is not encryption.
+            </p>
+
+            <pre>RkxBR3tiYXNlNjRfaXNfbm90X2VuY3J5cHRpb259</pre>
+
+            <details>
+                <summary>Hint</summary>
+                Base64.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 07</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>Hex appeal</h3>
+
+            <p>
+                Computers are perfectly happy representing text as numbers.
+            </p>
+
+            <pre>
+46 4c 41 47 7b 68 65 78 5f 69 73 5f
+6a 75 73 74 5f 61 6e 6f 74 68 65 72
+5f 76 69 65 77 7d
+            </pre>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 08</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>Backwards thinking</h3>
+
+            <p>
+                Maybe you're reading it in the wrong direction.
+            </p>
+
+            <pre>}gnidaer_esrever_yrt{GALF</pre>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 09</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>Rotate</h3>
+
+            <p>
+                A very old Caesar is hiding here.
+            </p>
+
+            <pre>SYNT{ebg13_vf_abg_frphevgl}</pre>
+
+            <details>
+                <summary>Hint</summary>
+                13 is a suspicious number.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 10</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>Invisible ≠ absent</h3>
+
+            <p>
+                CSS decides presentation. It does not decide whether data exists.
+            </p>
+
+            <span class="ghost">
+                FLAG{hidden_elements_are_still_elements}
+            </span>
+
+            <details>
+                <summary>Hint</summary>
+                Inspect this challenge in Elements.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 11</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>Persistence</h3>
+
+            <p>
+                Websites can store information inside your browser.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Application → Storage.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 12</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>Pieces</h3>
+
+            <p>
+                One value may be useless. Several values may tell a story.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                CSS variables start with <code>--</code>.
+            </details>
+        </div>
+
+
+        <div class="challenge" id="pseudo-target">
+            <span class="number">CHALLENGE 13</span>
+            <span class="difficulty">HARD</span>
+            <h3>Generated content</h3>
+
+            <p>
+                Not everything associated with an element is written between
+                its HTML tags.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                CSS pseudo-elements.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 14</span>
+            <span class="difficulty">MEDIUM</span>
+            <h3>ASCII archaeology</h3>
+
+            <p>
+                Convert the numbers to characters.
+            </p>
+
+            <pre>
+70 76 65 71 123 97 115 99 105 105 95
+115 116 105 108 108 95 109 97 116 116
+101 114 115 125
+            </pre>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 15</span>
+            <span class="difficulty">HARD</span>
+            <h3>Bits</h3>
+
+            <p>
+                Everything eventually becomes zeros and ones.
+            </p>
+
+            <pre>
+01000110 01001100 01000001 01000111
+01111011 01100010 01101001 01101110
+01100001 01110010 01111001 01011111
+01101001 01110011 01011111 01100100
+01100001 01110100 01100001 01111101
+            </pre>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 16</span>
+            <span class="difficulty">HARD</span>
+            <h3>JavaScript archaeology</h3>
+
+            <p>
+                The interface is only the final result of program logic.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Search the JavaScript for suspicious arrays.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 17</span>
+            <span class="difficulty">HARD</span>
+            <h3>The URL is input</h3>
+
+            <p>
+                Web applications can read more than the visible document.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                What properties does <code>location</code> have?
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 18</span>
+            <span class="difficulty">HARD</span>
+            <h3>Events</h3>
+
+            <p>
+                Browsers react to actions. Find something the page is listening for.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Keyboard events exist.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 19</span>
+            <span class="difficulty">HARD</span>
+            <h3>Trust the client?</h3>
+
+            <p>
+                The flag validator runs somewhere.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                If code runs in your browser, you can inspect it.
+            </details>
+        </div>
+
+
+        <div class="challenge">
+            <span class="number">CHALLENGE 20</span>
+            <span class="difficulty">???</span>
+            <h3>The last one</h3>
+
+            <p>
+                You already have everything you need.
+            </p>
+
+            <p>
+                Sometimes the challenge is recognising what information
+                was available from the beginning.
+            </p>
+
+            <details>
+                <summary>Hint</summary>
+                Count. Search. Correlate.
+            </details>
+        </div>
+
+    </div>
+
+
+    <div class="final-box">
+        <strong>// OBJECTIVE</strong>
+
+        <p>
+            Find all <strong>20 / 20</strong> flags.
+        </p>
+
+        <p>
+            The page remembers your solved flags using browser storage.
+            Reloading the page should not reset your progress.
+        </p>
+
+        <p>
+            When you reach 20, you have completed CTF MADNEZZ.
+        </p>
+    </div>
+
+
+    <footer>
+        ALEF-93 // Never assume the interface shows everything.
+    </footer>
+
+</div>
+
+
+<script>
+/*
+    The console is part of the browser.
+
+    FLAG{console_logs_are_information}
+*/
+
+console.log(
+    "%cALEF-93 CTF MADNEZZ",
+    "color:#00e89d;font-size:18px;font-weight:bold"
+);
+
+console.log("FLAG{console_logs_are_information}");
+console.log("There are exactly 20 flags.");
+console.log("Some flags are closer than they appear.");
+
+
+// ------------------------------------------------------------
+// Browser storage challenge
+// ------------------------------------------------------------
+
+if (!localStorage.getItem("alef93_diagnostic")) {
+    localStorage.setItem(
+        "alef93_diagnostic",
+        "FLAG{local_storage_is_client_side}"
+    );
+}
+
+
+// ------------------------------------------------------------
+// JavaScript archaeology challenge
+// ------------------------------------------------------------
+
+const suspiciousNumbers = [
+    70, 76, 65, 71, 123, 106, 97, 118, 97,
+    115, 99, 114, 105, 112, 116, 95, 105,
+    115, 95, 114, 101, 97, 100, 97, 98,
+    108, 101, 125
+];
+
+
+// ------------------------------------------------------------
+// Reverse-engineering challenge
+// ------------------------------------------------------------
+
+const apparentlyUselessDiagnostic =
+    "}edoc_tneilc_tcepsni{GALF";
+
+
+// ------------------------------------------------------------
+// URL challenge
+// ------------------------------------------------------------
+
+/*
+    Try understanding:
+
+    window.location.hash
+
+    A fragment is the part after # in a URL.
+*/
+
+if (window.location.hash === "#madnezz") {
+    console.log("FLAG{urls_are_application_input}");
+}
+
+
+// ------------------------------------------------------------
+// Event challenge
+// ------------------------------------------------------------
+
+let keySequence = "";
+
+document.addEventListener("keydown", function(event) {
+
+    keySequence += event.key.toLowerCase();
+
+    if (keySequence.length > 12) {
+        keySequence = keySequence.slice(-12);
+    }
+
+    if (keySequence.includes("inspect")) {
+        console.log("FLAG{events_reveal_behaviour}");
+        keySequence = "";
+    }
+
+});
+
+
+// ------------------------------------------------------------
+// Flag validation
+//
+// Yes.
+// The validation logic is client-side.
+//
+// That fact is itself relevant.
+// ------------------------------------------------------------
+
+const encodedFlags = [
+
+    "RkxBR3tzb3VyY2VfY29kZV9uZXZlcl9saWVzfQ==",
+
+    "RkxBR3tjc3NfaXNfcGFydF9vZl90aGVfYXR0YWNrX3N1cmZhY2V9",
+
+    "RkxBR3tjb25zb2xlX2xvZ3NfYXJlX2luZm9ybWF0aW9ufQ==",
+
+    "RkxBR3ttZXRhZGF0YV9pc19kYXRhfQ==",
+
+    "RkxBR3todG1sX2F0dHJpYnV0ZXNfYXJlX3Zpc2libGV9",
+
+    "RkxBR3tiYXNlNjRfaXNfbm90X2VuY3J5cHRpb259",
+
+    "RkxBR3toZXhfaXNfanVzdF9hbm90aGVyX3ZpZXd9",
+
+    "RkxBR3t0cnlfcmV2ZXJzZV9yZWFkaW5nfQ==",
+
+    "RkxBR3tyb3QxM19pc19ub3Rfc2VjdXJpdHl9",
+
+    "RkxBR3toaWRkZW5fZWxlbWVudHNfYXJlX3N0aWxsX2VsZW1lbnRzfQ==",
+
+    "RkxBR3tsb2NhbF9zdG9yYWdlX2lzX2NsaWVudF9zaWRlfQ==",
+
+    "RkxBR3t2YXJpYWJsZXNfY2FuX2hpZGVfc2VjcmV0c30=",
+
+    "RkxBR3toZXhfaXNfbm90X2Fsd2F5c190ZXh0fQ==",
+
+    "RkxBR3thc2NpaV9zdGlsbF9tYXR0ZXJzfQ==",
+
+    "RkxBR3tiaW5hcnlfaXNfZGF0YX0=",
+
+    "RkxBR3tqYXZhc2NyaXB0X2lzX3JlYWRhYmxlfQ==",
+
+    "RkxBR3t1cmxzX2FyZV9hcHBsaWNhdGlvbl9pbnB1dH0=",
+
+    "RkxBR3tldmVudHNfcmV2ZWFsX2JlaGF2aW91cn0=",
+
+    "RkxBR3tpbnNwZWN0X2NsaWVudF9jb2RlfQ==",
+
+    "RkxBR3t5b3VfZm91bmRfdGhlbV9hbGx9"
+];
+
+
+function decodeFlag(value) {
+    return atob(value);
+}
+
+
+function getAllFlags() {
+    return encodedFlags.map(decodeFlag);
+}
+
+
+const validFlags = getAllFlags();
+
+
+// ------------------------------------------------------------
+// Progress
+// ------------------------------------------------------------
+
+let solved = JSON.parse(
+    localStorage.getItem("alef93_ctf_madnezz_solved") || "[]"
+);
+
+solved = solved.filter(flag => validFlags.includes(flag));
+
+const solvedCount = document.getElementById("solvedCount");
+const progressBar = document.getElementById("progressBar");
+const percentage = document.getElementById("percentage");
+const solvedList = document.getElementById("solvedList");
+const message = document.getElementById("message");
+const flagInput = document.getElementById("flagInput");
+
+
+function updateProgress() {
+
+    const count = solved.length;
+    const pct = Math.round((count / 20) * 100);
+
+    solvedCount.textContent = count;
+    percentage.textContent = pct + "%";
+    progressBar.style.width = pct + "%";
+
+    solvedList.innerHTML = "";
+
+    solved.forEach((flag, index) => {
+
+        const item = document.createElement("span");
+
+        item.textContent =
+            String(index + 1).padStart(2, "0") +
+            " // SOLVED";
+
+        solvedList.appendChild(item);
+
+    });
+
+
+    if (count === 20) {
+
+        message.innerHTML =
+            '<span style="color:#7dffcf">' +
+            '20 / 20 // CTF MADNEZZ COMPLETE_' +
+            '</span>';
+
+        document.title =
+            "20/20 // ALEF-93 CTF MADNEZZ";
+
+    }
+}
+
+
+function submitFlag() {
+
+    const value = flagInput.value.trim();
+
+    if (!value) {
+        return;
+    }
+
+
+    if (!value.startsWith("FLAG{") || !value.endsWith("}")) {
+
+        message.style.color = "#ffd166";
+
+        message.textContent =
+            "FORMAT ERROR // Expected FLAG{...}";
+
+        return;
+    }
+
+
+    if (!validFlags.includes(value)) {
+
+        message.style.color = "#ff5f6d";
+
+        message.textContent =
+            "INVALID FLAG // Keep investigating.";
+
+        return;
+    }
+
+
+    if (solved.includes(value)) {
+
+        message.style.color = "#77968b";
+
+        message.textContent =
+            "ALREADY SUBMITTED // You already found this one.";
+
+        return;
+    }
+
+
+    solved.push(value);
+
+    localStorage.setItem(
+        "alef93_ctf_madnezz_solved",
+        JSON.stringify(solved)
+    );
+
+    message.style.color = "#00e89d";
+
+    message.textContent =
+        "VALID FLAG // " +
+        solved.length +
+        " / 20";
+
+    flagInput.value = "";
+
+    updateProgress();
+}
+
+
+document
+    .getElementById("submitFlag")
+    .addEventListener("click", submitFlag);
+
+
+flagInput.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        submitFlag();
+    }
+
+});
+
+
+updateProgress();
+
+
+// ------------------------------------------------------------
+//
+// What is security if the attacker controls the client?
+//
+// FLAG{inspect_client_code}
+//
+// ------------------------------------------------------------
+
+
+// The final flag is deliberately almost insulting.
+//
+// If you reached this point by investigation rather than scrolling,
+// congratulations.
+//
+// FLAG{you_found_them_all}
+
+</script>
+
+</body>
+</html>
