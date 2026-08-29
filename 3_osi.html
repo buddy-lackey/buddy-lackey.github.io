@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lektion 3 - OSI-modellen | Baalstorm</title>
+
 <style>
 :root{
   --bg:#050b08;
@@ -19,7 +20,11 @@
   --blue:#6cbcff;
   --purple:#c084fc;
 }
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   background:
@@ -29,11 +34,13 @@ body{
   font-family:"Courier New",monospace;
   line-height:1.6;
 }
+
 main{
   width:min(1000px,94%);
   margin:auto;
   padding:50px 0 100px;
 }
+
 .top{
   display:flex;
   justify-content:space-between;
@@ -43,41 +50,75 @@ main{
   border-bottom:1px solid var(--border);
   padding-bottom:10px;
 }
+
 .hero h1{
   font-size:clamp(2.5rem,8vw,5rem);
   margin:0;
   color:white;
   line-height:1;
 }
-.hero h1 span{color:var(--green)}
+
+.hero h1 span{
+  color:var(--green);
+}
+
 .hero p{
   max-width:760px;
   color:var(--muted);
 }
-.prompt{color:var(--green)}
+
+.prompt{
+  color:var(--green);
+}
+
 .section{
   margin-top:60px;
   border-bottom:1px solid var(--border);
   padding-bottom:8px;
 }
-.task,.box{
+
+.task,
+.box{
   background:var(--panel);
   border:1px solid var(--border);
   padding:22px;
   margin:22px 0;
 }
-.task{border-left:4px solid var(--green2)}
-.intermediate{border-left-color:var(--blue)}
-.challenge{border-left-color:var(--yellow)}
-.boss{border-left-color:var(--red)}
+
+.task{
+  border-left:4px solid var(--green2);
+}
+
+.intermediate{
+  border-left-color:var(--blue);
+}
+
+.challenge{
+  border-left-color:var(--yellow);
+}
+
+.boss{
+  border-left-color:var(--red);
+}
+
 .tag{
   font-size:.8rem;
   color:var(--green);
   margin-bottom:10px;
 }
-.intermediate .tag{color:var(--blue)}
-.challenge .tag{color:var(--yellow)}
-.boss .tag{color:var(--red)}
+
+.intermediate .tag{
+  color:var(--blue);
+}
+
+.challenge .tag{
+  color:var(--yellow);
+}
+
+.boss .tag{
+  color:var(--red);
+}
+
 button{
   font:inherit;
   background:transparent;
@@ -87,21 +128,28 @@ button{
   cursor:pointer;
   margin:4px 4px 4px 0;
 }
+
 button:hover{
   background:#10281b;
 }
+
 .answer{
   display:none;
   margin-top:16px;
   border-top:1px dashed var(--border);
   padding-top:16px;
 }
-.answer.show{display:block}
+
+.answer.show{
+  display:block;
+}
+
 .osi{
   display:grid;
   gap:8px;
   margin:20px 0;
 }
+
 .layer{
   display:grid;
   grid-template-columns:80px 1fr 1fr;
@@ -111,61 +159,95 @@ button:hover{
   background:var(--panel2);
   padding:12px;
 }
+
 .layer strong{
   color:white;
 }
+
 .layer .num{
   color:var(--green);
   font-size:1.4rem;
 }
+
 .layer small{
   color:var(--muted);
 }
+
 .quizgrid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:12px;
 }
+
 .choice{
   border:1px solid var(--border);
   background:var(--panel2);
   padding:14px;
   cursor:pointer;
 }
-.choice:hover{border-color:var(--green)}
+
+.choice:hover{
+  border-color:var(--green);
+}
+
 .choice.correct{
   border-color:var(--green);
   background:#10291b;
 }
+
 .choice.wrong{
   border-color:var(--red);
   background:#2a1212;
 }
+
 .console{
   background:#020503;
   border:1px solid #1c2e24;
   padding:16px;
   color:#9fffb8;
   overflow:auto;
+  white-space:pre-line;
+  line-height:1.8;
 }
-code{color:var(--yellow)}
+
+code{
+  color:var(--yellow);
+}
+
 .score{
   color:var(--yellow);
   float:right;
 }
+
 .status{
   color:var(--yellow);
   margin-top:12px;
 }
+
 @media(max-width:750px){
-  .layer{grid-template-columns:60px 1fr}
-  .layer small{grid-column:2}
-  .quizgrid{grid-template-columns:1fr}
-  .top{gap:20px;flex-direction:column}
+
+  .layer{
+    grid-template-columns:60px 1fr;
+  }
+
+  .layer small{
+    grid-column:2;
+  }
+
+  .quizgrid{
+    grid-template-columns:1fr;
+  }
+
+  .top{
+    gap:20px;
+    flex-direction:column;
+  }
 }
 </style>
 </head>
+
 <body>
+
 <main>
 
 <div class="top">
@@ -173,19 +255,32 @@ code{color:var(--yellow)}
   <span>OSI TRAINING NODE</span>
 </div>
 
+
 <section class="hero">
-  <div class="prompt">$ ./osi-trainer --mode student</div>
-  <h1>UNDERSTAND THE <span>STACK.</span></h1>
+
+  <div class="prompt">
+    $ ./osi-trainer --mode student
+  </div>
+
+  <h1>
+    UNDERSTAND THE <span>STACK.</span>
+  </h1>
+
   <p>
     OSI-modellen hjälper oss att förstå hur nätverkskommunikation fungerar.
-    Här fokuserar vi främst på lager 7, 4, 3, 2 och 1 samt hur de hänger ihop med TCP/IP.
+    Här fokuserar vi främst på lager 7, 4, 3, 2 och 1 samt hur de hänger ihop
+    med TCP/IP.
   </p>
+
 </section>
 
+
 <section class="box">
+
 <h2>OSI - förenklad vy</h2>
 
 <div class="osi">
+
   <div class="layer">
     <div class="num">7</div>
     <strong>Application</strong>
@@ -215,143 +310,330 @@ code{color:var(--yellow)}
     <strong>Physical</strong>
     <small>Koppar, fiber, radiovågor</small>
   </div>
+
 </div>
+
 </section>
+
 
 <h2 class="section">01 // BASIC</h2>
 
+
 <section class="task">
-<div class="tag">TASK 01 <span class="score">4p</span></div>
+
+<div class="tag">
+TASK 01
+<span class="score">4p</span>
+</div>
+
 <h3>Vilket lager?</h3>
-<p>Klicka på rätt svar för varje begrepp.</p>
+
+<p>
+Klicka på rätt svar för varje begrepp.
+</p>
+
 
 <p><b>IP-adress</b></p>
+
 <div class="quizgrid">
-  <div class="choice" onclick="pick(this,false)">Lager 7</div>
-  <div class="choice" onclick="pick(this,false)">Lager 4</div>
-  <div class="choice" onclick="pick(this,true)">Lager 3</div>
-  <div class="choice" onclick="pick(this,false)">Lager 2</div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 7
+  </div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 4
+  </div>
+
+  <div class="choice" onclick="pick(this,true)">
+    Lager 3
+  </div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 2
+  </div>
+
 </div>
+
 
 <p><b>MAC-adress</b></p>
+
 <div class="quizgrid">
-  <div class="choice" onclick="pick(this,false)">Lager 4</div>
-  <div class="choice" onclick="pick(this,false)">Lager 3</div>
-  <div class="choice" onclick="pick(this,true)">Lager 2</div>
-  <div class="choice" onclick="pick(this,false)">Lager 1</div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 4
+  </div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 3
+  </div>
+
+  <div class="choice" onclick="pick(this,true)">
+    Lager 2
+  </div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 1
+  </div>
+
 </div>
+
 
 <p><b>TCP/UDP</b></p>
+
 <div class="quizgrid">
-  <div class="choice" onclick="pick(this,false)">Lager 7</div>
-  <div class="choice" onclick="pick(this,true)">Lager 4</div>
-  <div class="choice" onclick="pick(this,false)">Lager 3</div>
-  <div class="choice" onclick="pick(this,false)">Lager 2</div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 7
+  </div>
+
+  <div class="choice" onclick="pick(this,true)">
+    Lager 4
+  </div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 3
+  </div>
+
+  <div class="choice" onclick="pick(this,false)">
+    Lager 2
+  </div>
+
 </div>
+
 </section>
 
+
 <section class="task">
-<div class="tag">TASK 02 <span class="score">4p</span></div>
+
+<div class="tag">
+TASK 02
+<span class="score">4p</span>
+</div>
+
 <h3>Router eller switch?</h3>
-<p>Vilken enhet arbetar främst med IP-adresser och routing?</p>
-<button onclick="answerButton(this,true)">Router</button>
-<button onclick="answerButton(this,false)">Omanagerad switch</button>
+
+<p>
+Vilken enhet arbetar främst med IP-adresser och routing?
+</p>
+
+<button onclick="answerButton(this,true)">
+Router
+</button>
+
+<button onclick="answerButton(this,false)">
+Omanagerad switch
+</button>
+
 <div class="status"></div>
+
 </section>
+
 
 <h2 class="section">02 // INTERMEDIATE</h2>
 
+
 <section class="task intermediate">
-<div class="tag">TASK 03 <span class="score">5p</span></div>
+
+<div class="tag">
+TASK 03
+<span class="score">5p</span>
+</div>
+
 <h3>TCP eller UDP?</h3>
-<p>Välj det protokoll som normalt passar bäst för respektive scenario.</p>
+
+<p>
+Välj det protokoll som normalt passar bäst för respektive scenario.
+</p>
 
 <div class="box">
-<p>A. Filöverföring där all data måste komma fram</p>
-<p>B. Livesändning där låg fördröjning är viktigare än perfekt leverans</p>
-<p>C. SSH-session</p>
-<p>D. Realtidsspel</p>
+
+<p>
+A. Filöverföring där all data måste komma fram
+</p>
+
+<p>
+B. Livesändning där låg fördröjning är viktigare än perfekt leverans
+</p>
+
+<p>
+C. SSH-session
+</p>
+
+<p>
+D. Realtidsspel
+</p>
+
 </div>
 
-<button onclick="toggle('a3')">Visa facit</button>
+<button onclick="toggle('a3')">
+Visa facit
+</button>
+
 <div class="answer" id="a3">
+
 <p>A = TCP</p>
+
 <p>B = UDP</p>
+
 <p>C = TCP</p>
+
 <p>D = ofta UDP</p>
+
 </div>
+
 </section>
+
 
 <section class="task intermediate">
-<div class="tag">TASK 04 <span class="score">5p</span></div>
+
+<div class="tag">
+TASK 04
+<span class="score">5p</span>
+</div>
+
 <h3>Vad ser vi?</h3>
 
-<div class="console">
-TCP 192.168.1.44:51832 → 185.199.108.153:443
-</div>
+<div class="console">TCP 192.168.1.44:51832 → 185.199.108.153:443</div>
 
 <p>Identifiera:</p>
+
 <p>1. Käll-IP</p>
+
 <p>2. Källport</p>
+
 <p>3. Destinations-IP</p>
+
 <p>4. Destinationsport</p>
 
-<button onclick="toggle('a4')">Visa facit</button>
+
+<button onclick="toggle('a4')">
+Visa facit
+</button>
+
 <div class="answer" id="a4">
-<p>Käll-IP: <code>192.168.1.44</code></p>
-<p>Källport: <code>51832</code></p>
-<p>Destinations-IP: <code>185.199.108.153</code></p>
-<p>Destinationsport: <code>443</code></p>
+
+<p>
+Käll-IP:
+<code>192.168.1.44</code>
+</p>
+
+<p>
+Källport:
+<code>51832</code>
+</p>
+
+<p>
+Destinations-IP:
+<code>185.199.108.153</code>
+</p>
+
+<p>
+Destinationsport:
+<code>443</code>
+</p>
+
 </div>
+
 </section>
+
 
 <h2 class="section">03 // CHALLENGE</h2>
 
+
 <section class="task challenge">
-<div class="tag">TASK 05 <span class="score">7p</span></div>
-<h3>Hur långt fungerar nätverket?</h3>
+
+<div class="tag">
+TASK 05
+<span class="score">7p</span>
+</div>
+
+<h3>
+Hur långt fungerar nätverket?
+</h3>
 
 <p>
 En dator är ansluten till Wi-Fi och nätverkskortet fungerar.
 Datorn har en MAC-adress men har inte fått någon fungerande IP-adress.
 </p>
 
-<p>Vilka delar verkar fungera, och var börjar problemet?</p>
-
-<button onclick="toggle('a5')">Visa facit</button>
-<div class="answer" id="a5">
 <p>
-Lager 1 och 2 verkar åtminstone fungera eftersom den fysiska anslutningen och nätverkskortet finns.
-Problemet börjar senast på lager 3 eftersom datorn saknar fungerande IP-konfiguration.
+Vilka delar verkar fungera, och var börjar problemet?
 </p>
+
+
+<button onclick="toggle('a5')">
+Visa facit
+</button>
+
+<div class="answer" id="a5">
+
+<p>
+Lager 1 och 2 verkar åtminstone fungera eftersom den fysiska
+anslutningen och nätverkskortet finns.
+</p>
+
+<p>
+Problemet börjar senast på lager 3 eftersom datorn saknar
+fungerande IP-konfiguration.
+</p>
+
 </div>
+
 </section>
 
+
 <section class="task challenge">
-<div class="tag">TASK 06 <span class="score">7p</span></div>
-<h3>Ping fungerar - HTTPS fungerar inte</h3>
+
+<div class="tag">
+TASK 06
+<span class="score">7p</span>
+</div>
+
+<h3>
+Ping fungerar - HTTPS fungerar inte
+</h3>
 
 <p>
 Du kan pinga en server och får svar.
 Men webbläsaren kan inte ansluta till HTTPS på TCP/443.
 </p>
 
-<p>Vad kan du dra för slutsats?</p>
+<p>
+Vad kan du dra för slutsats?
+</p>
 
-<button onclick="toggle('a6')">Visa diskussionsstöd</button>
+<button onclick="toggle('a6')">
+Visa diskussionsstöd
+</button>
+
 <div class="answer" id="a6">
+
 <p>
 IP-kommunikation fungerar åtminstone till viss del eftersom ICMP fungerar.
-Problemet kan därför ligga högre upp, exempelvis transportlagret, port 443, brandvägg eller applikation.
+Problemet kan därför ligga högre upp, exempelvis transportlagret,
+port 443, brandvägg eller applikation.
 </p>
+
 </div>
+
 </section>
+
 
 <h2 class="section">04 // BOSS</h2>
 
+
 <section class="task boss">
-<div class="tag">BOSS FIGHT <span class="score">10p</span></div>
-<h3>Placera informationen i rätt lager</h3>
+
+<div class="tag">
+BOSS FIGHT
+<span class="score">10p</span>
+</div>
+
+<h3>
+Placera informationen i rätt lager
+</h3>
+
 
 <div class="console">
 Browser: Chrome
@@ -362,52 +644,119 @@ Destination MAC: 18:AF:61:02:11:F0
 Medium: Wi-Fi
 </div>
 
+
 <p>
 Koppla varje rad till rätt OSI-lager.
 </p>
 
-<button onclick="toggle('boss')">Visa facit</button>
+
+<button onclick="toggle('boss')">
+Visa facit
+</button>
+
+
 <div class="answer" id="boss">
-<p>Browser / HTTPS → Lager 7</p>
-<p>TCP / port 443 → Lager 4</p>
-<p>IP-adress → Lager 3</p>
-<p>MAC-adress → Lager 2</p>
-<p>Wi-Fi/radiovågor → Lager 1</p>
+
+<p>
+Browser / HTTPS → Lager 7
+</p>
+
+<p>
+TCP / port 443 → Lager 4
+</p>
+
+<p>
+IP-adress → Lager 3
+</p>
+
+<p>
+MAC-adress → Lager 2
+</p>
+
+<p>
+Wi-Fi / radiovågor → Lager 1
+</p>
+
 </div>
+
 </section>
 
-<script>
-function toggle(id){
-  document.getElementById(id).classList.toggle("show");
-}
-
-function pick(el,correct){
-  const group=el.parentElement;
-  group.querySelectorAll(".choice").forEach(x=>{
-    x.classList.remove("correct","wrong");
-  });
-
-  if(correct){
-    el.classList.add("correct");
-  }else{
-    el.classList.add("wrong");
-  }
-}
-
-function answerButton(btn,correct){
-  const parent=btn.parentElement;
-  const status=parent.querySelector(".status");
-
-  if(correct){
-    status.textContent="[OK] Rätt svar.";
-    status.style.color="var(--green)";
-  }else{
-    status.textContent="[FAIL] Inte riktigt. Tänk på vilket lager som använder IP-adresser.";
-    status.style.color="var(--red)";
-  }
-}
-</script>
 
 </main>
+
+
+<script>
+
+function toggle(id){
+
+  document
+    .getElementById(id)
+    .classList
+    .toggle("show");
+
+}
+
+
+function pick(el,correct){
+
+  const group = el.parentElement;
+
+  group
+    .querySelectorAll(".choice")
+    .forEach(x => {
+
+      x.classList.remove(
+        "correct",
+        "wrong"
+      );
+
+    });
+
+
+  if(correct){
+
+    el.classList.add("correct");
+
+  }
+  else{
+
+    el.classList.add("wrong");
+
+  }
+
+}
+
+
+function answerButton(btn,correct){
+
+  const parent = btn.parentElement;
+
+  const status =
+    parent.querySelector(".status");
+
+
+  if(correct){
+
+    status.textContent =
+      "[OK] Rätt svar.";
+
+    status.style.color =
+      "var(--green)";
+
+  }
+  else{
+
+    status.textContent =
+      "[FAIL] Inte riktigt. Tänk på vilket lager som använder IP-adresser.";
+
+    status.style.color =
+      "var(--red)";
+
+  }
+
+}
+
+</script>
+
 </body>
 </html>
