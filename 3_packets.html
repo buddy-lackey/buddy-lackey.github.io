@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lektion 3 - Paket & kapsling | Baalstorm</title>
+<style>
+:root{
+  --bg:#050b08;
+  --panel:#0a1510;
+  --panel2:#0e1d16;
+  --border:#173a29;
+  --green:#6cff9a;
+  --green2:#2fa85b;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6b6b;
+  --blue:#6cbcff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10291b 0%,transparent 32%),
+    #050b08;
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.6;
+}
+main{
+  width:min(1000px,94%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+.top{
+  display:flex;
+  justify-content:space-between;
+  color:var(--green);
+  font-size:.8rem;
+  margin-bottom:42px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:10px;
+}
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+.hero h1 span{color:var(--green)}
+.hero p{max-width:760px;color:var(--muted)}
+.prompt{color:var(--green)}
+.section{
+  margin-top:60px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+.task{border-left:4px solid var(--green2)}
+.intermediate{border-left-color:var(--blue)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+.tag{font-size:.8rem;color:var(--green)}
+.intermediate .tag{color:var(--blue)}
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+.packet{
+  background:#020503;
+  border:1px solid #1d3026;
+  padding:0;
+  margin:20px 0;
+}
+.packet-section{
+  border-bottom:1px solid #173a29;
+  padding:14px 16px;
+}
+.packet-section:last-child{border-bottom:0}
+.packet-title{
+  color:var(--green);
+  font-weight:bold;
+}
+.key{color:var(--muted)}
+.value{color:var(--yellow)}
+.stack{
+  display:grid;
+  gap:8px;
+  margin:20px 0;
+}
+.stack-item{
+  border:1px solid var(--border);
+  background:var(--panel2);
+  padding:14px;
+  cursor:pointer;
+}
+.stack-item.active{
+  border-color:var(--green);
+  background:#10291b;
+}
+button{
+  font:inherit;
+  background:transparent;
+  border:1px solid var(--green2);
+  color:var(--green);
+  padding:9px 13px;
+  cursor:pointer;
+  margin:4px 4px 4px 0;
+}
+button:hover{background:#10281b}
+.answer{
+  display:none;
+  margin-top:16px;
+  border-top:1px dashed var(--border);
+  padding-top:16px;
+}
+.answer.show{display:block}
+.console{
+  background:#020503;
+  border:1px solid #1c3025;
+  color:#9fffb8;
+  padding:16px;
+  overflow:auto;
+}
+.status{color:var(--yellow);margin-top:12px}
+.score{float:right;color:var(--yellow)}
+</style>
+</head>
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // LESSON 03</span>
+  <span>PACKET INSPECTOR</span>
+</div>
+
+<section class="hero">
+  <div class="prompt">$ capture --interface wifi0</div>
+  <h1>FOLLOW THE <span>PACKET.</span></h1>
+  <p>
+    När data skickas genom nätverket kapslas den in med information från flera lager.
+    Hos mottagaren sker processen åt andra hållet.
+  </p>
+</section>
+
+<section class="box">
+<h2>Simulerad packet capture</h2>
+
+<div class="packet">
+  <div class="packet-section">
+    <div class="packet-title">Ethernet II</div>
+    <div><span class="key">Source:</span> <span class="value">A4:32:CC:91:20:01</span></div>
+    <div><span class="key">Destination:</span> <span class="value">18:AF:61:02:11:F0</span></div>
+  </div>
+
+  <div class="packet-section">
+    <div class="packet-title">Internet Protocol Version 4</div>
+    <div><span class="key">Source:</span> <span class="value">192.168.1.44</span></div>
+    <div><span class="key">Destination:</span> <span class="value">185.199.108.153</span></div>
+  </div>
+
+  <div class="packet-section">
+    <div class="packet-title">Transmission Control Protocol</div>
+    <div><span class="key">Source Port:</span> <span class="value">51832</span></div>
+    <div><span class="key">Destination Port:</span> <span class="value">443</span></div>
+  </div>
+
+  <div class="packet-section">
+    <div class="packet-title">Application Data</div>
+    <div><span class="key">Protocol:</span> <span class="value">HTTPS</span></div>
+  </div>
+</div>
+</section>
+
+<h2 class="section">01 // BASIC</h2>
+
+<section class="task">
+<div class="tag">TASK 01 <span class="score">4p</span></div>
+<h3>Hitta informationen</h3>
+
+<p>Vilken är källans IP-adress?</p>
+<button onclick="showStatus('s1','192.168.1.44',true)">192.168.1.44</button>
+<button onclick="showStatus('s1','185.199.108.153',false)">185.199.108.153</button>
+<div class="status" id="s1"></div>
+
+<p>Vilken destinationsport används?</p>
+<button onclick="showStatus('s2','443',true)">443</button>
+<button onclick="showStatus('s2','51832',false)">51832</button>
+<div class="status" id="s2"></div>
+</section>
+
+<section class="task">
+<div class="tag">TASK 02 <span class="score">4p</span></div>
+<h3>Vilket lager hör informationen till?</h3>
+
+<div class="box">
+<p>MAC-adress = ?</p>
+<p>IP-adress = ?</p>
+<p>TCP-port = ?</p>
+<p>HTTPS = ?</p>
+</div>
+
+<button onclick="toggle('a2')">Visa facit</button>
+<div class="answer" id="a2">
+<p>MAC-adress → Lager 2</p>
+<p>IP-adress → Lager 3</p>
+<p>TCP-port → Lager 4</p>
+<p>HTTPS → Lager 7</p>
+</div>
+</section>
+
+<h2 class="section">02 // INTERMEDIATE</h2>
+
+<section class="task intermediate">
+<div class="tag">TASK 03 <span class="score">6p</span></div>
+<h3>Kapsling</h3>
+
+<p>
+Vid sändning börjar informationen på applikationslagret och går nedåt.
+Varje steg lägger till information.
+</p>
+
+<div class="stack">
+  <div class="stack-item">Application data</div>
+  <div class="stack-item">TCP header + data</div>
+  <div class="stack-item">IP header + transportdata</div>
+  <div class="stack-item">Ethernet header + data + trailer</div>
+  <div class="stack-item">Bitar över fysisk länk</div>
+</div>
+
+<p>I vilken riktning sker kapslingen?</p>
+
+<button onclick="toggle('a3')">Visa facit</button>
+<div class="answer" id="a3">
+<p>Från högre lager nedåt mot lager 1.</p>
+<p>Hos mottagaren sker dekapsling åt motsatt håll.</p>
+</div>
+</section>
+
+<section class="task intermediate">
+<div class="tag">TASK 04 <span class="score">6p</span></div>
+<h3>Vad är header och vad är data?</h3>
+
+<div class="console">
+[ IP HEADER ][ TCP HEADER ][ APPLICATION DATA ]
+</div>
+
+<p>
+Vilken del beskriver bland annat IP-adresser?
+Vilken del beskriver portar?
+Vilken del innehåller själva applikationsinformationen?
+</p>
+
+<button onclick="toggle('a4')">Visa facit</button>
+<div class="answer" id="a4">
+<p>IP Header → IP-adresser</p>
+<p>TCP Header → portar och transportinformation</p>
+<p>Application Data → applikationens innehåll</p>
+</div>
+</section>
+
+<h2 class="section">03 // CHALLENGE</h2>
+
+<section class="task challenge">
+<div class="tag">TASK 05 <span class="score">7p</span></div>
+<h3>Vad kan du veta?</h3>
+
+<div class="console">
+TCP 192.168.1.44:51832 → 185.199.108.153:443
+</div>
+
+<p>
+Från endast raden ovan: vad kan du veta, och vad kan du inte veta?
+</p>
+
+<button onclick="toggle('a5')">Visa diskussionsstöd</button>
+<div class="answer" id="a5">
+<p>Du kan se käll-IP, destinations-IP, källport, destinationsport och att TCP används.</p>
+<p>
+Du kan däremot inte automatiskt avgöra exakt vilket innehåll som skickas eller om trafiken är legitim eller skadlig.
+</p>
+</div>
+</section>
+
+<section class="task challenge">
+<div class="tag">TASK 06 <span class="score">7p</span></div>
+<h3>Fragmentering</h3>
+
+<p>
+Ett nätverkspaket är för stort för att skickas som en enda enhet.
+Det delas upp i flera mindre delar som skickas separat.
+</p>
+
+<p>Vad kallas processen?</p>
+
+<button onclick="showStatus('frag','Fragmentering',true)">Fragmentering</button>
+<button onclick="showStatus('frag','Routing',false)">Routing</button>
+<button onclick="showStatus('frag','Kryptering',false)">Kryptering</button>
+
+<div class="status" id="frag"></div>
+</section>
+
+<h2 class="section">04 // BOSS</h2>
+
+<section class="task boss">
+<div class="tag">BOSS FIGHT <span class="score">10p</span></div>
+<h3>Mini-Wireshark</h3>
+
+<div class="packet">
+  <div class="packet-section">
+    <div class="packet-title">Ethernet II</div>
+    <div>Src: <span class="value">00:11:22:33:44:55</span></div>
+    <div>Dst: <span class="value">AA:BB:CC:DD:EE:FF</span></div>
+  </div>
+
+  <div class="packet-section">
+    <div class="packet-title">IPv4</div>
+    <div>Src: <span class="value">10.0.0.15</span></div>
+    <div>Dst: <span class="value">10.0.0.53</span></div>
+  </div>
+
+  <div class="packet-section">
+    <div class="packet-title">UDP</div>
+    <div>Src Port: <span class="value">53021</span></div>
+    <div>Dst Port: <span class="value">53</span></div>
+  </div>
+</div>
+
+<p>Besvara:</p>
+<p>1. Vilket transportprotokoll används?</p>
+<p>2. Vilken serverport används?</p>
+<p>3. Vilket applikationsprotokoll är detta sannolikt?</p>
+<p>4. Vilka lager kan du identifiera i utskriften?</p>
+
+<button onclick="toggle('boss')">Visa facit</button>
+<div class="answer" id="boss">
+<p>1. UDP</p>
+<p>2. Port 53</p>
+<p>3. DNS</p>
+<p>4. Lager 2, 3 och 4 syns direkt. DNS hör till applikationslagret.</p>
+</div>
+</section>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+
+function showStatus(id,text,correct){
+  const el=document.getElementById(id);
+  if(correct){
+    el.textContent="[OK] Rätt: "+text;
+    el.style.color="var(--green)";
+  }else{
+    el.textContent="[FAIL] Försök igen.";
+    el.style.color="var(--red)";
+  }
+}
+</script>
+
+</main>
+</body>
+</html>
