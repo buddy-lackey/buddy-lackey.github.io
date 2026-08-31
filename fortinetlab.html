@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fortinet Lab | Baalstorm</title>
+<title>FortiGate Lab | Baalstorm</title>
 
 <style>
 :root{
@@ -28,10 +28,10 @@ body{
   margin:0;
   background:
     radial-gradient(circle at top right,#10291b 0%,transparent 32%),
-    #050b08;
+    linear-gradient(#050b08,#07110c);
   color:var(--text);
   font-family:"Courier New",monospace;
-  line-height:1.6;
+  line-height:1.65;
 }
 
 main{
@@ -60,7 +60,7 @@ main{
 .hero h1 span{color:var(--green)}
 
 .hero p{
-  max-width:800px;
+  max-width:850px;
   color:var(--muted);
 }
 
@@ -71,11 +71,19 @@ main{
   border:1px solid #8b6f11;
   color:var(--yellow);
   padding:18px;
+  margin:24px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
   margin:22px 0;
 }
 
 .section{
-  margin-top:60px;
+  margin-top:65px;
   border-bottom:1px solid var(--border);
   padding-bottom:8px;
 }
@@ -99,19 +107,28 @@ main{
 .challenge .tag{color:var(--yellow)}
 .boss .tag{color:var(--red)}
 
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
 .network{
   display:grid;
-  grid-template-columns:1fr auto 1fr auto 1fr;
+  grid-template-columns:1fr auto 1.2fr auto 1fr;
   gap:10px;
   align-items:center;
   text-align:center;
-  margin:20px 0;
+  margin:25px 0;
 }
 
 .node{
   background:var(--panel2);
   border:1px solid var(--border);
-  padding:18px;
+  padding:20px;
+}
+
+.firewall{
+  border-color:#75551c;
 }
 
 .fw{
@@ -131,7 +148,38 @@ main{
   color:#9fffb8;
   white-space:pre-line;
   overflow:auto;
+  margin:15px 0;
 }
+
+.command{
+  background:#010302;
+  border:1px solid #28563b;
+  border-left:4px solid var(--green);
+  padding:16px;
+  color:#aaffbd;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.command::before{
+  content:"POWERSHELL >";
+  display:block;
+  color:var(--muted);
+  font-size:.75rem;
+  margin-bottom:10px;
+}
+
+.flow{
+  text-align:center;
+  color:#b8c8be;
+  font-size:1.05rem;
+}
+
+.pass{color:var(--green)}
+.fail{color:var(--red)}
+.warn{color:var(--yellow)}
+.blue{color:var(--blue)}
 
 button{
   font:inherit;
@@ -155,9 +203,37 @@ button:hover{
 
 .answer.show{display:block}
 
-.score{
-  float:right;
-  color:var(--yellow);
+.check{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  margin:8px 0;
+}
+
+.check input{
+  margin-top:6px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  color:var(--green);
+  background:#07110c;
 }
 
 @media(max-width:800px){
@@ -181,66 +257,85 @@ button:hover{
 <main>
 
 <div class="top">
-  <span>BAALSTORM // FORTINET LAB</span>
-  <span>STATEFUL FIREWALL TRAINING</span>
+  <span>BAALSTORM // FORTINET TRAINING</span>
+  <span>FORTIGATE 40F // TRAFFIC FILTERING LAB</span>
 </div>
+
 
 <section class="hero">
-  <div class="prompt">$ ./fortigate-lab --start</div>
 
-  <h1>CONTROL THE <span>FLOW.</span></h1>
+  <div class="prompt">$ ./fortigate-lab --mode physical</div>
+
+  <h1>FOLLOW. ALLOW. <span>BLOCK.</span></h1>
 
   <p>
-    I den här labben arbetar du med en fysisk FortiGate och 1–2 datorer.
-    Fokus ligger på interfaces, policy, trafikflöden, sessions och stateful packet filtering.
+    I den här labben arbetar två elever med varsin Windows-dator och
+    en FortiGate. Ni börjar med att kommunicera med brandväggen,
+    bygger sedan kommunikation mellan två nät och använder slutligen
+    FortiGate för att kontrollera trafikflödet.
   </p>
+
 </section>
 
-<div class="notice">
-  <b>VIKTIGT</b><br><br>
 
-  Credentials finns märkta på brandväggen.<br>
-  Byt INTE administratörslösenordet.<br>
+<div class="notice">
+  <b>⚠ LAB RULES</b><br><br>
+
+  Inloggningsuppgifter finns märkta på brandväggen.<br>
+  <b>BYT INTE LÖSENORDET.</b><br>
   Gör INTE factory reset.<br>
-  Återställ de regler du skapar när labben är klar.
+  Uppgradera INTE firmware.<br>
+  Ändra endast inställningar som hör till uppgiften.<br><br>
+
+  Windows Defender Firewall ska vara <b>AKTIVERAD</b> under hela labben.
 </div>
 
-<h2 class="section">LAB TOPOLOGY</h2>
+
+<h2 class="section">00 // TOPOLOGY</h2>
 
 <section class="box">
 
 <div class="network">
 
   <div class="node">
-    <b>PC-A</b><br>
-    CLIENT
+    <b>PC-A</b><br><br>
+    192.168.10.10<br>
+    /24<br>
+    GW: 192.168.10.1
   </div>
 
-  <div class="arrow">→</div>
+  <div class="arrow">⇄</div>
 
-  <div class="node">
-    <span class="fw">🔥</span><br>
-    <b>FORTIGATE</b><br>
-    40F
+  <div class="node firewall">
+    <span class="fw">FORTIGATE 40F</span><br><br>
+
+    PORT A<br>
+    192.168.10.1/24<br><br>
+
+    PORT B<br>
+    192.168.20.1/24
   </div>
 
-  <div class="arrow">→</div>
+  <div class="arrow">⇄</div>
 
   <div class="node">
-    <b>PC-B</b><br>
-    SERVER / TEST HOST
+    <b>PC-B</b><br><br>
+    192.168.20.10<br>
+    /24<br>
+    GW: 192.168.20.1
   </div>
 
 </div>
 
-<p>
-Om endast en dator används kan Internet eller en annan ansluten resurs
-användas som destination i de enklare uppgifterna.
+<p class="small">
+Portnamnen på er FortiGate kan skilja sig från diagrammet.
+Använd de portar läraren anger.
 </p>
 
 </section>
 
-<h2 class="section">01 // INVENTORY</h2>
+
+<h2 class="section">01 // CABLES FIRST</h2>
 
 <section class="task">
 
@@ -249,252 +344,206 @@ TASK 01
 <span class="score">5p</span>
 </div>
 
-<h3>Identifiera din FortiGate</h3>
+<h3>Koppla nätet</h3>
 
 <p>
-Logga in på brandväggen och dokumentera:
+Anslut PC-A till det första LAN-interfacet på FortiGate.
+Anslut PC-B till ett annat interface.
 </p>
 
-<div class="box">
-<p>• Hostname</p>
-<p>• Firmware-version</p>
-<p>• Vilket interface PC-A är ansluten till</p>
-<p>• IP-adress på det interfacet</p>
-<p>• Vilket interface som ska användas mot PC-B</p>
+<div class="flow">
+PC-A → FORTIGATE ← PC-B
 </div>
 
-<button onclick="toggle('a1')">
-Varför gör vi detta?
-</button>
+<p>Kontrollera i FortiGate GUI att båda portarna visar fysisk länk.</p>
 
-<div id="a1" class="answer">
+<div class="check">
+<input type="checkbox">
+<span>PC-A är ansluten.</span>
+</div>
 
-<p>
-Innan man skapar regler måste man förstå vilka interfaces och nät
-trafiken faktiskt passerar.
-</p>
+<div class="check">
+<input type="checkbox">
+<span>PC-B är ansluten.</span>
+</div>
 
+<div class="check">
+<input type="checkbox">
+<span>Båda interfaces visar link up.</span>
 </div>
 
 </section>
 
-<h2 class="section">02 // DEFAULT BEHAVIOUR</h2>
+
+<h2 class="section">02 // CONFIGURE PC-A</h2>
 
 <section class="task">
 
 <div class="tag">
 TASK 02
-<span class="score">6p</span>
+<span class="score">5p</span>
 </div>
 
-<h3>Testa innan du skapar en regel</h3>
+<h3>Konfigurera PC-A</h3>
 
-<p>
-Anslut PC-A och PC-B till varsin sida av FortiGate.
-</p>
-
-<p>
-Konfigurera adresser enligt lärarens instruktion eller enligt det nät
-ni valt.
-</p>
-
-<p>
-Testa därefter:
-</p>
+<p>Konfigurera IPv4 manuellt:</p>
 
 <div class="console">
-PC-A → ping → PC-B
+IP:       192.168.10.10
+MASK:     255.255.255.0
+GATEWAY:  192.168.10.1
 </div>
 
-<p>
-Fungerar det?
-</p>
+<p>Verifiera sedan:</p>
+
+<div class="command">ipconfig</div>
+
+<p>Testa brandväggens lokala interface:</p>
+
+<div class="command">ping 192.168.10.1</div>
 
 <p>
-Titta på Firewall Policy.
-Finns det någon policy som tillåter trafiken?
+Om FortiGate-interfacet tillåter ping bör ni nu få svar.
 </p>
-
-<button onclick="toggle('a2')">
-Diskussionsstöd
-</button>
-
-<div id="a2" class="answer">
-
-<p>
-En brandvägg släpper normalt inte automatiskt trafik mellan interfaces.
-Det krävs en matchande policy.
-</p>
-
-<p>
-Det illustrerar principen "deny unless explicitly allowed".
-</p>
-
-</div>
 
 </section>
 
-<h2 class="section">03 // CREATE YOUR FIRST POLICY</h2>
+
+<h2 class="section">03 // CONFIGURE PC-B</h2>
 
 <section class="task">
 
 <div class="tag">
 TASK 03
-<span class="score">8p</span>
+<span class="score">5p</span>
 </div>
 
-<h3>Tillåt trafik från PC-A till PC-B</h3>
-
-<p>
-Skapa en Firewall Policy.
-</p>
+<h3>Konfigurera PC-B</h3>
 
 <div class="console">
-Incoming Interface:  PC-A LAN
-Outgoing Interface:  PC-B LAN
-Source:              PC-A network
-Destination:         PC-B network
-Service:             ALL
-Action:              ACCEPT
-NAT:                 OFF
+IP:       192.168.20.10
+MASK:     255.255.255.0
+GATEWAY:  192.168.20.1
 </div>
 
-<p>
-Testa sedan:
-</p>
+<div class="command">ipconfig</div>
+
+<p>Testa PC-B:s FortiGate-interface:</p>
+
+<div class="command">ping 192.168.20.1</div>
+
+<p>Ni ska nu ha:</p>
 
 <div class="console">
-PC-A → ping → PC-B
-</div>
+PC-A → 192.168.10.1   PASS
 
-<p>
-Fungerar kommunikationen nu?
-</p>
+PC-B → 192.168.20.1   PASS
+</div>
 
 </section>
 
-<h2 class="section">04 // STATEFUL FIREWALL</h2>
+
+<h2 class="section">04 // WHAT DID WE JUST TEST?</h2>
 
 <section class="task challenge">
 
 <div class="tag">
-CHALLENGE 01
-<span class="score">10p</span>
+CHECKPOINT
+<span class="score">5p</span>
 </div>
 
-<h3>Vem startade kommunikationen?</h3>
+<h3>Till brandväggen ≠ genom brandväggen</h3>
 
 <p>
-Behåll policyn:
-</p>
-
-<div class="console">
-PC-A → PC-B → ACCEPT
-</div>
-
-<p>
-Skapa INTE motsvarande policy från PC-B till PC-A.
+PC-A kan prata med FortiGate.
+PC-B kan prata med FortiGate.
 </p>
 
 <p>
-Starta en anslutning från PC-A till en tjänst på PC-B.
-Det kan exempelvis vara en enkel webbserver om ni har en sådan i labbet.
+Betyder det automatiskt att PC-A kan kommunicera med PC-B?
 </p>
 
-<div class="console">
-PC-A → TCP session → PC-B
-</div>
-
-<p>
-Studera aktiva sessions i FortiGate medan anslutningen pågår.
-</p>
-
-<p>
-Fråga:
-</p>
-
-<div class="box">
-Varför kan svarstrafiken från PC-B komma tillbaka även om det inte finns
-en separat policy som uttryckligen säger:
-
-PC-B → PC-A → ACCEPT
-</div>
-
-<button onclick="toggle('state')">
+<button onclick="toggle('localtraffic')">
 Visa förklaring
 </button>
 
-<div id="state" class="answer">
+<div id="localtraffic" class="answer">
+
+<p><b>Nej.</b></p>
 
 <p>
-FortiGate är stateful.
-</p>
-
-<p>
-När PC-A initierar en tillåten anslutning skapar brandväggen information
-om sessionen.
-</p>
-
-<p>
-Returtrafik som hör till samma session kan därför identifieras som
-legitim returtrafik.
-</p>
-
-</div>
-
-</section>
-
-<h2 class="section">05 // NEW SESSION VS RETURN TRAFFIC</h2>
-
-<section class="task challenge">
-
-<div class="tag">
-CHALLENGE 02
-<span class="score">10p</span>
-</div>
-
-<h3>Testa andra riktningen</h3>
-
-<p>
-Nu ska PC-B försöka initiera en helt ny anslutning till PC-A.
+Hittills har trafiken haft FortiGate själv som destination.
 </p>
 
 <div class="console">
-PC-B → NEW CONNECTION → PC-A
+PC-A → FORTIGATE
+
+PC-B → FORTIGATE
 </div>
 
 <p>
-Fungerar det?
+Nästa steg är annorlunda:
 </p>
 
-<p>
-Jämför detta med returtrafiken i föregående uppgift.
-</p>
-
-<button onclick="toggle('newsession')">
-Vad är skillnaden?
-</button>
-
-<div id="newsession" class="answer">
+<div class="console">
+PC-A → FORTIGATE → PC-B
+</div>
 
 <p>
-Returtrafiken hörde till en redan etablerad session.
-</p>
-
-<p>
-PC-B:s nya anslutning är däremot en ny session och måste själv matcha
-en policy som tillåter den riktningen.
-</p>
-
-<p>
-Detta är en av de tydligaste praktiska demonstrationerna av stateful filtering.
+Nu ska FortiGate vidarebefordra trafik mellan två nät.
+Då kommer routing och firewall policy in i bilden.
 </p>
 
 </div>
 
 </section>
 
-<h2 class="section">06 // PACKET FILTERING</h2>
+
+<h2 class="section">05 // WINDOWS FIREWALL</h2>
+
+<section class="task">
+
+<div class="tag">
+PREPARE THE ENDPOINTS
+<span class="score">5p</span>
+</div>
+
+<h3>Tillåt endast labbens ping</h3>
+
+<p>
+Windows Defender Firewall ska <b>inte stängas av</b>.
+</p>
+
+<p>
+I stället skapar vi en specifik regel som tillåter inkommande
+ICMPv4 Echo Request.
+</p>
+
+<div class="notice">
+Kör PowerShell som administratör på <b>BÅDE PC-A OCH PC-B</b>.
+</div>
+
+<div class="command">New-NetFirewallRule -DisplayName "FortiLab ICMPv4" -Direction Inbound -Protocol ICMPv4 -IcmpType 8 -Action Allow</div>
+
+<p>Kontrollera att regeln finns:</p>
+
+<div class="command">Get-NetFirewallRule -DisplayName "FortiLab ICMPv4"</div>
+
+<p>
+Ni har alltså inte stängt av Windows-brandväggen.
+Ni har explicit tillåtit exakt den trafik som behövs för labben.
+</p>
+
+<div class="console">
+Windows Defender Firewall: ON
+
+ICMPv4 Echo Request:      ALLOW
+</div>
+
+</section>
+
+
+<h2 class="section">06 // FIRST CROSS-FIREWALL TEST</h2>
 
 <section class="task">
 
@@ -503,120 +552,110 @@ TASK 06
 <span class="score">8p</span>
 </div>
 
-<h3>Från ALL till minsta nödvändiga</h3>
+<h3>Kan PC-A nå PC-B?</h3>
+
+<p>På PC-A:</p>
+
+<div class="command">ping 192.168.20.10</div>
+
+<p>På PC-B:</p>
+
+<div class="command">ping 192.168.10.10</div>
 
 <p>
-Din policy tillåter just nu Service = ALL.
+Dokumentera vad som händer innan ni ändrar FortiGate-policyn.
 </p>
+
+<table>
+<tr>
+<th>Test</th>
+<th>Resultat</th>
+</tr>
+
+<tr>
+<td>PC-A → FortiGate</td>
+<td>__________</td>
+</tr>
+
+<tr>
+<td>PC-B → FortiGate</td>
+<td>__________</td>
+</tr>
+
+<tr>
+<td>PC-A → PC-B</td>
+<td>__________</td>
+</tr>
+
+<tr>
+<td>PC-B → PC-A</td>
+<td>__________</td>
+</tr>
+</table>
 
 <p>
-Ändra policyn så att endast exempelvis HTTPS tillåts:
+Varför kan resultatet skilja sig mellan trafik <b>till</b> FortiGate
+och trafik som ska gå <b>genom</b> FortiGate?
 </p>
-
-<div class="console">
-PC-A → PC-B
-TCP / 443
-ACCEPT
-</div>
-
-<p>
-Testa sedan:
-</p>
-
-<div class="console">
-HTTPS → ska fungera
-annan TCP-port → ska blockeras
-</div>
-
-<p>
-Vad har förändrats säkerhetsmässigt?
-</p>
-
-<button onclick="toggle('least')">
-Visa förklaring
-</button>
-
-<div id="least" class="answer">
-
-<p>
-Regeln tillåter nu endast det trafikflöde som faktiskt behövs.
-</p>
-
-<p>
-Attackytan minskar jämfört med Service = ALL.
-</p>
-
-</div>
 
 </section>
 
-<h2 class="section">07 // RULE ORDER</h2>
 
-<section class="task challenge">
+<h2 class="section">07 // CREATE THE POLICY</h2>
+
+<section class="task">
 
 <div class="tag">
-CHALLENGE 03
+TASK 07
 <span class="score">10p</span>
 </div>
 
-<h3>Första matchande policy</h3>
+<h3>Tillåt PC-A → PC-B</h3>
+
+<p>Öppna:</p>
+
+<div class="console">
+Policy & Objects
+        ↓
+Firewall Policy
+</div>
 
 <p>
-Skapa eller diskutera följande ordning:
+Skapa en policy som tillåter trafik från PC-A:s nät till PC-B:s nät.
 </p>
 
 <div class="console">
-POLICY 1
-PC-A → PC-B → HTTPS → DENY
+INCOMING:
+PC-A interface
 
-POLICY 2
-PC-A → PC-B → ALL → ACCEPT
+OUTGOING:
+PC-B interface
+
+SOURCE:
+192.168.10.0/24
+
+DESTINATION:
+192.168.20.0/24
+
+SERVICE:
+PING / ICMP
+
+ACTION:
+ACCEPT
+
+NAT:
+OFF
 </div>
 
 <p>
-Vad händer med HTTPS?
+Exakta objektnamn och GUI-val kan skilja sig mellan firmwareversioner.
+Poängen är att policyn endast ska tillåta det trafikflöde ni behöver.
 </p>
-
-<p>
-Flytta därefter ordningen:
-</p>
-
-<div class="console">
-POLICY 1
-PC-A → PC-B → ALL → ACCEPT
-
-POLICY 2
-PC-A → PC-B → HTTPS → DENY
-</div>
-
-<p>
-Vad händer nu?
-</p>
-
-<button onclick="toggle('order')">
-Visa förklaring
-</button>
-
-<div id="order" class="answer">
-
-<p>
-Regelordningen är avgörande.
-</p>
-
-<p>
-Den första policy som matchar trafikflödet används.
-</p>
-
-<p>
-En bred regel ovanför en specifik regel kan därför göra den specifika
-regeln verkningslös.
-</p>
-
-</div>
 
 </section>
 
-<h2 class="section">08 // OBSERVE SESSIONS</h2>
+
+<h2 class="section">08 // MAKE IT WORK</h2>
 
 <section class="task">
 
@@ -625,91 +664,225 @@ TASK 08
 <span class="score">8p</span>
 </div>
 
-<h3>Se brandväggen arbeta</h3>
+<h3>Testa igen</h3>
 
-<p>
-Starta trafik från PC-A till PC-B.
-</p>
+<p>Från PC-A:</p>
 
-<p>
-Leta sedan efter aktiva sessions eller motsvarande vy i FortiGate.
-</p>
+<div class="command">ping 192.168.20.10</div>
 
-<p>
-Försök identifiera:
-</p>
-
-<div class="box">
-<p>• Source IP</p>
-<p>• Destination IP</p>
-<p>• Source port</p>
-<p>• Destination port</p>
-<p>• Protocol</p>
-<p>• Policy ID</p>
+<div class="console">
+PC-A
+192.168.10.10
+      │
+      │ ICMP Echo Request
+      ▼
+FORTIGATE
+      │
+      │ POLICY: ACCEPT
+      ▼
+PC-B
+192.168.20.10
 </div>
 
 <p>
-Jämför detta med vad ni tidigare såg i Wireshark.
+Om konfigurationen är korrekt bör PC-B nu svara.
 </p>
 
 </section>
 
-<h2 class="section">09 // STATELESS THOUGHT EXPERIMENT</h2>
+
+<h2 class="section">09 // NOW BLOCK IT</h2>
 
 <section class="task challenge">
 
 <div class="tag">
-CHALLENGE 04
+CHALLENGE 01
 <span class="score">10p</span>
 </div>
 
-<h3>Hur skulle en stateless brandvägg tänka?</h3>
+<h3>FortiGate tar kontroll</h3>
 
 <p>
-Anta att brandväggen inte hade någon session table.
+Ni har nu en fungerande baseline.
 </p>
 
 <div class="console">
-PC-A:53000 → PC-B:443
+Windows Firewall PC-A: ON
+Windows Firewall PC-B: ON
+
+Windows ICMP rule:     ALLOW
+
+FortiGate:             ALLOW
+
+RESULT:                PING WORKS
 </div>
 
 <p>
-PC-B svarar:
+Ändra nu <b>endast FortiGate</b> så att samma trafik blockeras.
 </p>
+
+<p>Ändra inte Windows-datorerna.</p>
+
+<p>Testa igen:</p>
+
+<div class="command">ping 192.168.20.10</div>
 
 <div class="console">
-PC-B:443 → PC-A:53000
+Windows configuration:
+UNCHANGED
+
+FortiGate:
+DENY
+
+RESULT:
+PING FAILS
 </div>
 
 <p>
-Hur skulle brandväggen veta att paket två hör till anslutningen ovan?
+Vad bevisar experimentet?
 </p>
 
-<button onclick="toggle('stateless')">
+<button onclick="toggle('block')">
 Visa diskussionsstöd
 </button>
 
-<div id="stateless" class="answer">
+<div id="block" class="answer">
 
 <p>
-En stateless brandvägg bedömer varje paket separat.
+Vi hade först ett känt fungerande trafikflöde.
 </p>
 
 <p>
-Den måste därför ha regler som även tillåter returtrafiken baserat på
-adresser, protokoll och portar.
+Den enda komponent vi sedan förändrade var FortiGate.
 </p>
 
 <p>
-En stateful brandvägg kan istället koppla returpaketet till en redan
-etablerad session.
+När trafiken därefter stoppades kunde vi koppla resultatet till
+FortiGate-policyn istället för Windows Defender Firewall.
 </p>
 
 </div>
 
 </section>
 
-<h2 class="section">10 // BOSS</h2>
+
+<h2 class="section">10 // PACKET INSPECTION</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CHALLENGE 02
+<span class="score">10p</span>
+</div>
+
+<h3>Vad måste brandväggen titta på?</h3>
+
+<p>PC-A skickar:</p>
+
+<div class="console">
+SOURCE IP:
+192.168.10.10
+
+DESTINATION IP:
+192.168.20.10
+
+PROTOCOL:
+ICMP
+
+TYPE:
+Echo Request
+</div>
+
+<p>
+Vilken information behöver FortiGate undersöka för att avgöra
+om trafiken matchar policyn?
+</p>
+
+<button onclick="toggle('inspection')">
+Visa svar
+</button>
+
+<div id="inspection" class="answer">
+
+<p>
+FortiGate kan bland annat använda source och destination IP-adress
+samt protokoll för att avgöra om trafiken matchar policyn.
+</p>
+
+<p>
+Här arbetar vi huvudsakligen med information från nätverkslagret,
+inte innehållet i någon webbapplikation.
+</p>
+
+<p>
+I en senare TCP-labb kan samma princip utökas med TCP/UDP-portar
+på transportlagret.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">11 // STATEFUL OR STATELESS?</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CHALLENGE 03
+<span class="score">12p</span>
+</div>
+
+<h3>Brandväggen måste förstå trafikflödet</h3>
+
+<p>
+Tänk tillbaka på begreppen stateful och stateless.
+</p>
+
+<div class="console">
+PC-A
+   │
+   │ Echo Request
+   ▼
+PC-B
+
+PC-A
+   ▲
+   │ Echo Reply
+   │
+PC-B
+</div>
+
+<p>
+En <b>stateless</b> packet filter bedömer i princip varje paket
+utifrån sina regelvillkor utan att hålla reda på en etablerad
+TCP-session.
+</p>
+
+<p>
+En <b>stateful</b> brandvägg håller information om trafikflöden
+och sessionsstatus där protokollet har sådan state.
+</p>
+
+<div class="info">
+<b>VIKTIGT:</b><br><br>
+
+ICMP är bra för att demonstrera routing och policyfiltrering,
+men TCP är bättre för att verkligen studera stateful sessions.
+
+TCP har SYN, SYN/ACK, ACK, etablerade sessioner och portar.
+Det gör skillnaden mellan stateful och stateless tydligare.
+</div>
+
+<p>
+Därför använder vi ICMP som introduktion till FortiGate.
+En senare labb kan använda TCP för session inspection.
+</p>
+
+</section>
+
+
+<h2 class="section">12 // WHO BLOCKED IT?</h2>
 
 <section class="task boss">
 
@@ -718,44 +891,105 @@ BOSS FIGHT
 <span class="score">15p</span>
 </div>
 
-<h3>Bygg ett minimalt regelverk</h3>
+<h3>Felsök trafikflödet</h3>
 
-<p>
-Du har följande krav:
-</p>
-
-<div class="box">
-<p>PC-A ska kunna nå PC-B på TCP/443.</p>
-<p>PC-A ska INTE kunna nå andra portar på PC-B.</p>
-<p>PC-B ska INTE få initiera nya anslutningar mot PC-A.</p>
-<p>Returtrafik för PC-A:s HTTPS-session ska fungera.</p>
-</div>
-
-<p>
-Skapa ett så litet och specifikt policyregelverk som möjligt.
-</p>
-
-<p>
-Testa sedan:
-</p>
+<p>En elev rapporterar:</p>
 
 <div class="console">
-PC-A → PC-B:443        EXPECT: PASS
+"Jag kan inte pinga PC-B.
+FortiGate är trasig."
+</div>
 
-PC-A → PC-B:annan port EXPECT: FAIL
+<p>Inte så snabbt.</p>
 
-PC-B → PC-A:new        EXPECT: FAIL
+<p>Trafiken passerar flera komponenter:</p>
 
-PC-B → PC-A:return     EXPECT: PASS
+<div class="console">
+PC-A
+ │
+ ▼
+Windows Defender Firewall
+ │
+ ▼
+Network Interface
+ │
+ ▼
+FortiGate
+ │
+ ▼
+Network Interface
+ │
+ ▼
+Windows Defender Firewall
+ │
+ ▼
+PC-B
 </div>
 
 <p>
-Förklara varför resultatet visar att FortiGate arbetar stateful.
+Ta fram en metod för att avgöra <b>var</b> trafiken stoppas.
+</p>
+
+<p>Ni kan exempelvis kontrollera:</p>
+
+<div class="box">
+
+<div class="check">
+<input type="checkbox">
+<span>Har PC-A rätt IP-adress och nätmask?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Har PC-A rätt default gateway?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Kan PC-A nå sitt FortiGate-interface?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Har PC-B rätt IP och gateway?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Kan PC-B nå sitt FortiGate-interface?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Finns Windows-regeln FortiLab ICMPv4?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Finns rätt FortiGate-policy?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Matchar source/destination rätt nät?</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Är policyn ACCEPT eller DENY?</span>
+</div>
+
+</div>
+
+<p>
+Målet är inte bara att få ping att fungera.
+Målet är att kunna förklara <b>varför</b> det fungerar eller inte fungerar.
 </p>
 
 </section>
 
-<h2 class="section">CLEANUP</h2>
+
+<h2 class="section">13 // CLEANUP</h2>
 
 <section class="task">
 
@@ -763,17 +997,85 @@ Förklara varför resultatet visar att FortiGate arbetar stateful.
 END OF LAB
 </div>
 
-<h3>Återställ labben</h3>
+<h3>Stäng det vi öppnade</h3>
+
+<p>
+Vi stängde aldrig av Windows Defender Firewall.
+Nu tar vi bara bort den specifika regel vi skapade.
+</p>
+
+<div class="notice">
+Kör på både PC-A och PC-B.
+</div>
+
+<div class="command">Remove-NetFirewallRule -DisplayName "FortiLab ICMPv4"</div>
+
+<p>Verifiera:</p>
+
+<div class="command">Get-NetFirewallRule -DisplayName "FortiLab ICMPv4" -ErrorAction SilentlyContinue</div>
+
+<p>
+Om inget resultat visas är labbregeln borttagen.
+</p>
 
 <div class="box">
-<p>• Ta bort policies som skapades under övningen om läraren instruerar detta.</p>
-<p>• Återställ interfacekonfiguration som ändrades.</p>
-<p>• Logga ut från FortiGate.</p>
-<p>• Byt INTE administratörslösenord.</p>
-<p>• Gör INTE factory reset.</p>
+
+<div class="check">
+<input type="checkbox">
+<span>FortiLab ICMP-regeln är borttagen från PC-A.</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>FortiLab ICMP-regeln är borttagen från PC-B.</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Windows Defender Firewall är fortfarande aktiverad.</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>FortiGate-regler återställs enligt lärarens instruktion.</span>
+</div>
+
+<div class="check">
+<input type="checkbox">
+<span>Administratörslösenordet har INTE ändrats.</span>
+</div>
+
 </div>
 
 </section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+LAB COMPLETE
+
+YOU HAVE WORKED WITH:
+
+[+] Physical interfaces
+[+] IPv4 addressing
+[+] Default gateways
+[+] Local firewall traffic
+[+] Forwarded traffic
+[+] Firewall policies
+[+] ICMP filtering
+[+] Packet inspection
+[+] Troubleshooting
+[+] Stateful vs stateless concepts
+
+NEXT:
+TCP + PORT FILTERING + SESSION INSPECTION
+</div>
+
+</section>
+
 
 </main>
 
