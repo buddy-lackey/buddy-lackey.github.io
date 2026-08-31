@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FortiGate Intro | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050b08;
+  --panel:#0a1510;
+  --panel2:#0e1d16;
+  --border:#173a29;
+  --green:#6cff9a;
+  --green2:#2fa85b;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6b6b;
+  --blue:#6cbcff;
+  --orange:#ff9f43;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10291b 0%,transparent 32%),
+    linear-gradient(#050b08,#07110c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.6;
+}
+
+main{
+  width:min(1000px,94%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  color:var(--green);
+  font-size:.8rem;
+  margin-bottom:42px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:10px;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{color:var(--green)}
+
+.hero p{
+  max-width:780px;
+  color:var(--muted);
+}
+
+.prompt{color:var(--green)}
+
+.notice{
+  background:#1c1605;
+  border:1px solid #8d6f12;
+  color:var(--yellow);
+  padding:18px;
+  margin:22px 0;
+}
+
+.section{
+  margin-top:60px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+
+.step{
+  color:var(--green);
+  font-size:.8rem;
+  margin-bottom:8px;
+}
+
+.menu{
+  background:#020503;
+  border:1px solid var(--border);
+  padding:14px;
+  color:#9fffb8;
+  white-space:pre-line;
+}
+
+.path{
+  color:var(--yellow);
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 13px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#10281b;
+}
+
+.answer{
+  display:none;
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px dashed var(--border);
+}
+
+.answer.show{display:block}
+
+.ok{color:var(--green)}
+.warn{color:var(--yellow)}
+.red{color:var(--red)}
+
+@media(max-width:700px){
+  .top{
+    flex-direction:column;
+    gap:10px;
+  }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // FORTINET TRAINING</span>
+  <span>FORTIGATE 40F GUI INTRO</span>
+</div>
+
+<section class="hero">
+  <div class="prompt">$ ./fortigate-intro --mode student</div>
+
+  <h1>LEARN THE <span>GUI.</span></h1>
+
+  <p>
+    Den här sidan är en grundläggande introduktion till FortiGate GUI
+    med fokus på nätverk och trafikfiltrering.
+  </p>
+</section>
+
+<div class="notice">
+  <b>VIKTIGT I LABBMILJÖN</b><br><br>
+  Inloggningsuppgifter finns märkta på brandväggen.<br>
+  Byt INTE administratörslösenord.<br>
+  Gör INTE factory reset.<br>
+  Ändra bara sådant som hör till uppgiften.
+</div>
+
+<h2 class="section">01 // LOGIN & DASHBOARD</h2>
+
+<section class="task">
+  <div class="step">STEP 01</div>
+
+  <h3>Logga in</h3>
+
+  <p>
+    Koppla en dator till ett LAN-interface på FortiGate-enheten.
+  </p>
+
+  <p>
+    Öppna webbläsaren och anslut till den management-IP som är angiven
+    på brandväggen eller av läraren.
+  </p>
+
+  <div class="menu">
+https://&lt;fortigate-ip&gt;
+  </div>
+
+  <p>
+    Webbläsaren kan visa certifikatvarning i labbet.
+    Kontrollera att du ansluter till rätt labbenhet.
+  </p>
+
+  <p>
+    Logga in med credentials som finns märkta på brandväggen.
+  </p>
+</section>
+
+<section class="task">
+  <div class="step">STEP 02</div>
+
+  <h3>Dashboard</h3>
+
+  <p>
+    Dashboard visar bland annat:
+  </p>
+
+  <div class="box">
+    <p>• Hostname</p>
+    <p>• Firmware-version</p>
+    <p>• Systemtid</p>
+    <p>• Uptime</p>
+    <p>• WAN-status</p>
+    <p>• Aktiva administratörer</p>
+  </div>
+
+  <p>
+    I utbildningsmiljön kan FortiGuard-funktioner visa varningar eller
+    sakna licens. Det är inte ett problem för dessa grundövningar.
+  </p>
+</section>
+
+<h2 class="section">02 // NETWORK INTERFACES</h2>
+
+<section class="task">
+  <div class="step">STEP 03</div>
+
+  <h3>Hitta interfaces</h3>
+
+  <p class="path">
+    Network → Interfaces
+  </p>
+
+  <p>
+    Här ser du FortiGate-enhetens portar och logiska interfaces.
+  </p>
+
+  <p>
+    För varje interface bör du kunna hitta:
+  </p>
+
+  <div class="box">
+    <p>• Namn, exempelvis port1 / port2 / internal</p>
+    <p>• IP-adress</p>
+    <p>• Interface role, exempelvis LAN eller WAN</p>
+    <p>• Administrativ status</p>
+    <p>• Fysisk länkstatus</p>
+  </div>
+
+  <button onclick="toggle('iface')">Kontrollfråga</button>
+
+  <div id="iface" class="answer">
+    <p>
+      Vilket interface är din dator ansluten till?
+      Vilken IP-adress har FortiGate på det interfacet?
+    </p>
+  </div>
+</section>
+
+<h2 class="section">03 // ROUTING</h2>
+
+<section class="task">
+  <div class="step">STEP 04</div>
+
+  <h3>Routingtabellen</h3>
+
+  <p>
+    FortiGate måste veta vart trafik ska skickas.
+  </p>
+
+  <p class="path">
+    Network → Static Routes
+  </p>
+
+  <p>
+    Leta efter en default route:
+  </p>
+
+  <div class="menu">
+0.0.0.0/0
+  </div>
+
+  <p>
+    Den används normalt för trafik till nät som inte finns direkt
+    anslutna till brandväggen.
+  </p>
+</section>
+
+<h2 class="section">04 // FIREWALL POLICY</h2>
+
+<section class="task">
+  <div class="step">STEP 05</div>
+
+  <h3>Policy & Objects</h3>
+
+  <p class="path">
+    Policy & Objects → Firewall Policy
+  </p>
+
+  <p>
+    Här finns reglerna som avgör vilken trafik som får passera mellan
+    interfaces eller zoner.
+  </p>
+
+  <div class="box">
+    <p><b>Incoming Interface</b> – var trafiken kommer från</p>
+    <p><b>Outgoing Interface</b> – vart trafiken ska</p>
+    <p><b>Source</b> – källadress</p>
+    <p><b>Destination</b> – destinationsadress</p>
+    <p><b>Service</b> – protokoll/port</p>
+    <p><b>Action</b> – ACCEPT eller DENY</p>
+    <p><b>NAT</b> – om adressöversättning ska användas</p>
+  </div>
+</section>
+
+<section class="task">
+  <div class="step">STEP 06</div>
+
+  <h3>Regelordning</h3>
+
+  <p>
+    FortiGate utvärderar brandväggspolicies uppifrån och ned.
+  </p>
+
+  <div class="menu">
+Policy 1
+Policy 2
+Policy 3
+...
+Implicit deny
+  </div>
+
+  <p>
+    Första matchande policy används.
+  </p>
+
+  <p>
+    Om ingen policy matchar blockeras trafiken normalt av implicit deny.
+  </p>
+</section>
+
+<h2 class="section">05 // SESSIONS</h2>
+
+<section class="task">
+  <div class="step">STEP 07</div>
+
+  <h3>Stateful firewall</h3>
+
+  <p>
+    FortiGate håller normalt reda på aktiva anslutningar i en session table.
+  </p>
+
+  <p>
+    Om en klient initierar en tillåten TCP-session kan brandväggen känna igen
+    returtrafiken som en del av samma session.
+  </p>
+
+  <div class="menu">
+CLIENT → SERVER:443
+        ACCEPT
+
+SERVER:443 → CLIENT
+        existing session
+        ACCEPT
+  </div>
+
+  <p>
+    Detta är kärnan i en stateful firewall.
+  </p>
+</section>
+
+<h2 class="section">06 // LOGS</h2>
+
+<section class="task">
+  <div class="step">STEP 08</div>
+
+  <h3>Verifiera vad som händer</h3>
+
+  <p>
+    När loggning finns aktiverad kan du använda trafikloggar för att se
+    vilken policy som matchade trafiken.
+  </p>
+
+  <p>
+    Exakt meny kan skilja sig beroende på firmware och konfiguration,
+    men leta efter trafik- eller forward traffic-loggar.
+  </p>
+
+  <div class="box">
+    <p>Source IP</p>
+    <p>Destination IP</p>
+    <p>Service / port</p>
+    <p>Action</p>
+    <p>Policy ID</p>
+  </div>
+</section>
+
+<h2 class="section">07 // VAD VI INTE BEHÖVER</h2>
+
+<section class="task">
+  <div class="step">LAB SCOPE</div>
+
+  <h3>Licensoberoende träning</h3>
+
+  <p>
+    För de här labbarna behöver vi inte använda:
+  </p>
+
+  <div class="box">
+    <p>• AntiVirus</p>
+    <p>• Web Filtering</p>
+    <p>• FortiGuard categories</p>
+    <p>• Application Control</p>
+    <p>• IPS-signaturer</p>
+  </div>
+
+  <p>
+    Fokus ligger på klassisk brandväggsfunktion:
+  </p>
+
+  <div class="box">
+    <p>interfaces → routing → policy → state → verifiering</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
