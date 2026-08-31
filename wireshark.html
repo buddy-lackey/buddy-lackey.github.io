@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wireshark Traffic Lab | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050b08;
+  --panel:#0a1510;
+  --panel2:#0e1d16;
+  --border:#173a29;
+  --green:#6cff9a;
+  --green2:#2fa85b;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6b6b;
+  --blue:#6cbcff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+
+  background:
+    radial-gradient(circle at top right,#10291b 0%,transparent 32%),
+    linear-gradient(#050b08,#07110c);
+
+  color:var(--text);
+
+  font-family:"Courier New",monospace;
+
+  line-height:1.6;
+}
+
+main{
+  width:min(1000px,94%);
+  margin:auto;
+
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+
+  color:var(--green);
+
+  font-size:.8rem;
+
+  border-bottom:1px solid var(--border);
+
+  padding-bottom:10px;
+
+  margin-bottom:42px;
+}
+
+.hero h1{
+  margin:0;
+
+  color:white;
+
+  font-size:clamp(2.5rem,8vw,5rem);
+
+  line-height:1;
+}
+
+.hero h1 span{
+  color:var(--green);
+}
+
+.hero p{
+  max-width:760px;
+
+  color:var(--muted);
+}
+
+.prompt{
+  color:var(--green);
+}
+
+.box,
+.task{
+  background:var(--panel);
+
+  border:1px solid var(--border);
+
+  padding:22px;
+
+  margin:24px 0;
+}
+
+.task{
+  border-left:4px solid var(--green2);
+}
+
+.challenge{
+  border-left-color:var(--yellow);
+}
+
+.console{
+  background:#020503;
+
+  border:1px solid #1d3026;
+
+  padding:18px;
+
+  color:#9fffb8;
+
+  white-space:pre-line;
+
+  overflow:auto;
+}
+
+button{
+  font:inherit;
+
+  background:transparent;
+
+  color:var(--green);
+
+  border:1px solid var(--green2);
+
+  padding:12px 18px;
+
+  cursor:pointer;
+
+  margin:5px 5px 5px 0;
+}
+
+button:hover{
+  background:#10281b;
+}
+
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.status{
+  margin-top:18px;
+
+  color:var(--yellow);
+}
+
+.big{
+  font-size:1.2rem;
+}
+
+.marker{
+  color:var(--yellow);
+
+  font-size:1.3rem;
+}
+
+.progress{
+  height:14px;
+
+  background:#08110c;
+
+  border:1px solid var(--border);
+
+  margin:18px 0;
+
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+
+  width:0;
+
+  background:var(--green);
+
+  transition:width .2s;
+}
+
+.filter{
+  display:block;
+
+  background:#020503;
+
+  border:1px solid var(--border);
+
+  padding:12px;
+
+  color:var(--yellow);
+
+  margin:10px 0;
+}
+
+.section{
+  margin-top:60px;
+
+  border-bottom:1px solid var(--border);
+
+  padding-bottom:8px;
+}
+
+.ok{
+  color:var(--green);
+}
+
+.warn{
+  color:var(--yellow);
+}
+
+.red{
+  color:var(--red);
+}
+
+@media(max-width:700px){
+
+  .top{
+    flex-direction:column;
+    gap:10px;
+  }
+
+}
+</style>
+
+</head>
+
+<body>
+
+<main>
+
+<div class="top">
+  <span>BAALSTORM // NETWORK LAB</span>
+  <span>WIRESHARK TRAFFIC GENERATOR</span>
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">
+$ ./traffic-generator --target baalstorm.se
+</div>
+
+<h1>
+FIND THE <span>TRAFFIC.</span>
+</h1>
+
+<p>
+Den här sidan skapar en tydlig burst av HTTPS-trafik mellan din
+webbläsare och Baalstorm.
+
+Starta Wireshark först, börja spela in trafik och tryck sedan på
+knappen nedan.
+</p>
+
+</section>
+
+
+<section class="box">
+
+<h2>LAB STATUS</h2>
+
+<div class="console" id="systemInfo">TARGET: baalstorm.se
+PROTOCOL: HTTPS
+DESTINATION PORT: 443
+STATE: READY</div>
+
+</section>
+
+
+<h2 class="section">
+01 // START CAPTURE
+</h2>
+
+
+<section class="task">
+
+<h3>Steg 1 — Starta Wireshark</h3>
+
+<p>
+Starta Wireshark och välj det nätverksinterface som datorn använder,
+exempelvis Wi-Fi.
+</p>
+
+<p>
+Starta sedan capture.
+</p>
+
+<div class="console">Wireshark
+    ↓
+Wi-Fi / Ethernet
+    ↓
+Start Capture</div>
+
+</section>
+
+
+<h2 class="section">
+02 // GENERATE TRAFFIC
+</h2>
+
+
+<section class="task challenge">
+
+<h3>Skapa en trafikburst</h3>
+
+<p>
+När du trycker på knappen gör webbläsaren ett antal HTTPS-anrop till
+Baalstorm under några sekunder.
+</p>
+
+<p>
+Det gör trafiken betydligt enklare att hitta i Wireshark.
+</p>
+
+
+<p>
+Session:
+<strong class="marker" id="sessionId">NOT STARTED</strong>
+</p>
+
+
+<button id="generateButton">
+GENERATE TRAFFIC
+</button>
+
+<button id="singleButton">
+SINGLE REQUEST
+</button>
+
+
+<div class="progress">
+
+<div
+  class="progress-bar"
+  id="progressBar">
+</div>
+
+</div>
+
+
+<div
+  class="console"
+  id="trafficLog">SYS&gt; Waiting for traffic generation...</div>
+
+
+<div
+  class="status"
+  id="status">
+Ready.
+</div>
+
+</section>
+
+
+<h2 class="section">
+03 // FIND IT IN WIRESHARK
+</h2>
+
+
+<section class="task">
+
+<h3>Första filtret</h3>
+
+<p>
+Börja enkelt. Baalstorm använder HTTPS.
+</p>
+
+<code class="filter">
+tcp.port == 443
+</code>
+
+<p>
+Om webbläsaren använder HTTP/3 kan trafiken i stället gå över UDP:
+</p>
+
+<code class="filter">
+tcp.port == 443 || udp.port == 443
+</code>
+
+</section>
+
+
+<section class="task">
+
+<h3>Hitta trafikbursten</h3>
+
+<p>
+Titta på tidskolumnen i Wireshark.
+</p>
+
+<p>
+När du trycker <b>GENERATE TRAFFIC</b> skickar sidan flera requests på
+kort tid.
+</p>
+
+<div class="console">normal trafik
+.
+.
+.
+████████████████████████  ← BAALSTORM BURST
+████████████████████████
+████████████████████████
+.
+.
+normal trafik</div>
+
+<p>
+Försök hitta gruppen av paket som uppstår exakt när du tryckte på
+knappen.
+</p>
+
+</section>
+
+
+<section class="task">
+
+<h3>Kan du hitta Baalstorm?</h3>
+
+<p>
+Vid en ny TLS-anslutning kan du ibland hitta servernamnet i TLS-handshaken.
+</p>
+
+<code class="filter">
+tls.handshake.extensions_server_name contains "baalstorm"
+</code>
+
+<p>
+Det fungerar inte nödvändigtvis i alla webbläsare eller alla captures,
+bland annat beroende på anslutningsåteranvändning och nyare TLS-teknik.
+</p>
+
+</section>
+
+
+<h2 class="section">
+04 // OSI CHALLENGE
+</h2>
+
+
+<section class="task challenge">
+
+<h3>Vad kan Wireshark se?</h3>
+
+<p>
+När du hittar Baalstorm-trafiken, försök identifiera:
+</p>
+
+<div class="console">Lager 2
+MAC source
+MAC destination
+
+Lager 3
+IP source
+IP destination
+
+Lager 4
+TCP eller UDP
+Source port
+Destination port
+
+Applikation
+TLS / HTTPS</div>
+
+</section>
+
+
+<section class="task challenge">
+
+<h3>Kan du hitta SESSION-ID?</h3>
+
+<p>
+Session-ID:t som sidan genererade var:
+</p>
+
+<p class="marker" id="sessionCopy">
+NOT STARTED
+</p>
+
+<p>
+Försök söka efter texten i Wireshark.
+</p>
+
+<button id="revealButton">
+VARFÖR HITTAR JAG DEN INTE?
+</button>
+
+<div
+  id="tlsAnswer"
+  style="display:none;"
+  class="console">HTTPS använder TLS.
+
+SESSION-ID:t skickas som en del av HTTP-requesten.
+
+HTTP-informationen ligger inne i den krypterade TLS-kommunikationen.
+
+Wireshark kan därför se att din dator kommunicerar med servern,
+IP-adresserna, portarna och mängden trafik...
+
+...men inte automatiskt läsa själva HTTP-requesten i klartext.
+
+Detta är en viktig skillnad mellan:
+
+Lager 3/4-information
+och
+Applikationsdata.</div>
+
+</section>
+
+
+<h2 class="section">
+05 // BRANDVÄGGSFRÅGAN
+</h2>
+
+
+<section class="task challenge">
+
+<h3>Fundera</h3>
+
+<div class="console">CLIENT
+   |
+   | TCP / 443
+   |
+FIREWALL
+   |
+   | ALLOW
+   |
+BAALSTORM</div>
+
+<p class="big">
+Brandväggen ser TCP/443.
+</p>
+
+<p class="big">
+Betyder det automatiskt att trafiken är säker?
+</p>
+
+<button onclick="showFirewallAnswer(false)">
+JA
+</button>
+
+<button onclick="showFirewallAnswer(true)">
+NEJ
+</button>
+
+<div
+  class="status"
+  id="firewallAnswer">
+</div>
+
+</section>
+
+
+</main>
+
+
+<script>
+
+const generateButton =
+  document.getElementById("generateButton");
+
+const singleButton =
+  document.getElementById("singleButton");
+
+const trafficLog =
+  document.getElementById("trafficLog");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+const status =
+  document.getElementById("status");
+
+const sessionElement =
+  document.getElementById("sessionId");
+
+const sessionCopy =
+  document.getElementById("sessionCopy");
+
+const revealButton =
+  document.getElementById("revealButton");
+
+const tlsAnswer =
+  document.getElementById("tlsAnswer");
+
+
+function createSessionId(){
+
+  const random =
+    Math.floor(
+      Math.random() * 90000
+    ) + 10000;
+
+  return "BS-" + random;
+
+}
+
+
+function sleep(ms){
+
+  return new Promise(
+    resolve => setTimeout(resolve,ms)
+  );
+
+}
+
+
+async function sendProbe(session,index){
+
+  /*
+    Vi hämtar sidan igen med en unik query string.
+
+    Cache-busting gör att webbläsaren inte bara
+    använder sin lokala cache.
+
+    URL-parametern ligger inne i HTTPS och kommer
+    därför normalt inte visas i klartext i Wireshark.
+  */
+
+  const url =
+    window.location.pathname
+    + "?probe="
+    + encodeURIComponent(session)
+    + "&packet="
+    + index
+    + "&cache="
+    + Date.now();
+
+
+  try{
+
+    await fetch(
+      url,
+      {
+        method:"GET",
+        cache:"no-store"
+      }
+    );
+
+    return true;
+
+  }
+  catch(error){
+
+    return false;
+
+  }
+
+}
+
+
+async function generateTraffic(){
+
+  generateButton.disabled = true;
+
+  singleButton.disabled = true;
+
+
+  const session =
+    createSessionId();
+
+
+  sessionElement.textContent =
+    session;
+
+  sessionCopy.textContent =
+    session;
+
+
+  trafficLog.textContent =
+    "SYS> SESSION " + session + "\n"
+    + "SYS> Starting HTTPS traffic burst...\n";
+
+
+  status.textContent =
+    "Generating traffic...";
+
+  status.style.color =
+    "var(--yellow)";
+
+
+  const requests = 20;
+
+
+  for(
+    let i=1;
+    i<=requests;
+    i++
+  ){
+
+    trafficLog.textContent +=
+      "HTTPS request "
+      + String(i).padStart(2,"0")
+      + "/"
+      + requests
+      + " -> baalstorm.se\n";
+
+
+    await sendProbe(
+      session,
+      i
+    );
+
+
+    progressBar.style.width =
+      ((i / requests) * 100)
+      + "%";
+
+
+    await sleep(150);
+
+  }
+
+
+  trafficLog.textContent +=
+    "\nSYS> Traffic burst complete.\n"
+    + "SYS> Stop Wireshark capture.\n"
+    + "SYS> Search around this timestamp:\n"
+    + new Date().toLocaleTimeString();
+
+
+  status.textContent =
+    "[+] TRAFFIC GENERATED";
+
+  status.style.color =
+    "var(--green)";
+
+
+  generateButton.disabled =
+    false;
+
+  singleButton.disabled =
+    false;
+
+}
+
+
+async function singleRequest(){
+
+  const session =
+    createSessionId();
+
+
+  sessionElement.textContent =
+    session;
+
+  sessionCopy.textContent =
+    session;
+
+
+  trafficLog.textContent =
+    "SYS> Sending single HTTPS request...\n";
+
+
+  await sendProbe(
+    session,
+    1
+  );
+
+
+  trafficLog.textContent +=
+    "SYS> Request sent at "
+    + new Date().toLocaleTimeString();
+
+
+  status.textContent =
+    "[+] SINGLE REQUEST SENT";
+
+  status.style.color =
+    "var(--green)";
+
+}
+
+
+generateButton.addEventListener(
+  "click",
+  generateTraffic
+);
+
+
+singleButton.addEventListener(
+  "click",
+  singleRequest
+);
+
+
+revealButton.addEventListener(
+  "click",
+  function(){
+
+    if(
+      tlsAnswer.style.display
+      ===
+      "none"
+    ){
+
+      tlsAnswer.style.display =
+        "block";
+
+      revealButton.textContent =
+        "DÖLJ FÖRKLARING";
+
+    }
+    else{
+
+      tlsAnswer.style.display =
+        "none";
+
+      revealButton.textContent =
+        "VARFÖR HITTAR JAG DEN INTE?";
+
+    }
+
+  }
+);
+
+
+function showFirewallAnswer(correct){
+
+  const el =
+    document.getElementById(
+      "firewallAnswer"
+    );
+
+
+  if(correct){
+
+    el.textContent =
+      "[OK] Rätt. Port 443 säger inte vad den krypterade applikationstrafiken faktiskt gör.";
+
+    el.style.color =
+      "var(--green)";
+
+  }
+  else{
+
+    el.textContent =
+      "[FAIL] HTTPS skyddar kommunikationen, men port 443 innebär inte automatiskt att innehållet är legitimt.";
+
+    el.style.color =
+      "var(--red)";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
