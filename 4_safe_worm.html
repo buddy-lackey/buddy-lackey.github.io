@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Safe Worm Lab | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --panel2:#0d1815;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --orange:#ff9f43;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#17251d 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{color:var(--red)}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{
+  font-size:.8rem;
+  color:var(--green);
+}
+
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console,.command{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#9fffb8;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.command{
+  border-left:4px solid var(--green);
+}
+
+.command::before{
+  content:"POWERSHELL >";
+  display:block;
+  color:var(--muted);
+  font-size:.75rem;
+  margin-bottom:10px;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.danger{
+  background:#1b0909;
+  border:1px solid #793030;
+  color:#ff9999;
+  padding:18px;
+  margin:20px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.safe{
+  background:#07150d;
+  border:1px solid #226b3d;
+  border-left:4px solid var(--green);
+  padding:18px;
+  margin:20px 0;
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#10281b;
+}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{
+  display:block;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  background:#07110c;
+  color:var(--green);
+}
+
+.red{color:var(--red)}
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.blue{color:var(--blue)}
+
+@media(max-width:800px){
+  .top{
+    flex-direction:column;
+    gap:8px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<div class="top">
+  <span>BAALSTORM // MALWARE LAB</span>
+  <span>SAFE WORM SIMULATOR</span>
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">$ ./safe-worm --simulate --observe</div>
+
+<h1>BUILD A <span>WORM.</span></h1>
+
+<p>
+I den här labben bygger ni en ofarlig simulering av en datormask.
+Programmet kommer att kopiera sig självt och skapa spår som går
+att analysera — men det får endast arbeta i sin egen labbkatalog.
+</p>
+
+<p>
+Efteråt testar ni Windows Defender med EICAR, en testfil som
+är skapad för att antivirusprogram ska reagera utan att riktig
+skadlig kod används.
+</p>
+
+</section>
+
+
+<div class="danger">
+
+<b>⚠ SAFETY RULES</b><br><br>
+
+Detta är en simulering.<br><br>
+
+Skriptet får INTE:<br>
+
+• använda nätverket<br>
+• kontakta andra datorer<br>
+• skriva i registret<br>
+• använda Startup-mappar<br>
+• skapa Scheduled Tasks<br>
+• kräva administratörsrättigheter<br>
+• modifiera riktiga användarfiler<br>
+• arbeta utanför sin egen labbkatalog
+
+</div>
+
+
+<h2 class="section">00 // WHAT ARE WE SIMULATING?</h2>
+
+<section class="box">
+
+<p>
+En riktig mask kan sprida sig automatiskt från system till system.
+Det tänker vi inte göra här.
+</p>
+
+<p>
+Istället skapar vi tre kataloger som representerar tre datorer:
+</p>
+
+<div class="console">
+C:\Users\...\AppData\Local\Temp\BaalstormSafeWorm\
+
+NODE-A
+NODE-B
+NODE-C
+</div>
+
+<p>
+När vår simulator "sprider sig" kopierar den bara sig själv
+mellan dessa kataloger.
+</p>
+
+<div class="safe">
+
+<b>VIKTIGT:</b><br><br>
+
+NODE-A, NODE-B och NODE-C är bara mappar på samma dator.<br>
+Ingen riktig nätverksspridning sker.
+
+</div>
+
+</section>
+
+
+<h2 class="section">01 // CREATE THE LAB DIRECTORY</h2>
+
+<section class="task">
+
+<div class="tag">
+TASK 01
+<span class="score">5p</span>
+</div>
+
+<h3>Skapa labbmiljön</h3>
+
+<p>Öppna PowerShell och kör:</p>
+
+<div class="command">$Lab = "$env:TEMP\BaalstormSafeWorm"
+
+New-Item -ItemType Directory -Force -Path $Lab
+New-Item -ItemType Directory -Force -Path "$Lab\NODE-A"
+New-Item -ItemType Directory -Force -Path "$Lab\NODE-B"
+New-Item -ItemType Directory -Force -Path "$Lab\NODE-C"
+
+Write-Host "Lab created:"
+Write-Host $Lab</div>
+
+<p>Kontrollera resultatet:</p>
+
+<div class="command">Get-ChildItem "$env:TEMP\BaalstormSafeWorm"</div>
+
+<p>Ni bör se:</p>
+
+<div class="console">
+NODE-A
+NODE-B
+NODE-C
+</div>
+
+</section>
+
+
+<h2 class="section">02 // BUILD THE SAFE WORM</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+TASK 02
+<span class="score">15p</span>
+</div>
+
+<h3>Skapa SafeWorm.ps1</h3>
+
+<p>
+Öppna Notepad och skapa filen:
+</p>
+
+<div class="console">
+SafeWorm.ps1
+</div>
+
+<p>Klistra in följande kod:</p>
+
+<div class="command">$LabRoot = "$env:TEMP\BaalstormSafeWorm"
+
+$Nodes = @(
+    "$LabRoot\NODE-A",
+    "$LabRoot\NODE-B",
+    "$LabRoot\NODE-C"
+)
+
+$LogFile = "$LabRoot\worm.log"
+
+Write-Host ""
+Write-Host "====================================" -ForegroundColor Green
+Write-Host " BAALSTORM SAFE WORM SIMULATOR" -ForegroundColor Green
+Write-Host "====================================" -ForegroundColor Green
+Write-Host ""
+
+if (!(Test-Path $LabRoot)) {
+
+    Write-Host "Lab directory missing."
+    Write-Host "Creating safe environment..."
+
+    New-Item -ItemType Directory -Force -Path $LabRoot | Out-Null
+
+    foreach ($Node in $Nodes) {
+        New-Item -ItemType Directory -Force -Path $Node | Out-Null
+    }
+}
+
+$Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+Add-Content $LogFile "$Timestamp SAFEWORM STARTED"
+
+Write-Host "[1] Discovering simulated nodes..."
+
+Start-Sleep -Milliseconds 700
+
+foreach ($Node in $Nodes) {
+
+    Write-Host "    FOUND: $Node"
+
+    Add-Content $LogFile "$Timestamp NODE_DISCOVERED $Node"
+
+    Start-Sleep -Milliseconds 500
+}
+
+Write-Host ""
+Write-Host "[2] Simulating propagation..."
+
+$SourceCode = @'
+# BAALSTORM SAFE WORM COPY
+#
+# This file is harmless.
+# It does not execute or spread.
+#
+# SIMULATED WORM ARTIFACT
+'@
+
+foreach ($Node in $Nodes) {
+
+    $Target = Join-Path $Node "SafeWorm-Copy.ps1"
+
+    Set-Content -Path $Target -Value $SourceCode
+
+    Write-Host "    COPY -> $Target"
+
+    Add-Content $LogFile "$Timestamp SIMULATED_COPY $Target"
+
+    Start-Sleep -Milliseconds 600
+}
+
+Write-Host ""
+Write-Host "[3] Creating simulated persistence indicators..."
+
+foreach ($Node in $Nodes) {
+
+    $PersistenceFile =
+        Join-Path $Node "SIMULATED_PERSISTENCE.txt"
+
+    Set-Content `
+        -Path $PersistenceFile `
+        -Value "SIMULATION ONLY - no persistence was created."
+
+    Write-Host "    INDICATOR -> $PersistenceFile"
+
+    Add-Content `
+        $LogFile `
+        "$Timestamp SIMULATED_PERSISTENCE $PersistenceFile"
+}
+
+Write-Host ""
+Write-Host "[4] Creating simulated C2 indicators..."
+
+foreach ($Node in $Nodes) {
+
+    $C2File = Join-Path $Node "SIMULATED_C2.txt"
+
+    Set-Content `
+        -Path $C2File `
+        -Value @"
+SIMULATION ONLY
+
+This file represents what a malware analyst
+might observe if malware attempted to contact
+a Command & Control server.
+
+NO NETWORK CONNECTION WAS MADE.
+
+Example fictional destination:
+
+203.0.113.55:443
+"@
+
+    Write-Host "    FAKE C2 -> $C2File"
+
+    Add-Content `
+        $LogFile `
+        "$Timestamp SIMULATED_C2 $C2File"
+}
+
+Write-Host ""
+Write-Host "[5] Simulation complete." -ForegroundColor Green
+Write-Host ""
+
+Write-Host "Artifacts:"
+Write-Host $LabRoot
+
+Write-Host ""
+Write-Host "Log:"
+Write-Host $LogFile
+
+Write-Host ""
+Write-Host "NO NETWORK TRAFFIC WAS GENERATED." -ForegroundColor Yellow
+Write-Host "NO SYSTEM PERSISTENCE WAS CREATED." -ForegroundColor Yellow
+Write-Host "NO REAL USER FILES WERE MODIFIED." -ForegroundColor Yellow</div>
+
+<div class="safe">
+
+Skriptet använder endast:
+
+<code>$env:TEMP\BaalstormSafeWorm</code>
+
+Det simulerar beteenden genom att skapa textfiler och kopior
+inne i labbkatalogen.
+
+</div>
+
+</section>
+
+
+<h2 class="section">03 // RUN THE WORM</h2>
+
+<section class="task">
+
+<div class="tag">
+TASK 03
+<span class="score">10p</span>
+</div>
+
+<h3>Kör simulatorn</h3>
+
+<p>Gå till katalogen där ni sparade skriptet.</p>
+
+<p>Exempel:</p>
+
+<div class="command">cd $HOME\Downloads</div>
+
+<p>Kör:</p>
+
+<div class="command">.\SafeWorm.ps1</div>
+
+<div class="info">
+Om PowerShell blockerar filen därför att den markerats som nedladdad,
+be läraren kontrollera filen innan ni gör något annat.
+</div>
+
+<p>Ni bör se ungefär:</p>
+
+<div class="console">
+BAALSTORM SAFE WORM SIMULATOR
+
+[1] Discovering simulated nodes...
+
+FOUND: NODE-A
+FOUND: NODE-B
+FOUND: NODE-C
+
+[2] Simulating propagation...
+
+COPY -> NODE-A\SafeWorm-Copy.ps1
+COPY -> NODE-B\SafeWorm-Copy.ps1
+COPY -> NODE-C\SafeWorm-Copy.ps1
+
+[3] Creating simulated persistence indicators...
+
+[4] Creating simulated C2 indicators...
+
+[5] Simulation complete.
+
+NO NETWORK TRAFFIC WAS GENERATED.
+NO SYSTEM PERSISTENCE WAS CREATED.
+</div>
+
+</section>
+
+
+<h2 class="section">04 // INVESTIGATE THE INFECTION</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+FORENSICS
+<span class="score">15p</span>
+</div>
+
+<h3>Vad gjorde programmet?</h3>
+
+<p>Undersök katalogen:</p>
+
+<div class="command">Get-ChildItem "$env:TEMP\BaalstormSafeWorm" -Recurse</div>
+
+<p>Läs loggen:</p>
+
+<div class="command">Get-Content "$env:TEMP\BaalstormSafeWorm\worm.log"</div>
+
+<p>Besvara:</p>
+
+<div class="box">
+Hur många simulerade hosts hittades? __________________<br><br>
+
+Hur många kopior skapades? ___________________________<br><br>
+
+Vilken fil representerar persistence? _________________<br><br>
+
+Vilken fil representerar C2? _________________________<br><br>
+
+Gjorde programmet någon riktig nätverksanslutning? _____
+</div>
+
+</section>
+
+
+<h2 class="section">05 // HASH THE ARTIFACTS</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+FORENSICS
+<span class="score">10p</span>
+</div>
+
+<h3>Digitala fingeravtryck</h3>
+
+<p>Beräkna SHA256 för en av kopiorna:</p>
+
+<div class="command">Get-FileHash "$env:TEMP\BaalstormSafeWorm\NODE-A\SafeWorm-Copy.ps1" -Algorithm SHA256</div>
+
+<p>Gör samma sak för NODE-B:</p>
+
+<div class="command">Get-FileHash "$env:TEMP\BaalstormSafeWorm\NODE-B\SafeWorm-Copy.ps1" -Algorithm SHA256</div>
+
+<p>Jämför hashvärdena.</p>
+
+<button onclick="toggle('hash')">
+Vad borde ni se?
+</button>
+
+<div id="hash" class="answer">
+
+<p>
+Eftersom filerna innehåller samma data bör de få samma hash.
+</p>
+
+<p>
+Det illustrerar varför hashvärden kan användas som ett
+digitalt fingeravtryck för filer.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">06 // MALWARE BEHAVIOR</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+ANALYSIS
+<span class="score">15p</span>
+</div>
+
+<h3>Vad hade varit farligt i en riktig mask?</h3>
+
+<p>Simulatorn gjorde följande:</p>
+
+<div class="console">
+DISCOVERY
+
+SELF-COPY
+
+PERSISTENCE SIMULATION
+
+C2 SIMULATION
+
+LOGGING
+</div>
+
+<p>
+Vilka av dessa beteenden skulle kunna vara misstänkta
+om de utfördes av ett okänt program på riktigt?
+</p>
+
+<button onclick="toggle('behavior')">
+Visa diskussionsstöd
+</button>
+
+<div id="behavior" class="answer">
+
+<p>
+Självkopiering kan indikera spridningsförsök.
+</p>
+
+<p>
+Persistence-försök kan innebära att ett program försöker
+överleva omstart eller inloggning.
+</p>
+
+<p>
+Kontakt med en extern C2-server är också ett klassiskt
+beteende som endpoint- och nätverkssäkerhet kan reagera på.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">07 // CAN DEFENDER DETECT IT?</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+DEFENDER
+<span class="score">10p</span>
+</div>
+
+<h3>Kommer SafeWorm att blockeras?</h3>
+
+<p>
+Kanske inte.
+</p>
+
+<p>
+SafeWorm gör medvetet väldigt lite som är farligt.
+Det skriver bara filer i en labbkatalog.
+</p>
+
+<div class="info">
+
+Det är viktigt:
+
+Vi försöker INTE göra skriptet mer malware-likt bara för att lura
+fram en Defender-varning.
+
+Istället använder vi ett officiellt antivirus-test.
+
+</div>
+
+</section>
+
+
+<h2 class="section">08 // EICAR TEST</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+ANTIMALWARE TEST
+<span class="score">20p</span>
+</div>
+
+<h3>Kan vi få Defender att reagera säkert?</h3>
+
+<p>
+Ja.
+</p>
+
+<p>
+EICAR är en standardiserad testfil som är avsedd för
+att kontrollera antivirusprogram.
+</p>
+
+<div class="safe">
+
+EICAR är inte ett riktigt virus.
+
+Testfilen är skapad för att antivirusprodukter ska
+identifiera den som om den vore skadlig.
+
+</div>
+
+<p>Gå till den officiella EICAR-sidan:</p>
+
+<div class="console">
+https://www.eicar.org/download-anti-malware-testfile/
+</div>
+
+<p>
+Försök ladda ner standardtestfilen.
+</p>
+
+<p>
+Windows Defender kan reagera redan i webbläsaren,
+vid nedladdningen eller när filen skrivs till disk.
+</p>
+
+<div class="box">
+Vad hände?<br><br>
+
+[ ] Webbläsaren blockerade filen<br><br>
+
+[ ] Defender blockerade filen<br><br>
+
+[ ] Filen skapades och sattes sedan i karantän<br><br>
+
+[ ] En säkerhetsnotifikation visades<br><br>
+
+[ ] Något annat
+</div>
+
+</section>
+
+
+<h2 class="section">09 // WINDOWS SECURITY</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INCIDENT ANALYSIS
+<span class="score">15p</span>
+</div>
+
+<h3>Undersök Defender</h3>
+
+<p>Öppna:</p>
+
+<div class="console">
+Windows Security
+
+        ↓
+
+Virus & threat protection
+
+        ↓
+
+Protection history
+</div>
+
+<p>Kan ni hitta EICAR-detektionen?</p>
+
+<div class="box">
+Threat name: ___________________________<br><br>
+
+Time: __________________________________<br><br>
+
+Action: ________________________________<br><br>
+
+Quarantine / Block / Remove: ____________
+</div>
+
+</section>
+
+
+<h2 class="section">10 // AV VS EDR</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+SECURITY THINKING
+<span class="score">15p</span>
+</div>
+
+<h3>Två olika sätt att upptäcka hot</h3>
+
+<div class="console">
+EICAR
+
+KNOWN SIGNATURE
+      |
+      v
+ANTIVIRUS
+
+
+UNKNOWN PROGRAM
+
+SUSPICIOUS BEHAVIOR
+      |
+      v
+EDR / BEHAVIOR ANALYSIS
+</div>
+
+<p>
+Vad är skillnaden mellan dessa två typer av detektion?
+</p>
+
+<button onclick="toggle('avedr')">
+Visa förklaring
+</button>
+
+<div id="avedr" class="answer">
+
+<p>
+EICAR illustrerar signaturbaserad detektion.
+Antiviruset känner igen ett känt mönster.
+</p>
+
+<p>
+EDR kan istället reagera på vad ett program gör,
+även om själva filen inte matchar en känd malware-signatur.
+</p>
+
+<p>
+Moderna endpoint-lösningar kombinerar ofta båda metoderna.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">11 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">
+MALWARE BOSS
+<span class="score">30p</span>
+</div>
+
+<h3>Ni är SOC-analytiker</h3>
+
+<div class="console">
+HOST:
+BAALSTORM-PC-04
+
+14:01
+Unknown PowerShell script executed
+
+14:01
+Several new files created
+
+14:02
+Three copies of similar code discovered
+
+14:02
+Persistence indicator discovered
+
+14:03
+C2 indicator discovered
+
+NETWORK LOG:
+No external connection observed
+
+SYSTEM CHANGES:
+No registry changes
+No scheduled tasks
+No startup modification
+</div>
+
+<p>Besvara:</p>
+
+<div class="box">
+1. Vilka beteenden liknar en mask?<br><br>
+
+2. Vilka saker tyder på persistence?<br><br>
+
+3. Finns bevis för riktig C2-kommunikation?<br><br>
+
+4. Finns bevis för riktig nätverksspridning?<br><br>
+
+5. Vilka filer skulle kunna användas som IoC?<br><br>
+
+6. Vad skulle ni kontrollera härnäst?
+</div>
+
+<button onclick="toggle('boss')">
+Visa analys
+</button>
+
+<div id="boss" class="answer">
+
+<p>
+Självkopieringen liknar maskbeteende.
+</p>
+
+<p>
+Persistence-filen representerar ett möjligt persistence-försök,
+men i denna labb skapas ingen riktig persistence.
+</p>
+
+<p>
+C2-filen är endast en indikator i simulatorn.
+Nätverksloggen visar att ingen riktig anslutning gjordes.
+</p>
+
+<p>
+Hashvärden, filnamn, sökvägar och logghändelser skulle
+kunna användas som IoC:er i en riktig incident.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">12 // CLEANUP</h2>
+
+<section class="task">
+
+<div class="tag">
+END OF LAB
+</div>
+
+<h3>Ta bort simulatorn</h3>
+
+<p>Ta bort hela labbkatalogen:</p>
+
+<div class="command">Remove-Item "$env:TEMP\BaalstormSafeWorm" -Recurse -Force</div>
+
+<p>Verifiera:</p>
+
+<div class="command">Test-Path "$env:TEMP\BaalstormSafeWorm"</div>
+
+<p>Förväntat:</p>
+
+<div class="console">
+False
+</div>
+
+<div class="safe">
+
+Inga ändringar behöver återställas i registret,
+Windows Firewall eller operativsystemet eftersom
+simulatorn aldrig ändrade dessa.
+
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+SAFE WORM LAB COMPLETE
+
+[+] Malware behavior
+[+] Worm propagation concept
+[+] Self-copy
+[+] Simulated persistence
+[+] Simulated C2
+[+] Artifact analysis
+[+] SHA256 hashing
+[+] Indicators of compromise
+[+] Signature detection
+[+] Windows Defender
+[+] EICAR
+[+] AV vs EDR
+[+] Incident analysis
+
+REAL MALWARE EXECUTED:
+
+NO
+</div>
+
+</section>
+
+
+</main>
+
+
+<script>
+
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+
+</script>
+
+</body>
+</html>
