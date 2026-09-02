@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Parrot OS Bootcamp | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --panel2:#0d1815;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --orange:#ff9f43;
+  --cyan:#55e6e6;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10271c 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{color:var(--cyan)}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console,.command{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#a2ffba;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.command{
+  border-left:4px solid var(--green);
+}
+
+.command::before{
+  content:"student@parrot:~$";
+  display:block;
+  color:var(--cyan);
+  font-size:.8rem;
+  margin-bottom:8px;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.safe{
+  background:#07150d;
+  border:1px solid #226b3d;
+  border-left:4px solid var(--green);
+  padding:18px;
+  margin:20px 0;
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+button:hover{background:#10281b}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{display:block}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  background:#07110c;
+  color:var(--green);
+}
+
+kbd{
+  background:#111;
+  border:1px solid #444;
+  padding:2px 6px;
+  border-radius:3px;
+  color:white;
+}
+
+code{color:#9fffb8}
+
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+.blue{color:var(--blue)}
+.cyan{color:var(--cyan)}
+
+@media(max-width:800px){
+  .top{flex-direction:column;gap:8px}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // LINUX TRAINING</span>
+  <span>PARROT OS BOOTCAMP</span>
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">$ ./parrot-bootcamp --beginner</div>
+
+<h1>WELCOME TO <span>LINUX.</span></h1>
+
+<p>
+Du behöver inte vara Linux-expert för att arbeta med IT-säkerhet.
+Men du behöver kunna hitta runt, hantera filer, läsa information
+och förstå vad du säger åt datorn att göra.
+</p>
+
+<p>
+I den här övningen lär du dig grunderna genom att faktiskt använda
+terminalen i Parrot OS.
+</p>
+
+</section>
+
+
+<div class="notice">
+<b>VIKTIGT</b><br><br>
+
+Skriv kommandona själv.<br>
+Kopiera inte bara allt utan att läsa vad kommandot gör.<br><br>
+
+Linux gör ofta exakt vad du säger åt det att göra.
+Det betyder inte alltid att det var vad du tänkte göra.
+</div>
+
+
+<h2 class="section">00 // THE TERMINAL</h2>
+
+<section class="box">
+
+<h3>Vad är terminalen?</h3>
+
+<p>
+I ett grafiskt gränssnitt styr du datorn genom att klicka på
+ikoner och menyer.
+</p>
+
+<p>
+I terminalen skriver du istället kommandon.
+</p>
+
+<div class="console">student@parrot:~$</div>
+
+<p>Prompten innehåller information.</p>
+
+<div class="console">student @ parrot : ~ $
+
+   │       │     │  │
+   │       │     │  └── terminalen väntar på ett kommando
+   │       │     │
+   │       │     └───── aktuell katalog
+   │       │
+   │       └─────────── datorns namn
+   │
+   └─────────────────── användaren</div>
+
+<div class="info">
+Tecknet <b>~</b> betyder din hemkatalog.
+</div>
+
+</section>
+
+
+<h2 class="section">01 // WHO AM I?</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">5p</span></div>
+
+<h3>Fråga Linux vem du är</h3>
+
+<p>Kör:</p>
+
+<div class="command">whoami</div>
+
+<p>Kommandot visar vilken användare du är inloggad som.</p>
+
+<p>Testa sedan:</p>
+
+<div class="command">hostname</div>
+
+<p>Och:</p>
+
+<div class="command">uname -a</div>
+
+<div class="box">
+Min användare: ______________________<br><br>
+Datorns hostname: ___________________<br><br>
+Vilket operativsystem/kernel ser du? ___________________
+</div>
+
+</section>
+
+
+<h2 class="section">02 // WHERE AM I?</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">5p</span></div>
+
+<h3>pwd — Print Working Directory</h3>
+
+<div class="command">pwd</div>
+
+<p>Exempel:</p>
+
+<div class="console">/home/student</div>
+
+<p>
+Linux har inte enhetsbokstäver som <code>C:\</code> på samma sätt
+som Windows. Filsystemet utgår istället från:
+</p>
+
+<div class="console">/</div>
+
+<p>Det kallas root-katalogen.</p>
+
+</section>
+
+
+<h2 class="section">03 // WHAT IS HERE?</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">5p</span></div>
+
+<h3>ls — lista filer</h3>
+
+<div class="command">ls</div>
+
+<p>Testa sedan:</p>
+
+<div class="command">ls -l</div>
+
+<p>Och:</p>
+
+<div class="command">ls -la</div>
+
+<button onclick="toggle('ls')">Vad är skillnaden?</button>
+
+<div id="ls" class="answer">
+
+<p><code>ls</code> visar filer och kataloger.</p>
+
+<p><code>ls -l</code> visar mer information.</p>
+
+<p>
+<code>ls -la</code> visar dessutom dolda filer,
+vilka i Linux normalt börjar med punkt.
+</p>
+
+<div class="console">.bashrc
+.profile
+.config</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">04 // MOVE AROUND</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">8p</span></div>
+
+<h3>cd — Change Directory</h3>
+
+<p>Gå till Documents:</p>
+
+<div class="command">cd ~/Documents</div>
+
+<p>Kontrollera:</p>
+
+<div class="command">pwd</div>
+
+<p>Gå tillbaka en katalog:</p>
+
+<div class="command">cd ..</div>
+
+<p>Gå direkt hem:</p>
+
+<div class="command">cd ~</div>
+
+<p>Eller bara:</p>
+
+<div class="command">cd</div>
+
+<div class="info">
+<code>.</code> betyder aktuell katalog.<br>
+<code>..</code> betyder katalogen ovanför.<br>
+<code>~</code> betyder din hemkatalog.
+</div>
+
+</section>
+
+
+<h2 class="section">05 // TAB IS YOUR FRIEND</h2>
+
+<section class="task">
+
+<div class="tag">SURVIVAL SKILL <span class="score">5p</span></div>
+
+<h3>Tab completion</h3>
+
+<p>Skriv:</p>
+
+<div class="console">cd ~/Doc</div>
+
+<p>Tryck sedan <kbd>TAB</kbd>.</p>
+
+<p>
+Terminalen kan automatiskt komplettera fil- och katalognamn.
+</p>
+
+<div class="safe">
+Använd TAB completion. Det sparar tid och minskar stavfel.
+</div>
+
+<p>
+Testa även <kbd>↑</kbd> och <kbd>↓</kbd> för att bläddra bland
+tidigare kommandon.
+</p>
+
+</section>
+
+
+<h2 class="section">06 // CREATE YOUR LAB</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">10p</span></div>
+
+<h3>mkdir — skapa katalog</h3>
+
+<p>Gå hem:</p>
+
+<div class="command">cd ~</div>
+
+<p>Skapa en arbetskatalog:</p>
+
+<div class="command">mkdir baalstorm_lab</div>
+
+<p>Gå in i den:</p>
+
+<div class="command">cd baalstorm_lab</div>
+
+<p>Verifiera:</p>
+
+<div class="command">pwd</div>
+
+</section>
+
+
+<h2 class="section">07 // CREATE FILES</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">10p</span></div>
+
+<h3>touch och echo</h3>
+
+<p>Skapa en tom fil:</p>
+
+<div class="command">touch notes.txt</div>
+
+<p>Kontrollera:</p>
+
+<div class="command">ls -l</div>
+
+<p>Skriv text till en annan fil:</p>
+
+<div class="command">echo "Baalstorm Linux Lab" > mission.txt</div>
+
+<p>Läs filen:</p>
+
+<div class="command">cat mission.txt</div>
+
+<div class="info">
+Tecknet <code>&gt;</code> skickar resultatet till en fil.
+</div>
+
+</section>
+
+
+<h2 class="section">08 // APPEND</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">10p</span></div>
+
+<h3>&gt; eller &gt;&gt; ?</h3>
+
+<p>Kör:</p>
+
+<div class="command">echo "Line 1" > log.txt
+echo "Line 2" >> log.txt
+echo "Line 3" >> log.txt</div>
+
+<p>Läs filen:</p>
+
+<div class="command">cat log.txt</div>
+
+<button onclick="toggle('redirect')">Förklara</button>
+
+<div id="redirect" class="answer">
+
+<p>
+<code>&gt;</code> skriver till filen och ersätter tidigare innehåll.
+</p>
+
+<p>
+<code>&gt;&gt;</code> lägger till information sist i filen.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">09 // COPY, MOVE, DELETE</h2>
+
+<section class="task">
+
+<div class="tag">FILE OPS <span class="score">10p</span></div>
+
+<h3>cp / mv / rm</h3>
+
+<p>Kopiera:</p>
+
+<div class="command">cp mission.txt mission_backup.txt</div>
+
+<p>Byt namn:</p>
+
+<div class="command">mv mission_backup.txt secret.txt</div>
+
+<p>Kontrollera:</p>
+
+<div class="command">ls -l</div>
+
+<p>Skapa en testfil:</p>
+
+<div class="command">touch delete_me.txt</div>
+
+<p>Ta bort den:</p>
+
+<div class="command">rm delete_me.txt</div>
+
+<div class="notice">
+<b>rm betyder REMOVE.</b><br><br>
+Terminalen har normalt ingen papperskorg för filer som tas bort
+med <code>rm</code>. Kontrollera därför kommandot innan du trycker Enter.
+</div>
+
+</section>
+
+
+<h2 class="section">10 // READ FILES</h2>
+
+<section class="task">
+
+<div class="tag">FILE OPS <span class="score">8p</span></div>
+
+<h3>cat, less, head och tail</h3>
+
+<p>Skapa lite data:</p>
+
+<div class="command">seq 1 100 > numbers.txt</div>
+
+<p>Testa:</p>
+
+<div class="command">head numbers.txt</div>
+
+<div class="command">tail numbers.txt</div>
+
+<div class="command">less numbers.txt</div>
+
+<p>
+I <code>less</code> kan du scrolla och trycka <kbd>q</kbd>
+för att avsluta.
+</p>
+
+</section>
+
+
+<h2 class="section">11 // FIND THE NEEDLE</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">12p</span></div>
+
+<h3>grep — sök i text</h3>
+
+<p>Skapa en logg:</p>
+
+<div class="command">echo "INFO User login" > security.log
+echo "INFO File opened" >> security.log
+echo "WARNING Failed login" >> security.log
+echo "INFO User logout" >> security.log
+echo "WARNING Failed login" >> security.log</div>
+
+<p>Visa bara WARNING:</p>
+
+<div class="command">grep "WARNING" security.log</div>
+
+<p>Räkna hur många:</p>
+
+<div class="command">grep -c "WARNING" security.log</div>
+
+<div class="info">
+Att kunna söka i text och loggar är en av de viktigaste
+Linux-färdigheterna för en säkerhetsanalytiker.
+</div>
+
+</section>
+
+
+<h2 class="section">12 // PIPES</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">15p</span></div>
+
+<h3>| — koppla ihop kommandon</h3>
+
+<p>Testa:</p>
+
+<div class="command">cat security.log | grep "WARNING"</div>
+
+<p>
+Tecknet <code>|</code> kallas pipe.
+Resultatet från ett kommando skickas till nästa.
+</p>
+
+<div class="console">COMMAND A
+   |
+   | OUTPUT
+   v
+COMMAND B</div>
+
+<p>Testa:</p>
+
+<div class="command">ls -la | less</div>
+
+<p>Och:</p>
+
+<div class="command">cat security.log | grep "WARNING" | wc -l</div>
+
+<button onclick="toggle('pipe')">Vad händer?</button>
+
+<div id="pipe" class="answer">
+
+<p>
+Först läses filen.
+Sedan filtrerar <code>grep</code> fram WARNING.
+Till sist räknar <code>wc -l</code> antalet rader.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">13 // FIND FILES</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">10p</span></div>
+
+<h3>find</h3>
+
+<p>Skapa några filer:</p>
+
+<div class="command">touch report.txt
+touch passwords.old
+touch image.jpg</div>
+
+<p>Hitta alla txt-filer:</p>
+
+<div class="command">find . -name "*.txt"</div>
+
+<p>Hitta filen passwords.old:</p>
+
+<div class="command">find . -name "passwords.old"</div>
+
+<div class="info">
+Punkten efter <code>find</code> betyder:
+börja söka från katalogen där jag befinner mig.
+</div>
+
+</section>
+
+
+<h2 class="section">14 // PERMISSIONS</h2>
+
+<section class="task challenge">
+
+<div class="tag">SECURITY <span class="score">15p</span></div>
+
+<h3>Vem får göra vad?</h3>
+
+<p>Kör:</p>
+
+<div class="command">ls -l</div>
+
+<p>Du kan exempelvis se:</p>
+
+<div class="console">-rw-r--r-- 1 student student 42 mission.txt</div>
+
+<p>Den första delen beskriver rättigheter.</p>
+
+<div class="console">- rw- r-- r--
+  │    │   │
+  │    │   └── others
+  │    └────── group
+  └─────────── owner
+
+r = read
+w = write
+x = execute</div>
+
+<p>Skapa ett enkelt shellscript:</p>
+
+<div class="command">echo '#!/bin/bash' > hello.sh
+echo 'echo "Hello from Baalstorm"' >> hello.sh</div>
+
+<p>Kontrollera rättigheterna:</p>
+
+<div class="command">ls -l hello.sh</div>
+
+<p>Gör filen körbar:</p>
+
+<div class="command">chmod +x hello.sh</div>
+
+<p>Kör:</p>
+
+<div class="command">./hello.sh</div>
+
+</section>
+
+
+<h2 class="section">15 // ROOT & SUDO</h2>
+
+<section class="task">
+
+<div class="tag">SECURITY <span class="score">10p</span></div>
+
+<h3>Med stora krafter...</h3>
+
+<p>
+Linux har en superuser som heter <code>root</code>.
+Root kan göra nästan vad som helst på systemet.
+</p>
+
+<p>
+Kommandot <code>sudo</code> används för att köra ett kommando
+med förhöjda rättigheter när användaren har tillstånd.
+</p>
+
+<div class="console">sudo COMMAND</div>
+
+<div class="notice">
+Använd inte <code>sudo</code> bara för att ett kommando inte fungerar.
+Förstå först varför kommandot behöver högre rättigheter.
+</div>
+
+<button onclick="toggle('sudo')">Vilken säkerhetsprincip?</button>
+
+<div id="sudo" class="answer">
+
+<p><b>Least privilege.</b></p>
+
+<p>
+Arbeta med vanliga användarrättigheter och använd högre
+behörighet endast när den faktiskt behövs.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">16 // PROCESSES</h2>
+
+<section class="task challenge">
+
+<div class="tag">SYSTEM <span class="score">10p</span></div>
+
+<h3>Vad körs?</h3>
+
+<div class="command">ps</div>
+
+<p>Visa fler processer:</p>
+
+<div class="command">ps aux</div>
+
+<p>Filtrera:</p>
+
+<div class="command">ps aux | grep firefox</div>
+
+<p>Testa även:</p>
+
+<div class="command">top</div>
+
+<p>Avsluta <code>top</code> med <kbd>q</kbd>.</p>
+
+</section>
+
+
+<h2 class="section">17 // NETWORK</h2>
+
+<section class="task challenge">
+
+<div class="tag">NETWORK <span class="score">15p</span></div>
+
+<h3>Vilken IP-adress har jag?</h3>
+
+<div class="command">ip addr</div>
+
+<p>Kortare variant:</p>
+
+<div class="command">ip a</div>
+
+<p>Visa routingtabellen:</p>
+
+<div class="command">ip route</div>
+
+<div class="box">
+Min IPv4-adress: ______________________<br><br>
+Mitt subnet: __________________________<br><br>
+Default gateway: ______________________<br><br>
+Mitt interface: _______________________
+</div>
+
+</section>
+
+
+<h2 class="section">18 // TEST THE NETWORK</h2>
+
+<section class="task challenge">
+
+<div class="tag">NETWORK <span class="score">10p</span></div>
+
+<h3>Ping</h3>
+
+<p>Testa din gateway med:</p>
+
+<div class="console">ping &lt;DIN-GATEWAY&gt;</div>
+
+<p>Exempel:</p>
+
+<div class="command">ping -c 4 192.168.1.1</div>
+
+<p>
+<code>-c 4</code> betyder att fyra ICMP Echo Requests skickas.
+</p>
+
+<p>Utan <code>-c</code> fortsätter ping tills du trycker:</p>
+
+<div class="console">CTRL + C</div>
+
+</section>
+
+
+<h2 class="section">19 // DNS</h2>
+
+<section class="task challenge">
+
+<div class="tag">NETWORK <span class="score">10p</span></div>
+
+<h3>Namn → IP-adress</h3>
+
+<p>Testa:</p>
+
+<div class="command">getent hosts baalstorm.se</div>
+
+<p>Om <code>dig</code> finns installerat kan du även testa:</p>
+
+<div class="command">dig baalstorm.se</div>
+
+<p>Fundera:</p>
+
+<div class="box">
+Vad gör DNS?<br><br>
+_____________________________________________________<br><br>
+Vilken IP-adress fick du för baalstorm.se?<br><br>
+_____________________________________________________
+</div>
+
+</section>
+
+
+<h2 class="section">20 // CONNECTIONS</h2>
+
+<section class="task challenge">
+
+<div class="tag">SECURITY <span class="score">15p</span></div>
+
+<h3>Vilka portar används?</h3>
+
+<p>Kör:</p>
+
+<div class="command">ss -tuln</div>
+
+<p>Flaggorna betyder:</p>
+
+<div class="console">t = TCP
+u = UDP
+l = listening
+n = visa numeriska adresser/portar</div>
+
+<p>
+Här kan du se vilka TCP- och UDP-portar som lyssnar på datorn.
+</p>
+
+<button onclick="toggle('ports')">Varför är detta intressant?</button>
+
+<div id="ports" class="answer">
+
+<p>
+En lyssnande tjänst innebär att ett program väntar på
+nätverkskommunikation.
+</p>
+
+<p>
+För en säkerhetsanalytiker är det relevant att veta vilka tjänster
+som är exponerade och om de faktiskt behövs.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">21 // MAN PAGES</h2>
+
+<section class="task">
+
+<div class="tag">SURVIVAL SKILL <span class="score">10p</span></div>
+
+<h3>Du behöver inte memorera allt</h3>
+
+<p>Testa:</p>
+
+<div class="command">man ls</div>
+
+<p>Avsluta med:</p>
+
+<div class="console">q</div>
+
+<p>Många kommandon stöder även:</p>
+
+<div class="command">ls --help</div>
+
+<div class="safe">
+En bra Linux-användare är inte någon som memorerat alla kommandon.
+Det är någon som kan ta reda på hur ett kommando fungerar.
+</div>
+
+</section>
+
+
+<h2 class="section">22 // MINI CHALLENGE</h2>
+
+<section class="task challenge">
+
+<div class="tag">CHALLENGE <span class="score">20p</span></div>
+
+<h3>Ingen copy/paste nu</h3>
+
+<p>Utför följande utan att öppna filhanteraren:</p>
+
+<div class="box">
+1. Gå till din hemkatalog.<br><br>
+
+2. Skapa katalogen <code>mission</code>.<br><br>
+
+3. Gå in i mission.<br><br>
+
+4. Skapa filen <code>users.txt</code>.<br><br>
+
+5. Lägg in följande tre rader:<br><br>
+
+alice<br>
+bob<br>
+charlie<br><br>
+
+6. Visa filens innehåll.<br><br>
+
+7. Kopiera den till <code>users_backup.txt</code>.<br><br>
+
+8. Kontrollera att båda filerna finns.
+</div>
+
+<button onclick="toggle('mini')">Visa lösning</button>
+
+<div id="mini" class="answer">
+
+<div class="console">cd ~
+
+mkdir mission
+
+cd mission
+
+echo "alice" > users.txt
+
+echo "bob" >> users.txt
+
+echo "charlie" >> users.txt
+
+cat users.txt
+
+cp users.txt users_backup.txt
+
+ls -l</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">23 // SECURITY LOG CHALLENGE</h2>
+
+<section class="task challenge">
+
+<div class="tag">CHALLENGE <span class="score">25p</span></div>
+
+<h3>Hitta attacken</h3>
+
+<p>Skapa loggfilen:</p>
+
+<div class="command">cat > auth.log << 'EOF'
+10:01 LOGIN alice SUCCESS
+10:02 LOGIN bob SUCCESS
+10:03 LOGIN admin FAILED
+10:03 LOGIN admin FAILED
+10:04 LOGIN admin FAILED
+10:05 LOGIN charlie SUCCESS
+10:06 LOGIN root FAILED
+10:07 LOGIN admin FAILED
+10:08 LOGIN alice SUCCESS
+EOF</div>
+
+<p>
+Nu ska du ta reda på hur många misslyckade inloggningar som finns.
+</p>
+
+<p>
+Försök lösa det med <code>grep</code>, pipe och <code>wc</code>.
+</p>
+
+<button onclick="toggle('logchallenge')">Visa lösning</button>
+
+<div id="logchallenge" class="answer">
+
+<div class="command">grep "FAILED" auth.log | wc -l</div>
+
+<p>Resultat:</p>
+
+<div class="console">5</div>
+
+<p>Visa endast misslyckade försök för admin:</p>
+
+<div class="command">grep "admin" auth.log | grep "FAILED"</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">24 // TERMINAL BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">BOSS <span class="score">40p</span></div>
+
+<h3>Operation LOST FLAG</h3>
+
+<div class="console">MISSION BRIEFING
+
+En fil har gömts någonstans i:
+
+~/baalstorm_boss/
+
+Du får INTE använda den grafiska filhanteraren.
+
+Intel:
+
+FILE TYPE:
+.txt
+
+FILE CONTENT:
+BAALSTORM_FLAG
+
+OBJECTIVE:
+Find the file.
+Read the flag.
+</div>
+
+<h3>Förbered bossen</h3>
+
+<p>Kör detta först:</p>
+
+<div class="command">mkdir -p ~/baalstorm_boss/{docs,logs,backup,tmp}
+
+echo "nothing here" > ~/baalstorm_boss/docs/readme.txt
+echo "system normal" > ~/baalstorm_boss/logs/system.txt
+echo "old backup" > ~/baalstorm_boss/backup/backup.txt
+echo "BAALSTORM_FLAG{terminal_operator}" > ~/baalstorm_boss/tmp/.system_notes.txt</div>
+
+<p>Rensa terminalen:</p>
+
+<div class="command">clear</div>
+
+<div class="notice">
+Nu börjar bossen.<br><br>
+Använd det du har lärt dig.<br>
+Öppna inte filhanteraren.
+</div>
+
+<div class="box">
+Vilket kommando använde du för att hitta filen?<br><br>
+
+_____________________________________________________<br><br>
+
+Vad heter filen?<br><br>
+
+_____________________________________________________<br><br>
+
+Vilken flagga innehåller den?<br><br>
+
+_____________________________________________________
+</div>
+
+<button onclick="toggle('boss')">Visa en möjlig lösning</button>
+
+<div id="boss" class="answer">
+
+<p>Eftersom filen kan vara dold:</p>
+
+<div class="command">find ~/baalstorm_boss -type f</div>
+
+<p>Det avslöjar bland annat:</p>
+
+<div class="console">/home/.../baalstorm_boss/tmp/.system_notes.txt</div>
+
+<p>Läs filen:</p>
+
+<div class="command">cat ~/baalstorm_boss/tmp/.system_notes.txt</div>
+
+<p>Flaggan:</p>
+
+<div class="console">BAALSTORM_FLAG{terminal_operator}</div>
+
+<p>En annan metod är att söka efter innehållet:</p>
+
+<div class="command">grep -R "BAALSTORM_FLAG" ~/baalstorm_boss</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">25 // CLEANUP</h2>
+
+<section class="task">
+
+<div class="tag">END OF LAB</div>
+
+<h3>Ta bort labbfilerna</h3>
+
+<p>Kontrollera först var du befinner dig:</p>
+
+<div class="command">pwd</div>
+
+<p>Gå hem:</p>
+
+<div class="command">cd ~</div>
+
+<p>Ta bort övningskatalogerna:</p>
+
+<div class="command">rm -r ~/baalstorm_lab
+rm -r ~/mission
+rm -r ~/baalstorm_boss</div>
+
+<div class="notice">
+Det här är också en anledning till att vi är försiktiga med
+<code>rm -r</code>. Det betyder rekursiv borttagning av en katalog
+och dess innehåll.
+</div>
+
+</section>
+
+
+<h2 class="section">CHEAT SHEET</h2>
+
+<section class="box">
+
+<table>
+
+<tr>
+<th>Kommando</th>
+<th>Vad gör det?</th>
+</tr>
+
+<tr><td><code>pwd</code></td><td>Var är jag?</td></tr>
+<tr><td><code>ls</code></td><td>Visa filer</td></tr>
+<tr><td><code>ls -la</code></td><td>Visa även dolda filer</td></tr>
+<tr><td><code>cd</code></td><td>Byt katalog</td></tr>
+<tr><td><code>mkdir</code></td><td>Skapa katalog</td></tr>
+<tr><td><code>touch</code></td><td>Skapa tom fil</td></tr>
+<tr><td><code>cat</code></td><td>Visa filinnehåll</td></tr>
+<tr><td><code>cp</code></td><td>Kopiera</td></tr>
+<tr><td><code>mv</code></td><td>Flytta / byt namn</td></tr>
+<tr><td><code>rm</code></td><td>Ta bort</td></tr>
+<tr><td><code>grep</code></td><td>Sök i text</td></tr>
+<tr><td><code>find</code></td><td>Sök efter filer</td></tr>
+<tr><td><code>chmod</code></td><td>Ändra rättigheter</td></tr>
+<tr><td><code>ps</code></td><td>Visa processer</td></tr>
+<tr><td><code>ip a</code></td><td>Visa nätverksinterface/IP</td></tr>
+<tr><td><code>ip route</code></td><td>Visa routing</td></tr>
+<tr><td><code>ss -tuln</code></td><td>Visa lyssnande portar</td></tr>
+<tr><td><code>man</code></td><td>Manual</td></tr>
+<tr><td><code>clear</code></td><td>Rensa terminalen</td></tr>
+<tr><td><code>CTRL+C</code></td><td>Avbryt program</td></tr>
+
+</table>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">PARROT BOOTCAMP COMPLETE
+
+[+] Terminal
+[+] pwd
+[+] ls
+[+] cd
+[+] mkdir
+[+] touch
+[+] cat
+[+] cp
+[+] mv
+[+] rm
+[+] redirection
+[+] grep
+[+] pipes
+[+] find
+[+] permissions
+[+] chmod
+[+] sudo
+[+] processes
+[+] IP addressing
+[+] routing
+[+] DNS
+[+] listening ports
+[+] man pages
+[+] log analysis
+
+STATUS:
+
+YOU ARE NO LONGER AFRAID OF THE TERMINAL.
+
+NEXT MISSION:
+SECURITY TOOLS
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
