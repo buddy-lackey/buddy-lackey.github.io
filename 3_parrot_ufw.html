@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Parrot UFW Lab | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --cyan:#55e6e6;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10271c 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{color:var(--cyan)}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console,.command{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#a2ffba;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.command{
+  border-left:4px solid var(--green);
+}
+
+.command::before{
+  content:"student@parrot:~$";
+  display:block;
+  color:var(--cyan);
+  font-size:.8rem;
+  margin-bottom:8px;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.safe{
+  background:#07150d;
+  border:1px solid #226b3d;
+  border-left:4px solid var(--green);
+  padding:18px;
+  margin:20px 0;
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+button:hover{background:#10281b}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{display:block}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  background:#07110c;
+  color:var(--green);
+}
+
+code{color:#9fffb8}
+
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+.cyan{color:var(--cyan)}
+
+@media(max-width:800px){
+  .top{flex-direction:column;gap:8px}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // FIREWALL LAB</span>
+  <span>PARROT OS + UFW</span>
+</div>
+
+<section class="hero">
+
+<div class="prompt">$ sudo ufw status verbose</div>
+
+<h1>HOST <span>FIREWALL.</span></h1>
+
+<p>
+I den här labben arbetar ni två och två.
+En Parrot-dator blir server och skyddas av UFW.
+Den andra Parrot-datorn blir klient och försöker ansluta.
+</p>
+
+<p>
+Målet är att se skillnaden mellan en tjänst som körs
+och en tjänst som faktiskt är tillgänglig genom brandväggen.
+</p>
+
+</section>
+
+<div class="notice">
+<b>LABBMILJÖ</b><br><br>
+
+Arbeta endast mot datorn i din egen grupp.<br>
+Använd inte portskanning eller tester mot andra enheter på skolans nätverk.
+</div>
+
+
+<h2 class="section">00 // TOPOLOGY</h2>
+
+<section class="box">
+
+<div class="console">
+              SKOLANS WIFI
+                   │
+         ┌─────────┴─────────┐
+         │                   │
+   WINDOWS LAPTOP A    WINDOWS LAPTOP B
+         │                   │
+       VMware              VMware
+         │                   │
+    Bridged mode         Bridged mode
+         │                   │
+     PARROT A             PARROT B
+      SERVER               CLIENT
+      + UFW
+</div>
+
+<p>
+När VMware använder <b>Bridged</b> försöker Parrot få en egen
+IP-adress från samma nätverk som Windows-datorn använder.
+</p>
+
+<div class="info">
+Detta fungerar bara om skolans nät tillåter VM:er och direkt
+kommunikation mellan klienter. Om det inte fungerar behöver läraren
+använda ett separat labbnät.
+</div>
+
+</section>
+
+
+<h2 class="section">01 // SET VMWARE TO BRIDGED</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">5p</span></div>
+
+<h3>Kontrollera nätverksläget</h3>
+
+<p>Stäng av Parrot-VM:n om det behövs och öppna dess inställningar i VMware.</p>
+
+<div class="console">
+VM Settings
+   ↓
+Network Adapter
+   ↓
+Bridged
+</div>
+
+<p>Starta sedan Parrot.</p>
+
+</section>
+
+
+<h2 class="section">02 // FIND YOUR IP</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">10p</span></div>
+
+<p>Kör:</p>
+
+<div class="command">ip -4 addr</div>
+
+<p>Visa routing:</p>
+
+<div class="command">ip route</div>
+
+<div class="box">
+PARROT A IP: _______________________<br><br>
+PARROT B IP: _______________________<br><br>
+DEFAULT GATEWAY: ___________________
+</div>
+
+<p>
+Ni behöver känna till båda Parrot-maskinernas IP-adresser.
+</p>
+
+</section>
+
+
+<h2 class="section">03 // TEST CONNECTIVITY</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">10p</span></div>
+
+<p>Från Parrot A, testa Parrot B:</p>
+
+<div class="console">ping -c 3 &lt;PARROT-B-IP&gt;</div>
+
+<p>Exempel:</p>
+
+<div class="command">ping -c 3 192.168.1.52</div>
+
+<p>Gör sedan motsvarande från B till A.</p>
+
+<div class="box">
+A → B fungerar: YES / NO<br><br>
+B → A fungerar: YES / NO
+</div>
+
+<div class="notice">
+Om båda datorerna har internet men inte kan nå varandra kan skolans
+Wi-Fi använda client isolation. Säg då till läraren istället för att
+fortsätta felsöka UFW.
+</div>
+
+</section>
+
+
+<h2 class="section">04 // WHO IS SERVER?</h2>
+
+<section class="task">
+
+<div class="tag">ROLE ASSIGNMENT <span class="score">5p</span></div>
+
+<div class="console">
+PARROT A = SERVER + UFW
+
+PARROT B = CLIENT
+</div>
+
+<p>
+Parrot A ska alltså köra tjänsten.
+Parrot B ska försöka ansluta till den.
+</p>
+
+</section>
+
+
+<h2 class="section">05 // CREATE A WEB SERVICE</h2>
+
+<section class="task">
+
+<div class="tag">SERVER <span class="score">10p</span></div>
+
+<p>På Parrot A:</p>
+
+<div class="command">mkdir -p ~/ufw-lab
+cd ~/ufw-lab</div>
+
+<p>Skapa en enkel webbsida:</p>
+
+<div class="command">echo "BAALSTORM UFW LAB - ACCESS GRANTED" > index.html</div>
+
+<p>Starta en webbserver på TCP/8000:</p>
+
+<div class="command">python3 -m http.server 8000</div>
+
+<p>Terminalen bör visa något liknande:</p>
+
+<div class="console">
+Serving HTTP on 0.0.0.0 port 8000 ...
+</div>
+
+<div class="info">
+Låt terminalen vara öppen. Servern kör så länge processen körs.
+</div>
+
+</section>
+
+
+<h2 class="section">06 // IS THE PORT REALLY OPEN?</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">10p</span></div>
+
+<p>Öppna en ny terminal på Parrot A.</p>
+
+<div class="command">ss -tln | grep 8000</div>
+
+<p>Ni bör se att TCP/8000 lyssnar.</p>
+
+<div class="console">
+LISTEN ... 0.0.0.0:8000
+</div>
+
+<button onclick="toggle('listen')">Vad betyder LISTEN?</button>
+
+<div id="listen" class="answer">
+
+<p>
+Programmet väntar på inkommande TCP-anslutningar till port 8000.
+</p>
+
+<p>
+Det betyder dock inte automatiskt att andra datorer får ansluta.
+En brandvägg kan fortfarande blockera trafiken.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">07 // TEST FROM CLIENT</h2>
+
+<section class="task">
+
+<div class="tag">CLIENT <span class="score">10p</span></div>
+
+<p>På Parrot B:</p>
+
+<div class="console">curl http://&lt;PARROT-A-IP&gt;:8000</div>
+
+<p>Exempel:</p>
+
+<div class="command">curl http://192.168.1.51:8000</div>
+
+<p>Förväntat resultat:</p>
+
+<div class="console">
+BAALSTORM UFW LAB - ACCESS GRANTED
+</div>
+
+<p>Ni kan även öppna samma adress i webbläsaren.</p>
+
+</section>
+
+
+<h2 class="section">08 // CHECK UFW</h2>
+
+<section class="task">
+
+<div class="tag">FIREWALL <span class="score">10p</span></div>
+
+<p>På Parrot A:</p>
+
+<div class="command">sudo ufw status verbose</div>
+
+<p>Om UFW är avstängd kan ni få:</p>
+
+<div class="console">
+Status: inactive
+</div>
+
+</section>
+
+
+<h2 class="section">09 // DEFAULT POLICY</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">15p</span></div>
+
+<p>På Parrot A:</p>
+
+<div class="command">sudo ufw default deny incoming
+sudo ufw default allow outgoing</div>
+
+<p>Aktivera sedan UFW:</p>
+
+<div class="command">sudo ufw enable</div>
+
+<p>Kontrollera:</p>
+
+<div class="command">sudo ufw status verbose</div>
+
+<p>Ni bör se ungefär:</p>
+
+<div class="console">
+Default:
+deny (incoming)
+allow (outgoing)
+</div>
+
+<button onclick="toggle('default')">Vad betyder detta?</button>
+
+<div id="default" class="answer">
+
+<p>
+Nya inkommande anslutningar blockeras som standard.
+</p>
+
+<p>
+Utgående trafik tillåts som standard.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">10 // TEST AGAIN</h2>
+
+<section class="task challenge">
+
+<div class="tag">OBSERVE <span class="score">10p</span></div>
+
+<p>På Parrot B:</p>
+
+<div class="console">curl http://&lt;PARROT-A-IP&gt;:8000</div>
+
+<p>Fungerar anslutningen fortfarande?</p>
+
+<div class="box">
+RESULTAT: __________________________
+</div>
+
+<p>På Parrot A, kontrollera samtidigt:</p>
+
+<div class="command">ss -tln | grep 8000</div>
+
+<div class="notice">
+Det viktiga här är att servern fortfarande kör och fortfarande lyssnar.
+Om klienten inte kommer fram är det brandväggen som stoppar trafiken.
+</div>
+
+</section>
+
+
+<h2 class="section">11 // ALLOW TCP/8000</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">15p</span></div>
+
+<p>På Parrot A:</p>
+
+<div class="command">sudo ufw allow 8000/tcp</div>
+
+<p>Kontrollera:</p>
+
+<div class="command">sudo ufw status numbered</div>
+
+<p>Testa sedan igen från Parrot B:</p>
+
+<div class="console">curl http://&lt;PARROT-A-IP&gt;:8000</div>
+
+<p>Förväntat:</p>
+
+<div class="console">
+BAALSTORM UFW LAB - ACCESS GRANTED
+</div>
+
+</section>
+
+
+<h2 class="section">12 // SERVICE VS FIREWALL</h2>
+
+<section class="task challenge">
+
+<div class="tag">CONCEPT <span class="score">15p</span></div>
+
+<div class="console">
+SERVICE RUNNING
+      +
+FIREWALL DENY
+      =
+CONNECTION FAILS
+
+
+SERVICE RUNNING
+      +
+FIREWALL ALLOW
+      =
+CONNECTION WORKS
+</div>
+
+<p>
+Förklara med egna ord skillnaden mellan att en port
+<b>lyssnar</b> och att porten är <b>åtkomlig från nätverket</b>.
+</p>
+
+</section>
+
+
+<h2 class="section">13 // REMOVE THE RULE</h2>
+
+<section class="task">
+
+<div class="tag">FIREWALL <span class="score">10p</span></div>
+
+<p>Visa regler med nummer:</p>
+
+<div class="command">sudo ufw status numbered</div>
+
+<p>Ta bort regeln direkt med syntaxen:</p>
+
+<div class="command">sudo ufw delete allow 8000/tcp</div>
+
+<p>Kontrollera igen:</p>
+
+<div class="command">sudo ufw status numbered</div>
+
+<p>Testa från klienten igen.</p>
+
+</section>
+
+
+<h2 class="section">14 // LEAST PRIVILEGE</h2>
+
+<section class="task challenge">
+
+<div class="tag">CHALLENGE <span class="score">20p</span></div>
+
+<p>
+Den tidigare regeln släppte in alla som kunde nå Parrot A.
+</p>
+
+<div class="console">
+ALLOW 8000/tcp
+</div>
+
+<p>
+Nu ska ni istället bara tillåta Parrot B.
+</p>
+
+<p>På Parrot A:</p>
+
+<div class="console">sudo ufw allow from &lt;PARROT-B-IP&gt; to any port 8000 proto tcp</div>
+
+<p>Exempel:</p>
+
+<div class="command">sudo ufw allow from 192.168.1.52 to any port 8000 proto tcp</div>
+
+<p>Kontrollera:</p>
+
+<div class="command">sudo ufw status numbered</div>
+
+<div class="box">
+SOURCE: _______________________<br><br>
+DESTINATION PORT: _____________<br><br>
+PROTOCOL: _____________________
+</div>
+
+<button onclick="toggle('least')">Vilken säkerhetsprincip?</button>
+
+<div id="least" class="answer">
+
+<p>
+Least privilege.
+</p>
+
+<p>
+Vi tillåter endast den klient som faktiskt behöver tillgång,
+istället för att öppna tjänsten för alla.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">15 // STATEFUL FIREWALL</h2>
+
+<section class="task challenge">
+
+<div class="tag">CONCEPT <span class="score">20p</span></div>
+
+<p>När B ansluter till A sker ungefär:</p>
+
+<div class="console">
+PARROT B                         PARROT A
+
+49152  ----------------------->  8000
+          TCP connection
+
+49152  <-----------------------  8000
+          response traffic
+</div>
+
+<p>
+Vi skapade bara en regel som tillät anslutningen till
+TCP/8000 på A.
+</p>
+
+<p>
+Varför behöver vi normalt inte skapa en separat regel
+för varje svarspaket tillbaka till B?
+</p>
+
+<button onclick="toggle('stateful')">Visa svar</button>
+
+<div id="stateful" class="answer">
+
+<p>
+UFW bygger på Linux brandväggsfunktioner som håller reda på
+anslutningens tillstånd.
+</p>
+
+<p>
+Svarstrafik som hör till en redan tillåten anslutning kan därför
+identifieras som en del av samma session.
+</p>
+
+<p>
+Detta är stateful filtering.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">16 // BONUS: NETCAT</h2>
+
+<section class="task challenge">
+
+<div class="tag">BONUS <span class="score">15p</span></div>
+
+<h3>En enklare TCP-tjänst</h3>
+
+<p>
+Python-servern använder HTTP.
+Netcat kan istället användas för att demonstrera en enklare
+rå TCP-anslutning.
+</p>
+
+<p>På Parrot A kan ni testa:</p>
+
+<div class="command">nc -l 9000</div>
+
+<p>På Parrot B:</p>
+
+<div class="console">nc &lt;PARROT-A-IP&gt; 9000</div>
+
+<p>
+Skriv text i den ena terminalen och se den visas i den andra.
+</p>
+
+<div class="info">
+Det här är bonus. Python-servern på TCP/8000 är huvudövningen
+eftersom HTTP är enklare att se och testa.
+</div>
+
+</section>
+
+
+<h2 class="section">17 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">BOSS <span class="score">30p</span></div>
+
+<h3>FIREWALL TROUBLESHOOTING</h3>
+
+<div class="console">
+INCIDENT:
+
+PARROT A
+IP: 192.168.50.21
+
+PARROT B
+IP: 192.168.50.22
+
+Server:
+python3 -m http.server 8000
+
+Parrot A:
+ss shows TCP/8000 LISTENING
+
+Parrot B:
+curl http://192.168.50.21:8000
+FAILS
+
+UFW:
+Status active
+
+Default:
+deny incoming
+allow outgoing
+</div>
+
+<p>Besvara:</p>
+
+<div class="box">
+1. Kör servern fortfarande?<br><br>
+
+2. Vilket kommando kan bevisa det?<br><br>
+
+3. Vad är den mest sannolika orsaken till att B inte kommer fram?<br><br>
+
+4. Skapa en regel där endast B får komma åt TCP/8000.<br><br>
+
+5. Hur verifierar du att regeln finns?<br><br>
+
+6. Hur testar du från B?
+</div>
+
+<button onclick="toggle('boss')">Visa lösning</button>
+
+<div id="boss" class="answer">
+
+<div class="console">
+På A:
+
+ss -tln | grep 8000
+
+sudo ufw allow from 192.168.50.22 to any port 8000 proto tcp
+
+sudo ufw status numbered
+
+
+På B:
+
+curl http://192.168.50.21:8000
+</div>
+
+<p>
+Om servern lyssnar men anslutningen blockeras är brandväggen
+en rimlig sak att undersöka.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">18 // CLEANUP</h2>
+
+<section class="task">
+
+<div class="tag">END OF LAB</div>
+
+<p>Stoppa Python-servern med:</p>
+
+<div class="console">CTRL + C</div>
+
+<p>På Parrot A kan ni återställa UFW-reglerna för labben.</p>
+
+<p>Visa först reglerna:</p>
+
+<div class="command">sudo ufw status numbered</div>
+
+<p>Ta bort de regler ni skapade under övningen.</p>
+
+<p>Exempel:</p>
+
+<div class="command">sudo ufw delete allow 8000/tcp</div>
+
+<p>
+Om ni skapade en IP-specifik regel kan samma regel anges efter
+<code>delete</code>:
+</p>
+
+<div class="console">sudo ufw delete allow from &lt;PARROT-B-IP&gt; to any port 8000 proto tcp</div>
+
+<p>Ta bort labbkatalogen:</p>
+
+<div class="command">rm -r ~/ufw-lab</div>
+
+<div class="notice">
+Stäng inte av eller återställ UFW generellt om läraren inte säger till.
+Ta endast bort de regler som skapades för labben.
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+UFW LAB COMPLETE
+
+[+] VMware Bridged networking
+[+] IP addressing
+[+] Client / server
+[+] TCP service
+[+] Python HTTP server
+[+] ss
+[+] curl
+[+] UFW status
+[+] Default policy
+[+] Allow / deny
+[+] Source IP filtering
+[+] Least privilege
+[+] Stateful firewall
+[+] Troubleshooting
+
+NEXT MISSION:
+
+HOST FIREWALL
+        ↓
+NETWORK FIREWALL
+        ↓
+FORTIGATE
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
