@@ -1,5 +1,5 @@
 // ------------------------------------------------------
-// CHANGE THIS AFTER CLOUDFLARE DEPLOY
+// BAALSTORM MFA FRONTEND
 // ------------------------------------------------------
 
 const API =
@@ -22,7 +22,6 @@ const {
 // ------------------------------------------------------
 
 function showTab(name) {
-
   document
     .querySelectorAll(".tab-content")
     .forEach(el => {
@@ -35,13 +34,11 @@ function showTab(name) {
 }
 
 
-
 function setStatus(
   id,
   text,
   type = ""
 ) {
-
   const el =
     document.getElementById(id);
 
@@ -52,9 +49,7 @@ function setStatus(
 }
 
 
-
 function logRegister(message) {
-
   const el =
     document.getElementById(
       "registerConsole"
@@ -65,9 +60,7 @@ function logRegister(message) {
 }
 
 
-
 function clearRegister() {
-
   document
     .getElementById(
       "registerConsole"
@@ -77,9 +70,7 @@ function clearRegister() {
 }
 
 
-
 function logLogin(message) {
-
   const el =
     document.getElementById(
       "loginConsole"
@@ -90,9 +81,7 @@ function logLogin(message) {
 }
 
 
-
 function clearLogin() {
-
   document
     .getElementById(
       "loginConsole"
@@ -110,7 +99,6 @@ async function apiPost(
   path,
   body
 ) {
-
   const response =
     await fetch(
       API + path,
@@ -127,19 +115,23 @@ async function apiPost(
       }
     );
 
+  let data;
 
-  const data =
-    await response.json();
-
+  try {
+    data =
+      await response.json();
+  } catch {
+    throw new Error(
+      "Backend returned invalid JSON"
+    );
+  }
 
   if (!response.ok) {
-
     throw new Error(
       data.error ||
       "API request failed"
     );
   }
-
 
   return data;
 }
@@ -150,7 +142,6 @@ async function apiPost(
 // ------------------------------------------------------
 
 async function registerKey() {
-
   const button =
     document.getElementById(
       "registerButton"
@@ -160,9 +151,7 @@ async function registerKey() {
 
   clearRegister();
 
-
   try {
-
     if (
       !browserSupportsWebAuthn()
     ) {
@@ -170,7 +159,6 @@ async function registerKey() {
         "Browser does not support WebAuthn"
       );
     }
-
 
     const username =
       document
@@ -180,7 +168,6 @@ async function registerKey() {
         .value
         .trim();
 
-
     const password =
       document
         .getElementById(
@@ -188,6 +175,17 @@ async function registerKey() {
         )
         .value;
 
+    if (!username) {
+      throw new Error(
+        "Username is required"
+      );
+    }
+
+    if (!password) {
+      throw new Error(
+        "Password is required"
+      );
+    }
 
     setStatus(
       "regPasswordStatus",
@@ -195,11 +193,15 @@ async function registerKey() {
       "wait"
     );
 
+    setStatus(
+      "regKeyStatus",
+      "LOCKED",
+      ""
+    );
 
     logRegister(
       "[*] Contacting Baalstorm backend..."
     );
-
 
     const start =
       await apiPost(
@@ -210,6 +212,17 @@ async function registerKey() {
         }
       );
 
+    if (!start.flowToken) {
+      throw new Error(
+        "Backend did not return flowToken"
+      );
+    }
+
+    if (!start.options) {
+      throw new Error(
+        "Backend did not return WebAuthn options"
+      );
+    }
 
     setStatus(
       "regPasswordStatus",
@@ -217,18 +230,15 @@ async function registerKey() {
       "pass"
     );
 
-
     logRegister(
       "[+] Password accepted."
     );
-
 
     setStatus(
       "regKeyStatus",
       "TOUCH KEY",
       "wait"
     );
-
 
     logRegister(
       "[*] WebAuthn challenge received."
@@ -238,18 +248,15 @@ async function registerKey() {
       "[*] Insert/touch your security key."
     );
 
-
     const credential =
       await startRegistration({
         optionsJSON:
           start.options
       });
 
-
     logRegister(
       "[+] Authenticator responded."
     );
-
 
     const finish =
       await apiPost(
@@ -263,20 +270,17 @@ async function registerKey() {
         }
       );
 
-
     if (!finish.verified) {
       throw new Error(
         "Registration verification failed"
       );
     }
 
-
     setStatus(
       "regKeyStatus",
       "REGISTERED",
       "pass"
     );
-
 
     logRegister(
       "[+] Signature verified by backend."
@@ -286,25 +290,19 @@ async function registerKey() {
       "[+] Credential public key stored."
     );
 
-    logRegister(
-      ""
-    );
+    logRegister("");
 
     logRegister(
       "ENROLLMENT COMPLETE."
     );
 
-    logRegister(
-      ""
-    );
+    logRegister("");
 
     logRegister(
       "Private key remained inside authenticator."
     );
 
-
   } catch (error) {
-
     console.error(error);
 
     setStatus(
@@ -318,7 +316,6 @@ async function registerKey() {
     );
 
   } finally {
-
     button.disabled = false;
   }
 }
@@ -329,7 +326,6 @@ async function registerKey() {
 // ------------------------------------------------------
 
 async function login() {
-
   const button =
     document.getElementById(
       "loginButton"
@@ -339,7 +335,6 @@ async function login() {
 
   clearLogin();
 
-
   document
     .getElementById(
       "flagPanel"
@@ -347,9 +342,7 @@ async function login() {
     .style.display =
       "none";
 
-
   try {
-
     if (
       !browserSupportsWebAuthn()
     ) {
@@ -357,7 +350,6 @@ async function login() {
         "Browser does not support WebAuthn"
       );
     }
-
 
     const username =
       document
@@ -367,7 +359,6 @@ async function login() {
         .value
         .trim();
 
-
     const password =
       document
         .getElementById(
@@ -375,6 +366,17 @@ async function login() {
         )
         .value;
 
+    if (!username) {
+      throw new Error(
+        "Username is required"
+      );
+    }
+
+    if (!password) {
+      throw new Error(
+        "Password is required"
+      );
+    }
 
     // ------------------------------
     // FACTOR 1
@@ -398,11 +400,9 @@ async function login() {
       ""
     );
 
-
     logLogin(
       "[1] Verifying password..."
     );
-
 
     const factor1 =
       await apiPost(
@@ -413,6 +413,11 @@ async function login() {
         }
       );
 
+    if (!factor1.flowToken) {
+      throw new Error(
+        "Backend did not return flowToken"
+      );
+    }
 
     setStatus(
       "passwordStatus",
@@ -420,11 +425,13 @@ async function login() {
       "pass"
     );
 
-
     logLogin(
       "[+] FACTOR 1 VERIFIED."
     );
 
+    logLogin(
+      "[+] Password accepted by backend."
+    );
 
     // ------------------------------
     // FACTOR 2 OPTIONS
@@ -436,25 +443,32 @@ async function login() {
       "wait"
     );
 
+    logLogin(
+      "[2] Requesting WebAuthn challenge..."
+    );
 
     const factor2Options =
       await apiPost(
         "/login/start",
         {
-          loginToken:
-            factor1.loginToken
+          flowToken:
+            factor1.flowToken
         }
       );
 
+    if (!factor2Options.options) {
+      throw new Error(
+        "Backend did not return WebAuthn options"
+      );
+    }
 
     logLogin(
-      "[2] WebAuthn challenge generated."
+      "[+] WebAuthn challenge generated."
     );
 
     logLogin(
       "[*] Insert/touch registered security key."
     );
-
 
     // ------------------------------
     // PHYSICAL SECURITY KEY
@@ -466,28 +480,29 @@ async function login() {
           factor2Options.options
       });
 
-
     logLogin(
       "[+] Authenticator response received."
     );
-
 
     // ------------------------------
     // BACKEND VERIFICATION
     // ------------------------------
 
+    logLogin(
+      "[*] Sending signed response to backend..."
+    );
+
     const factor2 =
       await apiPost(
         "/login/finish",
         {
-          loginToken:
-            factor1.loginToken,
+          flowToken:
+            factor1.flowToken,
 
           response:
             credential
         }
       );
-
 
     if (!factor2.verified) {
       throw new Error(
@@ -495,6 +510,11 @@ async function login() {
       );
     }
 
+    if (!factor2.sessionToken) {
+      throw new Error(
+        "Backend did not issue session token"
+      );
+    }
 
     setStatus(
       "keyStatus",
@@ -502,13 +522,11 @@ async function login() {
       "pass"
     );
 
-
     setStatus(
       "sessionStatus",
       "AUTHORIZED",
       "pass"
     );
-
 
     logLogin(
       "[+] FACTOR 2 VERIFIED."
@@ -518,14 +536,11 @@ async function login() {
       "[+] Session issued by backend."
     );
 
-    logLogin(
-      ""
-    );
+    logLogin("");
 
     logLogin(
       "ACCESS GRANTED."
     );
-
 
     // ------------------------------
     // ACTUAL PROTECTED ENDPOINT
@@ -535,11 +550,8 @@ async function login() {
       factor2.sessionToken
     );
 
-
   } catch (error) {
-
     console.error(error);
-
 
     if (
       document
@@ -549,7 +561,6 @@ async function login() {
         .textContent
         !== "PASS"
     ) {
-
       setStatus(
         "passwordStatus",
         "FAIL",
@@ -557,7 +568,6 @@ async function login() {
       );
 
     } else {
-
       setStatus(
         "keyStatus",
         "FAIL",
@@ -565,28 +575,23 @@ async function login() {
       );
     }
 
-
     setStatus(
       "sessionStatus",
       "DENIED",
       "fail"
     );
 
-
     logLogin(
       "[!] " + error.message
     );
 
-    logLogin(
-      ""
-    );
+    logLogin("");
 
     logLogin(
       "ACCESS DENIED."
     );
 
   } finally {
-
     button.disabled = false;
   }
 }
@@ -599,11 +604,12 @@ async function login() {
 async function getProtectedResource(
   sessionToken
 ) {
-
   const response =
     await fetch(
       API + "/protected",
       {
+        method: "GET",
+
         headers: {
           "Authorization":
             "Bearer " +
@@ -612,10 +618,16 @@ async function getProtectedResource(
       }
     );
 
+  let data;
 
-  const data =
-    await response.json();
-
+  try {
+    data =
+      await response.json();
+  } catch {
+    throw new Error(
+      "Protected endpoint returned invalid JSON"
+    );
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -624,28 +636,32 @@ async function getProtectedResource(
     );
   }
 
-
   const panel =
     document.getElementById(
       "flagPanel"
     );
-
 
   const output =
     document.getElementById(
       "protectedOutput"
     );
 
+  const factors =
+    Array.isArray(data.factors)
+      ? data.factors.join(", ")
+      : "password + WebAuthn";
 
   output.textContent =
 `USER: ${data.username}
 
 BACKEND:
-${data.message}
+Authenticated session verified.
+
+FACTORS:
+${factors}
 
 FLAG:
 ${data.flag}`;
-
 
   panel.style.display =
     "block";
