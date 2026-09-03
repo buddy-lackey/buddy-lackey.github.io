@@ -3,7 +3,7 @@
 // ------------------------------------------------------
 
 const API =
-  "https://baalstorm-mfa-api.DITT_WORKERS_SUBDOMAIN.workers.dev";
+  "https://baalstorm-mfa-api.christer-l-s-andersson.workers.dev";
 
 
 // ------------------------------------------------------
