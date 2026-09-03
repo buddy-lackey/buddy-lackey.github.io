@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<title>
+Baalstorm MFA Terminal
+</title>
+
+<link
+  rel="stylesheet"
+  href="mfa.css"
+>
+
+<!--
+SimpleWebAuthn Browser.
+
+För en skarp produktionstjänst bör biblioteket
+versionslåsas och SRI användas.
+-->
+<script
+src="https://unpkg.com/@simplewebauthn/browser@14.0.0/dist/bundle/index.umd.min.js">
+</script>
+
+</head>
+
+
+<body>
+
+<main>
+
+<div class="top">
+
+<span>
+BAALSTORM // IDENTITY ACCESS
+</span>
+
+<span>
+WEBAUTHN / FIDO2 LAB
+</span>
+
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">
+$ ./identity-terminal --mfa
+</div>
+
+<h1>
+VERIFY <span>IDENTITY.</span>
+</h1>
+
+<p>
+Den här terminalen använder två
+separata autentiseringsfaktorer:
+ett lösenord och en fysisk
+WebAuthn-säkerhetsnyckel.
+</p>
+
+</section>
+
+
+<div class="notice">
+
+<b>LABBKONTO</b>
+
+<br><br>
+
+Använd inte ett lösenord som du använder
+på någon riktig tjänst.
+
+<br><br>
+
+Skapa exempelvis användarnamn:
+
+<code>student07</code>
+
+</div>
+
+
+<div class="tabs">
+
+<button
+  onclick="showTab('register')"
+  class="primary"
+>
+ENROLL KEY
+</button>
+
+<button
+  onclick="showTab('login')"
+>
+LOGIN
+</button>
+
+</div>
+
+
+<!-- REGISTRATION -->
+
+<section
+  id="register"
+  class="tab-content active panel"
+>
+
+<h2>
+REGISTER SECURITY KEY
+</h2>
+
+<label>
+USERNAME
+</label>
+
+<input
+  id="regUsername"
+  autocomplete="username"
+  placeholder="student07"
+>
+
+
+<label>
+LAB PASSWORD
+</label>
+
+<input
+  id="regPassword"
+  type="password"
+  autocomplete="new-password"
+  placeholder="minimum 8 characters"
+>
+
+
+<br>
+
+<button
+  id="registerButton"
+  onclick="registerKey()"
+>
+REGISTER YUBIKEY
+</button>
+
+
+<div class="factor">
+
+<span>
+FACTOR 1 // PASSWORD
+</span>
+
+<span
+  id="regPasswordStatus"
+  class="status"
+>
+WAITING
+</span>
+
+</div>
+
+
+<div class="factor">
+
+<span>
+FACTOR 2 // SECURITY KEY
+</span>
+
+<span
+  id="regKeyStatus"
+  class="status"
+>
+WAITING
+</span>
+
+</div>
+
+
+<h3>
+SYSTEM CONSOLE
+</h3>
+
+<div
+  id="registerConsole"
+  class="console"
+>READY.
+
+Enter username and a temporary lab password.</div>
+
+</section>
+
+
+<!-- LOGIN -->
+
+<section
+  id="login"
+  class="tab-content panel"
+>
+
+<h2>
+MFA LOGIN
+</h2>
+
+<label>
+USERNAME
+</label>
+
+<input
+  id="loginUsername"
+  autocomplete="username"
+  placeholder="student07"
+>
+
+
+<label>
+PASSWORD
+</label>
+
+<input
+  id="loginPassword"
+  type="password"
+  autocomplete="current-password"
+>
+
+
+<br>
+
+<button
+  id="loginButton"
+  onclick="login()"
+>
+AUTHENTICATE
+</button>
+
+
+<div class="factor">
+
+<span>
+FACTOR 1 // SOMETHING YOU KNOW
+</span>
+
+<span
+  id="passwordStatus"
+  class="status"
+>
+WAITING
+</span>
+
+</div>
+
+
+<div class="factor">
+
+<span>
+FACTOR 2 // SOMETHING YOU HAVE
+</span>
+
+<span
+  id="keyStatus"
+  class="status"
+>
+WAITING
+</span>
+
+</div>
+
+
+<div class="factor">
+
+<span>
+BACKEND SESSION
+</span>
+
+<span
+  id="sessionStatus"
+  class="status"
+>
+LOCKED
+</span>
+
+</div>
+
+
+<h3>
+SYSTEM CONSOLE
+</h3>
+
+<div
+  id="loginConsole"
+  class="console"
+>IDENTITY TERMINAL READY.
+
+Waiting for credentials...</div>
+
+
+<div
+  id="flagPanel"
+  class="safe"
+  style="display:none"
+>
+
+<b>
+PROTECTED RESOURCE
+</b>
+
+<pre id="protectedOutput"></pre>
+
+</div>
+
+</section>
+
+
+<p>
+
+<a
+  href="lab.html"
+  class="button"
+>
+OPEN STUDENT LAB →
+</a>
+
+</p>
+
+
+</main>
+
+
+<script src="mfa.js"></script>
+
+</body>
+</html>
