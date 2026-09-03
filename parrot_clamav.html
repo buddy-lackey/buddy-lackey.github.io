@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+Baalstorm // ClamAV Lab
+</title>
+
+<style>
+
+:root{
+  --bg:#040706;
+  --panel:#09110e;
+  --panel2:#0d1813;
+  --border:#17402b;
+
+  --green:#63ff9b;
+  --green2:#2fbf68;
+
+  --text:#dbe7df;
+  --muted:#8a9c91;
+
+  --yellow:#ffd166;
+  --red:#ff6b6b;
+  --cyan:#62e7e7;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      #10291d 0%,
+      transparent 30%
+    ),
+    linear-gradient(
+      #020403,
+      #07100c
+    );
+
+  color:var(--text);
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  line-height:1.6;
+}
+
+main{
+  width:min(1000px,94%);
+  margin:auto;
+  padding:45px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+
+  color:var(--green);
+
+  border-bottom:
+    1px solid var(--border);
+
+  padding-bottom:10px;
+  margin-bottom:45px;
+
+  font-size:.85rem;
+}
+
+.hero h1{
+  margin:0;
+
+  font-size:
+    clamp(2.6rem,7vw,5rem);
+
+  line-height:1;
+
+  color:white;
+}
+
+.hero h1 span{
+  color:var(--cyan);
+}
+
+.hero p{
+  max-width:850px;
+  color:var(--muted);
+}
+
+.prompt{
+  color:var(--green);
+}
+
+h2{
+  margin-top:55px;
+
+  border-bottom:
+    1px solid var(--border);
+
+  padding-bottom:8px;
+}
+
+.task,
+.box,
+.panel{
+  background:var(--panel);
+
+  border:
+    1px solid var(--border);
+
+  padding:22px;
+
+  margin:22px 0;
+}
+
+.task{
+  border-left:
+    4px solid var(--green2);
+}
+
+.challenge{
+  border-left-color:
+    var(--yellow);
+}
+
+.boss{
+  border-left-color:
+    var(--red);
+}
+
+.notice{
+  background:#1a1507;
+
+  border:
+    1px solid #6c5a1c;
+
+  color:var(--yellow);
+
+  padding:18px;
+
+  margin:20px 0;
+}
+
+.safe{
+  background:#07170d;
+
+  border:
+    1px solid #24683e;
+
+  border-left:
+    4px solid var(--green);
+
+  padding:18px;
+
+  margin:20px 0;
+}
+
+.info{
+  background:#061319;
+
+  border:
+    1px solid #18506a;
+
+  border-left:
+    4px solid var(--cyan);
+
+  padding:18px;
+
+  margin:20px 0;
+}
+
+.console,
+.command{
+  background:#010302;
+
+  border:
+    1px solid var(--border);
+
+  color:#a7ffbd;
+
+  padding:16px;
+
+  margin:15px 0;
+
+  white-space:pre-wrap;
+  overflow-x:auto;
+}
+
+code{
+  color:#a7ffbd;
+}
+
+.tag{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+button{
+  background:transparent;
+  color:var(--green);
+
+  border:
+    1px solid var(--green2);
+
+  padding:10px 15px;
+
+  font:inherit;
+
+  cursor:pointer;
+}
+
+button:hover{
+  background:#10281b;
+}
+
+.answer{
+  display:none;
+
+  margin-top:15px;
+  padding-top:15px;
+
+  border-top:
+    1px dashed var(--border);
+}
+
+.answer.show{
+  display:block;
+}
+
+.green{ color:var(--green); }
+.yellow{ color:var(--yellow); }
+.red{ color:var(--red); }
+.cyan{ color:var(--cyan); }
+
+@media(max-width:700px){
+
+  .top{
+    flex-direction:column;
+  }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<main>
+
+
+<div class="top">
+
+<span>
+BAALSTORM // PARROT OS
+</span>
+
+<span>
+CLAMAV MINI LAB
+</span>
+
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">
+$ ./clamav-lab --start
+</div>
+
+<h1>
+SCAN. <span>DETECT.</span> INTERPRET.
+</h1>
+
+<p>
+I den här labben installerar du
+ClamAV i Parrot OS, uppdaterar
+signaturdatabasen och testar
+antiviruset mot både en vanlig fil
+och EICAR-testfilen.
+</p>
+
+<p>
+Du behöver ingen färdig labbmapp
+eller nedladdade övningsfiler.
+Allt skapas direkt i din Parrot-maskin.
+</p>
+
+</section>
+
+
+<div class="notice">
+
+<b>VIKTIGT</b>
+
+<br><br>
+
+Använd endast EICAR som testfil.
+
+EICAR är en ofarlig antivirus-testfil
+som är skapad för att utlösa
+antivirusdetektion utan att använda
+riktig skadlig kod.
+
+</div>
+
+
+<h2>
+00 // INSTALLERA CLAMAV
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">10p</span>
+</div>
+
+<p>
+Öppna Terminal i Parrot OS.
+</p>
+
+<p>
+Uppdatera först informationen om
+tillgängliga paket:
+</p>
+
+<div class="command">sudo apt update</div>
+
+<p>
+Installera sedan ClamAV och
+FreshClam-tjänsten:
+</p>
+
+<div class="command">sudo apt install clamav clamav-daemon -y</div>
+
+<p>
+Kontrollera installationen:
+</p>
+
+<div class="command">clamscan --version</div>
+
+<div class="box">
+
+<b>UPPGIFT</b>
+
+<br><br>
+
+Vilken version av ClamAV är installerad?
+
+<br><br>
+
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+01 // SIGNATURER
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">10p</span>
+</div>
+
+<p>
+ClamAV använder bland annat
+signaturer för att identifiera
+kända hot.
+</p>
+
+<p>
+Kontrollera FreshClam-tjänsten:
+</p>
+
+<div class="command">systemctl status clamav-freshclam</div>
+
+<p>
+Om tjänsten redan körs är det normalt.
+Den ansvarar för att uppdatera
+antivirusets definitionsdatabas.
+</p>
+
+<p>
+Du kan även försöka köra:
+</p>
+
+<div class="command">sudo freshclam</div>
+
+<div class="notice">
+
+Om du får ett meddelande om att
+databasen är låst eller används av
+FreshClam-tjänsten betyder det ofta
+att den automatiska uppdateringstjänsten
+redan kör.
+
+</div>
+
+<div class="box">
+
+<b>FRÅGA</b>
+
+<br><br>
+
+Varför är gamla antivirussignaturer
+ett problem?
+
+<br><br>
+
+________________________________________
+
+<br>
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+02 // SKAPA EN REN TESTFIL
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">10p</span>
+</div>
+
+<p>
+Skapa en egen liten labbkatalog:
+</p>
+
+<div class="command">mkdir ~/clamav-lab
+cd ~/clamav-lab</div>
+
+<p>
+Skapa en vanlig textfil:
+</p>
+
+<div class="command">echo "Baalstorm clean test file" > clean.txt</div>
+
+<p>
+Kontrollera filen:
+</p>
+
+<div class="command">cat clean.txt</div>
+
+<p>
+Scanna den:
+</p>
+
+<div class="command">clamscan clean.txt</div>
+
+<p>
+Du bör få ett resultat ungefär som:
+</p>
+
+<div class="console">clean.txt: OK</div>
+
+<div class="box">
+
+<b>UPPGIFT</b>
+
+<br><br>
+
+Hur många infekterade filer rapporterade
+ClamAV?
+
+<br><br>
+
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+03 // HÄMTA EICAR
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">15p</span>
+</div>
+
+<p>
+Öppna webbläsaren i Parrot OS.
+</p>
+
+<p>
+Gå till EICAR:s officiella testsida:
+</p>
+
+<div class="console">https://www.eicar.org/download-anti-malware-testfile/</div>
+
+<p>
+Ladda ner en av de vanliga
+EICAR-testfilerna.
+</p>
+
+<div class="info">
+
+Filnamnet kan exempelvis vara:
+
+<br><br>
+
+<code>eicar.com</code>
+
+<br>
+
+eller
+
+<br>
+
+<code>eicar.com.txt</code>
+
+</div>
+
+<p>
+Kontrollera dina nedladdningar:
+</p>
+
+<div class="command">ls ~/Downloads</div>
+
+<div class="box">
+
+<b>UPPGIFT</b>
+
+<br><br>
+
+Vilket filnamn fick din EICAR-fil?
+
+<br><br>
+
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+04 // SCANNA EICAR
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">20p</span>
+</div>
+
+<p>
+Scanna EICAR-filen.
+</p>
+
+<p>
+Exempel:
+</p>
+
+<div class="command">clamscan ~/Downloads/eicar.com.txt</div>
+
+<p>
+Använd det faktiska filnamnet
+om din fil heter något annat.
+</p>
+
+<p>
+Vid lyckad detektion bör du få
+något som innehåller:
+</p>
+
+<div class="console">FOUND</div>
+
+<p>
+Och sammanfattningen bör visa:
+</p>
+
+<div class="console">Infected files: 1</div>
+
+<div class="box">
+
+<b>UPPGIFT</b>
+
+<br><br>
+
+Vilket namn/signatur rapporterade
+ClamAV?
+
+<br><br>
+
+________________________________________
+
+<br><br>
+
+Hur många infekterade filer
+rapporterades?
+
+<br><br>
+
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+05 // JÄMFÖR REN FIL OCH EICAR
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">15p</span>
+</div>
+
+<p>
+Scanna din rena fil igen:
+</p>
+
+<div class="command">clamscan ~/clamav-lab/clean.txt</div>
+
+<p>
+Scanna sedan EICAR igen.
+</p>
+
+<div class="console">clean.txt
+    ↓
+   OK
+
+
+EICAR
+    ↓
+  FOUND</div>
+
+<div class="box">
+
+<b>FRÅGA</b>
+
+<br><br>
+
+Vad är skillnaden mellan de två
+scan-resultaten?
+
+<br><br>
+
+________________________________________
+
+<br>
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+06 // REKURSIV SCAN
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">15p</span>
+</div>
+
+<p>
+ClamAV kan även skanna hela kataloger.
+</p>
+
+<p>
+Testa:
+</p>
+
+<div class="command">clamscan -r ~/clamav-lab</div>
+
+<p>
+Parametern:
+</p>
+
+<div class="console">-r</div>
+
+<p>
+betyder att ClamAV går igenom
+katalogen rekursivt.
+</p>
+
+<p>
+Testa även:
+</p>
+
+<div class="command">clamscan -r --infected ~/clamav-lab</div>
+
+<div class="box">
+
+<b>FRÅGA</b>
+
+<br><br>
+
+Vad gör parametern:
+
+<br>
+
+<code>--infected</code>
+
+<br><br>
+
+________________________________________
+
+</div>
+
+</section>
+
+
+<h2>
+07 // SIGNATURBASERAD DETEKTERING
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CONCEPT
+<span class="score">20p</span>
+</div>
+
+<div class="console">FILE
+  |
+  v
+CLAMAV
+  |
+  v
+KNOWN SIGNATURES
+  |
+  +---- MATCH ----> FOUND
+  |
+  +---- NO MATCH -> OK</div>
+
+<p>
+EICAR är inte ett riktigt virus,
+men antivirusprogram känner igen
+dess testmönster.
+</p>
+
+<div class="box">
+
+<b>FRÅGA</b>
+
+<br><br>
+
+Vad demonstrerar detta främst?
+
+<br><br>
+
+A) Att EICAR försöker infektera Parrot
+
+<br>
+
+B) Att ClamAV känner igen ett
+fördefinierat mönster
+
+<br>
+
+C) Att EICAR öppnar en nätverksanslutning
+
+<br>
+
+D) Att ClamAV blockerar all JavaScript
+
+</div>
+
+<button onclick="toggle('answer7')">
+VISA SVAR
+</button>
+
+<div
+  id="answer7"
+  class="answer"
+>
+
+<p>
+Rätt svar är:
+</p>
+
+<div class="console">B</div>
+
+<p>
+ClamAV känner igen ett känt
+testmönster/signatur.
+</p>
+
+</div>
+
+</section>
+
+
+<h2>
+08 // BOSS
+</h2>
+
+<section class="task boss">
+
+<div class="tag">
+BOSS
+<span class="score">30p</span>
+</div>
+
+<div class="console">SECURITY REPORT
+
+FILE:
+unknown.bin
+
+CLAMAV:
+
+Infected files: 0
+
+
+QUESTION:
+
+Is the file definitely safe?</div>
+
+<div class="box">
+
+<b>SVAR</b>
+
+<br><br>
+
+YES / NO
+
+<br><br>
+
+Förklara:
+
+<br><br>
+
+________________________________________
+
+<br>
+________________________________________
+
+<br>
+________________________________________
+
+</div>
+
+<button onclick="toggle('bossanswer')">
+VISA ANALYS
+</button>
+
+<div
+  id="bossanswer"
+  class="answer"
+>
+
+<p>
+Rätt svar är:
+</p>
+
+<div class="console">NO</div>
+
+<p>
+Ett antivirusresultat med
+<code>Infected files: 0</code>
+betyder att ClamAV inte hittade
+något som matchade dess detektion.
+</p>
+
+<p>
+Det bevisar inte att filen är
+ofarlig.
+</p>
+
+<p>
+Det är därför säkerhetsarbete ofta
+kombinerar flera lager, exempelvis
+antivirus, beteendeanalys, EDR,
+loggning och nätverksövervakning.
+</p>
+
+</div>
+
+</section>
+
+
+<h2>
+MISSION COMPLETE
+</h2>
+
+<section class="safe">
+
+<div class="console">CLAMAV LAB COMPLETE
+
+[+] apt update
+[+] installed ClamAV
+[+] checked version
+[+] checked FreshClam
+[+] scanned clean file
+[+] downloaded EICAR
+[+] detected EICAR
+[+] recursive scan
+[+] signature concept
+[+] AV limitations
+
+STATUS:
+MALWARE DEFENSE BASICS COMPLETE</div>
+
+</section>
+
+
+</main>
+
+
+<script>
+
+function toggle(id){
+
+  document
+    .getElementById(id)
+    .classList
+    .toggle("show");
+
+}
+
+</script>
+
+</body>
+</html>
