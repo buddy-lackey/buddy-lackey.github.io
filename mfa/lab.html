@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<title>
+MFA & YubiKey Lab | Baalstorm
+</title>
+
+<link
+  rel="stylesheet"
+  href="mfa.css"
+>
+
+</head>
+
+
+<body>
+
+<main>
+
+<div class="top">
+
+<span>
+BAALSTORM // AUTHENTICATION LAB
+</span>
+
+<span>
+PASSWORD + SECURITY KEY
+</span>
+
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">
+$ ./mfa-lab --begin
+</div>
+
+<h1>
+TRUST <span>NO SINGLE FACTOR.</span>
+</h1>
+
+<p>
+I den här labben kommer du att
+registrera en fysisk säkerhetsnyckel
+och använda den tillsammans med ett
+lösenord.
+</p>
+
+<p>
+Målet är att förstå vad MFA faktiskt
+gör — inte bara vad förkortningen betyder.
+</p>
+
+</section>
+
+
+<div class="notice">
+
+<b>LABBREGLER</b>
+
+<br><br>
+
+Använd ett påhittat användarnamn.
+
+<br><br>
+
+Använd INTE ett riktigt lösenord som
+du använder på någon annan tjänst.
+
+<br><br>
+
+YubiKeyen är skolans labbutrustning.
+
+</div>
+
+
+<h2>
+00 // TWO FACTORS
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">5p</span>
+</div>
+
+<div class="console">
+FACTOR 1
+
+Something you KNOW
+
+        PASSWORD
+
+
+FACTOR 2
+
+Something you HAVE
+
+        SECURITY KEY
+</div>
+
+<p>
+Varför räknas lösenord och YubiKey
+som två olika faktorer?
+</p>
+
+<div class="box">
+SVAR:
+
+________________________________________
+
+________________________________________
+</div>
+
+</section>
+
+
+<h2>
+01 // ENROLLMENT
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">10p</span>
+</div>
+
+<p>
+Öppna:
+</p>
+
+<div class="console">
+https://baalstorm.se/mfa/
+</div>
+
+<p>
+Välj:
+</p>
+
+<div class="console">
+ENROLL KEY
+</div>
+
+<p>
+Skapa ett labbkonto.
+</p>
+
+<p>Exempel:</p>
+
+<div class="console">
+USERNAME
+
+student07
+
+
+PASSWORD
+
+Baalstorm-Lab-927
+</div>
+
+<div class="notice">
+Använd ett eget TEMPORÄRT labblösenord.
+Återanvänd aldrig ditt riktiga lösenord.
+</div>
+
+</section>
+
+
+<h2>
+02 // TOUCH THE KEY
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">10p</span>
+</div>
+
+<p>
+Klicka:
+</p>
+
+<div class="console">
+REGISTER YUBIKEY
+</div>
+
+<p>
+Webbläsaren ska nu be dig använda
+en säkerhetsnyckel.
+</p>
+
+<div class="console">
+INSERT SECURITY KEY
+
+        ↓
+
+     YubiKey
+
+        ↓
+
+TOUCH SECURITY KEY
+</div>
+
+<p>
+När registreringen lyckas ska
+Baalstorm visa:
+</p>
+
+<div class="console">
+FACTOR 1 ........ PASS
+
+FACTOR 2 ........ REGISTERED
+
+ENROLLMENT COMPLETE
+</div>
+
+</section>
+
+
+<h2>
+03 // WHERE IS THE PRIVATE KEY?
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">15p</span>
+</div>
+
+<div class="console">
+YUBIKEY
+
+Private key
+     │
+     │ signs
+     ▼
+Challenge
+
+
+BAALSTORM
+
+Public key
+     │
+     │ verifies
+     ▼
+Signature
+</div>
+
+<p>
+Svar:
+</p>
+
+<div class="box">
+Skickades den privata nyckeln från
+YubiKeyen till Baalstorm?
+
+YES / NO
+
+
+Vad lagrar servern?
+
+______________________________________
+</div>
+
+<button
+onclick="toggle('private')"
+>
+VISA FÖRKLARING
+</button>
+
+<div
+id="private"
+class="answer"
+>
+
+<p>
+Den privata credential-nyckeln ska
+stanna hos autentiseraren.
+</p>
+
+<p>
+Servern lagrar information som bland
+annat gör det möjligt att verifiera
+signaturer med credentialens publika
+nyckel.
+</p>
+
+</div>
+
+</section>
+
+
+<h2>
+04 // LOG OUT
+</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">5p</span>
+</div>
+
+<p>
+Ladda om sidan eller öppna den på nytt.
+</p>
+
+<p>
+Välj:
+</p>
+
+<div class="console">
+LOGIN
+</div>
+
+<p>
+Skriv ditt användarnamn och lösenord.
+</p>
+
+</section>
+
+
+<h2>
+05 // PASSWORD ONLY
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">15p</span>
+</div>
+
+<p>
+Starta inloggningen.
+</p>
+
+<p>
+Efter rätt lösenord bör du se:
+</p>
+
+<div class="console">
+FACTOR 1
+
+PASSWORD ........ PASS
+
+
+FACTOR 2
+
+SECURITY KEY ..... WAITING
+</div>
+
+<p>
+Dra ur YubiKeyen eller avbryt dialogen.
+</p>
+
+<div class="box">
+Kom du åt den skyddade resursen?
+
+YES / NO
+
+
+Varför?
+
+_______________________________________
+
+_______________________________________
+</div>
+
+</section>
+
+
+<h2>
+06 // COMPLETE MFA
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">15p</span>
+</div>
+
+<p>
+Försök igen.
+</p>
+
+<p>
+Denna gång:
+</p>
+
+<div class="console">
+PASSWORD
+
+       ✓
+
+YUBIKEY
+
+       ✓
+</div>
+
+<p>
+När båda faktorer verifierats bör
+servern ge:
+</p>
+
+<div class="console">
+FACTOR 1 ........ PASS
+
+FACTOR 2 ........ PASS
+
+BACKEND SESSION . AUTHORIZED
+
+
+ACCESS GRANTED
+</div>
+
+<p>
+Skriv flaggan:
+</p>
+
+<div class="box">
+BAALSTORM_FLAG{
+
+________________________________
+
+}
+</div>
+
+</section>
+
+
+<h2>
+07 // THE WRONG KEY
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CHALLENGE
+<span class="score">20p</span>
+</div>
+
+<p>
+Lämna tillbaka din YubiKey till läraren.
+</p>
+
+<p>
+Låna en ANNAN YubiKey som har
+registrerats på någon annans konto.
+</p>
+
+<div class="console">
+CORRECT USERNAME
+
+        +
+
+CORRECT PASSWORD
+
+        +
+
+DIFFERENT YUBIKEY
+</div>
+
+<p>
+Försök logga in.
+</p>
+
+<div class="box">
+FACTOR 1:
+
+PASS / FAIL
+
+
+FACTOR 2:
+
+PASS / FAIL
+
+
+Varför fungerar inte den andra
+säkerhetsnyckeln?
+
+____________________________________
+
+____________________________________
+</div>
+
+</section>
+
+
+<h2>
+08 // PASSWORD LEAK
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+SECURITY INCIDENT
+<span class="score">20p</span>
+</div>
+
+<div class="console">
+INCIDENT REPORT
+
+ATTACKER HAS OBTAINED:
+
+username ........ YES
+password ........ YES
+
+security key .... NO
+</div>
+
+<p>
+Kan angriparen genomföra hela
+inloggningen?
+</p>
+
+<div class="box">
+YES / NO
+
+
+Varför?
+
+____________________________________
+
+____________________________________
+</div>
+
+</section>
+
+
+<h2>
+09 // DEVTOOLS ATTACK
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CHALLENGE
+<span class="score">25p</span>
+</div>
+
+<p>
+Frontend-koden finns på din dator.
+</p>
+
+<p>
+Öppna webbläsarens DevTools.
+</p>
+
+<div class="console">
+F12
+
+        ↓
+
+Developer Tools
+
+        ↓
+
+Sources / Console / Network
+</div>
+
+<p>
+Fundera på om du skulle kunna ändra
+HTML eller JavaScript så att sidan
+visar texten:
+</p>
+
+<div class="console">
+ACCESS GRANTED
+</div>
+
+<div class="box">
+Skulle detta innebära att backenden
+också accepterat autentiseringen?
+
+YES / NO
+
+
+Förklara:
+
+____________________________________
+
+____________________________________
+</div>
+
+<button
+onclick="toggle('devtools')"
+>
+VISA FÖRKLARING
+</button>
+
+<div
+id="devtools"
+class="answer"
+>
+
+<p>
+Du kontrollerar klienten och kan därför
+ändra vad klienten VISAR.
+</p>
+
+<p>
+Men den skyddade flaggan hämtas från
+Cloudflare-backenden med en session som
+bara skapas efter att båda faktorerna
+verifierats.
+</p>
+
+<p>
+Detta illustrerar en
+<b>trust boundary</b>.
+</p>
+
+</div>
+
+</section>
+
+
+<h2>
+10 // WATCH THE PROTOCOL
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+NETWORK
+<span class="score">20p</span>
+</div>
+
+<p>
+Öppna:
+</p>
+
+<div class="console">
+Developer Tools
+     ↓
+Network
+</div>
+
+<p>
+Genomför en ny inloggning.
+</p>
+
+<p>
+Leta efter:
+</p>
+
+<div class="console">
+/login/password
+
+/login/start
+
+/login/finish
+
+/protected
+</div>
+
+<div class="box">
+Vilket anrop verifierar faktor 1?
+
+_________________________________
+
+
+Vilket anrop startar WebAuthn?
+
+_________________________________
+
+
+Vilket anrop verifierar YubiKeyens
+svar?
+
+_________________________________
+
+
+Vilket anrop kräver en färdig session?
+
+_________________________________
+</div>
+
+</section>
+
+
+<h2>
+11 // CHALLENGE
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CRYPTOGRAPHY
+<span class="score">20p</span>
+</div>
+
+<p>
+Vid WebAuthn-login skapar servern en
+slumpmässig challenge.
+</p>
+
+<div class="console">
+SERVER
+
+random challenge
+
+     │
+     v
+
+BROWSER
+
+     │
+     v
+
+YUBIKEY
+
+signs challenge
+
+     │
+     v
+
+SERVER
+
+verify signature
+</div>
+
+<p>
+Varför är en ny challenge bättre än
+att YubiKeyen skickar samma hemliga
+kod varje gång?
+</p>
+
+<div class="box">
+SVAR:
+
+____________________________________
+
+____________________________________
+
+____________________________________
+</div>
+
+</section>
+
+
+<h2>
+12 // STATE WHAT THE SERVER KNOWS
+</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+ARCHITECTURE
+<span class="score">20p</span>
+</div>
+
+<table>
+
+<tr>
+<th>Information</th>
+<th>Frontend</th>
+<th>Backend</th>
+<th>YubiKey</th>
+</tr>
+
+<tr>
+<td>Username</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Password submitted</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Password hash</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Credential public key</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Credential private key</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+</table>
+
+</section>
+
+
+<h2>
+13 // BOSS
+</h2>
+
+<section class="task boss">
+
+<div class="tag">
+MFA BOSS
+<span class="score">40p</span>
+</div>
+
+<div class="console">
+INCIDENT
+
+ACCOUNT:
+student07
+
+
+ATTACKER HAS:
+
+username ........ YES
+password ........ YES
+
+YubiKey .......... NO
+
+
+ATTACKER CONTROLS:
+
+their own browser
+
+
+ATTACKER CAN:
+
+modify HTML
+modify JavaScript
+send HTTP requests
+
+
+OBJECTIVE:
+
+Access the protected flag.
+</div>
+
+<p>
+Besvara:
+</p>
+
+<div class="box">
+1. Kan angriparen klara faktor 1?
+
+_________________________________
+
+
+2. Kan angriparen få servern att skapa
+ett WebAuthn-loginflöde?
+
+_________________________________
+
+
+3. Kan angriparen skapa en giltig
+signatur utan den registrerade
+credentialens privata nyckel?
+
+_________________________________
+
+
+4. Kan angriparen ändra frontend till
+att visa "ACCESS GRANTED"?
+
+_________________________________
+
+
+5. Ger detta automatiskt tillgång till
+/protected?
+
+_________________________________
+
+
+6. Vad är skillnaden mellan att lura
+frontenden och att lura backenden?
+
+_________________________________
+
+_________________________________
+</div>
+
+<button
+onclick="toggle('boss')"
+>
+VISA ANALYS
+</button>
+
+<div
+id="boss"
+class="answer"
+>
+
+<p>
+Ett stulet lösenord räcker för faktor 1.
+</p>
+
+<p>
+Servern kan därefter utfärda en
+WebAuthn-challenge.
+</p>
+
+<p>
+Men för att färdigställa autentiseringen
+måste servern få ett svar som verifieras
+mot den credential som registrerats.
+</p>
+
+<p>
+Att ändra texten i webbläsaren förändrar
+inte serverns autentiseringstillstånd.
+</p>
+
+</div>
+
+</section>
+
+
+<h2>
+MISSION COMPLETE
+</h2>
+
+<section class="box">
+
+<div class="console">
+MFA LAB COMPLETE
+
+[+] authentication factors
+[+] password
+[+] WebAuthn
+[+] YubiKey
+[+] enrollment
+[+] public/private key concept
+[+] random challenge
+[+] backend verification
+[+] sessions
+[+] trust boundaries
+[+] DevTools
+[+] MFA attack scenario
+
+STATUS:
+
+IDENTITY VERIFIED.
+</div>
+
+</section>
+
+
+</main>
+
+
+<script>
+
+function toggle(id){
+
+  document
+    .getElementById(id)
+    .classList
+    .toggle("show");
+}
+
+</script>
+
+</body>
+</html>
