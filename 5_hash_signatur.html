@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hash & Signatur | Baalstorm</title>
+
+<style>
+:root{
+ --bg:#050807;
+ --panel:#0a1110;
+ --border:#173a2a;
+ --green:#63ff9b;
+ --green2:#28a85a;
+ --text:#dce7df;
+ --muted:#84958b;
+ --yellow:#ffd166;
+ --red:#ff6666;
+ --cyan:#55e6e6;
+}
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:linear-gradient(#040706,#07100c);
+ color:var(--text);
+ font-family:"Courier New",monospace;
+ line-height:1.65;
+}
+
+main{
+ width:min(1050px,95%);
+ margin:auto;
+ padding:50px 0 100px;
+}
+
+.top{
+ display:flex;
+ justify-content:space-between;
+ border-bottom:1px solid var(--border);
+ color:var(--green);
+ padding-bottom:10px;
+ margin-bottom:45px;
+}
+
+.hero h1{
+ font-size:clamp(2.5rem,8vw,5rem);
+ margin:0;
+ line-height:1;
+ color:white;
+}
+
+.hero h1 span{color:var(--cyan)}
+
+.hero p{
+ color:var(--muted);
+ max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+ margin-top:65px;
+ border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+ background:var(--panel);
+ border:1px solid var(--border);
+ padding:22px;
+ margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{color:var(--green)}
+.score{float:right;color:var(--yellow)}
+
+.console{
+ background:#020403;
+ border:1px solid var(--border);
+ color:#9fffb8;
+ padding:16px;
+ white-space:pre-wrap;
+}
+
+button{
+ font:inherit;
+ background:transparent;
+ color:var(--green);
+ border:1px solid var(--green2);
+ padding:9px 14px;
+ cursor:pointer;
+}
+
+.answer{
+ display:none;
+ border-top:1px dashed var(--border);
+ margin-top:16px;
+ padding-top:16px;
+}
+
+.answer.show{display:block}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+}
+
+th,td{
+ border:1px solid var(--border);
+ padding:12px;
+}
+
+th{color:var(--green)}
+
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+<span>BAALSTORM // CRYPTO TRAINING</span>
+<span>HASH + DIGITAL SIGNATURE</span>
+</div>
+
+<section class="hero">
+<div class="prompt">$ ./verify --integrity --identity</div>
+<h1>WHO SENT <span>THIS?</span></h1>
+
+<p>
+Kryptering, hashning och digital signering löser olika problem.
+I den här övningen skiljer vi på konfidentialitet, riktighet
+och autentisering.
+</p>
+</section>
+
+
+<h2 class="section">01 // HASH OR ENCRYPTION?</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">10p</span></div>
+
+<table>
+<tr>
+<th>Egenskap</th>
+<th>Hash</th>
+<th>Kryptering</th>
+</tr>
+
+<tr>
+<td>Kan återställas till original?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Använder nyckel?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Fast längd på utdata?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Skyddar konfidentialitet?</td>
+<td>?</td>
+<td>?</td>
+</tr>
+</table>
+
+</section>
+
+
+<h2 class="section">02 // AVALANCHE</h2>
+
+<section class="task challenge">
+
+<div class="tag">HASH <span class="score">15p</span></div>
+
+<div class="console">
+FILE A:
+
+salary=1000
+
+
+FILE B:
+
+salary=1001
+</div>
+
+<p>
+Hur bör SHA-256-hasharna för dessa filer förhålla sig?
+</p>
+
+<button onclick="toggle('hash')">Visa svar</button>
+
+<div id="hash" class="answer">
+<p>
+De bör vara mycket olika trots att indatan bara skiljer sig lite.
+Det är avalanche-effekten.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">03 // FILE TAMPERING</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTEGRITY <span class="score">15p</span></div>
+
+<div class="console">
+ORIGINAL:
+
+report.pdf
+SHA256: AAA111...
+
+
+RECEIVED:
+
+report.pdf
+SHA256: E9B882...
+</div>
+
+<p>
+Vad kan vi säga?
+</p>
+
+<button onclick="toggle('tamper')">Visa svar</button>
+
+<div id="tamper" class="answer">
+<p>
+Filen är inte identisk med originalet.
+Något har förändrats.
+</p>
+
+<p>
+Hashen säger däremot inte automatiskt vem som gjorde förändringen
+eller vem som skickade filen.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">04 // SIGNATURE</h2>
+
+<section class="task challenge">
+
+<div class="tag">SIGNATURE <span class="score">15p</span></div>
+
+<div class="console">
+ALICE
+
+message
+  |
+ hash
+  |
+ sign with Alice's private key
+  |
+signature
+</div>
+
+<p>Bob verifierar signaturen med:</p>
+
+<div class="box">
+_____________________________________
+</div>
+
+<button onclick="toggle('verify')">Visa svar</button>
+
+<div id="verify" class="answer">
+<p><b>Alice's public key.</b></p>
+</div>
+
+</section>
+
+
+<h2 class="section">05 // WHOSE KEY?</h2>
+
+<section class="task challenge">
+
+<div class="tag">KEY LOGIC <span class="score">20p</span></div>
+
+<div class="console">
+CONFIDENTIALITY
+
+Alice → Bob
+</div>
+
+<p>Alice krypterar med:</p>
+
+<div class="box">
+_____________________________________
+</div>
+
+<div class="console">
+AUTHENTICATION
+
+Alice → Bob
+</div>
+
+<p>Alice signerar med:</p>
+
+<div class="box">
+_____________________________________
+</div>
+
+<button onclick="toggle('keys')">Visa facit</button>
+
+<div id="keys" class="answer">
+
+<div class="console">
+CONFIDENTIALITY:
+
+Bob's public key
+
+
+SIGNATURE:
+
+Alice's private key
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">06 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">BOSS <span class="score">30p</span></div>
+
+<div class="console">
+BOB RECEIVES:
+
+message.txt
+
+signature.sig
+
+Alice_public.key
+
+
+Bob verifies signature:
+
+VALID
+</div>
+
+<p>Vad kan Bob dra för slutsatser?</p>
+
+<div class="box">
+Har meddelandet ändrats?
+
+____________________________________
+
+
+Kan signaturen ge stöd för att
+avsändaren har Alice's privata nyckel?
+
+____________________________________
+
+
+Är meddelandet automatiskt hemligt
+för Eve bara för att det är signerat?
+
+____________________________________
+</div>
+
+<button onclick="toggle('boss')">Visa svar</button>
+
+<div id="boss" class="answer">
+
+<p>
+En giltig signatur ger stöd för riktighet och autentisering.
+</p>
+
+<p>
+Signering ger däremot inte automatiskt konfidentialitet.
+Vill Alice även hålla innehållet hemligt behövs kryptering.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+HASH & SIGNATURE COMPLETE
+
+[+] hashing
+[+] SHA-256
+[+] avalanche effect
+[+] integrity
+[+] public keys
+[+] private keys
+[+] digital signatures
+[+] authentication
+[+] confidentiality
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+ document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
