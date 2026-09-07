@@ -20,7 +20,6 @@
   --red:#ff6666;
   --blue:#68b8ff;
   --cyan:#55e6e6;
-  --orange:#ff9f43;
 }
 
 *{box-sizing:border-box}
@@ -58,9 +57,7 @@ main{
   color:white;
 }
 
-.hero h1 span{
-  color:var(--cyan);
-}
+.hero h1 span{color:var(--cyan)}
 
 .hero p{
   color:var(--muted);
@@ -194,26 +191,7 @@ button:hover,.download:hover{
   border-bottom:1px dashed var(--border);
 }
 
-.actor b{
-  color:var(--cyan);
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin:20px 0;
-}
-
-th,td{
-  border:1px solid var(--border);
-  padding:12px;
-  text-align:left;
-}
-
-th{
-  background:#07110c;
-  color:var(--green);
-}
+.actor b{color:var(--cyan)}
 
 @media(max-width:800px){
   .top{flex-direction:column;gap:8px}
@@ -276,7 +254,7 @@ och det publicerade hashvärdet?
 
 <div class="actor">
 <b>TRENT</b>
-<span>Betrodd tredje part. Dyker upp senare när vi börjar prata certifikat.</span>
+<span>Betrodd tredje part. Blir relevant när vi börjar prata certifikat och PKI.</span>
 </div>
 
 </section>
@@ -291,10 +269,12 @@ BASIC
 <span class="score">5p</span>
 </div>
 
-<h3>Ladda ner filen</h3>
+<h3>Ladda ner bevisfilen</h3>
 
-<a class="download" href="evidence.txt" download>
-DOWNLOAD evidence.txt
+<a class="download"
+   href="BAALSTORM%20DIGITAL%20EVIDENCE.txt"
+   download>
+DOWNLOAD BAALSTORM DIGITAL EVIDENCE.txt
 </a>
 
 <p>Öppna filen och läs innehållet.</p>
@@ -323,11 +303,11 @@ HASH
 
 <p>Windows:</p>
 
-<div class="command windows">Get-FileHash .\evidence.txt -Algorithm SHA256</div>
+<div class="command windows">Get-FileHash ".\BAALSTORM DIGITAL EVIDENCE.txt" -Algorithm SHA256</div>
 
 <p>Parrot/Linux:</p>
 
-<div class="command linux">sha256sum evidence.txt</div>
+<div class="command linux">sha256sum "BAALSTORM DIGITAL EVIDENCE.txt"</div>
 
 <p>Anteckna hashvärdet:</p>
 
@@ -354,7 +334,8 @@ INTEGRITY
 <h3>Jämför värdena</h3>
 
 <p>
-Läraren eller Baalstorm-sidan publicerar ett officiellt SHA-256-värde.
+Jämför ditt framräknade SHA-256-värde med det officiella
+värde som läraren anger.
 </p>
 
 <div class="console">
@@ -362,10 +343,6 @@ OFFICIAL SHA-256:
 
 BYT_UT_DETTA_MOT_FILENS_RIKTIGA_SHA256
 </div>
-
-<p>
-Är ditt framräknade värde identiskt?
-</p>
 
 <div class="box">
 [ ] YES — MATCH
@@ -403,11 +380,8 @@ AVALANCHE
 <h3>Manipulera filen</h3>
 
 <p>
-Öppna <code>evidence.txt</code> i en texteditor.
-</p>
-
-<p>
-Ändra ett enda tecken.
+Öppna <code>BAALSTORM DIGITAL EVIDENCE.txt</code>
+i en texteditor och ändra ett enda tecken.
 </p>
 
 <div class="console">
@@ -424,13 +398,9 @@ TRANSFER 9000 SEK
 
 <p>Kör SHA-256 igen.</p>
 
-<div class="command windows">Get-FileHash .\evidence.txt -Algorithm SHA256</div>
+<div class="command windows">Get-FileHash ".\BAALSTORM DIGITAL EVIDENCE.txt" -Algorithm SHA256</div>
 
-<div class="command linux">sha256sum evidence.txt</div>
-
-<p>
-Jämför den nya hashen med den gamla.
-</p>
+<div class="command linux">sha256sum "BAALSTORM DIGITAL EVIDENCE.txt"</div>
 
 <button onclick="toggle('avalanche')">Vad ser du?</button>
 
@@ -441,7 +411,7 @@ Trots en liten förändring i filen förändras hashvärdet kraftigt.
 </p>
 
 <p>
-Detta är <b>avalanche-effekten</b>.
+Detta illustrerar <b>avalanche-effekten</b>.
 </p>
 
 </div>
@@ -461,7 +431,7 @@ EVE // PASSIVE ATTACKER
 <div class="console">
 EVE CAN SEE:
 
-evidence.txt
+BAALSTORM DIGITAL EVIDENCE.txt
 
 SHA-256
 
@@ -469,11 +439,7 @@ network traffic
 </div>
 
 <p>
-Eve observerar kommunikationen men ändrar ingenting.
-</p>
-
-<p>
-Kan Eve räkna ut SHA-256 för filen själv?
+Kan Eve själv räkna ut SHA-256 för filen?
 </p>
 
 <div class="box">
@@ -497,13 +463,7 @@ Ja, Eve kan räkna ut samma hash.
 </p>
 
 <p>
-En vanlig SHA-256-hash är inte en hemlighet.
-Den kräver ingen nyckel.
-</p>
-
-<p>
-Hashens uppgift här är att upptäcka förändring,
-inte att dölja information.
+SHA-256-värdet är inte en hemlighet och kräver ingen hemlig nyckel.
 </p>
 
 </div>
@@ -521,43 +481,28 @@ MALLORY // ACTIVE ATTACKER
 </div>
 
 <div class="console">
-ORIGINAL:
+MALLORY REPLACES:
 
-evidence.txt
-     |
-     v
-SHA256
-     |
-     v
-ABC123...
+BAALSTORM DIGITAL EVIDENCE.txt
 
+        ↓
 
-MALLORY REPLACES FILE:
+calculates new SHA-256
 
-evil-evidence.txt
-     |
-     v
-SHA256
-     |
-     v
-999XYZ...
+        ↓
 
-
-MALLORY ALSO CHANGES WEBSITE:
-
-OFFICIAL SHA-256:
-999XYZ...
+changes the published checksum
 </div>
 
 <p>
-Bob laddar ner Mallorys fil och beräknar SHA-256.
+Bob laddar ner Mallorys manipulerade fil.
 </p>
 
 <div class="console">
 BOB:
 
-Downloaded file: 999XYZ...
-Website says:    999XYZ...
+Downloaded file hash: 999XYZ...
+Published hash:       999XYZ...
 
 MATCH!
 </div>
@@ -583,12 +528,12 @@ ________________________________________
 <p><b>Nej.</b></p>
 
 <p>
-Mallory kan beräkna en ny SHA-256 för sin modifierade fil
+Mallory kan skapa en ny SHA-256 för sin modifierade fil
 och ändra det publicerade hashvärdet.
 </p>
 
 <p>
-Hashen i sig bevisar inte vem som publicerade hashvärdet.
+Hashvärdet bevisar inte i sig vem som publicerat filen.
 </p>
 
 </div>
@@ -596,97 +541,45 @@ Hashen i sig bevisar inte vem som publicerade hashvärdet.
 </section>
 
 
-<h2 class="section">07 // WE NEED SOMETHING MORE</h2>
+<h2 class="section">07 // DIGITAL SIGNATURE</h2>
 
 <section class="task">
 
 <div class="tag">
 NEXT LEVEL
-<span class="score">10p</span>
+<span class="score">15p</span>
 </div>
 
 <div class="console">
-HASH
-
-answers:
-
-"Has the file changed?"
-
-
-BUT WE ALSO WANT:
-
-"Who vouched for this file?"
+BAALSTORM DIGITAL EVIDENCE.txt
+             |
+             v
+           SHA-256
+             |
+             v
+            HASH
+             |
+             | SIGN
+             v
+     PRIVATE KEY
+             |
+             v
+BAALSTORM DIGITAL EVIDENCE.txt.sig
 </div>
 
 <p>
-Nu behöver vi kombinera hashning med asymmetrisk kryptografi.
+Nu kombinerar vi hashning med asymmetrisk kryptografi.
 </p>
 
 <div class="info">
-Det är här digitala signaturer kommer in.
+Den privata signeringsnyckeln hålls hemlig av läraren.
+Den publika nyckeln finns på OmniWay.
 </div>
 
 </section>
 
 
-<h2 class="section">08 // DIGITAL SIGNATURE</h2>
-
-<section class="task challenge">
-
-<div class="tag">
-SIGNATURE
-<span class="score">20p</span>
-</div>
-
-<div class="console">
-ALICE
-
-evidence.txt
-     |
-     v
-SHA-256
-     |
-     v
-HASH
-     |
-     | signed using
-     v
-ALICE'S PRIVATE KEY
-     |
-     v
-DIGITAL SIGNATURE
-</div>
-
-<p>
-Alice publicerar:
-</p>
-
-<div class="console">
-evidence.txt
-
-evidence.txt.sig
-
-Alice's public key
-</div>
-
-<p>
-Vilken nyckel måste Alice hålla hemlig?
-</p>
-
-<div class="box">
-________________________________________
-</div>
-
-<button onclick="toggle('private')">Visa svar</button>
-
-<div id="private" class="answer">
-<p><b>Alice's private key.</b></p>
-</div>
-
-</section>
-
-
-<h2 class="section">09 // DOWNLOAD THE SIGNATURE</h2>
+<h2 class="section">08 // GET THE SIGNATURE</h2>
 
 <section class="task">
 
@@ -695,29 +588,53 @@ PRACTICAL
 <span class="score">10p</span>
 </div>
 
-<p>Ladda ner:</p>
+<p>Ladda ner originalfilen och signaturen:</p>
 
-<a class="download" href="evidence.txt" download>
-evidence.txt
+<a class="download"
+   href="BAALSTORM%20DIGITAL%20EVIDENCE.txt"
+   download>
+BAALSTORM DIGITAL EVIDENCE.txt
 </a>
 
-<a class="download" href="evidence.txt.sig" download>
-evidence.txt.sig
-</a>
-
-<a class="download" href="baalstorm-public.pem" download>
-baalstorm-public.pem
+<a class="download"
+   href="BAALSTORM%20DIGITAL%20EVIDENCE.txt.sig"
+   download>
+BAALSTORM DIGITAL EVIDENCE.txt.sig
 </a>
 
 <div class="notice">
-Om du ändrade evidence.txt i den tidigare uppgiften:
-ladda ner originalet igen innan du fortsätter.
+Om du ändrade filen tidigare:
+ladda ner originalfilen igen innan du fortsätter.
+</div>
+
+<h3>Hämta lärarens publika nyckel</h3>
+
+<p>
+Den publika verifieringsnyckeln finns på:
+</p>
+
+<div class="console">
+OmniWay
+   ↓
+Kursen
+   ↓
+Lärarens publika nyckel
+</div>
+
+<p>
+Ladda ner lärarens publika nyckel och spara den
+i samma katalog som filen och signaturen.
+</p>
+
+<div class="info">
+Filnamnet på den publika nyckeln kan skilja sig från exemplen nedan.
+Använd det verkliga filnamnet i OpenSSL-kommandot.
 </div>
 
 </section>
 
 
-<h2 class="section">10 // VERIFY THE SIGNATURE</h2>
+<h2 class="section">09 // VERIFY THE SIGNATURE</h2>
 
 <section class="task challenge">
 
@@ -726,42 +643,39 @@ OPENSSL
 <span class="score">20p</span>
 </div>
 
+<p>
+Antag i exemplet att lärarens publika nyckel heter:
+</p>
+
+<div class="console">
+lararens-publika-nyckel.pem
+</div>
+
 <p>På Parrot/Linux:</p>
 
 <div class="command linux">openssl dgst -sha256 \
--verify baalstorm-public.pem \
--signature evidence.txt.sig \
-evidence.txt</div>
+-verify "lararens-publika-nyckel.pem" \
+-signature "BAALSTORM DIGITAL EVIDENCE.txt.sig" \
+"BAALSTORM DIGITAL EVIDENCE.txt"</div>
 
-<p>Förväntat resultat:</p>
+<p>Förväntat:</p>
 
 <div class="console">
 Verified OK
 </div>
 
 <p>
-Vad har verifieringen kontrollerat?
+Om din publika nyckel har ett annat filnamn:
+byt bara ut <code>lararens-publika-nyckel.pem</code>.
 </p>
 
-<div class="box">
-________________________________________
-
-________________________________________
-
-________________________________________
-</div>
-
-<button onclick="toggle('sigverify')">Visa svar</button>
+<button onclick="toggle('sigverify')">Vad verifierade vi?</button>
 
 <div id="sigverify" class="answer">
 
 <p>
-Signaturen matchar filens innehåll och kan verifieras
-med den publika nyckeln.
-</p>
-
-<p>
-Det ger stöd för både:
+Vi kontrollerade att signaturen passar filens innehåll
+och kan verifieras med lärarens publika nyckel.
 </p>
 
 <div class="console">
@@ -777,7 +691,7 @@ AUTHENTICATION
 </section>
 
 
-<h2 class="section">11 // BREAK THE SIGNATURE</h2>
+<h2 class="section">10 // BREAK THE SIGNATURE</h2>
 
 <section class="task challenge">
 
@@ -787,38 +701,35 @@ TAMPERING
 </div>
 
 <p>
-Ändra nu ett tecken i <code>evidence.txt</code>.
+Ändra ett enda tecken i:
 </p>
 
-<p>Kör exakt samma verifiering igen:</p>
-
-<div class="command linux">openssl dgst -sha256 \
--verify baalstorm-public.pem \
--signature evidence.txt.sig \
-evidence.txt</div>
-
-<p>
-Vad händer?
-</p>
-
-<div class="box">
-________________________________________
-
-________________________________________
+<div class="console">
+BAALSTORM DIGITAL EVIDENCE.txt
 </div>
 
-<button onclick="toggle('breaksig')">Visa analys</button>
+<p>Kör verifieringen igen:</p>
+
+<div class="command linux">openssl dgst -sha256 \
+-verify "lararens-publika-nyckel.pem" \
+-signature "BAALSTORM DIGITAL EVIDENCE.txt.sig" \
+"BAALSTORM DIGITAL EVIDENCE.txt"</div>
+
+<p>
+Verifieringen ska nu misslyckas.
+</p>
+
+<button onclick="toggle('breaksig')">Varför?</button>
 
 <div id="breaksig" class="answer">
 
 <p>
-Verifieringen ska misslyckas.
+Signaturen skapades utifrån originalfilens data.
 </p>
 
 <p>
-Signaturen skapades för originalfilens hash.
-När filen ändras får den en annan hash och signaturen
-matchar därför inte längre.
+När filen ändras ändras också hashen och den befintliga
+signaturen passar därför inte längre.
 </p>
 
 </div>
@@ -826,7 +737,7 @@ matchar därför inte längre.
 </section>
 
 
-<h2 class="section">12 // CAN EVE FORGE IT?</h2>
+<h2 class="section">11 // EVE OBSERVES</h2>
 
 <section class="task challenge">
 
@@ -838,32 +749,28 @@ EVE
 <div class="console">
 EVE HAS:
 
-✓ evidence.txt
+✓ BAALSTORM DIGITAL EVIDENCE.txt
+✓ BAALSTORM DIGITAL EVIDENCE.txt.sig
+✓ teacher public key
+✓ network traffic
 
-✓ evidence.txt.sig
-
-✓ baalstorm-public.pem
-
-✓ all network traffic
-
-✗ private key
+✗ teacher private key
 </div>
 
 <p>
-Kan Eve skapa en ny giltig signatur för en modifierad fil?
+Kan Eve skapa en ny giltig lärarsignatur
+för en modifierad fil?
 </p>
 
 <button onclick="toggle('eveforge')">Visa svar</button>
 
 <div id="eveforge" class="answer">
 
-<p>
-Inte utan den privata signeringsnyckeln.
-</p>
+<p><b>Nej.</b></p>
 
 <p>
-Den publika nyckeln är avsedd för verifiering,
-inte för att skapa Baalstorms signaturer.
+Det Eve observerar räcker inte för att skapa signaturer
+som kräver den privata nyckeln.
 </p>
 
 </div>
@@ -871,7 +778,7 @@ inte för att skapa Baalstorms signaturer.
 </section>
 
 
-<h2 class="section">13 // MALLORY TRIES AGAIN</h2>
+<h2 class="section">12 // MALLORY TRIES AGAIN</h2>
 
 <section class="task challenge">
 
@@ -880,28 +787,22 @@ MALLORY
 <span class="score">25p</span>
 </div>
 
-<p>
-Mallory kontrollerar nu webbservern.
-</p>
-
 <div class="console">
-MALLORY CAN REPLACE:
+MALLORY CONTROLS BAALSTORM:
 
-✓ evidence.txt
-
-✓ displayed SHA-256
-
-✓ evidence.txt.sig
+✓ replaces evidence file
+✓ replaces SHA-256
+✓ replaces signature
 
 
-MALLORY DOES NOT HAVE:
+BUT:
 
-✗ Baalstorm private key
+✗ does not have teacher private key
 </div>
 
 <p>
-Kan Mallory skapa en ny signatur som verifieras med
-Baalstorms riktiga publika nyckel?
+Kan Mallory skapa en signatur som verifieras med lärarens
+riktiga publika nyckel från OmniWay?
 </p>
 
 <button onclick="toggle('mallorysig')">Visa svar</button>
@@ -911,8 +812,8 @@ Baalstorms riktiga publika nyckel?
 <p><b>Nej.</b></p>
 
 <p>
-Hon kan byta fil och hash, men hon kan inte skapa
-en giltig Baalstorm-signatur utan Baalstorms privata nyckel.
+Mallory saknar den privata nyckel som hör ihop med
+lärarens publika nyckel på OmniWay.
 </p>
 
 </div>
@@ -920,80 +821,68 @@ en giltig Baalstorm-signatur utan Baalstorms privata nyckel.
 </section>
 
 
-<h2 class="section">14 // THE PUBLIC KEY PROBLEM</h2>
+<h2 class="section">13 // WHY OMNIWAY?</h2>
 
 <section class="task boss">
 
 <div class="tag">
-TRUST PROBLEM
+TRUST BOUNDARY
 <span class="score">30p</span>
 </div>
 
 <p>
-Mallory tänker ett steg längre.
+Här kommer en viktig skillnad mot att lägga allting på Baalstorm.
 </p>
 
 <div class="console">
-MALLORY CREATES:
+BAALSTORM
 
-Mallory private key
-Mallory public key
+evidence file
+signature
+displayed hash
+
+        ↓
+
+MALLORY MAY CONTROL THIS
 
 
-Then replaces:
+OMNIWAY
 
-evidence.txt
-evidence.txt.sig
-baalstorm-public.pem
+teacher public key
+
+        ↓
+
+SEPARATE TRUST SOURCE
 </div>
 
 <p>
-Mallory signerar sin manipulerade fil med sin egen privata nyckel
-och lägger upp sin egen publika nyckel som:
+Varför kan det vara värdefullt att den publika nyckeln
+hämtas från en annan betrodd plats?
+</p>
+
+<button onclick="toggle('omniway')">Visa analys</button>
+
+<div id="omniway" class="answer">
+
+<p>
+Om Mallory endast komprometterar Baalstorm kan hon byta
+filen, signaturen och hashvärdet där.
+</p>
+
+<p>
+Men om eleven hämtar den riktiga publika nyckeln från en
+separat betrodd kanal kan Mallory inte lika enkelt ersätta
+verifieringsnyckeln.
+</p>
+
+<p>
+Det demonstrerar konceptet:
 </p>
 
 <div class="console">
-baalstorm-public.pem
-</div>
+TRUST THE KEY
 
-<p>
-Bob verifierar:
-</p>
-
-<div class="console">
-Verified OK
-</div>
-
-<p>
-Vad är problemet nu?
-</p>
-
-<div class="box">
-________________________________________
-
-________________________________________
-
-________________________________________
-</div>
-
-<button onclick="toggle('trust')">Visa analys</button>
-
-<div id="trust" class="answer">
-
-<p>
-Bob vet inte automatiskt att den publika nyckeln verkligen
-tillhör Baalstorm.
-</p>
-
-<p>
-En digital signatur är bara så användbar som vår tillit
-till den publika nyckel vi verifierar med.
-</p>
-
-<div class="console">
-NEXT QUESTION:
-
-How do we trust a public key?
+NOT JUST THE FILE
 </div>
 
 </div>
@@ -1001,54 +890,46 @@ How do we trust a public key?
 </section>
 
 
-<h2 class="section">15 // ENTER TRENT</h2>
+<h2 class="section">14 // THE NEXT PROBLEM</h2>
 
 <section class="task challenge">
 
 <div class="tag">
-NEXT CONCEPT
+TRUST
 <span class="score">20p</span>
 </div>
 
-<div class="console">
-BOB
-
-needs to trust
-
-BAALSTORM PUBLIC KEY
-
-        ↓
-
-TRUSTED THIRD PARTY
-
-        ↓
-
-TRENT
-</div>
-
 <p>
-I moderna system löser vi ofta detta med:
+Men tänk ännu ett steg.
 </p>
 
 <div class="console">
-CERTIFICATES
+QUESTION:
 
-CERTIFICATE AUTHORITIES
+How do you KNOW the public key on OmniWay
+really belongs to the teacher?
+</div>
+
+<p>
+Det leder vidare till frågor om:
+</p>
+
+<div class="console">
+identity
+
+certificates
+
+certificate authorities
 
 PKI
 
 HTTPS
 </div>
 
-<p>
-Detta är nästa steg efter själva signaturen:
-att på ett säkert sätt avgöra vem en publik nyckel tillhör.
-</p>
-
 </section>
 
 
-<h2 class="section">16 // BOSS</h2>
+<h2 class="section">15 // BOSS</h2>
 
 <section class="task boss">
 
@@ -1058,20 +939,19 @@ CRYPTO BOSS
 </div>
 
 <div class="console">
-INCIDENT:
+SCENARIO:
 
-Alice publishes a software package.
+Alice publishes a file on Baalstorm.
 
 Bob downloads it.
 
-Eve observes all communication.
+Eve observes the communication.
 
-Mallory gains control of the download server.
+Mallory compromises Baalstorm.
+
+Teacher's public key remains available
+through OmniWay.
 </div>
-
-<p>
-Besvara:
-</p>
 
 <div class="box">
 
@@ -1080,48 +960,48 @@ Besvara:
 ________________________________________
 
 
-2. Behöver SHA-256-värdet vara hemligt?
+2. Är SHA-256-värdet hemligt?
 
 ________________________________________
 
 
-3. Kan Mallory ändra filen och publicera en ny matchande SHA-256?
+3. Kan Mallory ersätta filen och publicera en ny matchande hash?
 
 ________________________________________
 
 
-4. Vad tillför en digital signatur jämfört med bara SHA-256?
-
-________________________________________
-
-________________________________________
-
-
-5. Vilken nyckel används för att skapa signaturen?
-
-________________________________________
-
-
-6. Vilken nyckel används för verifiering?
-
-________________________________________
-
-
-7. Varför kan Mallory inte skapa en giltig Baalstorm-signatur?
+4. Vad tillför signaturen?
 
 ________________________________________
 
 ________________________________________
 
 
-8. Vad händer om Mallory också kan ersätta den publika nyckeln?
+5. Vilken nyckel skapade signaturen?
+
+________________________________________
+
+
+6. Vilken nyckel verifierar signaturen?
+
+________________________________________
+
+
+7. Varför hjälper det att den publika nyckeln finns på OmniWay?
 
 ________________________________________
 
 ________________________________________
 
 
-9. Vilket nytt problem har vi då upptäckt?
+8. Vad måste Mallory få kontroll över för att även lura denna verifiering?
+
+________________________________________
+
+________________________________________
+
+
+9. Vilket större kryptografiskt problem har vi nu upptäckt?
 
 ________________________________________
 
@@ -1147,21 +1027,20 @@ YES
 Integrity + authentication
 
 5.
-Alice/Baalstorm private key
+Teacher's private key
 
 6.
-Alice/Baalstorm public key
+Teacher's public key
 
 7.
-Mallory does not have the private key
+It provides a separate trust source
 
 8.
-Mallory can attempt to establish her own
-key pair as the trusted identity
+The trusted key distribution channel,
+the private key, or equivalent trust mechanism
 
 9.
-How do we trust that a public key
-actually belongs to the claimed entity?
+How do we establish trust in public keys?
 </div>
 
 </div>
@@ -1186,9 +1065,9 @@ HASH LAB COMPLETE
 [+] private key
 [+] public key
 [+] OpenSSL verification
-[+] tampering detection
-[+] authenticity
-[+] public key trust problem
+[+] separate trust source
+[+] public key distribution
+[+] trust problem
 
 NEXT:
 
