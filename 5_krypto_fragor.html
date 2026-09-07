@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kryptografi | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --panel2:#0d1815;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --cyan:#55e6e6;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10271c 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{color:var(--cyan)}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#9fffb8;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+button:hover{background:#10281b}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{display:block}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  color:var(--green);
+  background:#07110c;
+}
+
+@media(max-width:800px){
+  .top{flex-direction:column;gap:8px}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // CRYPTO TRAINING</span>
+  <span>LESSON 05</span>
+</div>
+
+<section class="hero">
+
+<div class="prompt">$ ./crypto --fundamentals</div>
+
+<h1>HIDE. VERIFY. <span>UNDERSTAND.</span></h1>
+
+<p>
+Kryptografi handlar inte bara om att göra text oläslig.
+Du behöver förstå vad nycklar gör, vem som får läsa,
+vem som kan verifiera och varför moderna algoritmer
+inte fungerar som Caesar-chiffer.
+</p>
+
+</section>
+
+
+<h2 class="section">01 // TERMINOLOGY</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">5p</span></div>
+
+<h3>Matcha rätt begrepp</h3>
+
+<table>
+<tr>
+<th>Beskrivning</th>
+<th>Begrepp</th>
+</tr>
+
+<tr>
+<td>Ett läsbart okrypterat meddelande.</td>
+<td>__________________</td>
+</tr>
+
+<tr>
+<td>Ett krypterat meddelande.</td>
+<td>__________________</td>
+</tr>
+
+<tr>
+<td>Den metod som används för kryptering/dekryptering.</td>
+<td>__________________</td>
+</tr>
+
+<tr>
+<td>Ett värde som används tillsammans med algoritmen.</td>
+<td>__________________</td>
+</tr>
+</table>
+
+<button onclick="toggle('terms')">Visa facit</button>
+
+<div id="terms" class="answer">
+<div class="console">
+Klartext
+Chiffertext
+Kryptoalgoritm
+Kryptonyckel
+</div>
+</div>
+
+</section>
+
+
+<h2 class="section">02 // THE MAGIC BOX</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">5p</span></div>
+
+<div class="console">
+KLARTEXT
+   |
+   | + NYCKEL
+   v
+[ KRYPTOfunktion ]
+   |
+   v
+CHIFFERtext
+</div>
+
+<p>
+Vad krävs för att mottagaren ska kunna få tillbaka klartexten?
+</p>
+
+<div class="box">
+Svar:
+
+________________________________________
+</div>
+
+<button onclick="toggle('magic')">Visa svar</button>
+
+<div id="magic" class="answer">
+<p>
+Rätt algoritm och rätt nyckel måste användas vid dekrypteringen.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">03 // CAESAR</h2>
+
+<section class="task challenge">
+
+<div class="tag">CLASSICAL CRYPTO <span class="score">10p</span></div>
+
+<p>Caesar-chiffer med +3:</p>
+
+<div class="console">
+A → D
+B → E
+C → F
+...
+</div>
+
+<p>Kryptera:</p>
+
+<div class="box">
+DATA → __________________<br><br>
+LÖSEN → _________________<br><br>
+SKYDD → _________________
+</div>
+
+<p>Dekryptera tre steg bakåt:</p>
+
+<div class="box">
+KHOOR → _________________<br><br>
+VHFUHW → ________________
+</div>
+
+<button onclick="toggle('caesar')">Visa diskussion</button>
+
+<div id="caesar" class="answer">
+<p>
+Caesar-chiffer är enkelt att brute-forca eftersom antalet möjliga
+förskjutningar är mycket litet.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">04 // BRUTE FORCE</h2>
+
+<section class="task challenge">
+
+<div class="tag">KEY SPACE <span class="score">10p</span></div>
+
+<div class="console">
+PORTKOD:
+
+000
+001
+002
+...
+999
+</div>
+
+<p>
+En tresiffrig kod har 1000 möjliga kombinationer.
+Är brute force realistiskt?
+</p>
+
+<button onclick="toggle('brute')">Visa svar</button>
+
+<div id="brute" class="answer">
+<p>
+Ja. Nyckelrymden är mycket liten.
+</p>
+
+<p>
+I modern symmetrisk kryptografi används betydligt större nyckelrymder.
+I kursmaterialet används 128 bitar som exempel.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">05 // SYMMETRIC</h2>
+
+<section class="task">
+
+<div class="tag">BASIC <span class="score">10p</span></div>
+
+<div class="console">
+ALICE                  BOB
+
+SECRET KEY K           SECRET KEY K
+
+plaintext
+   |
+ encrypt(K)
+   |
+ciphertext ------------>
+                       |
+                    decrypt(K)
+                       |
+                    plaintext
+</div>
+
+<p>
+Hur många hemliga nycklar behöver Alice och Bob dela?
+</p>
+
+<div class="box">
+Svar: __________________
+</div>
+
+</section>
+
+
+<h2 class="section">06 // THE KEY DISTRIBUTION PROBLEM</h2>
+
+<section class="task challenge">
+
+<div class="tag">INTERMEDIATE <span class="score">15p</span></div>
+
+<p>
+Alice och Bob befinner sig på olika sidor av världen.
+De vill använda symmetrisk kryptering.
+</p>
+
+<div class="console">
+Alice ---------------- INTERNET ---------------- Bob
+
+                 Eve?
+                 Mallory?
+</div>
+
+<p>
+Vad måste de lösa innan de kan börja kryptera?
+</p>
+
+<button onclick="toggle('distribution')">Visa diskussionsstöd</button>
+
+<div id="distribution" class="answer">
+<p>
+De måste på ett säkert sätt komma överens om eller överföra
+den gemensamma hemliga nyckeln.
+</p>
+
+<p>
+Om Mallory får nyckeln spelar det ingen roll hur stark algoritmen är.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">07 // ASYMMETRIC</h2>
+
+<section class="task challenge">
+
+<div class="tag">KEY PAIRS <span class="score">15p</span></div>
+
+<div class="console">
+ALICE
+
+Public key
+Private key
+
+
+BOB
+
+Public key
+Private key
+</div>
+
+<p>
+Alice vill skicka ett meddelande som endast Bob ska kunna läsa.
+Vilken nyckel ska Alice använda?
+</p>
+
+<button onclick="toggle('encrypt')">Visa svar</button>
+
+<div id="encrypt" class="answer">
+
+<div class="console">
+Alice encrypts with:
+
+BOB'S PUBLIC KEY
+
+
+Bob decrypts with:
+
+BOB'S PRIVATE KEY
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">08 // SIGNING</h2>
+
+<section class="task challenge">
+
+<div class="tag">SIGNATURE <span class="score">15p</span></div>
+
+<p>
+Alice vill att Bob ska kunna verifiera att meddelandet kommer
+från henne.
+</p>
+
+<div class="box">
+Alice signerar med:
+
+_____________________________________
+
+
+Bob verifierar med:
+
+_____________________________________
+</div>
+
+<button onclick="toggle('sign')">Visa svar</button>
+
+<div id="sign" class="answer">
+
+<div class="console">
+Alice:
+
+ALICE'S PRIVATE KEY
+
+
+Bob:
+
+ALICE'S PUBLIC KEY
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">09 // CONFIDENTIALITY OR AUTHENTICATION?</h2>
+
+<section class="task challenge">
+
+<div class="tag">CIA CONNECTION <span class="score">15p</span></div>
+
+<table>
+<tr>
+<th>Situation</th>
+<th>Vad uppnås?</th>
+</tr>
+
+<tr>
+<td>Alice krypterar för Bob.</td>
+<td>________________________</td>
+</tr>
+
+<tr>
+<td>Alice signerar sitt meddelande.</td>
+<td>________________________</td>
+</tr>
+
+<tr>
+<td>Hashen ändras när filen ändras.</td>
+<td>________________________</td>
+</tr>
+</table>
+
+<button onclick="toggle('cia')">Visa facit</button>
+
+<div id="cia" class="answer">
+
+<div class="console">
+Kryptering:
+Konfidentialitet
+
+Digital signatur:
+Riktighet + autentisering
+
+Hash:
+Riktighet / förändringsdetektion
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">10 // HASH</h2>
+
+<section class="task challenge">
+
+<div class="tag">HASHING <span class="score">15p</span></div>
+
+<div class="console">
+message.txt
+
+       |
+       v
+
+     SHA256
+
+       |
+       v
+
+a4f9...e71c
+</div>
+
+<p>
+Vilka påståenden stämmer?
+</p>
+
+<div class="box">
+[ ] Samma indata ger samma hash.<br><br>
+[ ] Hashen kan enkelt räknas baklänges.<br><br>
+[ ] Små ändringar i indata bör ge stor förändring i hash.<br><br>
+[ ] Hashvärdet har fast längd.<br><br>
+[ ] Hashning och kryptering är samma sak.
+</div>
+
+<button onclick="toggle('hash')">Visa svar</button>
+
+<div id="hash" class="answer">
+<p>
+Rätt: samma indata → samma hash, fast längd och avalanche-effekt.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">11 // ALICE / BOB / EVE / MALLORY</h2>
+
+<section class="task challenge">
+
+<div class="tag">THREAT MODEL <span class="score">15p</span></div>
+
+<div class="console">
+Alice  → sender
+
+Bob    → receiver
+
+Eve    → passive attacker
+
+Mallory → active attacker
+
+Trent  → trusted third party
+</div>
+
+<p>
+Vad är skillnaden mellan Eve och Mallory?
+</p>
+
+<button onclick="toggle('actors')">Visa svar</button>
+
+<div id="actors" class="answer">
+<p>
+Eve observerar eller avlyssnar.
+Mallory kan aktivt försöka förändra eller påverka kommunikationen.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">12 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">BOSS <span class="score">30p</span></div>
+
+<div class="console">
+ALICE WANTS TO SEND:
+
+"Transfer 500 SEK"
+
+Requirements:
+
+[1] Mallory must not read it.
+[2] Bob must know it came from Alice.
+[3] Bob must detect if it was changed.
+</div>
+
+<p>Besvara:</p>
+
+<div class="box">
+Vilken egenskap skyddar [1]?
+
+____________________________________
+
+
+Vilken teknik hjälper [2]?
+
+____________________________________
+
+
+Vilken teknik hjälper [3]?
+
+____________________________________
+
+
+Vilken persons publika nyckel används för
+konfidentialitet?
+
+____________________________________
+
+
+Vilken persons privata nyckel används för
+signering?
+
+____________________________________
+</div>
+
+<button onclick="toggle('boss')">Visa facit</button>
+
+<div id="boss" class="answer">
+
+<div class="console">
+[1] Konfidentialitet / kryptering
+
+[2] Digital signatur
+
+[3] Digital signatur + hash/integritetskontroll
+
+Encryption:
+Bob's public key
+
+Signing:
+Alice's private key
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+CRYPTO FUNDAMENTALS COMPLETE
+
+[+] plaintext
+[+] ciphertext
+[+] algorithm
+[+] key
+[+] Caesar cipher
+[+] brute force
+[+] symmetric encryption
+[+] asymmetric encryption
+[+] key distribution
+[+] public/private key
+[+] confidentiality
+[+] integrity
+[+] authentication
+[+] hashes
+[+] digital signatures
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
