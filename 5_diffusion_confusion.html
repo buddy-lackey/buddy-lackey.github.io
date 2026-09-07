@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Diffusion & Confusion | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --panel2:#0d1815;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --cyan:#55e6e6;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10271c 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.4rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{color:var(--cyan)}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{
+  font-size:.8rem;
+  color:var(--green);
+}
+
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#9fffb8;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+button:hover{background:#10281b}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{display:block}
+
+.bit{
+  display:inline-block;
+  padding:5px 8px;
+  margin:2px;
+  border:1px solid var(--border);
+}
+
+.changed{
+  background:#5c2525;
+  color:white;
+}
+
+@media(max-width:800px){
+  .top{flex-direction:column;gap:8px}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+<span>BAALSTORM // CRYPTO LAB</span>
+<span>DIFFUSION & CONFUSION</span>
+</div>
+
+<section class="hero">
+
+<div class="prompt">$ ./shannon --mix-everything</div>
+
+<h1>DESTROY THE <span>PATTERN.</span></h1>
+
+<p>
+En bra chiffertext ska inte avslöja tydliga samband med
+klartexten eller nyckeln.
+</p>
+
+<p>
+Claude Shannon beskrev två viktiga principer:
+diffusion och confusion.
+</p>
+
+</section>
+
+
+<h2 class="section">01 // DIFFUSION</h2>
+
+<section class="task">
+
+<div class="tag">CONCEPT <span class="score">5p</span></div>
+
+<div class="console">
+PLAIN:
+
+0000000000000000
+
+
+Change ONE bit:
+
+0000000000000001
+
+
+GOOD CIPHER:
+
+1011010010111001
+       ↓
+0100111011010010
+</div>
+
+<p>
+En liten ändring i klartexten ska ge en stor förändring
+i chiffertexten.
+</p>
+
+<button onclick="toggle('diffusion')">Vad kallas detta?</button>
+
+<div id="diffusion" class="answer">
+<p><b>Diffusion.</b></p>
+
+<p>
+Informationen från klartexten sprids över chiffertexten så att
+enkla mönster blir svåra att följa.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">02 // CONFUSION</h2>
+
+<section class="task">
+
+<div class="tag">CONCEPT <span class="score">5p</span></div>
+
+<div class="console">
+KEY:
+
+101101110010...
+
+
+CIPHERTEXT:
+
+010010101111...
+</div>
+
+<p>
+En angripare ska inte kunna studera chiffertexten och se ett enkelt
+samband till den nyckel som användes.
+</p>
+
+<button onclick="toggle('confusion')">Vad kallas detta?</button>
+
+<div id="confusion" class="answer">
+<p><b>Confusion.</b></p>
+
+<p>
+Sambandet mellan nyckel och chiffertext görs komplicerat
+och svåranalyserat.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">03 // CAESAR FAILS</h2>
+
+<section class="task challenge">
+
+<div class="tag">CLASSICAL CRYPTO <span class="score">10p</span></div>
+
+<div class="console">
+PLAINTEXT:
+
+AAAAAAAAAAAA
+
+
+CAESAR +3:
+
+DDDDDDDDDDDD
+</div>
+
+<p>
+Vad kan Eve lära sig bara genom att titta på chiffertexten?
+</p>
+
+<div class="box">
+________________________________________________
+
+________________________________________________
+</div>
+
+<button onclick="toggle('caesar')">Visa analys</button>
+
+<div id="caesar" class="answer">
+
+<p>
+Mönstret i klartexten finns kvar.
+Alla lika bokstäver blir fortfarande lika bokstäver.
+</p>
+
+<p>
+Diffusionen är därför mycket dålig.
+</p>
+
+<p>
+Sambandet mellan nyckeln (+3) och resultatet är dessutom
+väldigt enkelt, vilket ger dålig confusion.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">04 // SUBSTITUTION</h2>
+
+<section class="task challenge">
+
+<div class="tag">BUILDING BLOCK <span class="score">10p</span></div>
+
+<div class="console">
+A → Q
+B → M
+C → Z
+D → R
+...
+</div>
+
+<p>
+Substitution betyder att värden byts mot andra värden.
+</p>
+
+<p>
+Vilket Shannon-begrepp hjälper detta främst till med?
+</p>
+
+<button onclick="toggle('sub')">Visa svar</button>
+
+<div id="sub" class="answer">
+<p>
+Substitution används främst för att skapa <b>confusion</b>:
+sambandet mellan nyckel, indata och utdata blir mer komplext.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">05 // PERMUTATION</h2>
+
+<section class="task challenge">
+
+<div class="tag">BUILDING BLOCK <span class="score">10p</span></div>
+
+<div class="console">
+INPUT:
+
+A B C D E F G H
+
+PERMUTATION:
+
+E B H A G D C F
+</div>
+
+<p>
+Permutation flyttar runt informationens positioner.
+</p>
+
+<p>
+Vilket Shannon-begrepp hjälper detta främst till med?
+</p>
+
+<button onclick="toggle('perm')">Visa svar</button>
+
+<div id="perm" class="answer">
+<p>
+Permutation bidrar främst till <b>diffusion</b> genom att sprida
+information över olika positioner.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">06 // ONE ROUND IS NOT ENOUGH</h2>
+
+<section class="task challenge">
+
+<div class="tag">MODERN CIPHER <span class="score">15p</span></div>
+
+<div class="console">
+PLAINTEXT
+
+   ↓
+
+SUBSTITUTION
+
+   ↓
+
+PERMUTATION
+
+   ↓
+
+KEY MIXING
+
+   ↓
+
+SUBSTITUTION
+
+   ↓
+
+PERMUTATION
+
+   ↓
+
+KEY MIXING
+
+   ↓
+
+... MANY ROUNDS ...
+
+   ↓
+
+CIPHERTEXT
+</div>
+
+<p>
+Varför gör moderna blockchiffer flera rundor istället
+för en enda enkel substitution?
+</p>
+
+<button onclick="toggle('rounds')">Visa svar</button>
+
+<div id="rounds" class="answer">
+
+<p>
+Flera rundor gör att effekten av varje bit i klartexten och nyckeln
+sprids allt längre genom resultatet.
+</p>
+
+<p>
+Kombinationen av substitution, permutation och nyckelblandning
+bygger gradvis upp diffusion och confusion.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">07 // AVALANCHE EFFECT</h2>
+
+<section class="task challenge">
+
+<div class="tag">AVALANCHE <span class="score">15p</span></div>
+
+<p>Två meddelanden:</p>
+
+<div class="console">
+MESSAGE A:
+
+TRANSFER 1000
+
+
+MESSAGE B:
+
+TRANSFER 1001
+</div>
+
+<p>
+Skillnaden är mycket liten.
+</p>
+
+<p>
+Hur bör chiffertexterna se ut?
+</p>
+
+<div class="box">
+A) Nästan identiska<br><br>
+
+B) Helt olika på många positioner<br><br>
+
+C) Bara sista tecknet ska ändras
+</div>
+
+<button onclick="toggle('avalanche')">Visa svar</button>
+
+<div id="avalanche" class="answer">
+<p><b>B.</b></p>
+
+<p>
+Detta är avalanche-effekten: en liten ändring i indatan
+ska få stor effekt på utdata.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">08 // WHICH ONE IS BETTER?</h2>
+
+<section class="task challenge">
+
+<div class="tag">VISUAL ANALYSIS <span class="score">15p</span></div>
+
+<p>Föreställ dig att en bild krypteras.</p>
+
+<div class="console">
+CIPHERTEXT A
+
+Du kan fortfarande ana originalbildens former.
+
+
+CIPHERTEXT B
+
+Ser ut som helt slumpmässigt brus.
+</div>
+
+<p>Vilken är bäst krypterad?</p>
+
+<button onclick="toggle('image')">Visa analys</button>
+
+<div id="image" class="answer">
+
+<p>
+B är det önskvärda resultatet.
+</p>
+
+<p>
+Om strukturen i originalet fortfarande syns har information från
+klartexten inte diffuserats tillräckligt.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">09 // CHANGE THE KEY</h2>
+
+<section class="task challenge">
+
+<div class="tag">CONFUSION <span class="score">15p</span></div>
+
+<div class="console">
+SAME PLAINTEXT
+
+KEY 1:
+101101001010...
+
+KEY 2:
+101101001011...
+              ^
+        ONE BIT CHANGED
+</div>
+
+<p>
+Hur bör chiffertexten förändras?
+</p>
+
+<button onclick="toggle('keychange')">Visa svar</button>
+
+<div id="keychange" class="answer">
+
+<p>
+Även en liten förändring i nyckeln bör kunna ge ett kraftigt
+förändrat resultat.
+</p>
+
+<p>
+Det ska inte finnas något enkelt observerbart samband mellan
+nyckeln och chiffertexten.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">10 // ATTACKER'S VIEW</h2>
+
+<section class="task challenge">
+
+<div class="tag">EVE <span class="score">20p</span></div>
+
+<div class="console">
+EVE HAS:
+
+✓ lots of ciphertext
+✓ knowledge of the algorithm
+✗ secret key
+</div>
+
+<p>
+En modern algoritm ska inte vara säker bara för att algoritmens
+design är hemlig.
+</p>
+
+<p>
+Vad måste vara hemligt?
+</p>
+
+<button onclick="toggle('secret')">Visa svar</button>
+
+<div id="secret" class="answer">
+<p><b>Nyckeln.</b></p>
+
+<p>
+Algoritmen kan vara offentligt känd. Säkerheten ska ligga i
+nyckeln och algoritmens kryptografiska styrka.
+</p>
+</div>
+
+</section>
+
+
+<h2 class="section">11 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">SHANNON BOSS <span class="score">30p</span></div>
+
+<div class="console">
+CIPHER X
+
+AAAAAA → DDDDDD
+
+AAAABA → DDDDGD
+
+KEY +1 → output letters shift +1
+
+
+CIPHER Y
+
+AAAAAA → 91F2A4C0E2...
+
+AAAABA → C74E01993A...
+
+KEY BIT CHANGED →
+
+B09221F7D5...
+</div>
+
+<p>Besvara:</p>
+
+<div class="box">
+Vilket chiffer visar bäst diffusion?
+
+__________________________________
+
+
+Vilket visar bäst confusion?
+
+__________________________________
+
+
+Vad är problemet med Cipher X?
+
+__________________________________
+
+__________________________________
+
+
+Varför ser Cipher Y mer ut som en
+modern kryptoalgoritm?
+
+__________________________________
+
+__________________________________
+</div>
+
+<button onclick="toggle('boss')">Visa analys</button>
+
+<div id="boss" class="answer">
+
+<p>
+Cipher Y visar bättre diffusion eftersom en liten förändring
+i klartexten förändrar stora delar av resultatet.
+</p>
+
+<p>
+Cipher Y visar också bättre confusion eftersom sambandet mellan
+nyckel och chiffertext inte är uppenbart.
+</p>
+
+<p>
+Cipher X läcker tydliga strukturer och samband.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+SHANNON PRINCIPLES COMPLETE
+
+[+] diffusion
+[+] confusion
+[+] substitution
+[+] permutation
+[+] key mixing
+[+] multiple rounds
+[+] avalanche effect
+[+] classical cipher weakness
+[+] ciphertext patterns
+[+] modern symmetric cipher concept
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
