@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hash & Digital Signature Lab | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --panel2:#0d1815;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --cyan:#55e6e6;
+  --orange:#ff9f43;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#10271c 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{
+  color:var(--cyan);
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{color:var(--green)}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{border-left:4px solid var(--green2)}
+.challenge{border-left-color:var(--yellow)}
+.boss{border-left-color:var(--red)}
+
+.tag{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+.challenge .tag{color:var(--yellow)}
+.boss .tag{color:var(--red)}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console,.command{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#9fffb8;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.command{
+  border-left:4px solid var(--green);
+}
+
+.command.windows::before{
+  content:"POWERSHELL >";
+  display:block;
+  color:var(--cyan);
+  font-size:.75rem;
+  margin-bottom:10px;
+}
+
+.command.linux::before{
+  content:"PARROT $";
+  display:block;
+  color:var(--cyan);
+  font-size:.75rem;
+  margin-bottom:10px;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.danger{
+  background:#1b0909;
+  border:1px solid #793030;
+  color:#ff9999;
+  padding:18px;
+  margin:20px 0;
+}
+
+.safe{
+  background:#07150d;
+  border:1px solid #226b3d;
+  border-left:4px solid var(--green);
+  padding:18px;
+  margin:20px 0;
+}
+
+button,.download{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+  margin:4px 4px 4px 0;
+}
+
+button:hover,.download:hover{
+  background:#10281b;
+}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{display:block}
+
+.actor{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px dashed var(--border);
+}
+
+.actor b{
+  color:var(--cyan);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  background:#07110c;
+  color:var(--green);
+}
+
+@media(max-width:800px){
+  .top{flex-direction:column;gap:8px}
+  .actor{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // CRYPTO LAB</span>
+  <span>HASH → SIGNATURE → TRUST</span>
+</div>
+
+<section class="hero">
+
+<div class="prompt">$ ./verify-evidence --trust-nothing</div>
+
+<h1>TRUST THE <span>FINGERPRINT?</span></h1>
+
+<p>
+Du har laddat ner en fil från Internet.
+Webbplatsen publicerar ett SHA-256-värde.
+Kan du använda det för att kontrollera filen?
+</p>
+
+<p>
+Och vad händer om en aktiv angripare kan byta både filen
+och det publicerade hashvärdet?
+</p>
+
+</section>
+
+
+<h2 class="section">00 // THE CAST</h2>
+
+<section class="box">
+
+<div class="actor">
+<b>ALICE</b>
+<span>Publicerar originalfilen.</span>
+</div>
+
+<div class="actor">
+<b>BOB</b>
+<span>Laddar ner och verifierar filen.</span>
+</div>
+
+<div class="actor">
+<b>EVE</b>
+<span>Passiv angripare. Kan observera trafiken men ändrar inget.</span>
+</div>
+
+<div class="actor">
+<b>MALLORY</b>
+<span>Aktiv angripare. Försöker ändra filer och verifieringsinformation.</span>
+</div>
+
+<div class="actor">
+<b>TRENT</b>
+<span>Betrodd tredje part. Dyker upp senare när vi börjar prata certifikat.</span>
+</div>
+
+</section>
+
+
+<h2 class="section">01 // DOWNLOAD THE EVIDENCE</h2>
+
+<section class="task">
+
+<div class="tag">
+BASIC
+<span class="score">5p</span>
+</div>
+
+<h3>Ladda ner filen</h3>
+
+<a class="download" href="evidence.txt" download>
+DOWNLOAD evidence.txt
+</a>
+
+<p>Öppna filen och läs innehållet.</p>
+
+<div class="box">
+Vad innehåller filen?
+
+________________________________________
+
+________________________________________
+</div>
+
+</section>
+
+
+<h2 class="section">02 // CALCULATE SHA-256</h2>
+
+<section class="task">
+
+<div class="tag">
+HASH
+<span class="score">10p</span>
+</div>
+
+<h3>Beräkna filens digitala fingeravtryck</h3>
+
+<p>Windows:</p>
+
+<div class="command windows">Get-FileHash .\evidence.txt -Algorithm SHA256</div>
+
+<p>Parrot/Linux:</p>
+
+<div class="command linux">sha256sum evidence.txt</div>
+
+<p>Anteckna hashvärdet:</p>
+
+<div class="box">
+SHA-256:
+
+____________________________________________________________
+
+____________________________________________________________
+</div>
+
+</section>
+
+
+<h2 class="section">03 // VERIFY</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTEGRITY
+<span class="score">15p</span>
+</div>
+
+<h3>Jämför värdena</h3>
+
+<p>
+Läraren eller Baalstorm-sidan publicerar ett officiellt SHA-256-värde.
+</p>
+
+<div class="console">
+OFFICIAL SHA-256:
+
+BYT_UT_DETTA_MOT_FILENS_RIKTIGA_SHA256
+</div>
+
+<p>
+Är ditt framräknade värde identiskt?
+</p>
+
+<div class="box">
+[ ] YES — MATCH
+
+[ ] NO — MISMATCH
+</div>
+
+<button onclick="toggle('verify')">Vad betyder MATCH?</button>
+
+<div id="verify" class="answer">
+
+<p>
+Din fil innehåller samma data som filen som användes när
+det publicerade hashvärdet räknades fram.
+</p>
+
+<p>
+Det är en kontroll av <b>riktighet/integritet</b>.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">04 // CHANGE ONE CHARACTER</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+AVALANCHE
+<span class="score">15p</span>
+</div>
+
+<h3>Manipulera filen</h3>
+
+<p>
+Öppna <code>evidence.txt</code> i en texteditor.
+</p>
+
+<p>
+Ändra ett enda tecken.
+</p>
+
+<div class="console">
+BEFORE:
+
+TRANSFER 1000 SEK
+
+
+AFTER:
+
+TRANSFER 9000 SEK
+         ^
+</div>
+
+<p>Kör SHA-256 igen.</p>
+
+<div class="command windows">Get-FileHash .\evidence.txt -Algorithm SHA256</div>
+
+<div class="command linux">sha256sum evidence.txt</div>
+
+<p>
+Jämför den nya hashen med den gamla.
+</p>
+
+<button onclick="toggle('avalanche')">Vad ser du?</button>
+
+<div id="avalanche" class="answer">
+
+<p>
+Trots en liten förändring i filen förändras hashvärdet kraftigt.
+</p>
+
+<p>
+Detta är <b>avalanche-effekten</b>.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">05 // WHAT CAN EVE DO?</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+EVE // PASSIVE ATTACKER
+<span class="score">15p</span>
+</div>
+
+<div class="console">
+EVE CAN SEE:
+
+evidence.txt
+
+SHA-256
+
+network traffic
+</div>
+
+<p>
+Eve observerar kommunikationen men ändrar ingenting.
+</p>
+
+<p>
+Kan Eve räkna ut SHA-256 för filen själv?
+</p>
+
+<div class="box">
+YES / NO
+</div>
+
+<p>
+Är hashvärdet tänkt att vara hemligt?
+</p>
+
+<div class="box">
+YES / NO
+</div>
+
+<button onclick="toggle('eve')">Visa svar</button>
+
+<div id="eve" class="answer">
+
+<p>
+Ja, Eve kan räkna ut samma hash.
+</p>
+
+<p>
+En vanlig SHA-256-hash är inte en hemlighet.
+Den kräver ingen nyckel.
+</p>
+
+<p>
+Hashens uppgift här är att upptäcka förändring,
+inte att dölja information.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">06 // MALLORY ATTACKS</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+MALLORY // ACTIVE ATTACKER
+<span class="score">20p</span>
+</div>
+
+<div class="console">
+ORIGINAL:
+
+evidence.txt
+     |
+     v
+SHA256
+     |
+     v
+ABC123...
+
+
+MALLORY REPLACES FILE:
+
+evil-evidence.txt
+     |
+     v
+SHA256
+     |
+     v
+999XYZ...
+
+
+MALLORY ALSO CHANGES WEBSITE:
+
+OFFICIAL SHA-256:
+999XYZ...
+</div>
+
+<p>
+Bob laddar ner Mallorys fil och beräknar SHA-256.
+</p>
+
+<div class="console">
+BOB:
+
+Downloaded file: 999XYZ...
+Website says:    999XYZ...
+
+MATCH!
+</div>
+
+<p>
+Har hashkontrollen upptäckt attacken?
+</p>
+
+<div class="box">
+YES / NO
+
+Varför?
+
+________________________________________
+
+________________________________________
+</div>
+
+<button onclick="toggle('mallory')">Visa analys</button>
+
+<div id="mallory" class="answer">
+
+<p><b>Nej.</b></p>
+
+<p>
+Mallory kan beräkna en ny SHA-256 för sin modifierade fil
+och ändra det publicerade hashvärdet.
+</p>
+
+<p>
+Hashen i sig bevisar inte vem som publicerade hashvärdet.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">07 // WE NEED SOMETHING MORE</h2>
+
+<section class="task">
+
+<div class="tag">
+NEXT LEVEL
+<span class="score">10p</span>
+</div>
+
+<div class="console">
+HASH
+
+answers:
+
+"Has the file changed?"
+
+
+BUT WE ALSO WANT:
+
+"Who vouched for this file?"
+</div>
+
+<p>
+Nu behöver vi kombinera hashning med asymmetrisk kryptografi.
+</p>
+
+<div class="info">
+Det är här digitala signaturer kommer in.
+</div>
+
+</section>
+
+
+<h2 class="section">08 // DIGITAL SIGNATURE</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+SIGNATURE
+<span class="score">20p</span>
+</div>
+
+<div class="console">
+ALICE
+
+evidence.txt
+     |
+     v
+SHA-256
+     |
+     v
+HASH
+     |
+     | signed using
+     v
+ALICE'S PRIVATE KEY
+     |
+     v
+DIGITAL SIGNATURE
+</div>
+
+<p>
+Alice publicerar:
+</p>
+
+<div class="console">
+evidence.txt
+
+evidence.txt.sig
+
+Alice's public key
+</div>
+
+<p>
+Vilken nyckel måste Alice hålla hemlig?
+</p>
+
+<div class="box">
+________________________________________
+</div>
+
+<button onclick="toggle('private')">Visa svar</button>
+
+<div id="private" class="answer">
+<p><b>Alice's private key.</b></p>
+</div>
+
+</section>
+
+
+<h2 class="section">09 // DOWNLOAD THE SIGNATURE</h2>
+
+<section class="task">
+
+<div class="tag">
+PRACTICAL
+<span class="score">10p</span>
+</div>
+
+<p>Ladda ner:</p>
+
+<a class="download" href="evidence.txt" download>
+evidence.txt
+</a>
+
+<a class="download" href="evidence.txt.sig" download>
+evidence.txt.sig
+</a>
+
+<a class="download" href="baalstorm-public.pem" download>
+baalstorm-public.pem
+</a>
+
+<div class="notice">
+Om du ändrade evidence.txt i den tidigare uppgiften:
+ladda ner originalet igen innan du fortsätter.
+</div>
+
+</section>
+
+
+<h2 class="section">10 // VERIFY THE SIGNATURE</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+OPENSSL
+<span class="score">20p</span>
+</div>
+
+<p>På Parrot/Linux:</p>
+
+<div class="command linux">openssl dgst -sha256 \
+-verify baalstorm-public.pem \
+-signature evidence.txt.sig \
+evidence.txt</div>
+
+<p>Förväntat resultat:</p>
+
+<div class="console">
+Verified OK
+</div>
+
+<p>
+Vad har verifieringen kontrollerat?
+</p>
+
+<div class="box">
+________________________________________
+
+________________________________________
+
+________________________________________
+</div>
+
+<button onclick="toggle('sigverify')">Visa svar</button>
+
+<div id="sigverify" class="answer">
+
+<p>
+Signaturen matchar filens innehåll och kan verifieras
+med den publika nyckeln.
+</p>
+
+<p>
+Det ger stöd för både:
+</p>
+
+<div class="console">
+INTEGRITY
+
++
+
+AUTHENTICATION
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">11 // BREAK THE SIGNATURE</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+TAMPERING
+<span class="score">20p</span>
+</div>
+
+<p>
+Ändra nu ett tecken i <code>evidence.txt</code>.
+</p>
+
+<p>Kör exakt samma verifiering igen:</p>
+
+<div class="command linux">openssl dgst -sha256 \
+-verify baalstorm-public.pem \
+-signature evidence.txt.sig \
+evidence.txt</div>
+
+<p>
+Vad händer?
+</p>
+
+<div class="box">
+________________________________________
+
+________________________________________
+</div>
+
+<button onclick="toggle('breaksig')">Visa analys</button>
+
+<div id="breaksig" class="answer">
+
+<p>
+Verifieringen ska misslyckas.
+</p>
+
+<p>
+Signaturen skapades för originalfilens hash.
+När filen ändras får den en annan hash och signaturen
+matchar därför inte längre.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">12 // CAN EVE FORGE IT?</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+EVE
+<span class="score">15p</span>
+</div>
+
+<div class="console">
+EVE HAS:
+
+✓ evidence.txt
+
+✓ evidence.txt.sig
+
+✓ baalstorm-public.pem
+
+✓ all network traffic
+
+✗ private key
+</div>
+
+<p>
+Kan Eve skapa en ny giltig signatur för en modifierad fil?
+</p>
+
+<button onclick="toggle('eveforge')">Visa svar</button>
+
+<div id="eveforge" class="answer">
+
+<p>
+Inte utan den privata signeringsnyckeln.
+</p>
+
+<p>
+Den publika nyckeln är avsedd för verifiering,
+inte för att skapa Baalstorms signaturer.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">13 // MALLORY TRIES AGAIN</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+MALLORY
+<span class="score">25p</span>
+</div>
+
+<p>
+Mallory kontrollerar nu webbservern.
+</p>
+
+<div class="console">
+MALLORY CAN REPLACE:
+
+✓ evidence.txt
+
+✓ displayed SHA-256
+
+✓ evidence.txt.sig
+
+
+MALLORY DOES NOT HAVE:
+
+✗ Baalstorm private key
+</div>
+
+<p>
+Kan Mallory skapa en ny signatur som verifieras med
+Baalstorms riktiga publika nyckel?
+</p>
+
+<button onclick="toggle('mallorysig')">Visa svar</button>
+
+<div id="mallorysig" class="answer">
+
+<p><b>Nej.</b></p>
+
+<p>
+Hon kan byta fil och hash, men hon kan inte skapa
+en giltig Baalstorm-signatur utan Baalstorms privata nyckel.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">14 // THE PUBLIC KEY PROBLEM</h2>
+
+<section class="task boss">
+
+<div class="tag">
+TRUST PROBLEM
+<span class="score">30p</span>
+</div>
+
+<p>
+Mallory tänker ett steg längre.
+</p>
+
+<div class="console">
+MALLORY CREATES:
+
+Mallory private key
+Mallory public key
+
+
+Then replaces:
+
+evidence.txt
+evidence.txt.sig
+baalstorm-public.pem
+</div>
+
+<p>
+Mallory signerar sin manipulerade fil med sin egen privata nyckel
+och lägger upp sin egen publika nyckel som:
+</p>
+
+<div class="console">
+baalstorm-public.pem
+</div>
+
+<p>
+Bob verifierar:
+</p>
+
+<div class="console">
+Verified OK
+</div>
+
+<p>
+Vad är problemet nu?
+</p>
+
+<div class="box">
+________________________________________
+
+________________________________________
+
+________________________________________
+</div>
+
+<button onclick="toggle('trust')">Visa analys</button>
+
+<div id="trust" class="answer">
+
+<p>
+Bob vet inte automatiskt att den publika nyckeln verkligen
+tillhör Baalstorm.
+</p>
+
+<p>
+En digital signatur är bara så användbar som vår tillit
+till den publika nyckel vi verifierar med.
+</p>
+
+<div class="console">
+NEXT QUESTION:
+
+How do we trust a public key?
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">15 // ENTER TRENT</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+NEXT CONCEPT
+<span class="score">20p</span>
+</div>
+
+<div class="console">
+BOB
+
+needs to trust
+
+BAALSTORM PUBLIC KEY
+
+        ↓
+
+TRUSTED THIRD PARTY
+
+        ↓
+
+TRENT
+</div>
+
+<p>
+I moderna system löser vi ofta detta med:
+</p>
+
+<div class="console">
+CERTIFICATES
+
+CERTIFICATE AUTHORITIES
+
+PKI
+
+HTTPS
+</div>
+
+<p>
+Detta är nästa steg efter själva signaturen:
+att på ett säkert sätt avgöra vem en publik nyckel tillhör.
+</p>
+
+</section>
+
+
+<h2 class="section">16 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">
+CRYPTO BOSS
+<span class="score">40p</span>
+</div>
+
+<div class="console">
+INCIDENT:
+
+Alice publishes a software package.
+
+Bob downloads it.
+
+Eve observes all communication.
+
+Mallory gains control of the download server.
+</div>
+
+<p>
+Besvara:
+</p>
+
+<div class="box">
+
+1. Kan Eve beräkna filens SHA-256?
+
+________________________________________
+
+
+2. Behöver SHA-256-värdet vara hemligt?
+
+________________________________________
+
+
+3. Kan Mallory ändra filen och publicera en ny matchande SHA-256?
+
+________________________________________
+
+
+4. Vad tillför en digital signatur jämfört med bara SHA-256?
+
+________________________________________
+
+________________________________________
+
+
+5. Vilken nyckel används för att skapa signaturen?
+
+________________________________________
+
+
+6. Vilken nyckel används för verifiering?
+
+________________________________________
+
+
+7. Varför kan Mallory inte skapa en giltig Baalstorm-signatur?
+
+________________________________________
+
+________________________________________
+
+
+8. Vad händer om Mallory också kan ersätta den publika nyckeln?
+
+________________________________________
+
+________________________________________
+
+
+9. Vilket nytt problem har vi då upptäckt?
+
+________________________________________
+
+________________________________________
+
+</div>
+
+<button onclick="toggle('boss')">Visa facit</button>
+
+<div id="boss" class="answer">
+
+<div class="console">
+1.
+YES
+
+2.
+NO
+
+3.
+YES
+
+4.
+Integrity + authentication
+
+5.
+Alice/Baalstorm private key
+
+6.
+Alice/Baalstorm public key
+
+7.
+Mallory does not have the private key
+
+8.
+Mallory can attempt to establish her own
+key pair as the trusted identity
+
+9.
+How do we trust that a public key
+actually belongs to the claimed entity?
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+HASH LAB COMPLETE
+
+[+] SHA-256
+[+] checksum verification
+[+] integrity
+[+] avalanche effect
+[+] Eve / passive attacker
+[+] Mallory / active attacker
+[+] digital signatures
+[+] private key
+[+] public key
+[+] OpenSSL verification
+[+] tampering detection
+[+] authenticity
+[+] public key trust problem
+
+NEXT:
+
+CERTIFICATES
+CA
+PKI
+HTTPS
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
