@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Enigma | Baalstorm</title>
+
+<style>
+:root{
+  --bg:#050807;
+  --panel:#0a1110;
+  --panel2:#0d1815;
+  --border:#173a2a;
+  --green:#63ff9b;
+  --green2:#28a85a;
+  --text:#dce7df;
+  --muted:#84958b;
+  --yellow:#ffd166;
+  --red:#ff6666;
+  --blue:#68b8ff;
+  --cyan:#55e6e6;
+  --orange:#ff9f43;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top right,#17251d 0%,transparent 30%),
+    linear-gradient(#040706,#07100c);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.65;
+}
+
+main{
+  width:min(1050px,95%);
+  margin:auto;
+  padding:50px 0 100px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  padding-bottom:10px;
+  margin-bottom:45px;
+  font-size:.8rem;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,8vw,5rem);
+  margin:0;
+  line-height:1;
+  color:white;
+}
+
+.hero h1 span{
+  color:var(--yellow);
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:900px;
+}
+
+.prompt{
+  color:var(--green);
+}
+
+.section{
+  margin-top:65px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+
+.task,.box{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:22px;
+  margin:22px 0;
+}
+
+.task{
+  border-left:4px solid var(--green2);
+}
+
+.challenge{
+  border-left-color:var(--yellow);
+}
+
+.boss{
+  border-left-color:var(--red);
+}
+
+.tag{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+.challenge .tag{
+  color:var(--yellow);
+}
+
+.boss .tag{
+  color:var(--red);
+}
+
+.score{
+  float:right;
+  color:var(--yellow);
+}
+
+.console{
+  background:#020403;
+  border:1px solid var(--border);
+  color:#9fffb8;
+  padding:16px;
+  white-space:pre-wrap;
+  overflow:auto;
+  margin:15px 0;
+}
+
+.info{
+  background:#07131a;
+  border:1px solid #17415c;
+  border-left:4px solid var(--blue);
+  padding:18px;
+  margin:20px 0;
+}
+
+.notice{
+  background:#1a1405;
+  border:1px solid #806716;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.danger{
+  background:#1b0909;
+  border:1px solid #793030;
+  color:#ff9999;
+  padding:18px;
+  margin:20px 0;
+}
+
+button{
+  font:inherit;
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green2);
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#10281b;
+}
+
+.answer{
+  display:none;
+  border-top:1px dashed var(--border);
+  margin-top:16px;
+  padding-top:16px;
+}
+
+.answer.show{
+  display:block;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  color:var(--green);
+  background:#07110c;
+}
+
+.flow{
+  text-align:center;
+  font-size:1.05rem;
+}
+
+.good{
+  color:var(--green);
+}
+
+.bad{
+  color:var(--red);
+}
+
+.yellow{
+  color:var(--yellow);
+}
+
+@media(max-width:800px){
+  .top{
+    flex-direction:column;
+    gap:8px;
+  }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+  <span>BAALSTORM // CRYPTO HISTORY</span>
+  <span>ENIGMA ANALYSIS</span>
+</div>
+
+
+<section class="hero">
+
+<div class="prompt">$ ./enigma --analyze --compare-modern</div>
+
+<h1>BREAK THE <span>MACHINE.</span></h1>
+
+<p>
+Enigma var enormt mycket mer avancerad än ett Caesar-chiffer.
+Men den hade fortfarande strukturer som en angripare kunde utnyttja.
+</p>
+
+<p>
+I den här uppgiften ska du analysera Enigma med två begrepp
+från modern kryptografi:
+<b>diffusion</b> och <b>confusion</b>.
+</p>
+
+</section>
+
+
+<div class="notice">
+
+<b>OBS</b><br><br>
+
+Diffusion och confusion formulerades av Claude Shannon senare än
+Enigma konstruerades.
+
+Vi använder därför begreppen i efterhand för att analysera
+hur Enigma fungerar jämfört med moderna algoritmer.
+
+</div>
+
+
+<h2 class="section">00 // FROM CAESAR TO ENIGMA</h2>
+
+<section class="task">
+
+<div class="tag">
+WARMUP
+<span class="score">5p</span>
+</div>
+
+<h3>Caesar-chiffer</h3>
+
+<div class="console">
+PLAINTEXT:
+
+AAAAAA
+
+
+CAESAR +3:
+
+DDDDDD
+</div>
+
+<p>
+Vilken information läcker chiffertexten?
+</p>
+
+<button onclick="toggle('caesar')">
+Visa diskussionsstöd
+</button>
+
+<div id="caesar" class="answer">
+
+<p>
+Samma bokstav blir alltid samma bokstav.
+</p>
+
+<p>
+Mönster i klartexten finns därför tydligt kvar i chiffertexten.
+Det ger mycket dålig diffusion och ett enkelt samband mellan
+nyckeln och chiffertexten.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">01 // THE ENIGMA BUILDING BLOCKS</h2>
+
+<section class="box">
+
+<p>
+En typisk militär Enigma kunde förenklat beskrivas med följande
+byggstenar:
+</p>
+
+<table>
+
+<tr>
+<th>Del</th>
+<th>Funktion</th>
+</tr>
+
+<tr>
+<td>Tangentbord</td>
+<td>Inmatning av klartext.</td>
+</tr>
+
+<tr>
+<td>Plugboard / Steckbrett</td>
+<td>Byter par av bokstäver innan och efter rotorerna.</td>
+</tr>
+
+<tr>
+<td>Rotorer</td>
+<td>Utför elektriska substitutioner mellan bokstäver.</td>
+</tr>
+
+<tr>
+<td>Rotorernas position</td>
+<td>Förändras under skrivningen och ändrar substitutionen.</td>
+</tr>
+
+<tr>
+<td>Reflector</td>
+<td>Skickar signalen tillbaka genom rotorerna.</td>
+</tr>
+
+<tr>
+<td>Lampboard</td>
+<td>Visar den krypterade bokstaven.</td>
+</tr>
+
+</table>
+
+<div class="console flow">
+KEY PRESS
+   ↓
+PLUGBOARD
+   ↓
+ROTOR 1
+   ↓
+ROTOR 2
+   ↓
+ROTOR 3
+   ↓
+REFLECTOR
+   ↓
+ROTOR 3
+   ↓
+ROTOR 2
+   ↓
+ROTOR 1
+   ↓
+PLUGBOARD
+   ↓
+CIPHERTEXT LETTER
+</div>
+
+</section>
+
+
+<h2 class="section">02 // WHY THE ROTORS MATTER</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+INTERMEDIATE
+<span class="score">10p</span>
+</div>
+
+<p>
+Antag att samma bokstav skrivs flera gånger:
+</p>
+
+<div class="console">
+INPUT:
+
+AAAAAA
+
+
+POSSIBLE ENIGMA OUTPUT:
+
+GPKZWM
+</div>
+
+<p>
+Varför behöver samma bokstav inte bli samma chifferbokstav varje gång?
+</p>
+
+<button onclick="toggle('rotors')">
+Visa svar
+</button>
+
+<div id="rotors" class="answer">
+
+<p>
+Rotorerna flyttar sig medan operatören skriver.
+</p>
+
+<p>
+Det innebär att substitutionen förändras mellan olika positioner
+i meddelandet.
+</p>
+
+<p>
+Det är en stor förbättring jämfört med Caesar-chiffer,
+där samma bokstav alltid behandlas på samma sätt.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">03 // CONFUSION</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+SHANNON
+<span class="score">15p</span>
+</div>
+
+<div class="console">
+CAESAR
+
+KEY = +3
+
+A → D
+B → E
+C → F
+
+
+ENIGMA
+
+KEY =
+rotor choice
+rotor order
+rotor positions
+ring settings
+plugboard settings
+
+A → ?
+</div>
+
+<p>
+Vilken maskin har bäst <b>confusion</b>?
+</p>
+
+<div class="box">
+CAESAR / ENIGMA
+</div>
+
+<p>Förklara varför.</p>
+
+<button onclick="toggle('confusion')">
+Visa diskussionsstöd
+</button>
+
+<div id="confusion" class="answer">
+
+<p><b>Enigma.</b></p>
+
+<p>
+Sambandet mellan nyckelkonfiguration och chiffertext är mycket
+mer komplicerat än i Caesar-chiffret.
+</p>
+
+<p>
+Plugboard, rotorordning, rotorpositioner och rotorernas interna
+kopplingar kombineras för att skapa en stor mängd möjliga
+substitutioner.
+</p>
+
+<p>
+Enigma hade därför betydligt bättre confusion än enkla
+substitutionschiffer.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">04 // THE DIFFUSION PROBLEM</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+SHANNON
+<span class="score">20p</span>
+</div>
+
+<p>
+Antag att vi krypterar:
+</p>
+
+<div class="console">
+MESSAGE 1:
+
+ATTACK AT DAWN
+
+
+MESSAGE 2:
+
+ATTACK AT DAWM
+             ^
+       ONE LETTER CHANGED
+</div>
+
+<p>
+Maskinen startar från exakt samma inställning i båda fallen.
+</p>
+
+<p>
+Vad händer med chiffertexten efter att den ändrade bokstaven
+har behandlats?
+</p>
+
+<div class="box">
+A) Nästan hela chiffertexten förändras.<br><br>
+
+B) Primärt motsvarande chifferbokstav förändras.<br><br>
+
+C) Hela rotorinställningen förstörs.
+</div>
+
+<button onclick="toggle('diffusion')">
+Visa analys
+</button>
+
+<div id="diffusion" class="answer">
+
+<p><b>B.</b></p>
+
+<p>
+Enigma behandlar varje tecken med den maskinposition som gäller
+just då.
+</p>
+
+<p>
+En ändrad klartextbokstav ändrar inte i sig rotorernas fortsatta
+stegring.
+</p>
+
+<p>
+Därför sprids inte effekten av en liten klartextändring över
+många efterföljande chiffertecken på det sätt vi förväntar oss
+av moderna blockchiffer.
+</p>
+
+<div class="danger">
+Detta är Enigmas stora svaghet när vi analyserar den med
+begreppet diffusion.
+</div>
+
+</div>
+
+</section>
+
+
+<h2 class="section">05 // MODERN AVALANCHE</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+MODERN CRYPTO
+<span class="score">15p</span>
+</div>
+
+<div class="console">
+MODERN BLOCK CIPHER
+
+PLAINTEXT A:
+011010001101...
+
+PLAINTEXT B:
+011010001100...
+            ^
+         1 BIT
+
+
+CIPHERTEXT A:
+1011011100101001...
+
+
+CIPHERTEXT B:
+0100100011110110...
+</div>
+
+<p>
+Vad försöker den moderna algoritmen uppnå?
+</p>
+
+<button onclick="toggle('avalanche')">
+Visa svar
+</button>
+
+<div id="avalanche" class="answer">
+
+<p>
+En liten förändring i indatan ska påverka stora delar av utdata.
+</p>
+
+<p>
+Det kallas avalanche-effekt och är nära kopplat till god diffusion.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">06 // A STRANGE ENIGMA PROPERTY</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+STRUCTURAL WEAKNESS
+<span class="score">20p</span>
+</div>
+
+<p>
+På Enigma kunde en bokstav aldrig krypteras till sig själv.
+</p>
+
+<div class="console">
+A → NOT A
+
+B → NOT B
+
+C → NOT C
+
+...
+</div>
+
+<p>
+Varför kan en sådan regel vara dålig ur kryptografisk synvinkel?
+</p>
+
+<button onclick="toggle('self')">
+Visa analys
+</button>
+
+<div id="self" class="answer">
+
+<p>
+Det ger angriparen information om vad ett visst tecken
+<b>inte</b> kan vara.
+</p>
+
+<p>
+Om angriparen misstänker att ett visst känt ord förekommer
+i meddelandet kan positioner där en bokstav skulle motsvara
+sig själv direkt uteslutas.
+</p>
+
+<p>
+Sådana förutsägbara strukturer minskar angriparens sökutrymme.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">07 // CRIBS</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+CRYPTANALYSIS
+<span class="score">20p</span>
+</div>
+
+<p>
+Antag att en angripare misstänker att många meddelanden innehåller:
+</p>
+
+<div class="console">
+WETTER
+
+eller
+
+HEILHITLER
+
+eller andra återkommande formuleringar
+</div>
+
+<p>
+Ett sådant förmodat stycke klartext kallas ofta en <b>crib</b>.
+</p>
+
+<p>
+Hur kan känd eller gissad klartext hjälpa en angripare?
+</p>
+
+<button onclick="toggle('crib')">
+Visa diskussionsstöd
+</button>
+
+<div id="crib" class="answer">
+
+<p>
+Angriparen kan jämföra den misstänkta klartexten med chiffertexten
+och testa möjliga maskininställningar.
+</p>
+
+<p>
+Strukturella egenskaper hos Enigma, exempelvis att en bokstav
+inte kan krypteras till sig själv, kan hjälpa till att snabbt
+utesluta många felaktiga positioner och inställningar.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">08 // HUMAN FACTOR</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+OPSEC
+<span class="score">15p</span>
+</div>
+
+<p>
+En mycket stark kryptomaskin kan fortfarande användas dåligt.
+</p>
+
+<div class="console">
+Possible operator mistakes:
+
+- predictable messages
+- repeated phrases
+- reused settings
+- poor procedures
+- incorrect key handling
+</div>
+
+<p>
+Vilken säkerhetsprincip känner du igen här?
+</p>
+
+<button onclick="toggle('human')">
+Visa diskussion
+</button>
+
+<div id="human" class="answer">
+
+<p>
+Kryptografins säkerhet beror inte bara på själva algoritmen.
+Nyckelhantering och operativa rutiner spelar också stor roll.
+</p>
+
+<p>
+En stark algoritm kan undermineras av svag implementation
+eller dåliga rutiner.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">09 // OLD IDEAS, MODERN CRYPTO</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+COMPARE
+<span class="score">20p</span>
+</div>
+
+<p>
+Vilka idéer från Enigma känner vi fortfarande igen i modern
+symmetrisk kryptografi?
+</p>
+
+<table>
+
+<tr>
+<th>Enigma</th>
+<th>Modern motsvarighet / idé</th>
+</tr>
+
+<tr>
+<td>Rotorers substitution</td>
+<td>____________________________</td>
+</tr>
+
+<tr>
+<td>Plugboard</td>
+<td>____________________________</td>
+</tr>
+
+<tr>
+<td>Flera steg genom maskinen</td>
+<td>____________________________</td>
+</tr>
+
+<tr>
+<td>Nyckelberoende transformation</td>
+<td>____________________________</td>
+</tr>
+
+<tr>
+<td>Rotorernas rörelse</td>
+<td>____________________________</td>
+</tr>
+
+<tr>
+<td>Reflector</td>
+<td>____________________________</td>
+</tr>
+
+</table>
+
+<button onclick="toggle('modern')">
+Visa diskussionsstöd
+</button>
+
+<div id="modern" class="answer">
+
+<p>
+Det finns inte alltid en exakt ett-till-ett-motsvarighet,
+men flera grundidéer känns igen.
+</p>
+
+<div class="console">
+ENIGMA                     MODERN CRYPTO
+
+Substitution       →       substitution / S-boxes
+
+Plugboard          →       ytterligare substitution
+
+Flera transformationer
+                  →       repeated rounds
+
+Key-controlled
+transformation     →       key mixing / round keys
+
+Rotor stepping     →       changing internal state
+                           (inte samma konstruktion)
+
+Reflector          →       ingen direkt modern motsvarighet
+</div>
+
+<p>
+Moderna blockchiffer kombinerar sådana idéer med betydligt bättre
+diffusion och matematiskt analyserade konstruktioner.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">10 // ENIGMA VS AES</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+COMPARE
+<span class="score">20p</span>
+</div>
+
+<table>
+
+<tr>
+<th>Egenskap</th>
+<th>Enigma</th>
+<th>Modernt blockchiffer</th>
+</tr>
+
+<tr>
+<td>Substitution</td>
+<td>Ja</td>
+<td>Ja</td>
+</tr>
+
+<tr>
+<td>Nyckelberoende transformation</td>
+<td>Ja</td>
+<td>Ja</td>
+</tr>
+
+<tr>
+<td>Flera steg/rundor</td>
+<td>Ja, mekaniskt flöde</td>
+<td>Ja</td>
+</tr>
+
+<tr>
+<td>Stark avalanche-effekt</td>
+<td>Nej</td>
+<td>Ja</td>
+</tr>
+
+<tr>
+<td>En liten klartextändring påverkar många output-bitar</td>
+<td>Nej</td>
+<td>Ja</td>
+</tr>
+
+<tr>
+<td>Avsiktlig diffusion över block</td>
+<td>Svag</td>
+<td>Stark</td>
+</tr>
+
+</table>
+
+</section>
+
+
+<h2 class="section">11 // THINK LIKE EVE</h2>
+
+<section class="task challenge">
+
+<div class="tag">
+ATTACKER VIEW
+<span class="score">25p</span>
+</div>
+
+<div class="console">
+EVE KNOWS:
+
+✓ Enigma design
+✓ rotor wirings
+✓ protocol
+✓ lots of ciphertext
+
+EVE DOES NOT KNOW:
+
+✗ daily key
+✗ plugboard settings
+✗ rotor starting position
+</div>
+
+<p>
+Är systemet automatiskt säkert bara för att Eve inte känner
+nyckeln?
+</p>
+
+<div class="box">
+Vilka andra egenskaper kan Eve försöka utnyttja?
+
+______________________________________
+
+______________________________________
+
+______________________________________
+</div>
+
+<button onclick="toggle('eve')">
+Visa analys
+</button>
+
+<div id="eve" class="answer">
+
+<p>
+Eve kan leta efter struktur och förutsägbarhet:
+</p>
+
+<div class="console">
+known plaintext / cribs
+
+repeated procedures
+
+operator mistakes
+
+structural restrictions
+
+reused settings
+
+message patterns
+</div>
+
+<p>
+Det illustrerar varför säker kryptografi ska tåla analys även när
+angriparen känner algoritmens konstruktion.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">12 // BOSS</h2>
+
+<section class="task boss">
+
+<div class="tag">
+ENIGMA BOSS
+<span class="score">40p</span>
+</div>
+
+<h3>1943 // INTERCEPTED TRAFFIC</h3>
+
+<div class="console">
+INTELLIGENCE REPORT
+
+Cipher machine:
+Rotor-based
+
+Observed properties:
+
+[1]
+Same plaintext letter can produce different
+ciphertext letters at different positions.
+
+[2]
+A plaintext letter can never encrypt to itself.
+
+[3]
+Changing one plaintext letter changes only
+the corresponding ciphertext position.
+
+[4]
+Several transformations are applied:
+plugboard → rotors → reflector → rotors → plugboard.
+
+[5]
+Operators often send predictable weather reports.
+
+[6]
+The algorithm is known.
+The daily machine settings are secret.
+</div>
+
+<p>
+Analysera systemet.
+</p>
+
+<div class="box">
+
+1. Vilken observation visar att systemet har bättre confusion
+än Caesar?
+
+________________________________________
+
+________________________________________
+
+
+2. Vilken observation visar svag diffusion?
+
+________________________________________
+
+________________________________________
+
+
+3. Vilken observation ger angriparen en strukturell ledtråd?
+
+________________________________________
+
+________________________________________
+
+
+4. Varför är väderrapporter intressanta för en kryptanalytiker?
+
+________________________________________
+
+________________________________________
+
+
+5. Vilka Enigma-byggstenar påminner om moderna
+kryptoalgoritmer?
+
+________________________________________
+
+________________________________________
+
+
+6. Vad gör moderna blockchiffer bättre?
+
+________________________________________
+
+________________________________________
+
+</div>
+
+<button onclick="toggle('boss')">
+Visa analys
+</button>
+
+<div id="boss" class="answer">
+
+<p>
+<b>1.</b> Rotorernas rörelse innebär att samma klartextbokstav
+inte alltid ger samma chifferbokstav. Det är betydligt bättre
+confusion än Caesar-chiffer.
+</p>
+
+<p>
+<b>2.</b> Om en klartextbokstav ändras påverkas inte automatiskt
+många andra chiffertecken. Det visar svag diffusion jämfört med
+moderna blockchiffer.
+</p>
+
+<p>
+<b>3.</b> Regeln att en bokstav aldrig kan krypteras till sig själv
+ger angriparen information som kan användas för att utesluta
+möjliga lösningar.
+</p>
+
+<p>
+<b>4.</b> Förutsägbara meddelanden ger möjlig känd klartext,
+så kallade cribs.
+</p>
+
+<p>
+<b>5.</b> Substitution, flera transformationssteg och
+nyckelberoende transformationer är idéer som även finns
+i modern kryptografi.
+</p>
+
+<p>
+<b>6.</b> Moderna blockchiffer skapar mycket starkare diffusion
+och avalanche-effekt och är konstruerade för att minimera
+användbara strukturella samband.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">13 // FINAL QUESTION</h2>
+
+<section class="task boss">
+
+<div class="tag">
+FINAL
+<span class="score">25p</span>
+</div>
+
+<h3>Var Enigma dålig kryptografi?</h3>
+
+<div class="box">
+Svara inte bara JA eller NEJ.
+
+Resonera kring:
+
+• sin samtid<br>
+• nyckelrymd<br>
+• confusion<br>
+• diffusion<br>
+• strukturella egenskaper<br>
+• operatörsfel<br>
+• kryptanalys
+</div>
+
+<button onclick="toggle('final')">
+Visa diskussionsstöd
+</button>
+
+<div id="final" class="answer">
+
+<p>
+Enigma var mycket avancerad jämfört med tidigare handchiffer
+och skapade ett enormt mer komplicerat substitutionssystem.
+</p>
+
+<p>
+Problemet var inte enbart att "nyckeln var för liten".
+Maskinen hade strukturella egenskaper och begränsad diffusion
+som kunde kombineras med känd klartext, operativa misstag och
+kraftfull kryptanalys.
+</p>
+
+<p>
+Det är en viktig lärdom även idag:
+en stor nyckelrymd gör inte automatiskt ett kryptosystem säkert.
+</p>
+
+</div>
+
+</section>
+
+
+<h2 class="section">MISSION COMPLETE</h2>
+
+<section class="box">
+
+<div class="console">
+ENIGMA ANALYSIS COMPLETE
+
+[+] substitution
+[+] plugboard
+[+] rotors
+[+] reflector
+[+] stepping
+[+] changing substitution
+[+] confusion
+[+] diffusion
+[+] avalanche effect
+[+] structural weakness
+[+] known plaintext
+[+] cribs
+[+] operator procedures
+[+] modern cipher comparison
+
+CONCLUSION:
+
+ENIGMA ≠ CAESAR
+
+BUT
+
+ENIGMA ≠ MODERN BLOCK CIPHER
+</div>
+
+</section>
+
+</main>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
