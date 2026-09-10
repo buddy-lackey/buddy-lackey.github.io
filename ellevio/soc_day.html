@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>En dag i IT/OT-SOC:en | Elnätsbolaget AB</title>
+
+<style>
+:root{
+    --bg:#050805;
+    --panel:#091009;
+    --panel2:#0d150d;
+    --green:#72ff72;
+    --green2:#31c95b;
+    --dim:#789078;
+    --text:#d8ead8;
+    --yellow:#ffd166;
+    --orange:#ff9f43;
+    --red:#ff5c5c;
+    --blue:#64b5ff;
+    --border:#1d5228;
+    --white:#f4fff4;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(circle at 50% 0%, #102010 0%, #050805 45%),
+        var(--bg);
+    color:var(--text);
+    font-family:"Courier New",Consolas,monospace;
+    min-height:100vh;
+}
+
+button{
+    font-family:inherit;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* ---------- START ---------- */
+
+#startScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+}
+
+.start-card{
+    width:min(900px,100%);
+    border:1px solid var(--green2);
+    background:rgba(4,12,5,.96);
+    padding:42px;
+    box-shadow:0 0 35px rgba(40,255,80,.08);
+}
+
+.kicker{
+    color:var(--green2);
+    font-size:.85rem;
+    letter-spacing:.18em;
+    margin-bottom:16px;
+}
+
+h1{
+    color:var(--green);
+    font-size:clamp(2rem,5vw,4rem);
+    margin:0 0 10px;
+    line-height:1;
+}
+
+.subtitle{
+    color:var(--white);
+    font-size:1.2rem;
+    margin-bottom:30px;
+}
+
+.intro{
+    line-height:1.7;
+    max-width:760px;
+}
+
+.intro strong{
+    color:var(--yellow);
+}
+
+.start-note{
+    margin-top:28px;
+    padding:18px;
+    border-left:3px solid var(--yellow);
+    background:#101410;
+    line-height:1.6;
+}
+
+.primary{
+    margin-top:28px;
+    padding:15px 24px;
+    border:1px solid var(--green);
+    background:#09200d;
+    color:var(--green);
+    cursor:pointer;
+    font-weight:bold;
+    font-size:1rem;
+}
+
+.primary:hover{
+    background:#103719;
+}
+
+/* ---------- APP ---------- */
+
+#app{
+    max-width:1500px;
+    margin:auto;
+    padding:18px;
+}
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    border-bottom:1px solid var(--border);
+    padding:8px 4px 16px;
+    margin-bottom:14px;
+}
+
+.brand{
+    color:var(--green);
+    font-size:1.15rem;
+    font-weight:bold;
+}
+
+.brand span{
+    color:var(--dim);
+}
+
+.clock{
+    font-size:1.5rem;
+    color:var(--yellow);
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+    margin-bottom:12px;
+}
+
+.stat{
+    border:1px solid var(--border);
+    background:var(--panel);
+    padding:10px 12px;
+}
+
+.stat-label{
+    color:var(--dim);
+    font-size:.72rem;
+}
+
+.stat-value{
+    font-size:1.35rem;
+    color:var(--green);
+    margin-top:4px;
+}
+
+/* ---------- ZONES ---------- */
+
+.zone-layout{
+    display:grid;
+    grid-template-columns:1fr 110px 1fr;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.zone{
+    border:1px solid var(--border);
+    min-height:128px;
+    background:var(--panel);
+    padding:14px;
+    position:relative;
+}
+
+.zone h3{
+    margin:0 0 10px;
+    color:var(--green);
+}
+
+.zone-assets{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.asset{
+    color:var(--dim);
+    border:1px solid #25452a;
+    padding:5px 8px;
+    font-size:.74rem;
+}
+
+.boundary{
+    border:1px dashed #936d22;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:var(--yellow);
+    background:#171308;
+    font-size:.72rem;
+    transition:.3s;
+}
+
+.boundary.alerting{
+    color:#fff;
+    border-color:var(--red);
+    background:#381010;
+    box-shadow:0 0 24px rgba(255,40,40,.25);
+}
+
+/* ---------- MAIN ---------- */
+
+.main-grid{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:12px;
+}
+
+.panel{
+    border:1px solid var(--border);
+    background:var(--panel);
+}
+
+.panel-title{
+    background:#0e1d10;
+    padding:9px 12px;
+    color:var(--green);
+    font-size:.8rem;
+    border-bottom:1px solid var(--border);
+}
+
+.feed{
+    height:520px;
+    overflow:auto;
+}
+
+.feed-item{
+    padding:12px;
+    border-bottom:1px solid #172b19;
+    cursor:pointer;
+}
+
+.feed-item:hover{
+    background:#101a11;
+}
+
+.feed-item.active{
+    background:#122317;
+    border-left:3px solid var(--green);
+}
+
+.feed-time{
+    color:var(--yellow);
+    font-size:.76rem;
+}
+
+.feed-title{
+    margin:5px 0;
+    color:var(--white);
+    font-size:.88rem;
+}
+
+.feed-source{
+    color:var(--dim);
+    font-size:.7rem;
+}
+
+.sev-low{ color:var(--blue); }
+.sev-medium{ color:var(--yellow); }
+.sev-high{ color:var(--orange); }
+.sev-critical{ color:var(--red); }
+
+/* ---------- ALERT ---------- */
+
+.alert-workspace{
+    min-height:520px;
+    padding:22px;
+}
+
+.alert-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+}
+
+.alert-title{
+    color:var(--white);
+    font-size:1.45rem;
+    margin:5px 0 8px;
+}
+
+.alert-meta{
+    color:var(--dim);
+    line-height:1.6;
+    font-size:.86rem;
+}
+
+.badge{
+    border:1px solid currentColor;
+    padding:6px 10px;
+    font-size:.72rem;
+}
+
+.explanation{
+    margin-top:22px;
+    padding:14px;
+    background:#0c140d;
+    border-left:3px solid var(--blue);
+    line-height:1.6;
+}
+
+.context-box,
+.contact-box,
+.system-box{
+    margin-top:14px;
+    padding:14px;
+    border:1px solid #29462d;
+    background:#071008;
+    line-height:1.7;
+}
+
+.context-box h4,
+.contact-box h4{
+    color:var(--yellow);
+    margin:0 0 8px;
+}
+
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:20px;
+}
+
+.action{
+    background:#0a130b;
+    border:1px solid #32623a;
+    color:var(--text);
+    padding:10px 12px;
+    cursor:pointer;
+}
+
+.action:hover{
+    background:#142818;
+}
+
+.decision{
+    margin-top:25px;
+    border-top:1px solid var(--border);
+    padding-top:18px;
+}
+
+.decision-title{
+    color:var(--yellow);
+    margin-bottom:10px;
+}
+
+.choice{
+    padding:12px 15px;
+    cursor:pointer;
+    margin:4px;
+    background:#0c140d;
+    border:1px solid #335239;
+    color:var(--white);
+}
+
+.choice.normal:hover{
+    border-color:var(--green);
+}
+
+.choice.investigate:hover{
+    border-color:var(--yellow);
+}
+
+.choice.escalate:hover{
+    border-color:var(--red);
+}
+
+.outcome{
+    margin-top:18px;
+    padding:14px;
+    border-left:3px solid var(--green);
+    background:#0d180f;
+    line-height:1.6;
+}
+
+/* ---------- MESSAGE ---------- */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:min(420px,calc(100vw - 40px));
+    background:#081008;
+    border:1px solid var(--green2);
+    padding:15px;
+    z-index:50;
+    box-shadow:0 0 25px rgba(0,0,0,.8);
+}
+
+.toast-title{
+    color:var(--yellow);
+    margin-bottom:6px;
+}
+
+/* ---------- END ---------- */
+
+#finalScreen{
+    padding:30px 0;
+}
+
+.final-card{
+    border:1px solid var(--green2);
+    background:var(--panel);
+    padding:28px;
+}
+
+.timeline{
+    margin:25px 0;
+    padding-left:20px;
+    border-left:2px solid var(--border);
+}
+
+.timeline-event{
+    padding:10px 0 18px 18px;
+    position:relative;
+}
+
+.timeline-event:before{
+    content:"";
+    width:10px;
+    height:10px;
+    background:var(--green2);
+    border-radius:50%;
+    position:absolute;
+    left:-26px;
+    top:14px;
+}
+
+.timeline-event.incident:before{
+    background:var(--red);
+    box-shadow:0 0 10px var(--red);
+}
+
+.big-message{
+    margin-top:30px;
+    text-align:center;
+    border:1px solid var(--yellow);
+    padding:25px;
+    color:var(--white);
+    font-size:1.15rem;
+    line-height:1.7;
+}
+
+.chain{
+    margin:24px 0;
+    padding:20px;
+    background:#060b07;
+    border:1px solid #5b2424;
+    color:#ffdede;
+    white-space:pre-wrap;
+    line-height:1.5;
+    overflow:auto;
+}
+
+.score-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:20px;
+}
+
+.score-card{
+    padding:15px;
+    border:1px solid var(--border);
+    background:#071008;
+}
+
+.small{
+    color:var(--dim);
+    font-size:.8rem;
+}
+
+footer{
+    margin-top:25px;
+    border-top:1px solid var(--border);
+    padding-top:16px;
+    color:var(--dim);
+    font-size:.75rem;
+    line-height:1.5;
+}
+
+@media(max-width:850px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .zone-layout{
+        grid-template-columns:1fr;
+    }
+
+    .boundary{
+        min-height:60px;
+    }
+
+    .main-grid{
+        grid-template-columns:1fr;
+    }
+
+    .feed{
+        height:240px;
+    }
+
+    .score-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+<section id="startScreen">
+
+<div class="start-card">
+
+<div class="kicker">ELNÄTSBOLAGET AB // SECURITY OPERATIONS CENTER</div>
+
+<h1>EN DAG I SOC:EN</h1>
+
+<div class="subtitle">IT + OT // analys under osäkerhet</div>
+
+<div class="intro">
+<p>
+Du arbetar ett pass tillsammans med säkerhetsorganisationen.
+Under dagen kommer olika säkerhetslarm från Windows, Linux,
+identitetssystem, nätverk och OT-miljön.
+</p>
+
+<p>
+<strong>De flesta händelser du kommer att se är legitima.</strong>
+Problemet är att ett verkligt angrepp också kan bestå av aktiviteter
+som var för sig ser ganska normala ut.
+</p>
+
+<p>
+Din uppgift är därför inte att hitta "hackern".
+Din uppgift är att försöka förstå vad som händer.
+</p>
+</div>
+
+<div class="start-note">
+SOC arbetar med teknik, människor och verksamhetskontext.
+Ibland måste analytikern helt enkelt fråga:
+<br><br>
+<strong>"Var det du som gjorde detta?"</strong>
+</div>
+
+<button class="primary" onclick="startShift()">STARTA SOC-PASSET &gt;</button>
+
+</div>
+</section>
+
+
+<!-- SOC APP -->
+<section id="app" class="hidden">
+
+<header>
+<div class="brand">
+ELNÄTSBOLAGET AB <span>// IT/OT SOC</span>
+</div>
+
+<div class="clock" id="socClock">08:00:00</div>
+</header>
+
+
+<div class="stats">
+
+<div class="stat">
+<div class="stat-label">SECURITY EVENTS</div>
+<div class="stat-value" id="eventCounter">18 421</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">ALERTS TODAY</div>
+<div class="stat-value" id="alertCounter">0</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">REVIEWED</div>
+<div class="stat-value" id="reviewedCounter">0</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">ESCALATED</div>
+<div class="stat-value" id="escalatedCounter">0</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">WAITING FOR RESPONSE</div>
+<div class="stat-value" id="waitingCounter">0</div>
+</div>
+
+</div>
+
+
+<!-- ZONE MODEL -->
+
+<div class="zone-layout">
+
+<div class="zone">
+<h3>IT-ZON</h3>
+
+<div class="zone-assets">
+<span class="asset">WORKSTATIONS</span>
+<span class="asset">IDENTITY</span>
+<span class="asset">SERVERS</span>
+<span class="asset">LINUX</span>
+<span class="asset">WINDOWS</span>
+<span class="asset">EDR</span>
+</div>
+</div>
+
+<div class="boundary" id="boundary">
+ZONE<br>
+BOUNDARY
+</div>
+
+<div class="zone">
+<h3>OT-ZON</h3>
+
+<div class="zone-assets">
+<span class="asset">OT IDS</span>
+<span class="asset">JUMP HOST</span>
+<span class="asset">ENGINEERING WS</span>
+<span class="asset">HMI</span>
+<span class="asset">RTU / PLC</span>
+</div>
+</div>
+
+</div>
+
+
+<div class="main-grid">
+
+<!-- FEED -->
+
+<div class="panel">
+
+<div class="panel-title">
+ALERT QUEUE
+</div>
+
+<div class="feed" id="feed"></div>
+
+</div>
+
+
+<!-- WORKSPACE -->
+
+<div class="panel">
+
+<div class="panel-title">
+TRIAGE WORKSPACE
+</div>
+
+<div class="alert-workspace" id="workspace">
+
+<div style="color:#789078;line-height:1.7">
+Waiting for security telemetry...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="finalScreen" class="hidden"></div>
+
+<footer>
+Detta är ett fiktivt utbildningsscenario. Systemnamn, användare,
+adresser och händelser är skapade för demonstrationen.
+</footer>
+
+</section>
+
+
+<div id="toast" class="toast hidden"></div>
+
+
+<script>
+
+/* ==========================================================
+   SCENARIO DATA
+   ========================================================== */
+
+const events = [
+
+{
+    time:"08:12",
+    source:"EDR",
+    zone:"IT",
+    severity:"high",
+    title:"Encoded PowerShell detected",
+    asset:"IT-WS-142",
+    user:"alex.n",
+    explain:
+        "EDR har upptäckt PowerShell där en del av kommandot är encoded. " +
+        "Encoding förekommer både i legitima verktyg och i attacker.",
+    context:[
+        "Asset: vanlig IT-workstation",
+        "User role: utveckling / automation",
+        "Parent process: AI development tool",
+        "Destination: godkänd molntjänst",
+        "Liknande aktivitet har förekommit tidigare"
+    ],
+    contact:{
+        person:"Alex",
+        text:"Ja. Jag kör en AI-agent som hjälpte mig automatisera ett jobb. Jag känner igen aktiviteten."
+    },
+    truth:"benign",
+    outcome:
+        "Aktiviteten såg tekniskt misstänkt ut, men kontext och användarbekräftelse talar för legitim användning."
+},
+
+{
+    time:"08:46",
+    source:"IDENTITY",
+    zone:"IT",
+    severity:"medium",
+    title:"User added to privileged group",
+    asset:"IDENTITY",
+    user:"sara.l",
+    explain:
+        "Ett konto har fått utökade rättigheter. Sådana förändringar behöver ofta verifieras mot beställning eller förändringsärende.",
+    context:[
+        "Utförd av: IAM-ADMIN-02",
+        "Change ticket: CHG-4821",
+        "Godkänd av systemägare",
+        "Behörigheten är tidsbegränsad"
+    ],
+    contact:{
+        person:"IAM-administratören",
+        text:"Ja, ändringen är beställd och dokumenterad i CHG-4821."
+    },
+    truth:"benign",
+    outcome:
+        "Behörighetsändringen är legitim och kan knytas till en godkänd förändring."
+},
+
+{
+    time:"09:27",
+    source:"LINUX",
+    zone:"IT",
+    severity:"medium",
+    title:"Privileged command execution",
+    asset:"LIN-SRV-07",
+    user:"linux.admin",
+    explain:
+        "Ett privilegierat kommando har körts på en Linux-server. Det kan vara normal administration eller början på något annat.",
+    context:[
+        "Server: intern Linux-applikationsserver",
+        "Kommando exekverat via sudo",
+        "Källa: administrationsnät",
+        "Planerat patchfönster: 09:00–10:00"
+    ],
+    contact:{
+        person:"Linux-administratören",
+        text:"Bekräftat. Jag patchar servern just nu."
+    },
+    truth:"benign",
+    outcome:
+        "Aktiviteten stämmer överens med planerat underhåll."
+},
+
+{
+    time:"10:03",
+    source:"AUTH",
+    zone:"IT",
+    severity:"low",
+    title:"Repeated failed authentication",
+    asset:"IT-WS-066",
+    user:"maria.k",
+    explain:
+        "Flera misslyckade autentiseringar kan indikera lösenordsproblem, felkonfigurerad mjukvara eller ett angrepp.",
+    context:[
+        "6 misslyckade försök",
+        "Samma klient och användare",
+        "Lyckad autentisering två minuter senare",
+        "Ingen annan avvikande aktivitet"
+    ],
+    contact:{
+        person:"Maria",
+        text:"Jag hade bytt lösenord men Outlook försökte fortfarande använda det gamla."
+    },
+    truth:"benign",
+    outcome:
+        "Ett vanligt exempel på hur normal användaraktivitet kan generera ett säkerhetslarm."
+},
+
+{
+    time:"10:41",
+    source:"NETWORK",
+    zone:"IT",
+    severity:"medium",
+    title:"Large internal data transfer",
+    asset:"BACKUP-01",
+    user:"system",
+    explain:
+        "En stor mängd data flyttas mellan två servrar. Datamängd i sig säger inte varför överföringen sker.",
+    context:[
+        "Källa: FILE-03",
+        "Destination: BACKUP-01",
+        "Samma flöde observeras varje vardag",
+        "Backupjobb registrerat i driftplan"
+    ],
+    contact:null,
+    truth:"benign",
+    outcome:
+        "Trafiken är del av ordinarie backup och matchar känd baseline."
+},
+
+{
+    time:"11:18",
+    source:"IDENTITY",
+    zone:"IT",
+    severity:"high",
+    title:"Service account authentication anomaly",
+    asset:"APP-SRV-12",
+    user:"vendor.service",
+    explain:
+        "Ett servicekonto används på ett sätt som avviker från dess vanliga beteende.",
+    context:[
+        "Kontot används normalt av en extern servicefunktion",
+        "Ingen aktiv förändring hittas",
+        "Ny källmaskin",
+        "Tidigare användning har främst skett via definierad åtkomstväg"
+    ],
+    contact:{
+        person:"Serviceansvarig",
+        text:"Jag känner inte till något arbete idag. Leverantören ska inte vara inne just nu."
+    },
+    truth:"suspicious",
+    chain:true,
+    outcome:
+        "Det finns ännu inte bevis på ett angrepp, men aktiviteten saknar förväntad verksamhetsförklaring."
+},
+
+{
+    time:"11:52",
+    source:"EDR",
+    zone:"IT",
+    severity:"medium",
+    title:"Command execution from service context",
+    asset:"APP-SRV-12",
+    user:"vendor.service",
+    explain:
+        "Ett kommando har körts under samma servicekonto som nyss gav ett autentiseringslarm.",
+    context:[
+        "Samma konto som larmet 11:18",
+        "Ny processkedja på servern",
+        "Ingen tillhörande change ticket",
+        "Kommandot i sig är inte automatiskt skadligt"
+    ],
+    contact:{
+        person:"Serviceansvarig",
+        text:"Nej. Vi har fortfarande inte identifierat någon godkänd aktivitet för detta konto."
+    },
+    truth:"suspicious",
+    chain:true,
+    outcome:
+        "Korrelationen med den tidigare autentiseringsavvikelsen höjer intresset."
+},
+
+{
+    time:"12:34",
+    source:"WINDOWS",
+    zone:"IT",
+    severity:"medium",
+    title:"Administrative share access",
+    asset:"IT-SRV-21",
+    user:"it.admin",
+    explain:
+        "Administrativ nätverksåtkomst mellan Windows-system är vanlig vid drift, men används också vid lateral förflyttning.",
+    context:[
+        "Källa: känd administrationsserver",
+        "Användare: IT-administratör",
+        "Matchar normalt driftmönster",
+        "Ingen koppling till tidigare servicekonto"
+    ],
+    contact:{
+        person:"IT-administratören",
+        text:"Ja, det var jag. Jag installerade en uppdatering på IT-SRV-21."
+    },
+    truth:"benign",
+    outcome:
+        "Aktiviteten liknar något en angripare skulle kunna göra, men här finns en tydlig legitim förklaring."
+},
+
+{
+    time:"13:16",
+    source:"NETWORK",
+    zone:"BOUNDARY",
+    severity:"critical",
+    title:"Unexpected IT → OT connection attempt",
+    asset:"IT-WS-233",
+    user:"vendor.service",
+    explain:
+        "En IT-tillgång försöker nå en kontrollerad åtkomstpunkt mot OT. Zonövergångar är särskilt viktiga att förstå.",
+    context:[
+        "Källa: IT-WS-233",
+        "Konto: vendor.service",
+        "Destination: OT-JUMP-02",
+        "Ingen aktiv serviceaktivitet registrerad",
+        "Samma konto förekom i larmen 11:18 och 11:52"
+    ],
+    contact:{
+        person:"Serviceansvarig",
+        text:"Det här stämmer inte med något godkänt arbete. Vi eskalerar detta tillsammans med SOC."
+    },
+    truth:"malicious",
+    chain:true,
+    boundary:true,
+    outcome:
+        "Aktiviteten korsar en viktig zonmodell och saknar legitim verksamhetsförklaring. Händelsen bör behandlas med hög prioritet."
+},
+
+{
+    time:"13:24",
+    observed:"13:19",
+    source:"OT IDS",
+    zone:"OT",
+    severity:"high",
+    title:"Delayed OT IDS telemetry",
+    asset:"OT-JUMP-02",
+    user:"n/a",
+    explain:
+        "OT-IDS-data visar en avvikelse. Telemetrin har viss latens: händelsen observerades tidigare än den nådde SOC.",
+    context:[
+        "Observerad tid: 13:19",
+        "Mottagen i SOC: 13:24",
+        "Källa: OT-JUMP-02",
+        "Destination: engineering workstation",
+        "Kommunikationsmönstret avviker från normal baseline"
+    ],
+    contact:{
+        person:"OT-drift",
+        text:"Vi känner inte till något planerat arbete mellan dessa system just nu."
+    },
+    truth:"malicious",
+    chain:true,
+    boundary:true,
+    outcome:
+        "OT-telemetrin ger ett nytt perspektiv och förstärker misstanken att tidigare IT-händelser hör ihop."
+},
+
+{
+    time:"13:31",
+    source:"OT IDS",
+    zone:"OT",
+    severity:"high",
+    title:"Unusual engineering workstation activity",
+    asset:"ENG-WS-04",
+    user:"service.tech",
+    explain:
+        "Engineering workstation visar aktivitet som behöver bedömas mot OT-driftens normala arbetssätt.",
+    context:[
+        "Ingen registrerad change window",
+        "Aktiviteten började efter OT-JUMP-02-händelsen",
+        "Ny kommunikationssekvens mot OT-system",
+        "Ingen motsvarande aktivitet i normal baseline"
+    ],
+    contact:{
+        person:"OT-teknikern",
+        text:"Nej. Jag arbetar inte mot den här engineering workstation idag."
+    },
+    truth:"malicious",
+    chain:true,
+    outcome:
+        "Människans svar blir avgörande: den observerade aktiviteten stämmer inte med planerat arbete."
+},
+
+{
+    time:"14:02",
+    source:"SOC CORRELATION",
+    zone:"BOTH",
+    severity:"critical",
+    title:"Multiple alerts may be related",
+    asset:"IT + OT",
+    user:"multiple",
+    explain:
+        "Flera tidigare händelser delar konto, system eller tidsmässiga samband. SOC behöver nu bedöma helheten.",
+    context:[
+        "11:18 – servicekonto används från ny källa",
+        "11:52 – kommando exekveras under samma konto",
+        "13:16 – oväntad IT → OT-anslutning",
+        "13:19 – OT-IDS observerar avvikelse",
+        "13:31 – engineering workstation visar ovanlig aktivitet",
+        "Verksamheten känner inte igen aktiviteten"
+    ],
+    contact:null,
+    truth:"malicious",
+    chain:true,
+    boundary:true,
+    outcome:
+        "Ingen enskild datapunkt gav hela svaret. Tidslinjen, zonmodellen, säkerhetstelemetrin och verksamhetskontexten tillsammans förändrar bedömningen."
+}
+
+];
+
+
+/* ==========================================================
+   STATE
+   ========================================================== */
+
+let currentIndex = -1;
+let reviewed = 0;
+let escalated = 0;
+let waiting = 0;
+
+let decisions = [];
+let contactRequests = [];
+
+let securityEvents = 18421;
+
+
+/* ==========================================================
+   START
+   ========================================================== */
+
+function startShift(){
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+
+    nextEvent();
+}
+
+
+/* ==========================================================
+   EVENT FLOW
+   ========================================================== */
+
+function nextEvent(){
+
+    currentIndex++;
+
+    if(currentIndex >= events.length){
+        showFinal();
+        return;
+    }
+
+    const e = events[currentIndex];
+
+    document.getElementById("socClock").textContent = e.time + ":00";
+
+    securityEvents += Math.floor(Math.random()*900)+200;
+
+    document.getElementById("eventCounter").textContent =
+        securityEvents.toLocaleString("sv-SE");
+
+    document.getElementById("alertCounter").textContent =
+        currentIndex + 1;
+
+    if(e.boundary){
+        document.getElementById("boundary").classList.add("alerting");
+    }
+
+    addFeedItem(e,currentIndex);
+    showEvent(currentIndex);
+}
+
+
+/* ==========================================================
+   FEED
+   ========================================================== */
+
+function addFeedItem(e,index){
+
+    const feed = document.getElementById("feed");
+
+    const div = document.createElement("div");
+    div.className = "feed-item";
+    div.id = "feed-"+index;
+
+    div.onclick = () => showEvent(index);
+
+    div.innerHTML = `
+        <div class="feed-time">${e.time}</div>
+        <div class="feed-title">${e.title}</div>
+        <div class="feed-source">
+            ${e.source} //
+            <span class="sev-${e.severity}">
+                ${e.severity.toUpperCase()}
+            </span>
+        </div>
+    `;
+
+    feed.prepend(div);
+}
+
+
+/* ==========================================================
+   SHOW EVENT
+   ========================================================== */
+
+function showEvent(index){
+
+    document.querySelectorAll(".feed-item")
+        .forEach(x=>x.classList.remove("active"));
+
+    const feedItem = document.getElementById("feed-"+index);
+
+    if(feedItem){
+        feedItem.classList.add("active");
+    }
+
+    const e = events[index];
+
+    let contactButton = "";
+
+    if(e.contact){
+        contactButton =
+            `<button class="action"
+                onclick="contactPerson(${index})">
+                CONTACT PERSON
+             </button>`;
+    }
+
+    const previousDecision =
+        decisions.find(d=>d.index===index);
+
+    let decisionArea = "";
+
+    if(previousDecision){
+
+        decisionArea = `
+        <div class="outcome">
+            <strong>DIN BEDÖMNING:</strong>
+            ${previousDecision.choice.toUpperCase()}
+            <br><br>
+            ${e.outcome}
+        </div>
+        `;
+
+    }else{
+
+        decisionArea = `
+        <div class="decision">
+
+            <div class="decision-title">
+                HUR BEDÖMER DU DETTA JUST NU?
+            </div>
+
+            <button class="choice normal"
+                onclick="decide(${index},'ser normalt ut')">
+                SER NORMALT UT
+            </button>
+
+            <button class="choice investigate"
+                onclick="decide(${index},'undersök vidare')">
+                UNDERSÖK VIDARE
+            </button>
+
+            <button class="choice escalate"
+                onclick="decide(${index},'eskalera')">
+                ESKALERA
+            </button>
+
+        </div>
+        `;
+    }
+
+    document.getElementById("workspace").innerHTML = `
+
+        <div class="alert-header">
+
+            <div>
+
+                <div class="small">
+                    ${e.time}
+                    //
+                    ${e.source}
+                    //
+                    ${e.zone}
+                </div>
+
+                <div class="alert-title">
+                    ${e.title}
+                </div>
+
+                <div class="alert-meta">
+                    Asset: ${e.asset}<br>
+                    User: ${e.user}
+                </div>
+
+            </div>
+
+            <div class="badge sev-${e.severity}">
+                ${e.severity.toUpperCase()}
+            </div>
+
+        </div>
+
+
+        <div class="explanation">
+            ${e.explain}
+        </div>
+
+
+        <div class="controls">
+
+            <button class="action"
+                onclick="showContext(${index})">
+                SHOW CONTEXT
+            </button>
+
+            ${contactButton}
+
+        </div>
+
+
+        <div id="context-${index}"></div>
+
+        <div id="contact-${index}"></div>
+
+        ${decisionArea}
+
+    `;
+}
+
+
+/* ==========================================================
+   CONTEXT
+   ========================================================== */
+
+function showContext(index){
+
+    const e = events[index];
+
+    const list =
+        e.context.map(x=>`<div>&gt; ${x}</div>`).join("");
+
+    document.getElementById("context-"+index).innerHTML = `
+
+        <div class="context-box">
+
+            <h4>AVAILABLE CONTEXT</h4>
+
+            ${list}
+
+        </div>
+
+    `;
+}
+
+
+/* ==========================================================
+   CONTACT
+   ========================================================== */
+
+function contactPerson(index){
+
+    const e = events[index];
+
+    if(contactRequests.includes(index)){
+        return;
+    }
+
+    contactRequests.push(index);
+
+    waiting++;
+
+    updateStats();
+
+    document.getElementById("contact-"+index).innerHTML = `
+
+        <div class="contact-box">
+
+            <h4>CONTACT REQUEST</h4>
+
+            Contacting ${e.contact.person}...
+            <br>
+            Status: WAITING FOR RESPONSE
+
+        </div>
+
+    `;
+
+    setTimeout(()=>{
+
+        waiting--;
+
+        updateStats();
+
+        const box = document.getElementById("contact-"+index);
+
+        if(box){
+
+            box.innerHTML = `
+
+                <div class="contact-box">
+
+                    <h4>RESPONSE RECEIVED</h4>
+
+                    <strong>${e.contact.person}:</strong>
+                    <br><br>
+                    "${e.contact.text}"
+
+                </div>
+
+            `;
+        }
+
+        showToast(
+            "NEW RESPONSE",
+            `${e.contact.person} har svarat på SOC:s fråga.`
+        );
+
+    },2200);
+
+}
+
+
+/* ==========================================================
+   DECISION
+   ========================================================== */
+
+function decide(index,choice){
+
+    if(decisions.some(d=>d.index===index)){
+        return;
+    }
+
+    decisions.push({
+        index:index,
+        choice:choice,
+        truth:events[index].truth
+    });
+
+    reviewed++;
+
+    if(choice==="eskalera"){
+        escalated++;
+    }
+
+    updateStats();
+
+    showEvent(index);
+
+    if(index===currentIndex){
+
+        setTimeout(()=>{
+            nextEvent();
+        },1300);
+
+    }
+
+}
+
+
+/* ==========================================================
+   STATS
+   ========================================================== */
+
+function updateStats(){
+
+    document.getElementById("reviewedCounter").textContent =
+        reviewed;
+
+    document.getElementById("escalatedCounter").textContent =
+        escalated;
+
+    document.getElementById("waitingCounter").textContent =
+        waiting;
+}
+
+
+/* ==========================================================
+   TOAST
+   ========================================================== */
+
+function showToast(title,text){
+
+    const toast = document.getElementById("toast");
+
+    toast.innerHTML = `
+
+        <div class="toast-title">
+            ${title}
+        </div>
+
+        ${text}
+
+    `;
+
+    toast.classList.remove("hidden");
+
+    setTimeout(()=>{
+        toast.classList.add("hidden");
+    },3500);
+
+}
+
+
+/* ==========================================================
+   FINAL
+   ========================================================== */
+
+function showFinal(){
+
+    document.querySelector(".main-grid").classList.add("hidden");
+
+    const final = document.getElementById("finalScreen");
+
+    final.classList.remove("hidden");
+
+    const chainEvents =
+        events.filter(x=>x.chain);
+
+    const timeline =
+        events.map(e=>{
+
+            const cls =
+                e.chain ? "timeline-event incident" : "timeline-event";
+
+            return `
+                <div class="${cls}">
+                    <strong>${e.time}</strong>
+                    &nbsp; ${e.title}
+                    <div class="small">
+                        ${e.source} // ${e.asset}
+                    </div>
+                </div>
+            `;
+
+        }).join("");
+
+
+    let correctBenign = 0;
+    let goodEscalations = 0;
+
+    decisions.forEach(d=>{
+
+        if(d.truth==="benign" &&
+           d.choice!=="eskalera"){
+            correctBenign++;
+        }
+
+        if((d.truth==="malicious" ||
+            d.truth==="suspicious") &&
+            d.choice!=="ser normalt ut"){
+            goodEscalations++;
+        }
+
+    });
+
+
+    final.innerHTML = `
+
+    <div class="final-card">
+
+        <div class="kicker">
+            END OF SHIFT // CORRELATION REVIEW
+        </div>
+
+        <h1 style="font-size:2.6rem">
+            VAD HÄNDE EGENTLIGEN?
+        </h1>
+
+
+        <p>
+            Under passet såg du både normal drift,
+            ovanliga men legitima aktiviteter och
+            ett antal händelser som faktiskt hörde ihop.
+        </p>
+
+
+        <div class="timeline">
+            ${timeline}
+        </div>
+
+
+        <div class="chain">
+11:18  SERVICE ACCOUNT ANOMALY
+          │
+          ▼
+11:52  COMMAND EXECUTION
+          │
+          ▼
+13:16  IT ───────────────► OT
+          │             ZONE BOUNDARY
+          ▼
+13:19  OT IDS OBSERVATION
+          │
+          │  telemetry arrives later
+          ▼
+13:31  ENGINEERING WORKSTATION
+          │
+          ▼
+14:02  SOC CORRELATION
+        </div>
+
+
+        <div class="score-grid">
+
+            <div class="score-card">
+                <div class="small">
+                    ALERTS REVIEWED
+                </div>
+
+                <div class="stat-value">
+                    ${reviewed}
+                </div>
+            </div>
+
+
+            <div class="score-card">
+                <div class="small">
+                    BENIGN EVENTS HANDLED
+                </div>
+
+                <div class="stat-value">
+                    ${correctBenign}
+                </div>
+            </div>
+
+
+            <div class="score-card">
+                <div class="small">
+                    SUSPICIOUS EVENTS NOT DISMISSED
+                </div>
+
+                <div class="stat-value">
+                    ${goodEscalations}
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="big-message">
+
+            <strong>
+            Det svåra i SOC:en är inte att hitta saker
+            som ser konstiga ut.
+            </strong>
+
+            <br><br>
+
+            Det svåra är att avgöra vilka av dem som
+            faktiskt betyder något.
+
+            <br><br>
+
+            Telemetri visar <em>vad</em> som hände.<br>
+            Människor och verksamhetskontext hjälper
+            oss förstå <em>varför</em>.
+
+        </div>
+
+
+        <div class="big-message"
+             style="border-color:#ff5c5c">
+
+            <strong>
+            IT OCH OT MÅSTE SES SOM EN HELHET.
+            </strong>
+
+            <br><br>
+
+            IT-sidan såg kontoaktivitet och
+            kommandokörning.
+
+            <br><br>
+
+            OT-sidan såg en avvikelse i
+            engineering-miljön.
+
+            <br><br>
+
+            Zonövergången och korrelationen mellan
+            händelserna gjorde situationen tydlig.
+
+        </div>
+
+
+        <div class="big-message"
+             style="border-color:#64b5ff">
+
+            <strong>
+            DU ÄR OCKSÅ EN DEL AV SOC:ENS SENSORER.
+            </strong>
+
+            <br><br>
+
+            När SOC kontaktar dig och frågar:
+
+            <br><br>
+
+            "Var det du som körde detta?"
+            <br>
+            "Känner du till den här behörighetsändringen?"
+            <br>
+            "Pågår det arbete på det här systemet?"
+
+            <br><br>
+
+            ...kan ditt svar vara det som avgör
+            om ett larm stängs eller om en
+            incident eskaleras.
+
+        </div>
+
+
+        <button class="primary"
+            onclick="location.reload()">
+            KÖR SCENARIOT IGEN
+        </button>
+
+    </div>
+
+    `;
+}
+
+</script>
+
+</body>
+</html>
