@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>En dag i SOC:en</title>
+
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+    --bg:#f7f5f1;
+    --surface:#ffffff;
+    --soft:#f2eee7;
+    --green-soft:#eaf5ef;
+    --orange-soft:#fff0df;
+
+    --text:#202425;
+    --muted:#626a68;
+    --border:#dedbd4;
+
+    --orange:#f58220;
+    --green:#14845c;
+    --green-dark:#096b49;
+
+    --radius:20px;
+    --shadow:0 8px 30px rgba(33,37,36,.07);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+
+.wrapper{
+    width:min(1180px,calc(100% - 40px));
+    margin:auto;
+}
+
+header{
+    background:#fff;
+    border-bottom:1px solid var(--border);
+}
+
+.header-inner{
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.brand{
+    font-weight:900;
+}
+
+.brand span{
+    color:var(--orange);
+}
+
+.header-label{
+    color:var(--muted);
+    font-size:.82rem;
+}
+
+main{
+    padding:70px 0 90px;
+}
+
+.hero{
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
+    gap:55px;
+    align-items:center;
+    margin-bottom:65px;
+}
+
+.eyebrow{
+    color:var(--green);
+    font-size:.76rem;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-weight:900;
+}
+
+h1{
+    margin:12px 0 24px;
+    max-width:800px;
+
+    font-size:clamp(3rem,7vw,5.8rem);
+    line-height:.98;
+    letter-spacing:-.055em;
+}
+
+.lead{
+    max-width:730px;
+    color:var(--muted);
+    font-size:1.2rem;
+    line-height:1.7;
+}
+
+.hero-visual{
+    position:relative;
+    min-height:390px;
+    overflow:hidden;
+
+    border-radius:32px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f6d3ab 0%,
+            #eec58e 32%,
+            #d5d0b6 62%,
+            #81957a 100%
+        );
+
+    box-shadow:var(--shadow);
+}
+
+.sun{
+    position:absolute;
+    right:50px;
+    top:40px;
+
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+    background:rgba(255,244,211,.65);
+}
+
+.power-svg{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+}
+
+.visual-caption{
+    position:absolute;
+    left:25px;
+    right:25px;
+    bottom:25px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.89);
+    backdrop-filter:blur(6px);
+
+    line-height:1.5;
+}
+
+.visual-caption strong{
+    color:var(--green-dark);
+}
+
+.article{
+    max-width:850px;
+    margin:auto;
+}
+
+.article-section{
+    margin-bottom:48px;
+}
+
+.article h2{
+    margin:0 0 20px;
+
+    font-size:clamp(1.8rem,4vw,2.8rem);
+    line-height:1.1;
+    letter-spacing:-.035em;
+}
+
+.article p{
+    color:#3f4544;
+    font-size:1.05rem;
+    line-height:1.8;
+}
+
+.article strong{
+    color:var(--text);
+}
+
+.context-card{
+    margin:30px 0;
+
+    padding:28px;
+
+    background:#fff;
+    border-radius:var(--radius);
+
+    box-shadow:var(--shadow);
+}
+
+.context-card h3{
+    margin:0 0 20px;
+    font-size:1.15rem;
+}
+
+.context-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px 25px;
+
+    padding:0;
+    margin:0;
+
+    list-style:none;
+}
+
+.context-list li{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+
+    line-height:1.55;
+}
+
+.context-list li::before{
+    content:"";
+    flex:0 0 auto;
+
+    width:8px;
+    height:8px;
+
+    margin-top:.48em;
+
+    border-radius:50%;
+    background:var(--orange);
+}
+
+.quote{
+    margin:35px 0;
+    padding:30px;
+
+    border-radius:var(--radius);
+    background:var(--green-soft);
+
+    font-size:clamp(1.25rem,3vw,1.7rem);
+    line-height:1.45;
+    font-weight:800;
+}
+
+.balance{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:28px 0;
+}
+
+.balance-card{
+    padding:25px;
+
+    border-radius:var(--radius);
+    background:#fff;
+
+    box-shadow:var(--shadow);
+}
+
+.balance-card.orange{
+    background:var(--orange-soft);
+}
+
+.balance-card.green{
+    background:var(--green-soft);
+}
+
+.balance-card strong{
+    display:block;
+    margin-bottom:10px;
+    font-size:1.08rem;
+}
+
+.final-message{
+    margin-top:55px;
+
+    padding:38px;
+
+    border-radius:28px;
+    background:#252a29;
+    color:#fff;
+}
+
+.final-message h2{
+    color:#fff;
+    margin-top:0;
+}
+
+.final-message p{
+    color:#e0e4e2;
+}
+
+.cta{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+
+    margin-top:18px;
+
+    padding:15px 24px;
+
+    border-radius:999px;
+
+    background:var(--orange);
+    color:#fff;
+
+    text-decoration:none;
+    font-weight:900;
+
+    transition:.15s ease;
+}
+
+.cta:hover{
+    transform:translateY(-1px);
+    filter:brightness(.95);
+}
+
+.cta-arrow{
+    font-size:1.2rem;
+}
+
+.small-note{
+    margin-top:15px;
+    color:#aeb5b1;
+    font-size:.78rem;
+}
+
+footer{
+    margin-top:80px;
+    padding-top:25px;
+
+    border-top:1px solid var(--border);
+
+    color:var(--muted);
+    font-size:.78rem;
+}
+
+@media(max-width:850px){
+
+    .hero{
+        grid-template-columns:1fr;
+    }
+
+    .hero-visual{
+        min-height:320px;
+    }
+
+    .context-list,
+    .balance{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+
+    .wrapper{
+        width:min(100% - 24px,1180px);
+    }
+
+    main{
+        padding:45px 0 65px;
+    }
+
+    h1{
+        font-size:3.4rem;
+    }
+
+    .header-label{
+        display:none;
+    }
+
+    .final-message{
+        padding:27px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="wrapper header-inner">
+
+    <div class="brand">
+        SECURITY <span>OPERATIONS</span>
+    </div>
+
+    <div class="header-label">
+        Säkerhet // IT + OT
+    </div>
+
+</div>
+
+</header>
+
+
+<main>
+
+<div class="wrapper">
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div>
+
+    <div class="eyebrow">
+        Security Operations Center
+    </div>
+
+    <h1>
+        En dag i SOC:en
+    </h1>
+
+    <p class="lead">
+        Att arbeta i en SOC handlar inte om att stirra på
+        röda varningar hela dagen. Den stora utmaningen är
+        snarare att avgöra <strong>vad som faktiskt betyder något.</strong>
+    </p>
+
+</div>
+
+
+<div class="hero-visual">
+
+    <div class="sun"></div>
+
+    <svg
+        class="power-svg"
+        viewBox="0 0 800 600"
+        preserveAspectRatio="xMidYMid slice"
+        role="img"
+        aria-label="Illustration av kraftledningar">
+
+        <path
+            d="M0 390
+               C130 340 210 390 315 360
+               C440 320 525 365 800 315
+               L800 600 L0 600 Z"
+            fill="#7f9479"/>
+
+        <path
+            d="M0 440
+               C180 390 280 450 430 405
+               C590 360 650 410 800 370
+               L800 600 L0 600 Z"
+            fill="#61785f"/>
+
+        <g
+            fill="none"
+            stroke="#424947"
+            stroke-width="3"
+            opacity=".8">
+
+            <path d="M130 160 C300 185 470 172 650 125"/>
+            <path d="M128 178 C300 202 470 190 652 144"/>
+            <path d="M132 197 C300 218 470 207 648 162"/>
+
+        </g>
+
+        <g
+            stroke="#3c4544"
+            stroke-width="6"
+            fill="none"
+            stroke-linejoin="round">
+
+            <path d="M130 150 L85 500"/>
+            <path d="M130 150 L175 500"/>
+
+            <path d="M106 330 L154 330"/>
+            <path d="M98 390 L162 390"/>
+            <path d="M90 450 L170 450"/>
+
+            <path d="M106 330 L160 450"/>
+            <path d="M154 330 L100 450"/>
+
+            <path d="M88 190 L172 190"/>
+            <path d="M98 215 L162 215"/>
+
+        </g>
+
+        <g
+            stroke="#3c4544"
+            stroke-width="6"
+            fill="none"
+            stroke-linejoin="round">
+
+            <path d="M650 115 L600 480"/>
+            <path d="M650 115 L700 480"/>
+
+            <path d="M620 290 L680 290"/>
+            <path d="M612 355 L688 355"/>
+            <path d="M605 420 L695 420"/>
+
+            <path d="M620 290 L690 420"/>
+            <path d="M680 290 L610 420"/>
+
+            <path d="M605 155 L695 155"/>
+            <path d="M615 182 L685 182"/>
+
+        </g>
+
+    </svg>
+
+
+    <div class="visual-caption">
+
+        <strong>
+            Cybersecurity handlar också om verksamheten.
+        </strong>
+
+        <br>
+
+        En teknisk signal får sin betydelse först när den
+        sätts i rätt sammanhang.
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- ARTICLE -->
+
+<article class="article">
+
+
+<section class="article-section">
+
+<p>
+Varje dag genereras stora mängder säkerhetshändelser från
+användare, servrar, identitetssystem, nätverk och OT-miljöer.
+Många larm ser allvarliga ut men visar sig vara helt legitima.
+</p>
+
+<p>
+Ett PowerShell-kommando kan komma från en AI-agent.
+En privilegieändring kan vara godkänd.
+Ett ovanligt dataflöde kan vara backup.
+</p>
+
+<p>
+Samtidigt kan ett verkligt angrepp bestå av flera små
+händelser som var för sig ser ganska normala ut.
+</p>
+
+</section>
+
+
+
+<section class="article-section">
+
+<h2>
+Kontext förändrar bilden
+</h2>
+
+<p>
+Det är därför SOC behöver <strong>kontext och korrelation</strong>.
+Ett larm bedöms tillsammans med exempelvis:
+</p>
+
+
+<div class="context-card">
+
+<h3>
+Vad behöver analytikern veta?
+</h3>
+
+<ul class="context-list">
+
+    <li>
+        Vad systemet normalt används till
+    </li>
+
+    <li>
+        Vem som utförde aktiviteten
+    </li>
+
+    <li>
+        Om det finns ett change-ärende
+    </li>
+
+    <li>
+        Vad som hänt tidigare
+    </li>
+
+    <li>
+        Vilken zon systemet tillhör
+    </li>
+
+    <li>
+        Vad verksamheten själv känner till
+    </li>
+
+</ul>
+
+</div>
+
+
+<p>
+Ibland räcker inte loggarna. Då kan SOC behöva kontakta
+en användare, administratör eller driftpersonal.
+</p>
+
+
+<div class="quote">
+    “Känner du igen den här aktiviteten?”
+</div>
+
+
+<p>
+Det betyder inte att personen redan misstänks för något.
+Svaret kan vara den information som gör att ett larm snabbt
+kan avslutas — eller att en möjlig incident behöver eskaleras.
+</p>
+
+</section>
+
+
+
+<section class="article-section">
+
+<h2>
+Att fatta beslut under osäkerhet
+</h2>
+
+<p>
+SOC måste hela tiden balansera två risker.
+</p>
+
+
+<div class="balance">
+
+<div class="balance-card orange">
+
+    <strong>
+        Eskalera för mycket
+    </strong>
+
+    Användare, drift och andra funktioner störs i onödan.
+
+</div>
+
+
+<div class="balance-card green">
+
+    <strong>
+        Avfärda för snabbt
+    </strong>
+
+    En viktig signal kan missas.
+
+</div>
+
+</div>
+
+
+<p>
+Därför är <strong>undersök vidare</strong> ofta ett lika
+viktigt beslut som att stänga eller eskalera.
+</p>
+
+<p>
+I IT/OT-miljöer blir detta ännu viktigare. En aktivitet som
+ser begränsad ut i IT kan få en helt annan betydelse om den
+senare kopplas till kommunikation mot OT.
+</p>
+
+</section>
+
+
+
+<section class="final-message">
+
+<h2>
+Ett larm är inte samma sak som en incident.
+</h2>
+
+<p>
+Det är först när teknik, människor och verksamhetskontext
+sätts ihop som SOC kan börja förstå vad som faktiskt händer.
+</p>
+
+<p>
+Nu kan du själv prova att sitta på analytikerns plats.
+Du får ett antal säkerhetslarm under en simulerad arbetsdag.
+Undersök, kontakta människor och avgör vad som ska stängas
+och vad som behöver eskaleras.
+</p>
+
+
+<a
+    class="cta"
+    href="soc_day3.html">
+
+    Testa en dag i SOC:en
+
+    <span class="cta-arrow">
+        →
+    </span>
+
+</a>
+
+
+<div class="small-note">
+    Interaktiv simulering // öppnas som en ny del av upplevelsen
+</div>
+
+</section>
+
+
+<footer>
+En dag i SOC:en // Security awareness
+</footer>
+
+</article>
+
+</div>
+
+</main>
+
+</body>
+</html>
