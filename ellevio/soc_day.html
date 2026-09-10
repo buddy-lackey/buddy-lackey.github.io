@@ -23,7 +23,9 @@
     --white:#f4fff4;
 }
 
-*{ box-sizing:border-box; }
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -35,9 +37,13 @@ body{
     min-height:100vh;
 }
 
-button{ font-family:inherit; }
+button{
+    font-family:inherit;
+}
 
-.hidden{ display:none !important; }
+.hidden{
+    display:none !important;
+}
 
 /* START */
 
@@ -82,7 +88,9 @@ h1{
     max-width:800px;
 }
 
-.intro strong{ color:var(--yellow); }
+.intro strong{
+    color:var(--yellow);
+}
 
 .start-note{
     margin-top:28px;
@@ -103,7 +111,9 @@ h1{
     font-size:1rem;
 }
 
-.primary:hover{ background:#103719; }
+.primary:hover{
+    background:#103719;
+}
 
 /* APP */
 
@@ -129,14 +139,16 @@ header{
     font-weight:bold;
 }
 
-.brand span{ color:var(--dim); }
+.brand span{
+    color:var(--dim);
+}
 
 .clock{
     font-size:1.5rem;
     color:var(--yellow);
 }
 
-/* STATUS */
+/* STATS */
 
 .stats{
     display:grid;
@@ -162,9 +174,17 @@ header{
     margin-top:4px;
 }
 
-.value-open{ color:var(--yellow); }
-.value-escalated{ color:var(--orange); }
-.value-waiting{ color:var(--blue); }
+.value-open{
+    color:var(--yellow);
+}
+
+.value-escalated{
+    color:var(--orange);
+}
+
+.value-waiting{
+    color:var(--blue);
+}
 
 /* ZONES */
 
@@ -242,7 +262,7 @@ header{
 }
 
 .feed{
-    height:590px;
+    height:620px;
     overflow:auto;
 }
 
@@ -253,7 +273,9 @@ header{
     position:relative;
 }
 
-.feed-item:hover{ background:#101a11; }
+.feed-item:hover{
+    background:#101a11;
+}
 
 .feed-item.active{
     background:#122317;
@@ -269,7 +291,7 @@ header{
     margin:5px 0;
     color:var(--white);
     font-size:.88rem;
-    padding-right:70px;
+    padding-right:78px;
 }
 
 .feed-source{
@@ -286,21 +308,42 @@ header{
     border:1px solid currentColor;
 }
 
-.status-new{ color:var(--blue); }
-.status-open{ color:var(--yellow); }
-.status-resolved{ color:var(--green); }
-.status-escalated{ color:var(--orange); }
-.status-reopened{ color:var(--red); }
+.status-open{
+    color:var(--yellow);
+}
 
-.sev-low{ color:var(--blue); }
-.sev-medium{ color:var(--yellow); }
-.sev-high{ color:var(--orange); }
-.sev-critical{ color:var(--red); }
+.status-resolved{
+    color:var(--green);
+}
+
+.status-escalated{
+    color:var(--orange);
+}
+
+.status-reopened{
+    color:var(--red);
+}
+
+.sev-low{
+    color:var(--blue);
+}
+
+.sev-medium{
+    color:var(--yellow);
+}
+
+.sev-high{
+    color:var(--orange);
+}
+
+.sev-critical{
+    color:var(--red);
+}
 
 /* WORKSPACE */
 
 .alert-workspace{
-    min-height:590px;
+    min-height:620px;
     padding:22px;
 }
 
@@ -367,6 +410,10 @@ header{
     border-left:3px solid var(--red);
 }
 
+.feedback-blue{
+    border-left:3px solid var(--blue);
+}
+
 .controls{
     display:flex;
     flex-wrap:wrap;
@@ -412,9 +459,13 @@ header{
     color:var(--white);
 }
 
-.choice.close:hover{ border-color:var(--green); }
-.choice.investigate:hover{ border-color:var(--yellow); }
-.choice.escalate:hover{ border-color:var(--red); }
+.choice.close:hover{
+    border-color:var(--green);
+}
+
+.choice.escalate:hover{
+    border-color:var(--red);
+}
 
 .status-panel{
     margin-top:20px;
@@ -423,6 +474,13 @@ header{
     border:1px solid #253b28;
     color:var(--dim);
     font-size:.8rem;
+    line-height:1.7;
+}
+
+.next-area{
+    margin-top:24px;
+    padding-top:18px;
+    border-top:1px solid var(--border);
 }
 
 /* TOAST */
@@ -446,7 +504,9 @@ header{
 
 /* FINAL */
 
-#finalScreen{ padding:30px 0; }
+#finalScreen{
+    padding:30px 0;
+}
 
 .final-card{
     border:1px solid var(--green2);
@@ -521,17 +581,39 @@ header{
 }
 
 @media(max-width:950px){
-    .stats{ grid-template-columns:repeat(3,1fr); }
-    .zone-layout{ grid-template-columns:1fr; }
-    .boundary{ min-height:60px; }
-    .main-grid{ grid-template-columns:1fr; }
-    .feed{ height:260px; }
-    .score-grid{ grid-template-columns:repeat(2,1fr); }
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .zone-layout{
+        grid-template-columns:1fr;
+    }
+
+    .boundary{
+        min-height:60px;
+    }
+
+    .main-grid{
+        grid-template-columns:1fr;
+    }
+
+    .feed{
+        height:280px;
+    }
+
+    .score-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 }
 
 @media(max-width:550px){
-    .stats{ grid-template-columns:repeat(2,1fr); }
-    .score-grid{ grid-template-columns:1fr; }
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .score-grid{
+        grid-template-columns:1fr;
+    }
 }
 </style>
 </head>
@@ -539,6 +621,7 @@ header{
 <body>
 
 <section id="startScreen">
+
 <div class="start-card">
 
 <div class="kicker">
@@ -577,8 +660,10 @@ Det finns inte alltid ett perfekt svar när ett larm först kommer.
 
 <br><br>
 
-<strong>Din uppgift är att fatta ett rimligt beslut
-utifrån den information som finns just nu.</strong>
+<strong>
+Din uppgift är att fatta ett rimligt beslut
+utifrån den information som finns just nu.
+</strong>
 
 </div>
 
@@ -587,6 +672,7 @@ STARTA SOC-PASSET &gt;
 </button>
 
 </div>
+
 </section>
 
 
@@ -598,7 +684,9 @@ STARTA SOC-PASSET &gt;
 ELNÄTSBOLAGET AB <span>// IT/OT SOC</span>
 </div>
 
-<div class="clock" id="socClock">08:00:00</div>
+<div class="clock" id="socClock">
+08:00:00
+</div>
 
 </header>
 
@@ -655,10 +743,14 @@ ELNÄTSBOLAGET AB <span>// IT/OT SOC</span>
 
 </div>
 
+
 <div class="boundary" id="boundary">
+
 ZONE<br>
 BOUNDARY
+
 </div>
+
 
 <div class="zone">
 
@@ -762,7 +854,10 @@ const events = [
     "Du stängde ärendet innan du samlade mer kontext. Den här gången var aktiviteten legitim, men samma arbetssätt kan innebära risk i ett annat ärende.",
 
     escalateFeedback:
-    "Aktiviteten var legitim. Eskaleringen innebär att fler personer behöver lägga tid på ett ärende som sannolikt hade kunnat avslutas i triage."
+    "Aktiviteten var legitim. Eskaleringen innebär att fler personer behöver lägga tid på ett ärende som sannolikt hade kunnat avslutas i triage.",
+
+    businessImpact:
+    "Användaren och ytterligare personal behöver nu lägga tid på att verifiera en legitim aktivitet."
 },
 
 {
@@ -799,7 +894,10 @@ const events = [
     "Det blev rätt den här gången, men SOC bör normalt verifiera privilegieändringar innan de stängs.",
 
     escalateFeedback:
-    "Eskaleringen skapar extra arbete för IAM och systemägare trots att ändringen redan är dokumenterad."
+    "Eskaleringen skapar extra arbete för IAM och systemägare trots att ändringen redan är dokumenterad.",
+
+    businessImpact:
+    "IAM och systemägaren behöver nu lägga tid på att verifiera en förändring som redan finns dokumenterad."
 },
 
 {
@@ -836,7 +934,10 @@ const events = [
     "Bedömningen visade sig vara korrekt, men du stängde innan planerat underhåll verifierades.",
 
     escalateFeedback:
-    "Drift blir involverad i ett ärende som kunde ha avslutats genom normal triage."
+    "Drift blir involverad i ett ärende som kunde ha avslutats genom normal triage.",
+
+    businessImpact:
+    "Drift behöver avbryta pågående arbete för att verifiera en aktivitet som redan ligger inom ett planerat patchfönster."
 },
 
 {
@@ -873,7 +974,10 @@ const events = [
     "Du fick rätt, men lösenordsfel kan också förekomma vid attacker. Lite mer kontext hade stärkt bedömningen.",
 
     escalateFeedback:
-    "Maria och ytterligare personal blir involverade trots att grundläggande triage pekar på ett vanligt lösenordsproblem."
+    "Maria och ytterligare personal blir involverade trots att grundläggande triage pekar på ett vanligt lösenordsproblem.",
+
+    businessImpact:
+    "Användaren störs i sitt ordinarie arbete trots att händelsen hade kunnat verifieras i triage."
 },
 
 {
@@ -906,7 +1010,10 @@ const events = [
     "Det var legitim backup, men att enbart titta på datamängd räcker inte för en säker bedömning.",
 
     escalateFeedback:
-    "Backup/drift behöver lägga tid på ett känt och dokumenterat dataflöde."
+    "Backup/drift behöver lägga tid på ett känt och dokumenterat dataflöde.",
+
+    businessImpact:
+    "Drift behöver kontrollera ett känt backupjobb trots att flödet redan matchar normal baseline."
 },
 
 {
@@ -976,7 +1083,7 @@ const events = [
     chain:true,
 
     closeFeedback:
-    "Du stänger nu ytterligare en signal kopplad till samma servicekonto trots att verksamheten inte känner igen aktiviteten.",
+    "Du stänger ytterligare en signal kopplad till samma servicekonto trots att verksamheten inte känner igen aktiviteten.",
 
     earlyCloseFeedback:
     "Flera tidigare observationer gör att detta bör analyseras i ett större sammanhang.",
@@ -1019,7 +1126,10 @@ const events = [
     "Det visade sig vara legitimt, men lateral rörelse och vanlig administration kan tekniskt se mycket lika ut.",
 
     escalateFeedback:
-    "IT-drift behöver avbryta arbete för att verifiera en aktivitet som redan passar normal administrationsbaseline."
+    "IT-drift behöver avbryta arbete för att verifiera en aktivitet som redan passar normal administrationsbaseline.",
+
+    businessImpact:
+    "IT-drift behöver lägga extra tid på att verifiera en aktivitet som matchar känd administration."
 },
 
 {
@@ -1189,22 +1299,24 @@ const events = [
    ========================================================== */
 
 const state = {
+
     currentIndex:-1,
+
     alerts:0,
     open:0,
     resolved:0,
     escalated:0,
     waiting:0,
+
     securityEvents:18421,
 
     cases:[],
-    contacted:[],
-    investigated:[],
 
     prematureClosures:0,
     benignEscalations:0,
     goodEscalations:0,
     reopened:0
+
 };
 
 
@@ -1214,8 +1326,11 @@ const state = {
 
 function startShift(){
 
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("startScreen")
+        .classList.add("hidden");
+
+    document.getElementById("app")
+        .classList.remove("hidden");
 
     nextEvent();
 }
@@ -1230,6 +1345,7 @@ function nextEvent(){
     state.currentIndex++;
 
     if(state.currentIndex >= events.length){
+
         showFinal();
         return;
     }
@@ -1243,28 +1359,35 @@ function nextEvent(){
         Math.floor(Math.random()*800)+180;
 
     state.cases[state.currentIndex] = {
+
         status:"OPEN",
+
         context:false,
+
         contacted:false,
+
         contactAnswered:false,
-        investigated:false,
+
+        feedback:null,
+
+        feedbackType:null,
+
+        businessImpact:null,
+
         decision:null
     };
 
-    document.getElementById("socClock").textContent =
-        e.time + ":00";
+    document.getElementById("socClock")
+        .textContent = e.time + ":00";
 
     if(e.boundary){
+
         document.getElementById("boundary")
             .classList.add("alerting");
     }
 
-    /*
-      När korrelationshändelser anländer kan tidigare
-      felaktigt stängda incidentrelaterade alerts återöppnas.
-    */
-
     if(e.correlation){
+
         reopenRelevantCases();
     }
 
@@ -1282,16 +1405,23 @@ function nextEvent(){
 
 function addFeedItem(e,index){
 
-    const feed = document.getElementById("feed");
+    const feed =
+        document.getElementById("feed");
 
-    const div = document.createElement("div");
+    const div =
+        document.createElement("div");
 
-    div.className = "feed-item";
-    div.id = "feed-"+index;
+    div.className =
+        "feed-item";
 
-    div.onclick = ()=>showEvent(index);
+    div.id =
+        "feed-"+index;
+
+    div.onclick =
+        ()=>showEvent(index);
 
     div.innerHTML = `
+
         <div class="feed-status status-open"
              id="feed-status-${index}">
              OPEN
@@ -1306,12 +1436,17 @@ function addFeedItem(e,index){
         </div>
 
         <div class="feed-source">
+
             ${e.source}
+
             //
+
             <span class="sev-${e.severity}">
                 ${e.severity.toUpperCase()}
             </span>
+
         </div>
+
     `;
 
     feed.prepend(div);
@@ -1321,28 +1456,44 @@ function addFeedItem(e,index){
 function updateFeedStatus(index){
 
     const el =
-        document.getElementById("feed-status-"+index);
+        document.getElementById(
+            "feed-status-"+index
+        );
 
     if(!el) return;
 
-    const status = state.cases[index].status;
+    const status =
+        state.cases[index].status;
 
-    el.className = "feed-status";
+    el.className =
+        "feed-status";
 
     if(status==="OPEN"){
-        el.classList.add("status-open");
+
+        el.classList.add(
+            "status-open"
+        );
     }
 
     if(status==="RESOLVED"){
-        el.classList.add("status-resolved");
+
+        el.classList.add(
+            "status-resolved"
+        );
     }
 
     if(status==="ESCALATED"){
-        el.classList.add("status-escalated");
+
+        el.classList.add(
+            "status-escalated"
+        );
     }
 
     if(status==="REOPENED"){
-        el.classList.add("status-reopened");
+
+        el.classList.add(
+            "status-reopened"
+        );
     }
 
     el.textContent = status;
@@ -1355,30 +1506,45 @@ function updateFeedStatus(index){
 
 function showEvent(index){
 
-    document.querySelectorAll(".feed-item")
-        .forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(
+        ".feed-item"
+    ).forEach(
+        x=>x.classList.remove("active")
+    );
 
     const fi =
-        document.getElementById("feed-"+index);
+        document.getElementById(
+            "feed-"+index
+        );
 
-    if(fi) fi.classList.add("active");
+    if(fi){
+        fi.classList.add("active");
+    }
 
-    const e = events[index];
-    const c = state.cases[index];
+    const e =
+        events[index];
+
+    const c =
+        state.cases[index];
 
     let contextHTML = "";
 
     if(c.context){
 
         contextHTML = `
-        <div class="context-box">
-            <h4>AVAILABLE CONTEXT</h4>
 
-            ${e.context.map(x=>
-                `<div>&gt; ${x}</div>`
-            ).join("")}
+        <div class="context-box">
+
+            <h4>TRIAGE CONTEXT</h4>
+
+            ${
+                e.context.map(
+                    x=>`<div>&gt; ${x}</div>`
+                ).join("")
+            }
 
         </div>
+
         `;
     }
 
@@ -1388,13 +1554,20 @@ function showEvent(index){
     if(c.contacted && !c.contactAnswered){
 
         contactHTML = `
+
         <div class="contact-box">
+
             <h4>CONTACT REQUEST</h4>
 
             Contacting ${e.contact.person}...
-            <br>
-            Status: WAITING FOR RESPONSE
+
+            <br><br>
+
+            Status:
+            <strong>WAITING FOR RESPONSE</strong>
+
         </div>
+
         `;
     }
 
@@ -1402,37 +1575,119 @@ function showEvent(index){
     if(c.contactAnswered){
 
         contactHTML = `
+
         <div class="contact-box">
+
             <h4>RESPONSE RECEIVED</h4>
 
-            <strong>${e.contact.person}:</strong>
+            <strong>
+            ${e.contact.person}:
+            </strong>
 
             <br><br>
 
             "${e.contact.text}"
+
+            <br><br>
+
+            <span class="small">
+            Informationen ligger kvar i ärendet
+            och kan användas i din fortsatta bedömning.
+            </span>
+
         </div>
+
         `;
     }
 
 
-    let controls = "";
+    let feedbackHTML = "";
 
-    if(c.status==="OPEN" || c.status==="REOPENED"){
+    if(c.feedback){
 
-        controls = `
+        feedbackHTML = `
+
+        <div class="feedback-box ${c.feedbackType}">
+
+            <h4>SOC FEEDBACK</h4>
+
+            ${c.feedback}
+
+        </div>
+
+        `;
+    }
+
+
+    let businessHTML = "";
+
+    if(c.businessImpact){
+
+        businessHTML = `
+
+        <div class="feedback-box feedback-blue">
+
+            <h4>VERKSAMHETSPÅVERKAN</h4>
+
+            ${c.businessImpact}
+
+            <br><br>
+
+            <span class="small">
+            Säkerhet behöver balanseras mot
+            påverkan på den verksamhet vi skyddar.
+            </span>
+
+        </div>
+
+        `;
+    }
+
+
+    let controlsHTML = "";
+
+    if(
+        c.status==="OPEN" ||
+        c.status==="REOPENED"
+    ){
+
+        controlsHTML = `
+
         <div class="controls">
 
-            <button class="action"
+            <button
+                class="action"
                 onclick="investigate(${index})">
-                UNDERSÖK VIDARE
+
+                ${
+                    c.context
+                    ? "✓ KONTEXT HÄMTAD"
+                    : "UNDERSÖK VIDARE"
+                }
+
             </button>
 
+
             ${
-                e.contact ?
-                `<button class="action"
+                e.contact
+                ?
+                `
+                <button
+                    class="action"
+                    ${c.contacted ? "disabled" : ""}
                     onclick="contactPerson(${index})">
-                    KONTAKTA PERSON
-                 </button>`
+
+                    ${
+                        c.contactAnswered
+                        ? "✓ SVAR MOTTAGET"
+                        :
+                        c.contacted
+                        ? "VÄNTAR PÅ SVAR..."
+                        : "KONTAKTA PERSON"
+                    }
+
+                </button>
+                `
                 :
                 ""
             }
@@ -1446,77 +1701,162 @@ function showEvent(index){
                 VAD GÖR DU MED ÄRENDET?
             </div>
 
-            <button class="choice close"
+            <button
+                class="choice close"
                 onclick="closeCase(${index})">
+
                 STÄNG SOM LEGITIMT
+
             </button>
 
-            <button class="choice escalate"
+
+            <button
+                class="choice escalate"
                 onclick="escalateCase(${index})">
+
                 ESKALERA
+
             </button>
 
         </div>
+
         `;
     }
 
 
+    let closedStatusHTML = "";
+
     if(c.status==="RESOLVED"){
 
-        controls = `
+        closedStatusHTML = `
+
         <div class="feedback-box feedback-good">
+
             <h4>CASE STATUS</h4>
+
             RESOLVED / CLOSED
+
         </div>
+
         `;
     }
 
 
     if(c.status==="ESCALATED"){
 
-        controls = `
+        closedStatusHTML = `
+
         <div class="feedback-box feedback-warn">
+
             <h4>CASE STATUS</h4>
+
             ESCALATED
+
         </div>
+
         `;
     }
 
 
-    document.getElementById("workspace").innerHTML = `
+    if(c.status==="REOPENED"){
+
+        closedStatusHTML = `
+
+        <div class="feedback-box feedback-danger">
+
+            <h4>CORRELATION UPDATE</h4>
+
+            Det här ärendet hade tidigare stängts,
+            men ny information gör att bedömningen
+            behöver göras om.
+
+        </div>
+
+        `;
+    }
+
+
+    let nextHTML = "";
+
+    if(
+        index===state.currentIndex &&
+        (
+            c.status==="RESOLVED" ||
+            c.status==="ESCALATED"
+        )
+    ){
+
+        nextHTML = `
+
+        <div class="next-area">
+
+            <button
+                class="primary"
+                style="margin-top:0"
+                onclick="nextEvent()">
+
+                NÄSTA ALERT &gt;
+
+            </button>
+
+        </div>
+
+        `;
+    }
+
+
+    document.getElementById(
+        "workspace"
+    ).innerHTML = `
 
         <div class="alert-header">
 
             <div>
 
                 <div class="small">
+
                     ${e.time}
                     //
                     ${e.source}
                     //
                     ${e.zone}
+
                 </div>
+
 
                 <div class="alert-title">
+
                     ${e.title}
+
                 </div>
 
+
                 <div class="alert-meta">
-                    Asset: ${e.asset}<br>
+
+                    Asset: ${e.asset}
+
+                    <br>
+
                     User: ${e.user}
+
                 </div>
 
             </div>
 
+
             <div class="badge sev-${e.severity}">
+
                 ${e.severity.toUpperCase()}
+
             </div>
 
         </div>
 
 
         <div class="explanation">
+
             ${e.explain}
+
         </div>
 
 
@@ -1524,7 +1864,15 @@ function showEvent(index){
 
         ${contactHTML}
 
-        ${controls}
+        ${closedStatusHTML}
+
+        ${feedbackHTML}
+
+        ${businessHTML}
+
+        ${controlsHTML}
+
+        ${nextHTML}
 
 
         <div class="status-panel">
@@ -1542,6 +1890,11 @@ function showEvent(index){
             Person contacted:
             ${c.contacted ? "YES" : "NO"}
 
+            <br>
+
+            Response received:
+            ${c.contactAnswered ? "YES" : "NO"}
+
         </div>
 
     `;
@@ -1554,26 +1907,19 @@ function showEvent(index){
 
 function investigate(index){
 
-    const c = state.cases[index];
+    const c =
+        state.cases[index];
 
-    if(c.status!=="OPEN" &&
-       c.status!=="REOPENED"){
+    if(
+        c.status!=="OPEN" &&
+        c.status!=="REOPENED"
+    ){
         return;
     }
 
     c.context = true;
-    c.investigated = true;
-
-    if(!state.investigated.includes(index)){
-        state.investigated.push(index);
-    }
 
     showEvent(index);
-
-    showToast(
-        "TRIAGE UPDATE",
-        "Mer teknisk och verksamhetsrelaterad kontext har hämtats."
-    );
 }
 
 
@@ -1583,19 +1929,28 @@ function investigate(index){
 
 function contactPerson(index){
 
-    const e = events[index];
-    const c = state.cases[index];
+    const e =
+        events[index];
 
-    if(!e.contact) return;
-    if(c.contacted) return;
+    const c =
+        state.cases[index];
+
+    if(!e.contact){
+        return;
+    }
+
+    if(c.contacted){
+        return;
+    }
 
     c.contacted = true;
 
-    state.contacted.push(index);
     state.waiting++;
 
     updateStats();
+
     showEvent(index);
+
 
     setTimeout(()=>{
 
@@ -1605,19 +1960,16 @@ function contactPerson(index){
 
         updateStats();
 
-        if(
-            state.cases[index].status==="OPEN" ||
-            state.cases[index].status==="REOPENED"
-        ){
-            showEvent(index);
-        }
+
+        showEvent(index);
+
 
         showToast(
             "NEW RESPONSE",
-            `${e.contact.person} har svarat på SOC:s fråga.`
+            `${e.contact.person} har svarat. Svaret finns kvar i ärendet.`
         );
 
-    },2200);
+    },2500);
 }
 
 
@@ -1627,181 +1979,203 @@ function contactPerson(index){
 
 function closeCase(index){
 
-    const e = events[index];
-    const c = state.cases[index];
+    const e =
+        events[index];
 
-    if(c.status!=="OPEN" &&
-       c.status!=="REOPENED"){
+    const c =
+        state.cases[index];
+
+    if(
+        c.status!=="OPEN" &&
+        c.status!=="REOPENED"
+    ){
         return;
     }
 
-    const didInvestigate =
-        c.context || c.contactAnswered;
 
-    c.status = "RESOLVED";
-    c.decision = "CLOSED";
+    const didInvestigate =
+        c.context ||
+        c.contactAnswered;
+
+
+    c.status =
+        "RESOLVED";
+
+    c.decision =
+        "CLOSED";
+
 
     state.open--;
+
     state.resolved++;
 
-    let feedbackClass = "feedback-good";
-    let feedbackText = e.closeFeedback;
 
+    if(e.truth==="benign"){
 
-    if(!didInvestigate){
+        if(didInvestigate){
+
+            c.feedback =
+                e.closeFeedback;
+
+            c.feedbackType =
+                "feedback-good";
+        }
+
+        else{
+
+            state.prematureClosures++;
+
+            c.feedback =
+                e.earlyCloseFeedback;
+
+            c.feedbackType =
+                "feedback-warn";
+        }
+
+    }
+
+    else{
 
         state.prematureClosures++;
 
-        feedbackClass = "feedback-warn";
-        feedbackText = e.earlyCloseFeedback;
+        c.feedback =
+            didInvestigate
+            ? e.closeFeedback
+            : e.earlyCloseFeedback;
+
+        c.feedbackType =
+            "feedback-danger";
     }
 
-
-    if(e.truth!=="benign"){
-
-        feedbackClass = "feedback-danger";
-
-        if(!didInvestigate){
-            feedbackText = e.earlyCloseFeedback;
-        }else{
-            feedbackText = e.closeFeedback;
-        }
-    }
 
     updateFeedStatus(index);
+
     updateStats();
 
-    document.getElementById("workspace").innerHTML += `
-
-        <div class="feedback-box ${feedbackClass}">
-
-            <h4>SOC FEEDBACK</h4>
-
-            ${feedbackText}
-
-        </div>
-
-    `;
-
-    if(index===state.currentIndex){
-
-        setTimeout(()=>{
-            nextEvent();
-        },2200);
-    }
+    showEvent(index);
 }
 
 
 /* ==========================================================
-   ESCALATE CASE
+   ESCALATE
    ========================================================== */
 
 function escalateCase(index){
 
-    const e = events[index];
-    const c = state.cases[index];
+    const e =
+        events[index];
 
-    if(c.status!=="OPEN" &&
-       c.status!=="REOPENED"){
+    const c =
+        state.cases[index];
+
+    if(
+        c.status!=="OPEN" &&
+        c.status!=="REOPENED"
+    ){
         return;
     }
 
-    c.status = "ESCALATED";
-    c.decision = "ESCALATED";
+
+    c.status =
+        "ESCALATED";
+
+    c.decision =
+        "ESCALATED";
+
 
     state.open--;
+
     state.escalated++;
 
-    let feedbackClass = "feedback-good";
-    let feedbackText = e.escalateFeedback;
+
+    c.feedback =
+        e.escalateFeedback;
 
 
     if(e.truth==="benign"){
 
         state.benignEscalations++;
 
-        feedbackClass = "feedback-warn";
+        c.feedbackType =
+            "feedback-warn";
+
+        c.businessImpact =
+            e.businessImpact ||
+            "Ytterligare personer behöver nu lägga tid på ärendet.";
     }
 
     else{
 
         state.goodEscalations++;
+
+        c.feedbackType =
+            "feedback-good";
     }
 
 
     updateFeedStatus(index);
+
     updateStats();
 
-
-    document.getElementById("workspace").innerHTML += `
-
-        <div class="feedback-box ${feedbackClass}">
-
-            <h4>ESCALATION FEEDBACK</h4>
-
-            ${feedbackText}
-
-        </div>
-
-    `;
-
-
-    if(e.truth==="benign"){
-
-        setTimeout(()=>{
-
-            showToast(
-                "BUSINESS IMPACT",
-                "Ytterligare personer behöver nu lägga tid på ett ärende som senare visar sig vara legitimt."
-            );
-
-        },1100);
-    }
-
-
-    if(index===state.currentIndex){
-
-        setTimeout(()=>{
-            nextEvent();
-        },2200);
-    }
+    showEvent(index);
 }
 
 
 /* ==========================================================
-   REOPEN CORRELATED CASES
+   REOPEN
    ========================================================== */
 
 function reopenRelevantCases(){
 
     let reopenedNow = 0;
 
-    events.forEach((e,index)=>{
 
-        if(index >= state.currentIndex) return;
+    events.forEach(
+        (e,index)=>{
 
-        const c = state.cases[index];
+            if(
+                index >= state.currentIndex
+            ){
+                return;
+            }
 
-        if(!c) return;
+            const c =
+                state.cases[index];
 
-        if(
-            e.chain &&
-            e.truth!=="benign" &&
-            c.status==="RESOLVED"
-        ){
+            if(!c){
+                return;
+            }
 
-            c.status = "REOPENED";
 
-            state.resolved--;
-            state.open++;
+            if(
+                e.chain &&
+                e.truth!=="benign" &&
+                c.status==="RESOLVED"
+            ){
 
-            state.reopened++;
-            reopenedNow++;
+                c.status =
+                    "REOPENED";
 
-            updateFeedStatus(index);
+                c.feedback =
+                    "Ny telemetri och nya samband förändrar kontexten. Ett tidigare stängt ärende behöver därför analyseras igen.";
+
+                c.feedbackType =
+                    "feedback-danger";
+
+
+                state.resolved--;
+
+                state.open++;
+
+                state.reopened++;
+
+                reopenedNow++;
+
+                updateFeedStatus(index);
+            }
+
         }
-
-    });
+    );
 
 
     if(reopenedNow>0){
@@ -1810,10 +2184,10 @@ function reopenRelevantCases(){
 
             showToast(
                 "CORRELATION UPDATE",
-                `${reopenedNow} tidigare stängt ärende har återöppnats eftersom ny information förändrar kontexten.`
+                `${reopenedNow} tidigare stängt ärende har återöppnats.`
             );
 
-        },500);
+        },600);
     }
 }
 
@@ -1824,24 +2198,42 @@ function reopenRelevantCases(){
 
 function updateStats(){
 
-    document.getElementById("alertCounter")
-        .textContent = state.alerts;
+    document.getElementById(
+        "alertCounter"
+    ).textContent =
+        state.alerts;
 
-    document.getElementById("openCounter")
-        .textContent = state.open;
 
-    document.getElementById("resolvedCounter")
-        .textContent = state.resolved;
+    document.getElementById(
+        "openCounter"
+    ).textContent =
+        state.open;
 
-    document.getElementById("escalatedCounter")
-        .textContent = state.escalated;
 
-    document.getElementById("waitingCounter")
-        .textContent = state.waiting;
+    document.getElementById(
+        "resolvedCounter"
+    ).textContent =
+        state.resolved;
 
-    document.getElementById("eventCounter")
-        .textContent =
-        state.securityEvents.toLocaleString("sv-SE");
+
+    document.getElementById(
+        "escalatedCounter"
+    ).textContent =
+        state.escalated;
+
+
+    document.getElementById(
+        "waitingCounter"
+    ).textContent =
+        state.waiting;
+
+
+    document.getElementById(
+        "eventCounter"
+    ).textContent =
+        state.securityEvents.toLocaleString(
+            "sv-SE"
+        );
 }
 
 
@@ -1854,23 +2246,32 @@ function showToast(title,text){
     const toast =
         document.getElementById("toast");
 
+
     toast.innerHTML = `
 
         <div class="toast-title">
+
             ${title}
+
         </div>
 
         ${text}
 
     `;
 
-    toast.classList.remove("hidden");
+
+    toast.classList.remove(
+        "hidden"
+    );
+
 
     setTimeout(()=>{
 
-        toast.classList.add("hidden");
+        toast.classList.add(
+            "hidden"
+        );
 
-    },4000);
+    },7000);
 }
 
 
@@ -1880,64 +2281,89 @@ function showToast(title,text){
 
 function showFinal(){
 
-    document.querySelector(".main-grid")
-        .classList.add("hidden");
+    document.querySelector(
+        ".main-grid"
+    ).classList.add(
+        "hidden"
+    );
+
 
     const final =
-        document.getElementById("finalScreen");
+        document.getElementById(
+            "finalScreen"
+        );
 
-    final.classList.remove("hidden");
+
+    final.classList.remove(
+        "hidden"
+    );
 
 
-    const timeline = events.map((e,index)=>{
+    const timeline =
+        events.map(
+            (e,index)=>{
 
-        const c = state.cases[index];
+                const c =
+                    state.cases[index];
 
-        const cls =
-            e.chain ?
-            "timeline-event incident"
-            :
-            "timeline-event";
 
-        return `
+                const cls =
+                    e.chain
+                    ? "timeline-event incident"
+                    : "timeline-event";
 
-        <div class="${cls}">
 
-            <strong>${e.time}</strong>
-            &nbsp;
-            ${e.title}
+                return `
 
-            <div class="small">
+                <div class="${cls}">
 
-                ${e.source}
-                //
-                ${e.asset}
-                //
-                ${c ? c.status : ""}
+                    <strong>
+                    ${e.time}
+                    </strong>
 
-            </div>
+                    &nbsp;
 
-        </div>
+                    ${e.title}
 
-        `;
+                    <div class="small">
 
-    }).join("");
+                        ${e.source}
+                        //
+                        ${e.asset}
+                        //
+                        ${c ? c.status : ""}
+
+                    </div>
+
+                </div>
+
+                `;
+            }
+        ).join("");
 
 
     let summary = "";
 
-    if(state.benignEscalations >= 3){
+
+    if(
+        state.benignEscalations >= 3
+    ){
 
         summary += `
 
         <div class="feedback-box feedback-warn">
 
-            <h4>VERKSAMHETSPÅVERKAN</h4>
+            <h4>
+            VERKSAMHETSPÅVERKAN
+            </h4>
 
             Du eskalerade flera legitima aktiviteter.
-            Det är säkert att vara försiktig, men varje
-            eskalering kräver tid från SOC, drift,
-            användare eller systemägare.
+
+            <br><br>
+
+            Säkerhetsmässig försiktighet är viktig,
+            men varje eskalering kräver tid från SOC,
+            drift, användare eller systemägare.
 
         </div>
 
@@ -1945,19 +2371,26 @@ function showFinal(){
     }
 
 
-    if(state.prematureClosures >= 3){
+    if(
+        state.prematureClosures >= 3
+    ){
 
         summary += `
 
         <div class="feedback-box feedback-warn">
 
-            <h4>TRIAGEKVALITET</h4>
+            <h4>
+            TRIAGEKVALITET
+            </h4>
 
-            Flera ärenden stängdes innan tillräcklig
-            kontext hämtades.
+            Flera ärenden stängdes innan
+            tillräcklig kontext samlades in.
 
-            Det fungerade ibland, men samma arbetssätt
-            kan göra att en viktig signal missas.
+            <br><br>
+
+            Det fungerade ibland,
+            men samma arbetssätt kan göra att
+            en viktig signal missas.
 
         </div>
 
@@ -1971,11 +2404,14 @@ function showFinal(){
 
         <div class="feedback-box feedback-danger">
 
-            <h4>NY INFORMATION ÄNDRADE BEDÖMNINGEN</h4>
+            <h4>
+            NY INFORMATION ÄNDRADE BEDÖMNINGEN
+            </h4>
 
-            ${state.reopened} tidigare stängda ärenden
-            behövde återöppnas när senare händelser
-            visade samband med dem.
+            ${state.reopened}
+            tidigare stängda ärenden
+            behövde återöppnas när senare
+            händelser visade samband med dem.
 
         </div>
 
@@ -1992,11 +2428,14 @@ function showFinal(){
 
         <div class="feedback-box feedback-good">
 
-            <h4>BALANSERAD TRIAGE</h4>
+            <h4>
+            BALANSERAD TRIAGE
+            </h4>
 
-            Du använde kontext för att minska onödiga
-            eskaleringar samtidigt som flera relevanta
-            avvikelser inte avfärdades.
+            Du använde kontext för att minska
+            onödiga eskaleringar samtidigt som
+            flera relevanta avvikelser inte
+            avfärdades.
 
         </div>
 
@@ -2009,50 +2448,81 @@ function showFinal(){
     <div class="final-card">
 
         <div class="kicker">
-            END OF SHIFT // CORRELATION REVIEW
+
+            END OF SHIFT
+            //
+            CORRELATION REVIEW
+
         </div>
 
+
         <h1 style="font-size:2.5rem">
+
             VAD HÄNDE EGENTLIGEN?
+
         </h1>
 
+
         <p>
+
             Under dagen såg du legitim drift,
             säkerhetslarm och ett antal aktiviteter
             som först senare kunde kopplas ihop.
+
         </p>
 
 
         <div class="score-grid">
 
             <div class="score-card">
-                <div class="small">RESOLVED</div>
-                <div class="stat-value">
-                    ${state.resolved}
-                </div>
-            </div>
 
-            <div class="score-card">
-                <div class="small">ESCALATED</div>
-                <div class="stat-value">
-                    ${state.escalated}
-                </div>
-            </div>
-
-            <div class="score-card">
-                <div class="small">REOPENED</div>
-                <div class="stat-value">
-                    ${state.reopened}
-                </div>
-            </div>
-
-            <div class="score-card">
                 <div class="small">
-                    BENIGN ESCALATIONS
+                RESOLVED
                 </div>
+
                 <div class="stat-value">
-                    ${state.benignEscalations}
+                ${state.resolved}
                 </div>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <div class="small">
+                ESCALATED
+                </div>
+
+                <div class="stat-value">
+                ${state.escalated}
+                </div>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <div class="small">
+                REOPENED
+                </div>
+
+                <div class="stat-value">
+                ${state.reopened}
+                </div>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <div class="small">
+                BENIGN ESCALATIONS
+                </div>
+
+                <div class="stat-value">
+                ${state.benignEscalations}
+                </div>
+
             </div>
 
         </div>
@@ -2062,7 +2532,9 @@ function showFinal(){
 
 
         <div class="timeline">
+
             ${timeline}
+
         </div>
 
 
@@ -2148,9 +2620,13 @@ function showFinal(){
             <br><br>
 
             "Var det du?"
+
             <br>
+
             "Känner du till ändringen?"
+
             <br>
+
             "Pågår det ett arbete här?"
 
             <br><br>
@@ -2160,7 +2636,8 @@ function showFinal(){
         </div>
 
 
-        <button class="primary"
+        <button
+            class="primary"
             onclick="location.reload()">
 
             KÖR ETT NYTT SOC-PASS
