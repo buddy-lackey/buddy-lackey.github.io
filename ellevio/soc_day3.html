@@ -9,17 +9,14 @@
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 
 <style>
-/* =========================================================
-   SOC DAY 3
-   LIGHT / ENERGY / SERVICE INSPIRED UI
-   ========================================================= */
-
 :root{
     --bg:#f7f5f1;
     --surface:#ffffff;
-    --surface-soft:#f2eee7;
-    --surface-green:#eaf5ef;
-    --surface-orange:#fff0df;
+    --soft:#f2eee7;
+    --green-soft:#eaf5ef;
+    --orange-soft:#fff0df;
+    --red-soft:#fae8e8;
+    --blue-soft:#eaf3fb;
 
     --text:#202425;
     --muted:#626a68;
@@ -27,53 +24,28 @@
 
     --orange:#f58220;
     --orange-dark:#d96600;
-
     --green:#14845c;
     --green-dark:#096b49;
-
     --blue:#3277c5;
-
     --yellow:#d89500;
     --red:#c84343;
     --purple:#7552a8;
 
     --radius:18px;
-
-    --shadow:
-        0 8px 30px rgba(33,37,36,.07);
+    --shadow:0 8px 30px rgba(33,37,36,.07);
 }
 
-*{
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:
-        Arial,
-        "Helvetica Neue",
-        Helvetica,
-        sans-serif;
+    font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
 
-button{
-    font:inherit;
-}
-
-.hidden{
-    display:none !important;
-}
-
-
-/* =========================================================
-   GENERAL
-   ========================================================= */
+button{font:inherit}
+.hidden{display:none!important}
 
 .wrapper{
     width:min(1380px,calc(100% - 40px));
@@ -88,12 +60,10 @@ button{
     font-weight:800;
 }
 
-h1,h2,h3{
-    line-height:1.05;
-}
+h1,h2,h3{line-height:1.05}
 
 h1{
-    font-size:clamp(3rem,7vw,6.4rem);
+    font-size:clamp(3rem,7vw,6.2rem);
     max-width:900px;
     margin:12px 0 24px;
     letter-spacing:-.055em;
@@ -104,9 +74,7 @@ h2{
     letter-spacing:-.035em;
 }
 
-p{
-    line-height:1.65;
-}
+p{line-height:1.65}
 
 
 /* =========================================================
@@ -125,13 +93,10 @@ p{
 }
 
 .start-brand{
-    font-size:1.05rem;
     font-weight:900;
 }
 
-.start-brand span{
-    color:var(--orange);
-}
+.start-brand span{color:var(--orange)}
 
 .start-nav-note{
     color:var(--muted);
@@ -139,64 +104,32 @@ p{
 }
 
 .hero{
-    padding:80px 0 110px;
+    padding:55px 0 100px;
 }
 
 .hero-grid{
     display:grid;
-    grid-template-columns:minmax(0,1.4fr) minmax(320px,.6fr);
-    gap:60px;
-    align-items:end;
-}
-
-.hero-copy{
-    max-width:880px;
+    grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);
+    gap:55px;
+    align-items:center;
 }
 
 .hero-copy p{
-    max-width:710px;
-    font-size:1.16rem;
+    max-width:720px;
+    font-size:1.15rem;
     color:var(--muted);
 }
 
 .hero-highlight{
-    margin-top:35px;
-    padding:24px;
-    background:var(--surface-green);
+    margin-top:30px;
+    padding:23px;
+    background:var(--green-soft);
     border-radius:var(--radius);
+    max-width:760px;
 }
 
 .hero-highlight strong{
     color:var(--green-dark);
-}
-
-.hero-side{
-    background:var(--orange);
-    color:white;
-    min-height:370px;
-    border-radius:32px;
-    padding:35px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    box-shadow:var(--shadow);
-}
-
-.hero-side-number{
-    font-size:5rem;
-    font-weight:900;
-    line-height:1;
-    opacity:.25;
-}
-
-.hero-side h3{
-    font-size:2rem;
-    margin:0 0 12px;
-}
-
-.hero-side p{
-    margin:0;
-    color:#fff4eb;
 }
 
 .primary{
@@ -211,36 +144,91 @@ p{
     background:var(--green);
     color:#fff;
 
-    padding:15px 24px;
+    padding:14px 23px;
 
     font-weight:800;
     cursor:pointer;
-
-    transition:
-        transform .15s ease,
-        background .15s ease;
 }
 
 .primary:hover{
     background:var(--green-dark);
-    transform:translateY(-1px);
 }
 
 .hero .primary{
-    margin-top:32px;
+    margin-top:30px;
 }
 
 
 /* =========================================================
-   APP HEADER
+   POWER GRID HERO
    ========================================================= */
 
-#app{
-    min-height:100vh;
+.power-visual{
+    position:relative;
+    min-height:450px;
+    border-radius:32px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+
+    background:
+        linear-gradient(
+            180deg,
+            #f6d3ab 0%,
+            #f1c690 31%,
+            #ded7c2 60%,
+            #a8b6a0 100%
+        );
 }
 
+.sun{
+    position:absolute;
+    width:160px;
+    height:160px;
+    border-radius:50%;
+    right:55px;
+    top:46px;
+    background:rgba(255,239,204,.68);
+    filter:blur(1px);
+}
+
+.power-svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+.power-overlay{
+    position:absolute;
+    left:30px;
+    right:30px;
+    bottom:28px;
+
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(8px);
+
+    border-radius:20px;
+    padding:22px;
+
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+
+.power-overlay strong{
+    font-size:1.18rem;
+}
+
+.power-overlay p{
+    margin:7px 0 0;
+    color:var(--muted);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .app-header{
-    background:var(--surface);
+    background:#fff;
     border-bottom:1px solid var(--border);
     position:sticky;
     top:0;
@@ -252,16 +240,10 @@ p{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:20px;
 }
 
-.app-brand{
-    font-weight:900;
-}
-
-.app-brand span{
-    color:var(--orange);
-}
+.app-brand{font-weight:900}
+.app-brand span{color:var(--orange)}
 
 .app-header-meta{
     display:flex;
@@ -275,14 +257,9 @@ p{
 }
 
 .clock{
-    min-width:88px;
-    text-align:center;
-
-    background:var(--surface-soft);
-    padding:9px 13px;
-
+    background:var(--soft);
     border-radius:999px;
-
+    padding:9px 14px;
     font-weight:800;
 }
 
@@ -297,10 +274,10 @@ p{
 
 .dashboard-intro{
     display:flex;
-    align-items:flex-end;
     justify-content:space-between;
+    align-items:flex-end;
     gap:30px;
-    margin-bottom:26px;
+    margin-bottom:25px;
 }
 
 .dashboard-intro h2{
@@ -309,8 +286,8 @@ p{
 
 .dashboard-intro p{
     max-width:580px;
-    margin:0;
     color:var(--muted);
+    margin:0;
 }
 
 
@@ -326,7 +303,7 @@ p{
 }
 
 .stat{
-    background:var(--surface);
+    background:#fff;
     border-radius:var(--radius);
     padding:18px;
     box-shadow:var(--shadow);
@@ -335,9 +312,9 @@ p{
 .stat-label{
     color:var(--muted);
     text-transform:uppercase;
-    letter-spacing:.07em;
-    font-size:.68rem;
+    font-size:.67rem;
     font-weight:800;
+    letter-spacing:.07em;
 }
 
 .stat-value{
@@ -346,21 +323,10 @@ p{
     font-weight:900;
 }
 
-.stat.open .stat-value{
-    color:var(--yellow);
-}
-
-.stat.resolved .stat-value{
-    color:var(--green);
-}
-
-.stat.escalated .stat-value{
-    color:var(--orange-dark);
-}
-
-.stat.waiting .stat-value{
-    color:var(--blue);
-}
+.stat.open .stat-value{color:var(--yellow)}
+.stat.resolved .stat-value{color:var(--green)}
+.stat.escalated .stat-value{color:var(--orange)}
+.stat.waiting .stat-value{color:var(--blue)}
 
 
 /* =========================================================
@@ -375,7 +341,7 @@ p{
 }
 
 .zone{
-    background:var(--surface);
+    background:#fff;
     border-radius:var(--radius);
     padding:18px 20px;
     box-shadow:var(--shadow);
@@ -409,41 +375,36 @@ p{
 
 .asset-tag{
     padding:6px 10px;
-    background:var(--surface-soft);
-    color:var(--muted);
     border-radius:999px;
+    background:var(--soft);
+    color:var(--muted);
     font-size:.7rem;
     font-weight:700;
 }
 
 .boundary{
-    background:#272b2b;
-    color:#fff;
     border-radius:var(--radius);
-
+    background:#292d2d;
+    color:#fff;
     display:flex;
     align-items:center;
     justify-content:center;
-
-    padding:18px;
-
     text-align:center;
+    padding:18px;
     font-size:.7rem;
-    font-weight:900;
     line-height:1.5;
-
+    font-weight:900;
     transition:.25s;
 }
 
 .boundary.alerting{
     background:var(--red);
-    box-shadow:
-        0 12px 30px rgba(200,67,67,.24);
+    box-shadow:0 12px 30px rgba(200,67,67,.24);
 }
 
 
 /* =========================================================
-   MAIN AREA
+   MAIN
    ========================================================= */
 
 .main-grid{
@@ -453,7 +414,7 @@ p{
 }
 
 .panel{
-    background:var(--surface);
+    background:#fff;
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     overflow:hidden;
@@ -469,7 +430,6 @@ p{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:20px;
 }
 
 .panel-heading h3{
@@ -484,11 +444,11 @@ p{
 
 
 /* =========================================================
-   ALERT FEED
+   FEED
    ========================================================= */
 
 .feed{
-    height:690px;
+    height:720px;
     overflow:auto;
 }
 
@@ -496,22 +456,15 @@ p{
     padding:17px 19px;
     border-bottom:1px solid var(--border);
     cursor:pointer;
-    transition:.12s;
 }
 
-.feed-item:hover{
-    background:#faf8f4;
-}
-
-.feed-item.active{
-    background:var(--surface-orange);
-}
+.feed-item:hover{background:#faf8f4}
+.feed-item.active{background:var(--orange-soft)}
 
 .feed-top{
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    gap:10px;
+    align-items:center;
 }
 
 .feed-time{
@@ -528,22 +481,19 @@ p{
 
 .feed-meta{
     display:flex;
-    flex-wrap:wrap;
     align-items:center;
+    flex-wrap:wrap;
     gap:6px;
-
-    font-size:.69rem;
     color:var(--muted);
+    font-size:.69rem;
 }
 
 .status-badge,
 .severity{
     display:inline-flex;
     align-items:center;
-
     border-radius:999px;
     padding:5px 8px;
-
     font-size:.6rem;
     font-weight:900;
 }
@@ -594,9 +544,8 @@ p{
    ========================================================= */
 
 .workspace{
-    min-height:690px;
+    min-height:720px;
     padding:28px;
-    min-width:0;
 }
 
 .alert-header{
@@ -628,25 +577,20 @@ p{
 }
 
 .meta-pill{
-    background:var(--surface-soft);
+    background:var(--soft);
     border-radius:999px;
     padding:7px 10px;
-
     color:var(--muted);
     font-size:.7rem;
 }
 
-.meta-pill strong{
-    color:var(--text);
-}
+.meta-pill strong{color:var(--text)}
 
 .explanation{
     margin-top:25px;
     padding:20px;
-
-    background:var(--surface-green);
+    background:var(--green-soft);
     border-radius:var(--radius);
-
     line-height:1.65;
 }
 
@@ -655,29 +599,26 @@ p{
     border:1px solid var(--border);
     border-radius:var(--radius);
     overflow:hidden;
-    background:#fff;
 }
 
 .section-title{
     padding:13px 17px;
-    background:var(--surface-soft);
-
-    font-size:.72rem;
+    background:var(--soft);
     text-transform:uppercase;
-    letter-spacing:.07em;
+    font-size:.72rem;
     font-weight:900;
+    letter-spacing:.07em;
 }
 
 .section-content{
     padding:18px;
     line-height:1.65;
-    min-width:0;
 }
 
 .context-line{
     display:flex;
-    gap:10px;
     align-items:flex-start;
+    gap:10px;
     margin:8px 0;
 }
 
@@ -693,40 +634,29 @@ p{
 
 .context-line span{
     min-width:0;
+    flex:1;
     overflow-wrap:break-word;
 }
 
-.feedback-good{
-    border-color:#add8bf;
-}
-
+.feedback-good{border-color:#add8bf}
 .feedback-good .section-title{
     background:#e8f5ed;
     color:var(--green-dark);
 }
 
-.feedback-warn{
-    border-color:#eed195;
-}
-
+.feedback-warn{border-color:#eed195}
 .feedback-warn .section-title{
     background:#fff3d8;
     color:#866000;
 }
 
-.feedback-danger{
-    border-color:#e6aaaa;
-}
-
+.feedback-danger{border-color:#e6aaaa}
 .feedback-danger .section-title{
     background:#fae5e5;
     color:#9f3030;
 }
 
-.feedback-blue{
-    border-color:#b6cee6;
-}
-
+.feedback-blue{border-color:#b6cee6}
 .feedback-blue .section-title{
     background:#eaf3fb;
     color:#295f95;
@@ -748,19 +678,11 @@ p{
     border:2px solid var(--text);
     background:#fff;
     color:var(--text);
-
     border-radius:999px;
-
     padding:10px 16px;
-
     font-weight:800;
     font-size:.78rem;
-
     cursor:pointer;
-}
-
-.action:hover{
-    background:var(--surface-soft);
 }
 
 .action:disabled{
@@ -776,25 +698,21 @@ p{
 
 .decision-title{
     margin-bottom:12px;
-
-    text-transform:uppercase;
     color:var(--muted);
-
+    text-transform:uppercase;
+    letter-spacing:.07em;
     font-size:.7rem;
     font-weight:900;
-    letter-spacing:.07em;
 }
 
 .choice{
     border:0;
     border-radius:999px;
     padding:12px 18px;
-
     font-size:.8rem;
     font-weight:900;
-
     cursor:pointer;
-    margin:0 7px 7px 0;
+    margin-right:7px;
 }
 
 .choice.close{
@@ -802,42 +720,29 @@ p{
     color:#fff;
 }
 
-.choice.close:hover{
-    background:var(--green-dark);
-}
-
 .choice.escalate{
     background:var(--orange);
     color:#fff;
-}
-
-.choice.escalate:hover{
-    background:var(--orange-dark);
 }
 
 .case-status{
     display:flex;
     flex-wrap:wrap;
     gap:9px;
-
     margin-top:24px;
     padding-top:18px;
-
     border-top:1px solid var(--border);
 }
 
 .case-status-item{
     padding:7px 10px;
     border-radius:999px;
-    background:var(--surface-soft);
-
+    background:var(--soft);
     color:var(--muted);
     font-size:.68rem;
 }
 
-.case-status-item strong{
-    color:var(--text);
-}
+.case-status-item strong{color:var(--text)}
 
 
 /* =========================================================
@@ -849,17 +754,12 @@ p{
     right:24px;
     bottom:24px;
     width:min(430px,calc(100vw - 48px));
-
     background:#252a29;
     color:#fff;
-
     border-radius:16px;
     padding:18px 20px;
-
+    box-shadow:0 14px 40px rgba(0,0,0,.25);
     z-index:100;
-
-    box-shadow:
-        0 14px 40px rgba(0,0,0,.25);
 }
 
 .toast-title{
@@ -877,44 +777,33 @@ p{
 
 
 /* =========================================================
-   FINAL SCREEN
+   FINAL
    ========================================================= */
 
-#finalScreen{
-    margin-top:10px;
-}
-
 .final-card{
+    margin-top:10px;
     background:#fff;
     border-radius:28px;
     padding:45px;
     box-shadow:var(--shadow);
 }
 
-.final-intro{
-    max-width:760px;
-    color:var(--muted);
-}
-
 .tier-card{
     margin:35px 0 12px;
-
-    min-height:330px;
-
+    min-height:300px;
     border-radius:28px;
     padding:38px;
+    text-align:center;
 
     display:flex;
     flex-direction:column;
     justify-content:center;
-
-    text-align:center;
 }
 
 .tier-label{
     font-size:.72rem;
-    letter-spacing:.12em;
     text-transform:uppercase;
+    letter-spacing:.12em;
     font-weight:900;
 }
 
@@ -922,7 +811,6 @@ p{
     font-size:clamp(2.6rem,7vw,5.5rem);
     font-weight:900;
     letter-spacing:-.055em;
-    margin-top:10px;
 }
 
 .tier-title{
@@ -938,9 +826,9 @@ p{
 }
 
 .reality-check{
+    text-align:center;
     color:var(--muted);
     font-size:.75rem;
-    text-align:center;
     margin-bottom:30px;
 }
 
@@ -951,7 +839,7 @@ p{
 }
 
 .score-card{
-    background:var(--surface-soft);
+    background:var(--soft);
     border-radius:var(--radius);
     padding:20px;
 }
@@ -961,7 +849,6 @@ p{
     text-transform:uppercase;
     font-size:.66rem;
     font-weight:900;
-    letter-spacing:.06em;
 }
 
 .score-value{
@@ -992,9 +879,7 @@ p{
     font-weight:800;
 }
 
-.timeline-title{
-    font-weight:800;
-}
+.timeline-title{font-weight:800}
 
 .timeline-meta,
 .timeline-status{
@@ -1002,9 +887,7 @@ p{
     font-size:.75rem;
 }
 
-.timeline-status{
-    text-align:right;
-}
+.timeline-status{text-align:right}
 
 .attack-chain{
     margin-top:30px;
@@ -1016,64 +899,58 @@ p{
 
 .attack-chain pre{
     white-space:pre-wrap;
-    overflow:auto;
     color:#ffc08b;
     line-height:1.45;
+    overflow:auto;
+}
+
+.impact-card{
+    margin-top:22px;
+    padding:28px;
+    border-radius:24px;
+    background:var(--red-soft);
+    border:1px solid #efc1c1;
+    line-height:1.7;
+}
+
+.impact-card strong{
+    color:var(--red);
 }
 
 .learning-card{
     margin-top:16px;
     padding:25px;
-
     border-radius:var(--radius);
-
-    background:var(--surface-green);
-
+    background:var(--green-soft);
     line-height:1.7;
 }
 
 .learning-card.orange{
-    background:var(--surface-orange);
+    background:var(--orange-soft);
 }
 
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE
    ========================================================= */
 
 @media(max-width:1050px){
 
-    .hero-grid{
-        grid-template-columns:1fr;
-    }
+    .hero-grid{grid-template-columns:1fr}
 
-    .hero-side{
-        min-height:260px;
-    }
+    .power-visual{min-height:350px}
 
-    .stats{
-        grid-template-columns:repeat(3,1fr);
-    }
+    .stats{grid-template-columns:repeat(3,1fr)}
 
-    .zones{
-        grid-template-columns:1fr;
-    }
+    .zones{grid-template-columns:1fr}
 
-    .boundary{
-        min-height:70px;
-    }
+    .boundary{min-height:70px}
 
-    .main-grid{
-        grid-template-columns:1fr;
-    }
+    .main-grid{grid-template-columns:1fr}
 
-    .feed{
-        height:330px;
-    }
+    .feed{height:330px}
 
-    .score-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+    .score-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 @media(max-width:650px){
@@ -1082,45 +959,25 @@ p{
         width:min(100% - 24px,1380px);
     }
 
-    .start-nav-note{
-        display:none;
-    }
+    .start-nav-note{display:none}
 
-    .hero{
-        padding:45px 0 70px;
-    }
+    .hero{padding:40px 0 65px}
 
-    h1{
-        font-size:3.25rem;
-    }
+    h1{font-size:3.2rem}
 
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
+    .power-visual{min-height:300px}
 
-    .dashboard-intro{
-        display:block;
-    }
+    .stats{grid-template-columns:repeat(2,1fr)}
 
-    .dashboard-intro p{
-        margin-top:15px;
-    }
+    .dashboard-intro{display:block}
 
-    .workspace{
-        padding:20px;
-    }
+    .dashboard-intro p{margin-top:15px}
 
-    .alert-header{
-        display:block;
-    }
+    .workspace{padding:20px}
 
-    .alert-header > .severity{
-        margin-top:14px;
-    }
+    .alert-header{display:block}
 
-    .score-grid{
-        grid-template-columns:1fr 1fr;
-    }
+    .score-grid{grid-template-columns:1fr 1fr}
 
     .timeline-event{
         grid-template-columns:55px 1fr;
@@ -1131,9 +988,7 @@ p{
         text-align:left;
     }
 
-    .final-card{
-        padding:24px;
-    }
+    .final-card{padding:24px}
 }
 </style>
 </head>
@@ -1148,99 +1003,178 @@ p{
 
 <div class="wrapper">
 
-    <div class="start-nav">
+<div class="start-nav">
 
-        <div class="start-brand">
-            SECURITY <span>OPERATIONS</span>
-        </div>
+    <div class="start-brand">
+        SECURITY <span>OPERATIONS</span>
+    </div>
 
-        <div class="start-nav-note">
-            Awareness simulation // IT + OT
-        </div>
+    <div class="start-nav-note">
+        Interaktiv simulering // IT + OT
+    </div>
+
+</div>
+
+
+<div class="hero">
+
+<div class="hero-grid">
+
+<div class="hero-copy">
+
+    <div class="eyebrow">
+        En interaktiv arbetsdag
+    </div>
+
+    <h1>
+        Hur svårt kan ett säkerhetslarm vara?
+    </h1>
+
+    <p>
+        Under en dag i SOC:en kommer mängder av signaler
+        från användare, servrar, identitetssystem,
+        nätverk och OT-miljö.
+    </p>
+
+    <p>
+        De flesta visar sig vara helt legitima.
+        Några få hör däremot ihop.
+    </p>
+
+
+    <div class="hero-highlight">
+
+        <strong>
+            Ett larm är inte samma sak som en incident.
+        </strong>
+
+        <br><br>
+
+        Din uppgift är att samla tillräckligt med
+        kontext för att kunna fatta ett rimligt beslut.
 
     </div>
 
 
-    <div class="hero">
+    <button class="primary" onclick="startShift()">
+        Starta SOC-passet →
+    </button>
 
-        <div class="hero-grid">
-
-            <div class="hero-copy">
-
-                <div class="eyebrow">
-                    En interaktiv arbetsdag
-                </div>
-
-                <h1>
-                    Hur svårt kan ett säkerhetslarm vara?
-                </h1>
-
-                <p>
-                    Under en dag i SOC:en kommer mängder av signaler
-                    från användare, servrar, identitetssystem,
-                    nätverk och OT-miljö.
-                </p>
-
-                <p>
-                    De flesta visar sig vara helt legitima.
-                    Några få hör däremot ihop.
-                </p>
+</div>
 
 
-                <div class="hero-highlight">
+<!-- KRAFTLEDNINGSGRAFIK -->
 
-                    <strong>
-                        Ett larm är inte samma sak som en incident.
-                    </strong>
+<div class="power-visual">
 
-                    <br><br>
+    <div class="sun"></div>
 
-                    Din uppgift är att samla tillräckligt med
-                    kontext för att kunna fatta ett rimligt beslut.
+    <svg
+        class="power-svg"
+        viewBox="0 0 800 600"
+        preserveAspectRatio="xMidYMid slice"
+        aria-label="Illustration av kraftledningar"
+        role="img">
 
-                </div>
+        <!-- landscape -->
+        <path
+            d="M0 390
+               C130 340 210 390 315 360
+               C440 320 525 365 800 315
+               L800 600 L0 600 Z"
+            fill="#7f9479"/>
+
+        <path
+            d="M0 440
+               C180 390 280 450 430 405
+               C590 360 650 410 800 370
+               L800 600 L0 600 Z"
+            fill="#61785f"/>
 
 
-                <button
-                    class="primary"
-                    onclick="startShift()">
+        <!-- wires -->
+        <g
+            fill="none"
+            stroke="#424947"
+            stroke-width="3"
+            opacity=".8">
 
-                    Starta SOC-passet
-                    <span>→</span>
+            <path d="M130 160 C300 185 470 172 650 125"/>
+            <path d="M128 178 C300 202 470 190 652 144"/>
+            <path d="M132 197 C300 218 470 207 648 162"/>
 
-                </button>
-
-            </div>
+        </g>
 
 
-            <div class="hero-side">
+        <!-- left tower -->
+        <g
+            stroke="#3c4544"
+            stroke-width="6"
+            fill="none"
+            stroke-linejoin="round">
 
-                <div class="hero-side-number">
-                    12
-                </div>
+            <path d="M130 150 L85 500"/>
+            <path d="M130 150 L175 500"/>
 
-                <div>
+            <path d="M106 330 L154 330"/>
+            <path d="M98 390 L162 390"/>
+            <path d="M90 450 L170 450"/>
 
-                    <h3>
-                        Larm väntar.
-                    </h3>
+            <path d="M106 330 L160 450"/>
+            <path d="M154 330 L100 450"/>
 
-                    <p>
-                        Vad är legitimt? Vad behöver undersökas?
-                        Och när behöver fler personer involveras?
-                    </p>
+            <path d="M88 190 L172 190"/>
+            <path d="M98 215 L162 215"/>
 
-                </div>
+        </g>
 
-            </div>
 
-        </div>
+        <!-- right tower -->
+        <g
+            stroke="#3c4544"
+            stroke-width="6"
+            fill="none"
+            stroke-linejoin="round">
+
+            <path d="M650 115 L600 480"/>
+            <path d="M650 115 L700 480"/>
+
+            <path d="M620 290 L680 290"/>
+            <path d="M612 355 L688 355"/>
+            <path d="M605 420 L695 420"/>
+
+            <path d="M620 290 L690 420"/>
+            <path d="M680 290 L610 420"/>
+
+            <path d="M605 155 L695 155"/>
+            <path d="M615 182 L685 182"/>
+
+        </g>
+
+    </svg>
+
+
+    <div class="power-overlay">
+
+        <strong>
+            Cybersecurity slutar inte vid datorn.
+        </strong>
+
+        <p>
+            I OT kan digitala händelser påverka
+            den fysiska processen.
+        </p>
 
     </div>
 
 </div>
 
+</div>
+</div>
+
+</div>
 </section>
+
 
 
 <!-- ======================================================
@@ -1248,7 +1182,6 @@ p{
      ====================================================== -->
 
 <section id="app" class="hidden">
-
 
 <header class="app-header">
 
@@ -1280,193 +1213,172 @@ p{
 
 <div class="dashboard-intro">
 
-    <div>
+<div>
 
-        <div class="eyebrow">
-            Security Operations Center
-        </div>
-
-        <h2>
-            Dagens larm
-        </h2>
-
+    <div class="eyebrow">
+        Security Operations Center
     </div>
 
-    <p>
-        Varje larm behöver bedömas utifrån det du vet just nu.
-        Ny information kan senare förändra helhetsbilden.
-    </p>
+    <h2>
+        Dagens larm
+    </h2>
 
 </div>
 
+<p>
+    Varje larm behöver bedömas utifrån det du vet just nu.
+    Ny information kan senare förändra helhetsbilden.
+</p>
 
-<!-- STATS -->
+</div>
+
 
 <div class="stats">
 
-    <div class="stat">
-        <div class="stat-label">Alerts</div>
-        <div class="stat-value" id="alertCounter">0</div>
-    </div>
+<div class="stat">
+    <div class="stat-label">Alerts</div>
+    <div class="stat-value" id="alertCounter">0</div>
+</div>
 
-    <div class="stat open">
-        <div class="stat-label">Open</div>
-        <div class="stat-value" id="openCounter">0</div>
-    </div>
+<div class="stat open">
+    <div class="stat-label">Open</div>
+    <div class="stat-value" id="openCounter">0</div>
+</div>
 
-    <div class="stat resolved">
-        <div class="stat-label">Resolved</div>
-        <div class="stat-value" id="resolvedCounter">0</div>
-    </div>
+<div class="stat resolved">
+    <div class="stat-label">Resolved</div>
+    <div class="stat-value" id="resolvedCounter">0</div>
+</div>
 
-    <div class="stat escalated">
-        <div class="stat-label">Escalated</div>
-        <div class="stat-value" id="escalatedCounter">0</div>
-    </div>
+<div class="stat escalated">
+    <div class="stat-label">Escalated</div>
+    <div class="stat-value" id="escalatedCounter">0</div>
+</div>
 
-    <div class="stat waiting">
-        <div class="stat-label">Waiting</div>
-        <div class="stat-value" id="waitingCounter">0</div>
-    </div>
+<div class="stat waiting">
+    <div class="stat-label">Waiting</div>
+    <div class="stat-value" id="waitingCounter">0</div>
+</div>
 
-    <div class="stat">
-        <div class="stat-label">Security events</div>
-        <div class="stat-value" id="eventCounter">18 421</div>
-    </div>
+<div class="stat">
+    <div class="stat-label">Security events</div>
+    <div class="stat-value" id="eventCounter">18 421</div>
+</div>
 
 </div>
 
-
-<!-- ZONES -->
 
 <div class="zones">
 
-    <div class="zone">
+<div class="zone">
 
-        <div class="zone-title">
-            <span class="zone-dot"></span>
-            IT-ZON
-        </div>
-
-        <div class="zone-assets">
-            <span class="asset-tag">Workstations</span>
-            <span class="asset-tag">Identity</span>
-            <span class="asset-tag">Windows</span>
-            <span class="asset-tag">Linux</span>
-            <span class="asset-tag">Servers</span>
-        </div>
-
+    <div class="zone-title">
+        <span class="zone-dot"></span>
+        IT-ZON
     </div>
 
-
-    <div class="boundary" id="boundary">
-        IT / OT<br>
-        ZONGRÄNS
-    </div>
-
-
-    <div class="zone ot">
-
-        <div class="zone-title">
-            <span class="zone-dot"></span>
-            OT-ZON
-        </div>
-
-        <div class="zone-assets">
-            <span class="asset-tag">OT IDS</span>
-            <span class="asset-tag">Jump host</span>
-            <span class="asset-tag">Engineering WS</span>
-            <span class="asset-tag">HMI</span>
-            <span class="asset-tag">RTU / PLC</span>
-        </div>
-
+    <div class="zone-assets">
+        <span class="asset-tag">Workstations</span>
+        <span class="asset-tag">Identity</span>
+        <span class="asset-tag">Windows</span>
+        <span class="asset-tag">Linux</span>
+        <span class="asset-tag">Servers</span>
     </div>
 
 </div>
 
 
-<!-- MAIN -->
+<div class="boundary" id="boundary">
+    IT / OT<br>
+    ZONGRÄNS
+</div>
+
+
+<div class="zone ot">
+
+    <div class="zone-title">
+        <span class="zone-dot"></span>
+        OT-ZON
+    </div>
+
+    <div class="zone-assets">
+        <span class="asset-tag">OT IDS</span>
+        <span class="asset-tag">Jump host</span>
+        <span class="asset-tag">Engineering WS</span>
+        <span class="asset-tag">HMI</span>
+        <span class="asset-tag">RTU</span>
+    </div>
+
+</div>
+
+</div>
+
+
 
 <div class="main-grid" id="mainGrid">
 
 
-    <section class="panel">
+<section class="panel">
 
-        <div class="panel-heading">
+<div class="panel-heading">
 
-            <div class="panel-heading-row">
+    <div class="panel-heading-row">
 
-                <h3>
-                    Alertkö
-                </h3>
+        <h3>Alertkö</h3>
 
-                <div
-                    class="panel-meta"
-                    id="queueMeta">
-                    0 alerts
-                </div>
-
-            </div>
-
+        <div class="panel-meta" id="queueMeta">
+            0 alerts
         </div>
 
-        <div
-            class="feed"
-            id="feed">
+    </div>
+
+</div>
+
+<div class="feed" id="feed"></div>
+
+</section>
+
+
+
+<section class="panel">
+
+<div class="panel-heading">
+
+    <div class="panel-heading-row">
+
+        <h3>Analys</h3>
+
+        <div class="panel-meta">
+            Triage workspace
         </div>
 
-    </section>
-
-
-    <section class="panel">
-
-        <div class="panel-heading">
-
-            <div class="panel-heading-row">
-
-                <h3>
-                    Analys
-                </h3>
-
-                <div class="panel-meta">
-                    Triage workspace
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="workspace"
-            id="workspace">
-
-            <p style="color:var(--muted)">
-                Väntar på säkerhetstelemetri...
-            </p>
-
-        </div>
-
-    </section>
+    </div>
 
 </div>
 
 
-<div
-    id="finalScreen"
-    class="hidden">
+<div class="workspace" id="workspace">
+
+    <p style="color:var(--muted)">
+        Väntar på säkerhetstelemetri...
+    </p>
+
 </div>
 
+</section>
+
+</div>
+
+
+<div id="finalScreen" class="hidden"></div>
 
 </main>
 
 </section>
 
 
-<div
-    id="toast"
-    class="toast hidden">
-</div>
+<div id="toast" class="toast hidden"></div>
+
 
 
 <script>
@@ -1478,487 +1390,498 @@ p{
 const events = [
 
 {
-    time:"08:12",
-    source:"EDR",
-    zone:"IT",
-    severity:"high",
-    title:"Encoded PowerShell detected",
-    asset:"IT-WS-142",
-    user:"alex.n",
+time:"08:12",
+source:"EDR",
+zone:"IT",
+severity:"high",
+title:"Encoded PowerShell detected",
+asset:"IT-WS-142",
+user:"alex.n",
 
-    explain:
-        "EDR har upptäckt PowerShell där delar av kommandot är encoded. " +
-        "Det förekommer både i legitima verktyg och vid attacker.",
+explain:
+"EDR har upptäckt PowerShell där delar av kommandot är encoded. Det förekommer både i legitima verktyg och vid attacker.",
 
-    context:[
-        "Asset: vanlig IT-workstation",
-        "User role: utveckling / automation",
-        "Parent process: AI development tool",
-        "Destination: godkänd molntjänst",
-        "Liknande aktivitet har observerats tidigare"
-    ],
+context:[
+"Asset: vanlig IT-workstation",
+"User role: utveckling / automation",
+"Parent process: AI development tool",
+"Destination: godkänd molntjänst",
+"Liknande aktivitet har observerats tidigare"
+],
 
-    contact:{
-        person:"Alex",
-        text:
-            "Ja. Jag använder en AI-agent som automatiserar ett jobb. Jag känner igen aktiviteten."
-    },
+contact:{
+person:"Alex",
+text:"Ja. Jag använder en AI-agent som automatiserar ett jobb. Jag känner igen aktiviteten."
+},
 
-    truth:"benign",
+truth:"benign",
 
-    closeFeedback:
-        "Aktiviteten stämmer med användarens arbete och övrig telemetri.",
+closeFeedback:
+"Aktiviteten stämmer med användarens arbete och övrig telemetri.",
 
-    earlyCloseFeedback:
-        "Den här gången var aktiviteten legitim, men ärendet stängdes innan mer kontext samlades in.",
+earlyCloseFeedback:
+"Den här gången var aktiviteten legitim, men ärendet stängdes innan mer kontext samlades in.",
 
-    escalateFeedback:
-        "Aktiviteten var legitim. Eskaleringen skapar mer arbete än nödvändigt.",
+escalateFeedback:
+"Aktiviteten var legitim. Eskaleringen skapar mer arbete än nödvändigt.",
 
-    businessImpact:
-        "Användaren och ytterligare personal behöver verifiera en legitim aktivitet."
+businessImpact:
+"Användaren och ytterligare personal behöver verifiera en legitim aktivitet."
 },
 
 
 {
-    time:"08:46",
-    source:"IDENTITY",
-    zone:"IT",
-    severity:"medium",
-    title:"User added to privileged group",
-    asset:"IDENTITY",
-    user:"sara.l",
+time:"08:46",
+source:"IDENTITY",
+zone:"IT",
+severity:"medium",
+title:"User added to privileged group",
+asset:"IDENTITY",
+user:"sara.l",
 
-    explain:
-        "Ett konto har fått utökade rättigheter. Behörighetsförändringar behöver ofta verifieras.",
+explain:
+"Ett konto har fått utökade rättigheter. Behörighetsförändringar behöver ofta verifieras.",
 
-    context:[
-        "Utförd av IAM-ADMIN-02",
-        "Change ticket: CHG-4821",
-        "Godkänd av systemägare",
-        "Behörigheten är tidsbegränsad"
-    ],
+context:[
+"Utförd av IAM-ADMIN-02",
+"Change ticket: CHG-4821",
+"Godkänd av systemägare",
+"Behörigheten är tidsbegränsad"
+],
 
-    contact:{
-        person:"IAM-administratören",
-        text:
-            "Ja, ändringen är beställd och dokumenterad i CHG-4821."
-    },
+contact:{
+person:"IAM-administratören",
+text:"Ja, ändringen är beställd och dokumenterad i CHG-4821."
+},
 
-    truth:"benign",
+truth:"benign",
 
-    closeFeedback:
-        "Ändringen är dokumenterad, godkänd och förväntad.",
-
-    earlyCloseFeedback:
-        "Det blev rätt den här gången, men privilegieändringar bör normalt verifieras.",
-
-    escalateFeedback:
-        "Ärendet var redan dokumenterat och kunde ha avslutats i normal triage.",
-
-    businessImpact:
-        "IAM och systemägare behöver lägga tid på att verifiera en redan dokumenterad förändring."
+closeFeedback:"Ändringen är dokumenterad, godkänd och förväntad.",
+earlyCloseFeedback:"Det blev rätt den här gången, men privilegieändringar bör normalt verifieras.",
+escalateFeedback:"Ärendet var redan dokumenterat och kunde ha avslutats i normal triage.",
+businessImpact:"IAM och systemägare behöver verifiera en redan dokumenterad förändring."
 },
 
 
 {
-    time:"09:27",
-    source:"LINUX",
-    zone:"IT",
-    severity:"medium",
-    title:"Privileged command execution",
-    asset:"LIN-SRV-07",
-    user:"linux.admin",
+time:"09:27",
+source:"LINUX",
+zone:"IT",
+severity:"medium",
+title:"Privileged command execution",
+asset:"LIN-SRV-07",
+user:"linux.admin",
 
-    explain:
-        "Ett privilegierat kommando har körts på en Linux-server.",
+explain:
+"Ett privilegierat kommando har körts på en Linux-server.",
 
-    context:[
-        "Kommando exekverat via sudo",
-        "Källa: administrationsnät",
-        "Planerat patchfönster: 09:00–10:00",
-        "Aktiviteten matchar normal serveradministration"
-    ],
+context:[
+"Kommando exekverat via sudo",
+"Källa: administrationsnät",
+"Planerat patchfönster: 09:00–10:00",
+"Aktiviteten matchar normal serveradministration"
+],
 
-    contact:{
-        person:"Linux-administratören",
-        text:
-            "Bekräftat. Jag patchar servern just nu."
-    },
+contact:{
+person:"Linux-administratören",
+text:"Bekräftat. Jag patchar servern just nu."
+},
 
-    truth:"benign",
+truth:"benign",
 
-    closeFeedback:
-        "Aktiviteten matchar ett känt patchfönster.",
-
-    earlyCloseFeedback:
-        "Bedömningen blev korrekt, men underhållet verifierades inte först.",
-
-    escalateFeedback:
-        "Drift involveras i ett ärende som kunde ha avslutats under triage.",
-
-    businessImpact:
-        "Drift behöver verifiera ett redan planerat underhåll."
+closeFeedback:"Aktiviteten matchar ett känt patchfönster.",
+earlyCloseFeedback:"Bedömningen blev korrekt, men underhållet verifierades inte först.",
+escalateFeedback:"Drift involveras i ett ärende som kunde ha avslutats under triage.",
+businessImpact:"Drift behöver verifiera ett redan planerat underhåll."
 },
 
 
 {
-    time:"10:03",
-    source:"AUTH",
-    zone:"IT",
-    severity:"low",
-    title:"Repeated failed authentication",
-    asset:"IT-WS-066",
-    user:"maria.k",
+time:"10:03",
+source:"AUTH",
+zone:"IT",
+severity:"low",
+title:"Repeated failed authentication",
+asset:"IT-WS-066",
+user:"maria.k",
 
-    explain:
-        "Flera misslyckade autentiseringar kan bero på fel lösenord, felkonfiguration eller obehörig åtkomst.",
+explain:
+"Flera misslyckade autentiseringar kan bero på fel lösenord, felkonfiguration eller obehörig åtkomst.",
 
-    context:[
-        "6 misslyckade försök",
-        "Samma klient och användare",
-        "Lyckad autentisering två minuter senare",
-        "Ingen annan avvikande aktivitet"
-    ],
+context:[
+"6 misslyckade försök",
+"Samma klient och användare",
+"Lyckad autentisering två minuter senare",
+"Ingen annan avvikande aktivitet"
+],
 
-    contact:{
-        person:"Maria",
-        text:
-            "Jag bytte lösenord i morse men Outlook använde fortfarande det gamla."
-    },
+contact:{
+person:"Maria",
+text:"Jag bytte lösenord i morse men Outlook använde fortfarande det gamla."
+},
 
-    truth:"benign",
+truth:"benign",
 
-    closeFeedback:
-        "Händelsen har en rimlig användarförklaring och inga andra indikatorer har identifierats.",
+closeFeedback:"Händelsen har en rimlig användarförklaring.",
+earlyCloseFeedback:"Du fick rätt, men lösenordsfel kan även förekomma vid attacker.",
+escalateFeedback:"Grundläggande triage pekar på ett vanligt lösenordsproblem.",
+businessImpact:"Användaren störs trots att ärendet kunde verifieras genom vanlig triage."
+},
 
-    earlyCloseFeedback:
-        "Du fick rätt, men lösenordsfel kan även förekomma vid attacker.",
 
-    escalateFeedback:
-        "Grundläggande triage pekar på ett vanligt lösenordsproblem.",
+/* ROBIN PÅ OT */
 
-    businessImpact:
-        "Användaren störs trots att ärendet kunde verifieras genom vanlig triage."
+{
+time:"10:28",
+source:"IDENTITY / OT",
+zone:"OT",
+severity:"low",
+title:"User active outside normal working hours",
+asset:"OT-ENG-WS-03",
+user:"robin.ot",
+
+explain:
+"En användare arbetar i OT-miljön utanför normal arbetstid. Det kan vara legitimt, men samma mönster kan också förekomma vid obehörig aktivitet.",
+
+context:[
+"Användare: robin.ot",
+"Roll: OT-tekniker",
+"System: OT-ENG-WS-03",
+"Arbete med projekteringsverktyg och dokumentation",
+"Ingen ovanlig nätverkstrafik",
+"Inga oväntade privilegieändringar"
+],
+
+contact:{
+person:"Robin på OT",
+text:"Ja, det är jag. Jag jobbar utanför normal arbetstid med förberedelser inför ett planerat underhåll."
+},
+
+truth:"benign",
+
+closeFeedback:
+"Robin bekräftar aktiviteten och övrig OT-telemetri visar inget avvikande.",
+
+earlyCloseFeedback:
+"Det var legitimt arbete, men aktivitet utanför normal arbetstid behöver ofta verksamhetskontext.",
+
+escalateFeedback:
+"Robin arbetar legitimt. Eskaleringen skapar onödig påverkan för OT-driften.",
+
+businessImpact:
+"OT-personal behöver hantera en eskalering trots att aktiviteten är legitim."
 },
 
 
 {
-    time:"10:41",
-    source:"NETWORK",
-    zone:"IT",
-    severity:"medium",
-    title:"Large internal data transfer",
-    asset:"BACKUP-01",
-    user:"system",
+time:"10:41",
+source:"NETWORK",
+zone:"IT",
+severity:"medium",
+title:"Large internal data transfer",
+asset:"BACKUP-01",
+user:"system",
 
-    explain:
-        "En stor mängd data flyttas mellan två servrar. Datamängden säger inte varför överföringen sker.",
+explain:
+"En stor mängd data flyttas mellan två servrar. Datamängden säger inte varför överföringen sker.",
 
-    context:[
-        "Källa: FILE-03",
-        "Destination: BACKUP-01",
-        "Samma flöde observeras varje vardag",
-        "Backupjobb registrerat i driftplan"
-    ],
+context:[
+"Källa: FILE-03",
+"Destination: BACKUP-01",
+"Samma flöde observeras varje vardag",
+"Backupjobb registrerat i driftplan"
+],
 
-    contact:null,
+contact:null,
+truth:"benign",
 
-    truth:"benign",
-
-    closeFeedback:
-        "Trafiken matchar känd backupaktivitet och normal baseline.",
-
-    earlyCloseFeedback:
-        "Det var legitim backup, men datamängden ensam räcker inte för bedömning.",
-
-    escalateFeedback:
-        "Drift behöver lägga tid på ett känt och dokumenterat dataflöde.",
-
-    businessImpact:
-        "Drift behöver verifiera ett dokumenterat backupjobb."
+closeFeedback:"Trafiken matchar känd backupaktivitet och normal baseline.",
+earlyCloseFeedback:"Det var legitim backup, men datamängden ensam räcker inte för bedömning.",
+escalateFeedback:"Drift behöver lägga tid på ett känt dataflöde.",
+businessImpact:"Drift behöver verifiera ett dokumenterat backupjobb."
 },
 
 
 {
-    time:"11:18",
-    source:"IDENTITY",
-    zone:"IT",
-    severity:"high",
-    title:"Service account authentication anomaly",
-    asset:"APP-SRV-12",
-    user:"vendor.service",
+time:"11:18",
+source:"IDENTITY",
+zone:"IT",
+severity:"high",
+title:"Service account authentication anomaly",
+asset:"APP-SRV-12",
+user:"vendor.service",
 
-    explain:
-        "Ett servicekonto används på ett sätt som avviker från dess normala beteende.",
+explain:
+"Ett servicekonto används på ett sätt som avviker från dess normala beteende.",
 
-    context:[
-        "Kontot används normalt av extern servicefunktion",
-        "Ingen aktiv förändring hittas",
-        "Ny källmaskin",
-        "Kontot använder normalt en definierad åtkomstväg"
-    ],
+context:[
+"Kontot används normalt av extern servicefunktion",
+"Ingen aktiv förändring hittas",
+"Ny källmaskin",
+"Kontot använder normalt en definierad åtkomstväg"
+],
 
-    contact:{
-        person:"Serviceansvarig",
-        text:
-            "Jag känner inte till något arbete idag. Leverantören ska inte vara inne just nu."
-    },
+contact:{
+person:"Serviceansvarig",
+text:"Jag känner inte till något arbete idag. Leverantören ska inte vara inne just nu."
+},
 
-    truth:"suspicious",
-    chain:true,
+truth:"suspicious",
+chain:true,
 
-    closeFeedback:
-        "Aktiviteten saknar både change och verksamhetsförklaring.",
-
-    earlyCloseFeedback:
-        "Ett avvikande servicekonto stängdes utan att orsaken verifierades.",
-
-    escalateFeedback:
-        "Rimlig eskalering. Kontoaktiviteten saknar en känd legitim förklaring."
+closeFeedback:"Aktiviteten saknar både change och verksamhetsförklaring.",
+earlyCloseFeedback:"Ett avvikande servicekonto stängdes utan att orsaken verifierades.",
+escalateFeedback:"Rimlig eskalering. Kontoaktiviteten saknar en känd legitim förklaring."
 },
 
 
 {
-    time:"11:52",
-    source:"EDR",
-    zone:"IT",
-    severity:"medium",
-    title:"Command execution from service context",
-    asset:"APP-SRV-12",
-    user:"vendor.service",
+time:"11:52",
+source:"EDR",
+zone:"IT",
+severity:"medium",
+title:"Command execution from service context",
+asset:"APP-SRV-12",
+user:"vendor.service",
 
-    explain:
-        "Ett kommando har körts under samma servicekonto som tidigare gav ett autentiseringslarm.",
+explain:
+"Ett kommando har körts under samma servicekonto som tidigare gav ett autentiseringslarm.",
 
-    context:[
-        "Samma konto som larmet 11:18",
-        "Ny processkedja",
-        "Ingen change ticket",
-        "Kommandot är inte i sig bevis på skadlig aktivitet"
-    ],
+context:[
+"Samma konto som larmet 11:18",
+"Ny processkedja",
+"Ingen change ticket",
+"Kommandot är inte i sig bevis på skadlig aktivitet"
+],
 
-    contact:{
-        person:"Serviceansvarig",
-        text:
-            "Vi har fortfarande inte identifierat någon godkänd aktivitet för kontot."
-    },
+contact:{
+person:"Serviceansvarig",
+text:"Vi har fortfarande inte identifierat någon godkänd aktivitet för kontot."
+},
 
-    truth:"suspicious",
-    chain:true,
+truth:"suspicious",
+chain:true,
 
-    closeFeedback:
-        "Ytterligare en signal kopplad till samma servicekonto stängdes trots saknad förklaring.",
-
-    earlyCloseFeedback:
-        "Flera observationer gör att ärendet bör analyseras i ett större sammanhang.",
-
-    escalateFeedback:
-        "Rimligt. Flera datapunkter börjar peka mot samma konto."
+closeFeedback:"Ytterligare en signal kopplad till samma servicekonto stängdes trots saknad förklaring.",
+earlyCloseFeedback:"Flera observationer gör att ärendet bör analyseras i ett större sammanhang.",
+escalateFeedback:"Rimligt. Flera datapunkter börjar peka mot samma konto."
 },
 
 
 {
-    time:"12:34",
-    source:"WINDOWS",
-    zone:"IT",
-    severity:"medium",
-    title:"Administrative share access",
-    asset:"IT-SRV-21",
-    user:"it.admin",
+time:"12:34",
+source:"WINDOWS",
+zone:"IT",
+severity:"medium",
+title:"Administrative share access",
+asset:"IT-SRV-21",
+user:"it.admin",
 
-    explain:
-        "Administrativ Windows-åtkomst är vanlig vid drift, men samma teknik kan användas för lateral förflyttning.",
+explain:
+"Administrativ Windows-åtkomst är vanlig vid drift, men samma teknik kan användas för lateral förflyttning.",
 
-    context:[
-        "Källa: känd administrationsserver",
-        "Användare: IT-administratör",
-        "Matchar normalt driftmönster",
-        "Ingen koppling till servicekontot"
-    ],
+context:[
+"Källa: känd administrationsserver",
+"Användare: IT-administratör",
+"Matchar normalt driftmönster",
+"Ingen koppling till servicekontot"
+],
 
-    contact:{
-        person:"IT-administratören",
-        text:
-            "Ja, det var jag. Jag installerade en uppdatering på IT-SRV-21."
-    },
+contact:{
+person:"IT-administratören",
+text:"Ja, det var jag. Jag installerade en uppdatering på IT-SRV-21."
+},
 
-    truth:"benign",
+truth:"benign",
 
-    closeFeedback:
-        "Här stöder kontexten legitim administration.",
-
-    earlyCloseFeedback:
-        "Det var legitimt, men administration och lateral rörelse kan tekniskt likna varandra.",
-
-    escalateFeedback:
-        "IT-drift behöver verifiera aktivitet som redan passar normal baseline.",
-
-    businessImpact:
-        "IT-drift behöver lägga extra tid på att verifiera känd administration."
+closeFeedback:"Här stöder kontexten legitim administration.",
+earlyCloseFeedback:"Det var legitimt, men administration och lateral rörelse kan tekniskt likna varandra.",
+escalateFeedback:"IT-drift behöver verifiera aktivitet som redan passar normal baseline.",
+businessImpact:"IT-drift behöver verifiera känd administration."
 },
 
 
 {
-    time:"13:16",
-    source:"NETWORK",
-    zone:"BOUNDARY",
-    severity:"critical",
-    title:"Unexpected IT → OT connection attempt",
-    asset:"IT-WS-233",
-    user:"vendor.service",
+time:"13:16",
+source:"NETWORK",
+zone:"BOUNDARY",
+severity:"critical",
+title:"Unexpected IT → OT connection attempt",
+asset:"IT-WS-233",
+user:"vendor.service",
 
-    explain:
-        "En IT-tillgång försöker nå en kontrollerad åtkomstpunkt mot OT.",
+explain:
+"En IT-tillgång försöker nå en kontrollerad åtkomstpunkt mot OT.",
 
-    context:[
-        "Källa: IT-WS-233",
-        "Konto: vendor.service",
-        "Destination: OT-JUMP-02",
-        "Ingen aktiv serviceaktivitet",
-        "Samma konto förekommer i tidigare larm"
-    ],
+context:[
+"Källa: IT-WS-233",
+"Konto: vendor.service",
+"Destination: OT-JUMP-02",
+"Ingen aktiv serviceaktivitet",
+"Samma konto förekommer i tidigare larm"
+],
 
-    contact:{
-        person:"Serviceansvarig",
-        text:
-            "Det här stämmer inte med något godkänt arbete."
-    },
+contact:{
+person:"Serviceansvarig",
+text:"Det här stämmer inte med något godkänt arbete."
+},
 
-    truth:"malicious",
-    chain:true,
-    boundary:true,
-    correlation:true,
+truth:"malicious",
+chain:true,
+boundary:true,
+correlation:true,
 
-    closeFeedback:
-        "En IT→OT-zonövergång med ett tidigare avvikande konto kräver vidare hantering.",
-
-    earlyCloseFeedback:
-        "Zonmodellen gör den här händelsen särskilt viktig.",
-
-    escalateFeedback:
-        "Rimlig eskalering. Konto, tidigare händelser och zonövergång innebär förhöjd risk."
+closeFeedback:"En IT→OT-zonövergång med ett tidigare avvikande konto kräver vidare hantering.",
+earlyCloseFeedback:"Zonmodellen gör den här händelsen särskilt viktig.",
+escalateFeedback:"Rimlig eskalering. Konto, tidigare händelser och zonövergång innebär förhöjd risk."
 },
 
 
 {
-    time:"13:24",
-    observed:"13:19",
-    source:"OT IDS",
-    zone:"OT",
-    severity:"high",
-    title:"Delayed OT IDS telemetry",
-    asset:"OT-JUMP-02",
-    user:"n/a",
+time:"13:24",
+observed:"13:19",
+source:"OT IDS",
+zone:"OT",
+severity:"high",
+title:"Delayed OT IDS telemetry",
+asset:"OT-JUMP-02",
+user:"n/a",
 
-    explain:
-        "OT-IDS visar en avvikelse. Telemetrin observerades innan den nådde SOC.",
+explain:
+"OT-IDS visar en avvikelse. Telemetrin observerades innan den nådde SOC.",
 
-    context:[
-        "Observerad: 13:19",
-        "Mottagen i SOC: 13:24",
-        "Källa: OT-JUMP-02",
-        "Destination: engineering workstation",
-        "Kommunikationsmönstret avviker från baseline"
-    ],
+context:[
+"Observerad: 13:19",
+"Mottagen i SOC: 13:24",
+"Källa: OT-JUMP-02",
+"Destination: engineering workstation",
+"Kommunikationsmönstret avviker från baseline"
+],
 
-    contact:{
-        person:"OT-drift",
-        text:
-            "Vi känner inte till något planerat arbete mellan systemen."
-    },
+contact:{
+person:"OT-drift",
+text:"Vi känner inte till något planerat arbete mellan systemen."
+},
 
-    truth:"malicious",
-    chain:true,
-    correlation:true,
+truth:"malicious",
+chain:true,
+correlation:true,
 
-    closeFeedback:
-        "OT-telemetrin förstärker tidigare misstanke.",
-
-    earlyCloseFeedback:
-        "OT-IDS bör analyseras tillsammans med tidigare IT-indikatorer.",
-
-    escalateFeedback:
-        "Rimlig eskalering. IT- och OT-observationer börjar bilda en gemensam kedja."
+closeFeedback:"OT-telemetrin förstärker tidigare misstanke.",
+earlyCloseFeedback:"OT-IDS bör analyseras tillsammans med tidigare IT-indikatorer.",
+escalateFeedback:"Rimlig eskalering. IT- och OT-observationer börjar bilda en gemensam kedja."
 },
 
 
 {
-    time:"13:31",
-    source:"OT IDS",
-    zone:"OT",
-    severity:"high",
-    title:"Unusual engineering workstation activity",
-    asset:"ENG-WS-04",
-    user:"service.tech",
+time:"13:31",
+source:"OT IDS",
+zone:"OT",
+severity:"high",
+title:"Unusual engineering workstation activity",
+asset:"ENG-WS-04",
+user:"service.tech",
 
-    explain:
-        "Engineering workstation visar aktivitet som avviker från OT-driftens normala arbetssätt.",
+explain:
+"Engineering workstation visar aktivitet som avviker från OT-driftens normala arbetssätt.",
 
-    context:[
-        "Ingen registrerad change window",
-        "Aktiviteten följer OT-JUMP-02-händelsen",
-        "Ny kommunikationssekvens",
-        "Ingen motsvarande aktivitet i normal baseline"
-    ],
+context:[
+"Ingen registrerad change window",
+"Aktiviteten följer OT-JUMP-02-händelsen",
+"Ny kommunikationssekvens",
+"Ingen motsvarande aktivitet i normal baseline"
+],
 
-    contact:{
-        person:"OT-teknikern",
-        text:
-            "Nej. Jag arbetar inte mot den här engineering workstation idag."
-    },
+contact:{
+person:"OT-teknikern",
+text:"Nej. Jag arbetar inte mot den här engineering workstation idag."
+},
 
-    truth:"malicious",
-    chain:true,
-    correlation:true,
+truth:"malicious",
+chain:true,
+correlation:true,
 
-    closeFeedback:
-        "Aktiviteten saknar verksamhetsförklaring och följer flera relaterade avvikelser.",
-
-    earlyCloseFeedback:
-        "Det finns nu flera samstämmiga signaler.",
-
-    escalateFeedback:
-        "Rimligt. OT-personal känner inte igen aktiviteten."
+closeFeedback:"Aktiviteten saknar verksamhetsförklaring och följer flera relaterade avvikelser.",
+earlyCloseFeedback:"Det finns nu flera samstämmiga signaler.",
+escalateFeedback:"Rimligt. OT-personal känner inte igen aktiviteten."
 },
 
 
 {
-    time:"14:02",
-    source:"SOC CORRELATION",
-    zone:"IT + OT",
-    severity:"critical",
-    title:"Multiple alerts may be related",
-    asset:"IT + OT",
-    user:"multiple",
+time:"14:02",
+source:"SOC CORRELATION",
+zone:"IT + OT",
+severity:"critical",
+title:"Multiple alerts may be related",
+asset:"IT + OT",
+user:"multiple",
 
-    explain:
-        "Flera tidigare händelser delar konto, system eller tidsmässiga samband.",
+explain:
+"Flera tidigare händelser delar konto, system eller tidsmässiga samband.",
 
-    context:[
-        "11:18 – servicekonto från ny källa",
-        "11:52 – kommando under samma konto",
-        "13:16 – oväntad IT → OT-anslutning",
-        "13:19 – OT-IDS observerar avvikelse",
-        "13:31 – engineering workstation avviker",
-        "Verksamheten känner inte igen aktiviteten"
-    ],
+context:[
+"11:18 – servicekonto från ny källa",
+"11:52 – kommando under samma konto",
+"13:16 – oväntad IT → OT-anslutning",
+"13:19 – OT-IDS observerar avvikelse",
+"13:31 – engineering workstation avviker",
+"Verksamheten känner inte igen aktiviteten"
+],
 
-    contact:null,
+contact:null,
 
-    truth:"malicious",
-    chain:true,
-    boundary:true,
-    correlation:true,
+truth:"malicious",
+chain:true,
+boundary:true,
+correlation:true,
 
-    closeFeedback:
-        "Korrelationen visar nu en sammanhängande kedja.",
+closeFeedback:"Korrelationen visar nu en sammanhängande kedja.",
+earlyCloseFeedback:"Helhetsbilden innehåller samstämmiga indikatorer från både IT och OT.",
+escalateFeedback:"Det finns nu grund för att behandla situationen som en potentiell incident."
+},
 
-    earlyCloseFeedback:
-        "Helhetsbilden innehåller samstämmiga indikatorer från både IT och OT.",
 
-    escalateFeedback:
-        "Det finns nu grund för att behandla situationen som en potentiell incident."
+/* SISTA OT-HÄNDELSEN */
+
+{
+time:"14:27",
+source:"OT IDS / SCADA",
+zone:"OT",
+severity:"critical",
+title:"Suspicious control command to RTU",
+asset:"RTU-07",
+user:"unknown",
+
+explain:
+"OT-övervakningen registrerar ett oväntat styrkommando riktat mot en RTU. Kommandot genomförs inte eftersom mottagaren avvisar begäran.",
+
+context:[
+"Destination: RTU-07",
+"Inget godkänt driftärende finns",
+"Styrförsöket följer tidigare avvikande aktivitet",
+"Kommandot använder felaktig addressing för mottagande RTU",
+"RTU:n avvisar därför styrförsöket",
+"Ingen fysisk styråtgärd genomförs",
+"OT-drift känner inte igen aktiviteten"
+],
+
+contact:{
+person:"OT-drift",
+text:"Det finns inget planerat styrarbete mot RTU-07. Vi behandlar detta som en allvarlig incident."
+},
+
+truth:"malicious",
+chain:true,
+correlation:true,
+
+closeFeedback:
+"Det här är en kritisk OT-händelse som följer den tidigare attackkedjan och saknar legitim driftförklaring.",
+
+earlyCloseFeedback:
+"Ett oväntat styrkommando mot en RTU behöver bedömas tillsammans med tidigare IT- och OT-indikatorer.",
+
+escalateFeedback:
+"Rimlig eskalering. Ett oväntat styrförsök mot en RTU innebär potentiell påverkan på den fysiska processen."
 }
 
 ];
@@ -1968,118 +1891,90 @@ const events = [
    STATE
    ========================================================= */
 
-const state = {
+const state={
+currentIndex:-1,
+viewingIndex:-1,
 
-    currentIndex:-1,
-    viewingIndex:-1,
+alerts:0,
+open:0,
+resolved:0,
+escalated:0,
+waiting:0,
 
-    alerts:0,
-    open:0,
-    resolved:0,
-    escalated:0,
-    waiting:0,
+securityEvents:18421,
 
-    securityEvents:18421,
+cases:[],
 
-    cases:[],
+prematureClosures:0,
+benignEscalations:0,
+goodEscalations:0,
+reopened:0,
 
-    prematureClosures:0,
-    benignEscalations:0,
-    goodEscalations:0,
-    reopened:0,
-
-    tierScore:0,
-    contextDecisions:0,
-    riskyClosures:0
-
+tierScore:0,
+contextDecisions:0,
+riskyClosures:0
 };
 
 
 /* =========================================================
-   START
+   START / FLOW
    ========================================================= */
 
 function startShift(){
 
-    document
-        .getElementById("startScreen")
-        .classList.add("hidden");
+document.getElementById("startScreen").classList.add("hidden");
+document.getElementById("app").classList.remove("hidden");
 
-    document
-        .getElementById("app")
-        .classList.remove("hidden");
+nextEvent();
 
-    nextEvent();
 }
 
 
-/* =========================================================
-   NEXT EVENT
-   ========================================================= */
-
 function nextEvent(){
 
-    state.currentIndex++;
+state.currentIndex++;
 
-    if(state.currentIndex >= events.length){
+if(state.currentIndex>=events.length){
 
-        showFinal();
-        return;
-    }
+showFinal();
+return;
 
-    const e = events[state.currentIndex];
+}
 
-    state.alerts++;
-    state.open++;
+const e=events[state.currentIndex];
 
-    state.securityEvents +=
-        Math.floor(Math.random()*800)+180;
+state.alerts++;
+state.open++;
 
+state.securityEvents+=Math.floor(Math.random()*800)+180;
 
-    state.cases[state.currentIndex] = {
+state.cases[state.currentIndex]={
+status:"OPEN",
+context:false,
+contacted:false,
+contactAnswered:false,
+feedback:null,
+feedbackType:null,
+businessImpact:null,
+scored:false
+};
 
-        status:"OPEN",
+document.getElementById("socClock").textContent=e.time;
 
-        context:false,
+if(e.boundary){
+document.getElementById("boundary").classList.add("alerting");
+}
 
-        contacted:false,
+if(e.correlation){
+reopenRelevantCases();
+}
 
-        contactAnswered:false,
+addFeedItem(e,state.currentIndex);
 
-        feedback:null,
+updateStats();
 
-        feedbackType:null,
+showEvent(state.currentIndex);
 
-        businessImpact:null,
-
-        scored:false
-    };
-
-
-    document
-        .getElementById("socClock")
-        .textContent = e.time;
-
-
-    if(e.boundary){
-
-        document
-            .getElementById("boundary")
-            .classList.add("alerting");
-    }
-
-
-    if(e.correlation){
-
-        reopenRelevantCases();
-    }
-
-
-    addFeedItem(e,state.currentIndex);
-
-    updateStats();
-
-    showEvent(state.currentIndex);
 }
 
 
@@ -2089,807 +1984,605 @@ function nextEvent(){
 
 function addFeedItem(e,index){
 
-    const div =
-        document.createElement("div");
+const div=document.createElement("div");
 
-    div.className =
-        "feed-item";
+div.className="feed-item";
+div.id="feed-"+index;
+div.onclick=()=>showEvent(index);
 
-    div.id =
-        "feed-"+index;
+div.innerHTML=`
 
-    div.onclick =
-        ()=>showEvent(index);
+<div class="feed-top">
 
+<div class="feed-time">
+${e.time}
+</div>
 
-    div.innerHTML = `
+<div
+class="status-badge status-open"
+id="feed-status-${index}">
+OPEN
+</div>
 
-        <div class="feed-top">
+</div>
 
-            <div class="feed-time">
-                ${e.time}
-            </div>
+<div class="feed-title">
+${e.title}
+</div>
 
-            <div
-                class="status-badge status-open"
-                id="feed-status-${index}">
-                OPEN
-            </div>
+<div class="feed-meta">
 
-        </div>
+<span class="severity sev-${e.severity}">
+${e.severity.toUpperCase()}
+</span>
 
+<span>${e.source}</span>
 
-        <div class="feed-title">
-            ${e.title}
-        </div>
+<span>•</span>
 
+<span>${e.asset}</span>
 
-        <div class="feed-meta">
+</div>
+`;
 
-            <span class="severity sev-${e.severity}">
-                ${e.severity.toUpperCase()}
-            </span>
+document.getElementById("feed").prepend(div);
 
-            <span>${e.source}</span>
+document.getElementById("queueMeta").textContent=
+state.alerts+" alerts";
 
-            <span>•</span>
-
-            <span>${e.asset}</span>
-
-        </div>
-
-    `;
-
-
-    document
-        .getElementById("feed")
-        .prepend(div);
-
-
-    document
-        .getElementById("queueMeta")
-        .textContent =
-        state.alerts + " alerts";
 }
 
 
 function updateFeedStatus(index){
 
-    const el =
-        document.getElementById(
-            "feed-status-"+index
-        );
+const el=document.getElementById("feed-status-"+index);
 
-    if(!el) return;
+if(!el)return;
 
+const status=state.cases[index].status;
 
-    const status =
-        state.cases[index].status;
+el.className="status-badge";
 
+if(status==="OPEN")el.classList.add("status-open");
+if(status==="RESOLVED")el.classList.add("status-resolved");
+if(status==="ESCALATED")el.classList.add("status-escalated");
+if(status==="REOPENED")el.classList.add("status-reopened");
 
-    el.className =
-        "status-badge";
+el.textContent=status;
 
-
-    if(status==="OPEN")
-        el.classList.add("status-open");
-
-    if(status==="RESOLVED")
-        el.classList.add("status-resolved");
-
-    if(status==="ESCALATED")
-        el.classList.add("status-escalated");
-
-    if(status==="REOPENED")
-        el.classList.add("status-reopened");
-
-
-    el.textContent =
-        status;
 }
 
 
 /* =========================================================
-   SHOW EVENT
+   WORKSPACE
    ========================================================= */
 
 function showEvent(index){
 
-    state.viewingIndex =
-        index;
+state.viewingIndex=index;
 
+document.querySelectorAll(".feed-item")
+.forEach(x=>x.classList.remove("active"));
 
-    document
-        .querySelectorAll(".feed-item")
-        .forEach(
-            item=>item.classList.remove("active")
-        );
+const feedItem=document.getElementById("feed-"+index);
 
+if(feedItem)feedItem.classList.add("active");
 
-    const feedItem =
-        document.getElementById(
-            "feed-"+index
-        );
+const e=events[index];
+const c=state.cases[index];
 
+let contextHTML="";
 
-    if(feedItem){
+if(c.context){
 
-        feedItem.classList.add(
-            "active"
-        );
-    }
+contextHTML=`
 
+<div class="section-box">
 
-    const e =
-        events[index];
+<div class="section-title">
+Triage context
+</div>
 
-    const c =
-        state.cases[index];
+<div class="section-content">
 
+${e.context.map(x=>`
+<div class="context-line">
+<span>${x}</span>
+</div>
+`).join("")}
 
-    let contextHTML = "";
+</div>
+</div>
 
+`;
 
-    if(c.context){
+}
 
-        contextHTML = `
 
-        <div class="section-box">
+let contactHTML="";
 
-            <div class="section-title">
-                Triage context
-            </div>
+if(c.contacted&&!c.contactAnswered){
 
-            <div class="section-content">
+contactHTML=`
 
-                ${e.context.map(
-                    item=>`
+<div class="section-box feedback-blue">
 
-                    <div class="context-line">
-                        <span>${item}</span>
-                    </div>
+<div class="section-title">
+Väntar på svar
+</div>
 
-                    `
-                ).join("")}
+<div class="section-content">
 
-            </div>
+En fråga har skickats till
+<strong>${e.contact.person}</strong>.
 
-        </div>
+<br><br>
 
-        `;
-    }
+Du kan fortsätta arbeta medan du väntar.
 
+</div>
+</div>
 
-    let contactHTML = "";
+`;
 
+}
 
-    if(
-        c.contacted &&
-        !c.contactAnswered
-    ){
 
-        contactHTML = `
+if(c.contactAnswered){
 
-        <div class="section-box feedback-blue">
+contactHTML=`
 
-            <div class="section-title">
-                Väntar på svar
-            </div>
+<div class="section-box feedback-blue">
 
-            <div class="section-content">
+<div class="section-title">
+Svar mottaget
+</div>
 
-                En fråga har skickats till
-                <strong>${e.contact.person}</strong>.
+<div class="section-content">
 
-                <br><br>
+<strong>${e.contact.person}</strong>
 
-                Du behöver inte lämna ärendet öppet
-                på skärmen medan du väntar.
+<br><br>
 
-            </div>
+“${e.contact.text}”
 
-        </div>
+</div>
+</div>
 
-        `;
-    }
+`;
 
+}
 
-    if(c.contactAnswered){
 
-        contactHTML = `
+let correlationHTML="";
 
-        <div class="section-box feedback-blue">
+if(c.status==="REOPENED"){
 
-            <div class="section-title">
-                Svar mottaget
-            </div>
+correlationHTML=`
 
-            <div class="section-content">
+<div class="section-box feedback-danger">
 
-                <strong>
-                    ${e.contact.person}
-                </strong>
+<div class="section-title">
+Ny information
+</div>
 
-                <br><br>
+<div class="section-content">
 
-                “${e.contact.text}”
+Ärendet hade tidigare stängts.
 
-            </div>
+<br><br>
 
-        </div>
+Ny telemetri visar samband med andra
+säkerhetshändelser och bedömningen behöver göras om.
 
-        `;
-    }
+</div>
+</div>
 
+`;
 
-    let correlationHTML = "";
+}
 
 
-    if(c.status==="REOPENED"){
+let feedbackHTML="";
 
-        correlationHTML = `
+if(c.feedback){
 
-        <div class="section-box feedback-danger">
+feedbackHTML=`
 
-            <div class="section-title">
-                Ny information
-            </div>
+<div class="section-box ${c.feedbackType}">
 
-            <div class="section-content">
+<div class="section-title">
+SOC feedback
+</div>
 
-                Ärendet hade tidigare stängts.
+<div class="section-content">
+${c.feedback}
+</div>
 
-                <br><br>
+</div>
 
-                Ny telemetri visar nu ett samband
-                med andra säkerhetshändelser.
-                Bedömningen behöver göras om.
+`;
 
-            </div>
+}
 
-        </div>
 
-        `;
-    }
+let businessHTML="";
 
+if(c.businessImpact){
 
-    let feedbackHTML = "";
+businessHTML=`
 
+<div class="section-box feedback-warn">
 
-    if(c.feedback){
+<div class="section-title">
+Verksamhetspåverkan
+</div>
 
-        feedbackHTML = `
+<div class="section-content">
 
-        <div class="section-box ${c.feedbackType}">
+${c.businessImpact}
 
-            <div class="section-title">
-                SOC feedback
-            </div>
+<br><br>
 
-            <div class="section-content">
+Säkerhetsarbete behöver även ta hänsyn till
+verksamheten som ska skyddas.
 
-                ${c.feedback}
+</div>
+</div>
 
-            </div>
+`;
 
-        </div>
+}
 
-        `;
-    }
 
+let controlsHTML="";
 
-    let businessHTML = "";
+if(c.status==="OPEN"||c.status==="REOPENED"){
 
+controlsHTML=`
 
-    if(c.businessImpact){
+<div class="controls">
 
-        businessHTML = `
+<button
+class="action"
+${c.context?"disabled":""}
+onclick="investigate(${index})">
 
-        <div class="section-box feedback-warn">
+${c.context
+?"✓ Kontext hämtad"
+:"Undersök vidare"}
 
-            <div class="section-title">
-                Verksamhetspåverkan
-            </div>
+</button>
 
-            <div class="section-content">
 
-                ${c.businessImpact}
+${e.contact?`
 
-                <br><br>
+<button
+class="action"
+${c.contacted?"disabled":""}
+onclick="contactPerson(${index})">
 
-                Säkerhetsarbete behöver också ta hänsyn
-                till den verksamhet som ska skyddas.
+${c.contactAnswered
+?"✓ Svar mottaget"
+:c.contacted
+?"Väntar på svar..."
+:"Kontakta person"}
 
-            </div>
+</button>
 
-        </div>
+`:""}
 
-        `;
-    }
+</div>
 
 
-    let controlsHTML = "";
+<div class="decision">
 
+<div class="decision-title">
+Vad gör du med ärendet?
+</div>
 
-    if(
-        c.status==="OPEN" ||
-        c.status==="REOPENED"
-    ){
+<button
+class="choice close"
+onclick="closeCase(${index})">
+Stäng som legitimt
+</button>
 
-        controlsHTML = `
+<button
+class="choice escalate"
+onclick="escalateCase(${index})">
+Eskalera
+</button>
 
-        <div class="controls">
+</div>
 
-            <button
-                class="action"
-                ${c.context ? "disabled" : ""}
-                onclick="investigate(${index})">
+`;
 
-                ${
-                    c.context
-                    ? "✓ Kontext hämtad"
-                    : "Undersök vidare"
-                }
+}
 
-            </button>
 
+let nextHTML="";
 
-            ${
-                e.contact
-                ?
-                `
-                <button
-                    class="action"
-                    ${c.contacted ? "disabled" : ""}
-                    onclick="contactPerson(${index})">
+if(
+index===state.currentIndex &&
+(
+c.status==="RESOLVED"||
+c.status==="ESCALATED"
+)
+){
 
-                    ${
-                        c.contactAnswered
-                        ? "✓ Svar mottaget"
-                        :
-                        c.contacted
-                        ? "Väntar på svar..."
-                        : "Kontakta person"
-                    }
+nextHTML=`
 
-                </button>
-                `
-                :
-                ""
-            }
+<button
+class="primary"
+style="margin-top:25px"
+onclick="nextEvent()">
+Nästa alert →
+</button>
 
-        </div>
+`;
 
+}
 
-        <div class="decision">
 
-            <div class="decision-title">
-                Vad gör du med ärendet?
-            </div>
+document.getElementById("workspace").innerHTML=`
 
+<div class="alert-header">
 
-            <button
-                class="choice close"
-                onclick="closeCase(${index})">
+<div>
 
-                Stäng som legitimt
+<div class="alert-kicker">
+${e.source} // ${e.zone}
+</div>
 
-            </button>
+<div class="alert-title">
+${e.title}
+</div>
 
+<div class="alert-meta">
 
-            <button
-                class="choice escalate"
-                onclick="escalateCase(${index})">
+<span class="meta-pill">
+Tid: <strong>${e.time}</strong>
+</span>
 
-                Eskalera
+<span class="meta-pill">
+Asset: <strong>${e.asset}</strong>
+</span>
 
-            </button>
+<span class="meta-pill">
+User: <strong>${e.user}</strong>
+</span>
 
-        </div>
+</div>
 
-        `;
-    }
+</div>
 
+<span class="severity sev-${e.severity}">
+${e.severity.toUpperCase()}
+</span>
 
-    let nextHTML = "";
+</div>
 
 
-    if(
-        index===state.currentIndex &&
-        (
-            c.status==="RESOLVED" ||
-            c.status==="ESCALATED"
-        )
-    ){
+<div class="explanation">
+${e.explain}
+</div>
 
-        nextHTML = `
+${contextHTML}
+${contactHTML}
+${correlationHTML}
+${feedbackHTML}
+${businessHTML}
+${controlsHTML}
+${nextHTML}
 
-        <button
-            class="primary"
-            style="margin-top:25px"
-            onclick="nextEvent()">
 
-            Nästa alert
-            <span>→</span>
+<div class="case-status">
 
-        </button>
+<span class="case-status-item">
+STATUS:
+<strong>${c.status}</strong>
+</span>
 
-        `;
-    }
+<span class="case-status-item">
+CONTEXT:
+<strong>${c.context?"YES":"NO"}</strong>
+</span>
 
+<span class="case-status-item">
+CONTACT:
+<strong>${c.contacted?"YES":"NO"}</strong>
+</span>
 
-    document
-        .getElementById("workspace")
-        .innerHTML = `
+<span class="case-status-item">
+RESPONSE:
+<strong>${c.contactAnswered?"YES":"NO"}</strong>
+</span>
 
+</div>
 
-        <div class="alert-header">
+`;
 
-            <div>
-
-                <div class="alert-kicker">
-
-                    ${e.source}
-                    //
-                    ${e.zone}
-
-                </div>
-
-
-                <div class="alert-title">
-
-                    ${e.title}
-
-                </div>
-
-
-                <div class="alert-meta">
-
-                    <span class="meta-pill">
-                        Tid:
-                        <strong>${e.time}</strong>
-                    </span>
-
-                    <span class="meta-pill">
-                        Asset:
-                        <strong>${e.asset}</strong>
-                    </span>
-
-                    <span class="meta-pill">
-                        User:
-                        <strong>${e.user}</strong>
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <span class="severity sev-${e.severity}">
-
-                ${e.severity.toUpperCase()}
-
-            </span>
-
-        </div>
-
-
-        <div class="explanation">
-
-            ${e.explain}
-
-        </div>
-
-
-        ${contextHTML}
-
-        ${contactHTML}
-
-        ${correlationHTML}
-
-        ${feedbackHTML}
-
-        ${businessHTML}
-
-        ${controlsHTML}
-
-        ${nextHTML}
-
-
-        <div class="case-status">
-
-            <span class="case-status-item">
-                STATUS:
-                <strong>${c.status}</strong>
-            </span>
-
-            <span class="case-status-item">
-                CONTEXT:
-                <strong>${c.context ? "YES" : "NO"}</strong>
-            </span>
-
-            <span class="case-status-item">
-                CONTACT:
-                <strong>${c.contacted ? "YES" : "NO"}</strong>
-            </span>
-
-            <span class="case-status-item">
-                RESPONSE:
-                <strong>${c.contactAnswered ? "YES" : "NO"}</strong>
-            </span>
-
-        </div>
-
-    `;
 }
 
 
 /* =========================================================
-   INVESTIGATE
+   ACTIONS
    ========================================================= */
 
 function investigate(index){
 
-    const c =
-        state.cases[index];
+const c=state.cases[index];
 
+if(c.status!=="OPEN"&&c.status!=="REOPENED")return;
 
-    if(
-        c.status!=="OPEN" &&
-        c.status!=="REOPENED"
-    ){
-        return;
-    }
+if(!c.context){
 
+state.contextDecisions++;
+state.tierScore+=2;
 
-    if(!c.context){
-
-        state.contextDecisions++;
-
-        state.tierScore += 2;
-    }
-
-
-    c.context = true;
-
-    showEvent(index);
 }
 
+c.context=true;
 
-/* =========================================================
-   CONTACT PERSON
-   ========================================================= */
+showEvent(index);
+
+}
+
 
 function contactPerson(index){
 
-    const e =
-        events[index];
+const e=events[index];
+const c=state.cases[index];
 
-    const c =
-        state.cases[index];
+if(!e.contact||c.contacted)return;
 
+c.contacted=true;
+state.waiting++;
 
-    if(
-        !e.contact ||
-        c.contacted
-    ){
-        return;
-    }
+updateStats();
+showEvent(index);
 
+setTimeout(()=>{
 
-    c.contacted = true;
+c.contactAnswered=true;
+state.waiting--;
 
-    state.waiting++;
+updateStats();
 
-    updateStats();
-
-    showEvent(index);
-
-
-    setTimeout(()=>{
-
-        c.contactAnswered =
-            true;
-
-        state.waiting--;
-
-        updateStats();
-
-
-        if(
-            state.viewingIndex === index
-        ){
-
-            showEvent(index);
-        }
-
-
-        showToast(
-            "Svar mottaget",
-            `${e.contact.person} har svarat. Svaret finns kvar i ärendet.`
-        );
-
-    },2500);
+if(state.viewingIndex===index){
+showEvent(index);
 }
 
+showToast(
+"Svar mottaget",
+`${e.contact.person} har svarat. Svaret finns kvar i ärendet.`
+);
 
-/* =========================================================
-   CLOSE
-   ========================================================= */
+},2500);
+
+}
+
 
 function closeCase(index){
 
-    const e =
-        events[index];
+const e=events[index];
+const c=state.cases[index];
 
-    const c =
-        state.cases[index];
+if(c.status!=="OPEN"&&c.status!=="REOPENED")return;
 
+const investigated=
+c.context||c.contactAnswered;
 
-    if(
-        c.status!=="OPEN" &&
-        c.status!=="REOPENED"
-    ){
-        return;
-    }
+c.status="RESOLVED";
 
+state.open--;
+state.resolved++;
 
-    const investigated =
-        c.context ||
-        c.contactAnswered;
+if(!c.scored){
 
+if(e.truth==="benign"){
 
-    c.status =
-        "RESOLVED";
+state.tierScore+=investigated?2:1;
 
+}else{
 
-    state.open--;
+state.riskyClosures++;
+state.tierScore-=4;
 
-    state.resolved++;
+}
 
+c.scored=true;
 
-    if(!c.scored){
-
-        if(e.truth==="benign"){
-
-            state.tierScore +=
-                investigated ? 2 : 1;
-        }
-
-        else{
-
-            state.riskyClosures++;
-
-            state.tierScore -= 4;
-        }
-
-
-        c.scored = true;
-    }
-
-
-    if(e.truth==="benign"){
-
-        if(investigated){
-
-            c.feedback =
-                e.closeFeedback;
-
-            c.feedbackType =
-                "feedback-good";
-        }
-
-        else{
-
-            state.prematureClosures++;
-
-            c.feedback =
-                e.earlyCloseFeedback;
-
-            c.feedbackType =
-                "feedback-warn";
-        }
-    }
-
-    else{
-
-        state.prematureClosures++;
-
-        c.feedback =
-            investigated
-            ? e.closeFeedback
-            : e.earlyCloseFeedback;
-
-        c.feedbackType =
-            "feedback-danger";
-    }
-
-
-    updateFeedStatus(index);
-
-    updateStats();
-
-    showEvent(index);
 }
 
 
-/* =========================================================
-   ESCALATE
-   ========================================================= */
+if(e.truth==="benign"){
+
+if(investigated){
+
+c.feedback=e.closeFeedback;
+c.feedbackType="feedback-good";
+
+}else{
+
+state.prematureClosures++;
+
+c.feedback=e.earlyCloseFeedback;
+c.feedbackType="feedback-warn";
+
+}
+
+}else{
+
+state.prematureClosures++;
+
+c.feedback=
+investigated
+?e.closeFeedback
+:e.earlyCloseFeedback;
+
+c.feedbackType="feedback-danger";
+
+}
+
+updateFeedStatus(index);
+updateStats();
+showEvent(index);
+
+}
+
 
 function escalateCase(index){
 
-    const e =
-        events[index];
+const e=events[index];
+const c=state.cases[index];
 
-    const c =
-        state.cases[index];
+if(c.status!=="OPEN"&&c.status!=="REOPENED")return;
 
+c.status="ESCALATED";
 
-    if(
-        c.status!=="OPEN" &&
-        c.status!=="REOPENED"
-    ){
-        return;
-    }
+state.open--;
+state.escalated++;
 
+if(!c.scored){
 
-    c.status =
-        "ESCALATED";
+if(e.truth==="benign"){
 
+state.tierScore-=2;
 
-    state.open--;
+}else{
 
-    state.escalated++;
+state.tierScore+=4;
 
+}
 
-    if(!c.scored){
+c.scored=true;
 
-        if(e.truth==="benign"){
-
-            state.tierScore -= 2;
-        }
-
-        else{
-
-            state.tierScore += 4;
-        }
+}
 
 
-        c.scored = true;
-    }
+c.feedback=e.escalateFeedback;
 
+if(e.truth==="benign"){
 
-    c.feedback =
-        e.escalateFeedback;
+state.benignEscalations++;
+c.feedbackType="feedback-warn";
 
+c.businessImpact=
+e.businessImpact||
+"Ytterligare personer behöver lägga tid på ärendet.";
 
-    if(e.truth==="benign"){
+}else{
 
-        state.benignEscalations++;
+state.goodEscalations++;
+c.feedbackType="feedback-good";
 
-        c.feedbackType =
-            "feedback-warn";
+}
 
-        c.businessImpact =
-            e.businessImpact ||
-            "Ytterligare personer behöver lägga tid på ärendet.";
-    }
+updateFeedStatus(index);
+updateStats();
+showEvent(index);
 
-    else{
-
-        state.goodEscalations++;
-
-        c.feedbackType =
-            "feedback-good";
-    }
-
-
-    updateFeedStatus(index);
-
-    updateStats();
-
-    showEvent(index);
 }
 
 
@@ -2899,150 +2592,94 @@ function escalateCase(index){
 
 function reopenRelevantCases(){
 
-    let reopenedNow = 0;
+let reopenedNow=0;
+
+events.forEach((e,index)=>{
+
+if(index>=state.currentIndex)return;
+
+const c=state.cases[index];
+
+if(!c)return;
+
+if(
+e.chain &&
+e.truth!=="benign" &&
+c.status==="RESOLVED"
+){
+
+c.status="REOPENED";
+
+c.feedback=
+"Ny telemetri och nya samband förändrar kontexten. Ärendet behöver analyseras igen.";
+
+c.feedbackType="feedback-danger";
+
+state.resolved--;
+state.open++;
+state.reopened++;
+
+reopenedNow++;
+
+updateFeedStatus(index);
+
+}
+
+});
 
 
-    events.forEach(
-        (e,index)=>{
+if(reopenedNow>0){
 
-            if(
-                index >= state.currentIndex
-            ){
-                return;
-            }
+showToast(
+"Korrelation uppdaterad",
+`${reopenedNow} tidigare stängt ärende har återöppnats.`
+);
 
+}
 
-            const c =
-                state.cases[index];
-
-
-            if(!c){
-                return;
-            }
-
-
-            if(
-                e.chain &&
-                e.truth!=="benign" &&
-                c.status==="RESOLVED"
-            ){
-
-                c.status =
-                    "REOPENED";
-
-
-                c.feedback =
-                    "Ny telemetri och nya samband förändrar kontexten. Ärendet behöver analyseras igen.";
-
-
-                c.feedbackType =
-                    "feedback-danger";
-
-
-                state.resolved--;
-
-                state.open++;
-
-                state.reopened++;
-
-                reopenedNow++;
-
-
-                updateFeedStatus(index);
-            }
-
-        }
-    );
-
-
-    if(reopenedNow>0){
-
-        showToast(
-            "Korrelation uppdaterad",
-            `${reopenedNow} tidigare stängt ärende har återöppnats.`
-        );
-    }
 }
 
 
 /* =========================================================
-   STATS
+   STATS / TOAST
    ========================================================= */
 
 function updateStats(){
 
-    document
-        .getElementById("alertCounter")
-        .textContent =
-        state.alerts;
+document.getElementById("alertCounter").textContent=state.alerts;
+document.getElementById("openCounter").textContent=state.open;
+document.getElementById("resolvedCounter").textContent=state.resolved;
+document.getElementById("escalatedCounter").textContent=state.escalated;
+document.getElementById("waitingCounter").textContent=state.waiting;
 
+document.getElementById("eventCounter").textContent=
+state.securityEvents.toLocaleString("sv-SE");
 
-    document
-        .getElementById("openCounter")
-        .textContent =
-        state.open;
-
-
-    document
-        .getElementById("resolvedCounter")
-        .textContent =
-        state.resolved;
-
-
-    document
-        .getElementById("escalatedCounter")
-        .textContent =
-        state.escalated;
-
-
-    document
-        .getElementById("waitingCounter")
-        .textContent =
-        state.waiting;
-
-
-    document
-        .getElementById("eventCounter")
-        .textContent =
-        state.securityEvents.toLocaleString("sv-SE");
 }
 
 
-/* =========================================================
-   TOAST
-   ========================================================= */
-
 function showToast(title,text){
 
-    const toast =
-        document.getElementById("toast");
+const toast=document.getElementById("toast");
 
+toast.innerHTML=`
 
-    toast.innerHTML = `
+<div class="toast-title">
+${title}
+</div>
 
-        <div class="toast-title">
-            ${title}
-        </div>
+<div class="toast-text">
+${text}
+</div>
 
-        <div class="toast-text">
-            ${text}
-        </div>
+`;
 
-    `;
+toast.classList.remove("hidden");
 
+setTimeout(()=>{
+toast.classList.add("hidden");
+},7000);
 
-    toast.classList.remove(
-        "hidden"
-    );
-
-
-    setTimeout(()=>{
-
-        toast.classList.add(
-            "hidden"
-        );
-
-    },7000);
 }
 
 
@@ -3052,126 +2689,101 @@ function showToast(title,text){
 
 function getSocTier(){
 
-    let score =
-        state.tierScore;
+let score=state.tierScore;
+
+score+=state.goodEscalations*2;
+score-=state.reopened*2;
 
 
-    score +=
-        state.goodEscalations * 2;
+if(state.benignEscalations>=4){
+
+return{
+tier:"SOC TIER 1",
+title:"BETTER SAFE THAN SORRY™",
+color:"#f58220",
+background:"#fff0df",
+
+text:
+"Du var snabb på eskaleringsknappen. Få saker slank förbi, men verksamheten fick också svara på en hel del frågor.",
+
+detail:
+"Använd mer kontext för att skilja verklig risk från legitim aktivitet."
+};
+
+}
 
 
-    score -=
-        state.reopened * 2;
+if(state.riskyClosures>=3){
+
+return{
+tier:"SOC TIER 1",
+title:"THE QUICK CLOSER™",
+color:"#c84343",
+background:"#fae5e5",
+
+text:
+"Du gillar ett rent alertflöde. Några signaler fick dock lämna kön lite väl snabbt.",
+
+detail:
+"Låt osäkra ärenden leva längre när viktig kontext saknas."
+};
+
+}
 
 
-    if(
-        state.benignEscalations >= 4
-    ){
+if(
+score>=26 &&
+state.benignEscalations<=2 &&
+state.riskyClosures<=1
+){
 
-        return{
+return{
+tier:"SOC TIER 3",
+title:"CORRELATION WIZARD",
+color:"#14845c",
+background:"#eaf5ef",
 
-            tier:"SOC TIER 1",
+text:
+"Du kombinerade teknisk telemetri, verksamhetskontext och tidigare händelser utan att eskalera allt som såg konstigt ut.",
 
-            title:"BETTER SAFE THAN SORRY™",
+detail:
+"En enskild alert berättar sällan hela historien."
+};
 
-            color:"#f58220",
-
-            background:"#fff0df",
-
-            text:
-                "Du var snabb på eskaleringsknappen. Få saker slank förbi, men verksamheten fick också svara på en hel del frågor.",
-
-            detail:
-                "Använd mer kontext för att skilja verklig risk från legitim aktivitet."
-        };
-    }
-
-
-    if(
-        state.riskyClosures >= 3
-    ){
-
-        return{
-
-            tier:"SOC TIER 1",
-
-            title:"THE QUICK CLOSER™",
-
-            color:"#c84343",
-
-            background:"#fae5e5",
-
-            text:
-                "Du gillar ett rent alertflöde. Några signaler fick dock lämna kön lite väl snabbt.",
-
-            detail:
-                "Låt osäkra ärenden leva längre när viktig kontext saknas."
-        };
-    }
+}
 
 
-    if(
-        score >= 24 &&
-        state.benignEscalations <= 2 &&
-        state.riskyClosures <= 1
-    ){
+if(score>=13){
 
-        return{
+return{
+tier:"SOC TIER 2",
+title:"CONTEXT HUNTER",
+color:"#3277c5",
+background:"#eaf3fb",
 
-            tier:"SOC TIER 3",
+text:
+"Du använde ofta mer kontext innan du fattade beslut och höll osäkra ärenden öppna tillräckligt länge.",
 
-            title:"CORRELATION WIZARD",
+detail:
+"Bra balans mellan analys, eskalering och verksamhetspåverkan."
+};
 
-            color:"#14845c",
-
-            background:"#eaf5ef",
-
-            text:
-                "Du kombinerade teknisk telemetri, verksamhetskontext och tidigare händelser utan att eskalera allt som såg konstigt ut.",
-
-            detail:
-                "En enskild alert berättar sällan hela historien."
-        };
-    }
+}
 
 
-    if(score >= 12){
+return{
+tier:"SOC TIER 1",
+title:"ALERT APPRENTICE",
+color:"#d89500",
+background:"#fff3d8",
 
-        return{
+text:
+"Du tog dig igenom SOC-passet, men några beslut hade vunnit på mer kontext.",
 
-            tier:"SOC TIER 2",
+detail:
+"Det är precis därför SOC-arbete är svårt."
+};
 
-            title:"CONTEXT HUNTER",
-
-            color:"#3277c5",
-
-            background:"#eaf3fb",
-
-            text:
-                "Du använde ofta mer kontext innan du fattade beslut och höll osäkra ärenden öppna tillräckligt länge.",
-
-            detail:
-                "Bra balans mellan analys, eskalering och verksamhetspåverkan."
-        };
-    }
-
-
-    return{
-
-        tier:"SOC TIER 1",
-
-        title:"ALERT APPRENTICE",
-
-        color:"#d89500",
-
-        background:"#fff3d8",
-
-        text:
-            "Du tog dig igenom SOC-passet, men några beslut hade vunnit på mer kontext.",
-
-        detail:
-            "Det är precis därför SOC-arbete är svårt."
-    };
 }
 
 
@@ -3181,236 +2793,157 @@ function getSocTier(){
 
 function showFinal(){
 
-    document
-        .getElementById("mainGrid")
-        .classList.add("hidden");
+document.getElementById("mainGrid")
+.classList.add("hidden");
 
+const final=
+document.getElementById("finalScreen");
 
-    const final =
-        document.getElementById(
-            "finalScreen"
-        );
+final.classList.remove("hidden");
 
+const socTier=getSocTier();
 
-    final.classList.remove(
-        "hidden"
-    );
 
+const timeline=
+events.map((e,index)=>{
 
-    const socTier =
-        getSocTier();
+const c=state.cases[index];
 
+return`
 
-    const timeline =
-        events.map(
-            (e,index)=>{
+<div class="timeline-event ${e.chain?"incident":""}">
 
-                const c =
-                    state.cases[index];
+<div class="timeline-time">
+${e.time}
+</div>
 
+<div>
 
-                return `
+<div class="timeline-title">
+${e.title}
+</div>
 
-                <div
-                    class="timeline-event
-                    ${e.chain ? "incident" : ""}">
+<div class="timeline-meta">
+${e.source} / ${e.asset}
+</div>
 
-                    <div class="timeline-time">
-                        ${e.time}
-                    </div>
+</div>
 
-                    <div>
+<div class="timeline-status">
+${c?c.status:""}
+</div>
 
-                        <div class="timeline-title">
-                            ${e.title}
-                        </div>
+</div>
 
-                        <div class="timeline-meta">
-                            ${e.source} / ${e.asset}
-                        </div>
+`;
 
-                    </div>
+}).join("");
 
-                    <div class="timeline-status">
-                        ${c ? c.status : ""}
-                    </div>
 
-                </div>
+final.innerHTML=`
 
-                `;
-            }
-        ).join("");
+<div class="final-card">
 
+<div class="eyebrow">
+End of shift
+</div>
 
-    final.innerHTML = `
+<h2>
+Vad hände egentligen?
+</h2>
 
-    <div class="final-card">
+<p style="color:var(--muted);max-width:800px">
 
-        <div class="eyebrow">
-            End of shift
-        </div>
+Under dagen såg du både legitim aktivitet och verkliga
+säkerhetsavvikelser.
 
-        <h2>
-            Vad hände egentligen?
-        </h2>
+<br><br>
 
-        <p class="final-intro">
+Robin på OT arbetade utanför normal arbetstid.
+Det såg ovanligt ut i telemetrin men var fullt legitimt.
 
-            Under dagen såg du legitim drift,
-            säkerhetslarm och aktiviteter som först
-            senare kunde kopplas ihop.
+Det är ett exempel på varför SOC behöver förstå
+<strong>varför</strong> något händer — inte bara
+<strong>vad</strong> som händer.
 
-        </p>
+</p>
 
 
-        <div
-            class="tier-card"
-            style="
-                background:${socTier.background};
-                color:${socTier.color};
-            ">
+<div
+class="tier-card"
+style="
+background:${socTier.background};
+color:${socTier.color};
+">
 
-            <div class="tier-label">
-                Analyst profile
-            </div>
+<div class="tier-label">
+Analyst profile
+</div>
 
-            <div class="tier-name">
-                ${socTier.tier}
-            </div>
+<div class="tier-name">
+${socTier.tier}
+</div>
 
-            <div class="tier-title">
-                “${socTier.title}”
-            </div>
+<div class="tier-title">
+“${socTier.title}”
+</div>
 
-            <div
-                class="tier-text"
-                style="color:var(--text)">
+<div
+class="tier-text"
+style="color:var(--text)">
 
-                ${socTier.text}
+${socTier.text}
 
-                <br><br>
+<br><br>
 
-                <span style="color:var(--muted)">
-                    ${socTier.detail}
-                </span>
+<span style="color:var(--muted)">
+${socTier.detail}
+</span>
 
-            </div>
+</div>
 
-        </div>
+</div>
 
 
-        <div class="reality-check">
+<div class="reality-check">
 
-            SOC REALITY CHECK:
-            Detta är inte ett kompetenstest.
-            Titeln bygger endast på besluten i
-            den simulerade arbetsdagen.
+SOC REALITY CHECK:
+Detta är inte ett kompetenstest.
+Titeln bygger på dina beslut under den simulerade arbetsdagen.
 
-        </div>
+</div>
 
 
-        <div class="score-grid">
+<div class="score-grid">
 
-            <div class="score-card">
+<div class="score-card">
+<div class="score-label">Resolved</div>
+<div class="score-value">${state.resolved}</div>
+</div>
 
-                <div class="score-label">
-                    Resolved
-                </div>
+<div class="score-card">
+<div class="score-label">Escalated</div>
+<div class="score-value">${state.escalated}</div>
+</div>
 
-                <div class="score-value">
-                    ${state.resolved}
-                </div>
+<div class="score-card">
+<div class="score-label">Reopened</div>
+<div class="score-value">${state.reopened}</div>
+</div>
 
-            </div>
+<div class="score-card">
+<div class="score-label">Benign escalations</div>
+<div class="score-value">${state.benignEscalations}</div>
+</div>
 
+</div>
 
-            <div class="score-card">
 
-                <div class="score-label">
-                    Escalated
-                </div>
+<div class="attack-chain">
 
-                <div class="score-value">
-                    ${state.escalated}
-                </div>
-
-            </div>
-
-
-            <div class="score-card">
-
-                <div class="score-label">
-                    Reopened
-                </div>
-
-                <div class="score-value">
-                    ${state.reopened}
-                </div>
-
-            </div>
-
-
-            <div class="score-card">
-
-                <div class="score-label">
-                    Benign escalations
-                </div>
-
-                <div class="score-value">
-                    ${state.benignEscalations}
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="learning-card">
-
-            <strong>
-                Din SOC-dag
-            </strong>
-
-            <br><br>
-
-            ${state.contextDecisions}
-            ärenden analyserades med extra kontext.
-
-            <br>
-
-            ${state.goodEscalations}
-            relevanta händelser eskalerades.
-
-            <br>
-
-            ${state.benignEscalations}
-            legitima aktiviteter eskalerades.
-
-            <br>
-
-            ${state.riskyClosures}
-            misstänkta aktiviteter stängdes.
-
-            <br>
-
-            ${state.reopened}
-            tidigare stängda ärenden återöppnades.
-
-        </div>
-
-
-        <div class="timeline">
-
-            ${timeline}
-
-        </div>
-
-
-        <div class="attack-chain">
-
-            <strong>
-                Händelser som hörde ihop
-            </strong>
+<strong>
+Händelser som hörde ihop
+</strong>
 
 <pre>
 11:18  SERVICE ACCOUNT ANOMALY
@@ -3429,58 +2962,111 @@ function showFinal(){
           │
           ▼
 14:02  SOC CORRELATION
+          │
+          ▼
+14:27  CONTROL COMMAND → RTU-07
+          │
+          └── REJECTED
+              Invalid addressing
+              No physical action executed
 </pre>
 
-        </div>
+</div>
 
 
-        <div class="learning-card">
+<div class="impact-card">
 
-            <strong>
-                Ett larm är inte samma sak som en incident.
-            </strong>
+<strong>
+Det sista larmet förändrar perspektivet.
+</strong>
 
-            <br><br>
+<br><br>
 
-            SOC behöver kombinera teknisk telemetri,
-            historik, zonmodell och verksamhetskontext
-            för att förstå vad som faktiskt händer.
+Ett misstänkt styrkommando skickades mot
+<strong>RTU-07</strong>.
 
-        </div>
+Kommandot avvisades eftersom adresseringen
+inte var giltig för den mottagande RTU:n.
+
+<br><br>
+
+Ingen fysisk styråtgärd genomfördes.
+
+<br><br>
+
+Men tillsammans med den tidigare IT→OT-kedjan
+visar händelsen att angriparen hade nått en punkt
+där den digitala incidenten kunde ha fått
+<strong>fysiska konsekvenser</strong>.
+
+<br><br>
+
+<strong>
+Att upptäcka och bryta en sådan incident i tid
+kan vara skillnaden mellan ett cyberlarm och
+ett omfattande strömavbrott.
+</strong>
+
+</div>
 
 
-        <div class="learning-card orange">
+<div class="learning-card">
 
-            <strong>
-                Varför kontaktar SOC människor?
-            </strong>
+<strong>
+Ett larm är inte samma sak som en incident.
+</strong>
 
-            <br><br>
+<br><br>
 
-            Telemetrin kan visa vad som hände,
-            men inte alltid varför.
+En encoded PowerShell-process,
+en sen inloggning eller ett administrativt kommando
+kan vara helt legitimt.
 
-            Ett svar från en användare, administratör
-            eller drifttekniker kan vara den information
-            som gör att ett larm kan avslutas —
-            eller behöver eskaleras.
+Det är kombinationen av telemetri, historik,
+zonmodell och verksamhetskontext som gör att
+SOC kan förstå vad som faktiskt händer.
 
-        </div>
+</div>
 
 
-        <button
-            class="primary"
-            style="margin-top:30px"
-            onclick="location.reload()">
+<div class="learning-card orange">
 
-            Kör ett nytt SOC-pass
-            <span>→</span>
+<strong>
+Människor är också sensorer.
+</strong>
 
-        </button>
+<br><br>
 
-    </div>
+När SOC kontaktade Robin fick man snabbt veta att
+aktiviteten var legitim.
 
-    `;
+När samma fråga ställdes om servicekontot och
+OT-aktiviteten fanns däremot ingen legitim förklaring.
+
+<br><br>
+
+Det är därför en fråga från SOC inte automatiskt
+betyder att någon gjort något fel.
+
+Ditt svar kan hjälpa till att avfärda brus —
+eller göra en verklig incident synlig.
+
+</div>
+
+
+<button
+class="primary"
+style="margin-top:30px"
+onclick="location.reload()">
+
+Kör ett nytt SOC-pass →
+
+</button>
+
+</div>
+
+`;
+
 }
 
 </script>
