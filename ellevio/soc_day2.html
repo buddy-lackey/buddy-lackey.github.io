@@ -1,0 +1,3210 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>En dag i SOC:en</title>
+
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+/* =========================================================
+   SIEM / SOC DASHBOARD THEME
+   ========================================================= */
+
+:root{
+    --bg:#0f1115;
+    --sidebar:#15181e;
+    --panel:#191d24;
+    --panel2:#20252d;
+    --panel3:#252b34;
+    --border:#303743;
+
+    --text:#e7eaf0;
+    --muted:#929cab;
+    --faint:#687382;
+
+    --blue:#4da3ff;
+    --cyan:#45c6d4;
+    --green:#44c487;
+    --yellow:#e7c65b;
+    --orange:#f39c4a;
+    --red:#eb5b61;
+    --purple:#a987ff;
+
+    --shadow:0 4px 18px rgba(0,0,0,.28);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    background:var(--bg);
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+button{
+    font:inherit;
+}
+
+.hidden{
+    display:none !important;
+}
+
+
+/* =========================================================
+   START SCREEN
+   ========================================================= */
+
+#startScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(77,163,255,.09),
+            transparent 35%
+        ),
+        var(--bg);
+}
+
+.start-card{
+    width:min(900px,100%);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.start-top{
+    height:5px;
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue),
+            var(--cyan),
+            var(--green)
+        );
+}
+
+.start-content{
+    padding:42px;
+}
+
+.kicker{
+    color:var(--blue);
+    font-size:.74rem;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+}
+
+h1{
+    margin:0;
+    font-size:clamp(2.1rem,5vw,3.8rem);
+    letter-spacing:-.04em;
+    color:#fff;
+}
+
+.subtitle{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:1.18rem;
+}
+
+.intro{
+    max-width:770px;
+    line-height:1.72;
+    margin-top:30px;
+    color:#cbd1da;
+}
+
+.intro strong{
+    color:#fff;
+}
+
+.start-note{
+    margin-top:28px;
+    padding:18px 20px;
+    background:#141a21;
+    border:1px solid #293543;
+    border-left:4px solid var(--blue);
+    border-radius:4px;
+    line-height:1.65;
+}
+
+.primary{
+    border:0;
+    border-radius:4px;
+    background:var(--blue);
+    color:white;
+    padding:12px 18px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:26px;
+    transition:.15s ease;
+}
+
+.primary:hover{
+    background:#6eb4ff;
+}
+
+.primary:active{
+    transform:translateY(1px);
+}
+
+
+/* =========================================================
+   TOP NAV
+   ========================================================= */
+
+#app{
+    min-height:100vh;
+}
+
+.topbar{
+    height:58px;
+    background:#12151a;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:22px;
+}
+
+.product-mark{
+    width:30px;
+    height:30px;
+    border-radius:5px;
+    background:
+        linear-gradient(
+            135deg,
+            var(--blue),
+            var(--cyan)
+        );
+    display:grid;
+    place-items:center;
+    color:white;
+    font-weight:800;
+    box-shadow:0 0 18px rgba(77,163,255,.25);
+}
+
+.topbar-title{
+    font-weight:650;
+    font-size:.94rem;
+}
+
+.topbar-path{
+    color:var(--muted);
+    font-size:.78rem;
+}
+
+.clock{
+    color:#dce5f3;
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+    font-size:.88rem;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.dashboard{
+    max-width:1600px;
+    margin:auto;
+    padding:18px;
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.stat{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:14px 16px;
+    min-height:82px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.stat-label{
+    color:var(--muted);
+    text-transform:uppercase;
+    font-size:.68rem;
+    font-weight:700;
+    letter-spacing:.08em;
+}
+
+.stat-value{
+    color:#fff;
+    font-size:1.55rem;
+    font-weight:650;
+    margin-top:8px;
+}
+
+.stat-open .stat-value{
+    color:var(--yellow);
+}
+
+.stat-escalated .stat-value{
+    color:var(--orange);
+}
+
+.stat-waiting .stat-value{
+    color:var(--cyan);
+}
+
+
+/* =========================================================
+   ZONES
+   ========================================================= */
+
+.zone-strip{
+    display:grid;
+    grid-template-columns:1fr 160px 1fr;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.zone{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:14px 16px;
+}
+
+.zone-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.78rem;
+    font-weight:700;
+    color:#fff;
+    margin-bottom:12px;
+}
+
+.zone-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--green);
+}
+
+.zone.ot .zone-dot{
+    background:var(--purple);
+}
+
+.zone-assets{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.asset{
+    border:1px solid #36404c;
+    border-radius:12px;
+    padding:4px 8px;
+    color:var(--muted);
+    font-size:.68rem;
+    background:#151a20;
+}
+
+.boundary{
+    background:#17191e;
+    border:1px solid #3b414b;
+    border-radius:5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:var(--muted);
+    font-size:.68rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    transition:.25s;
+}
+
+.boundary.alerting{
+    background:#2a1719;
+    color:#ffdadd;
+    border-color:#824047;
+    box-shadow:
+        inset 0 0 20px rgba(235,91,97,.08),
+        0 0 18px rgba(235,91,97,.1);
+}
+
+
+/* =========================================================
+   MAIN ANALYST VIEW
+   ========================================================= */
+
+.main-grid{
+    display:grid;
+    grid-template-columns:430px minmax(0,1fr);
+    gap:12px;
+}
+
+.panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.panel-header{
+    height:44px;
+    background:var(--panel2);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 14px;
+}
+
+.panel-title{
+    font-size:.75rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#dce2e9;
+}
+
+.panel-meta{
+    color:var(--muted);
+    font-size:.68rem;
+}
+
+
+/* =========================================================
+   ALERT QUEUE
+   ========================================================= */
+
+.feed{
+    height:660px;
+    overflow:auto;
+}
+
+.feed::-webkit-scrollbar{
+    width:8px;
+}
+
+.feed::-webkit-scrollbar-track{
+    background:#13161b;
+}
+
+.feed::-webkit-scrollbar-thumb{
+    background:#303641;
+    border-radius:4px;
+}
+
+.feed-item{
+    position:relative;
+    padding:13px 14px 12px 17px;
+    border-bottom:1px solid #262c34;
+    cursor:pointer;
+    transition:.12s;
+}
+
+.feed-item:hover{
+    background:#1e232b;
+}
+
+.feed-item.active{
+    background:#202a35;
+}
+
+.feed-item.active:before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:3px;
+    background:var(--blue);
+}
+
+.feed-topline{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.feed-time{
+    font-size:.7rem;
+    color:var(--muted);
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+}
+
+.feed-title{
+    margin:8px 0 7px;
+    font-size:.86rem;
+    color:#edf1f6;
+    line-height:1.35;
+    padding-right:5px;
+}
+
+.feed-bottom{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    color:var(--faint);
+    font-size:.66rem;
+}
+
+.feed-status{
+    border-radius:3px;
+    padding:3px 6px;
+    font-size:.6rem;
+    font-weight:700;
+    letter-spacing:.04em;
+    border:1px solid transparent;
+}
+
+.status-open{
+    color:#edd378;
+    background:#2c2818;
+    border-color:#514b2a;
+}
+
+.status-resolved{
+    color:#7ce0aa;
+    background:#173024;
+    border-color:#28543d;
+}
+
+.status-escalated{
+    color:#ffc17e;
+    background:#352518;
+    border-color:#664125;
+}
+
+.status-reopened{
+    color:#ff9da2;
+    background:#381c20;
+    border-color:#6a3035;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.severity{
+    display:inline-flex;
+    align-items:center;
+    border-radius:3px;
+    padding:3px 7px;
+    font-size:.62rem;
+    font-weight:750;
+    letter-spacing:.04em;
+}
+
+.sev-low{
+    color:#8cc6ff;
+    background:#192c3e;
+}
+
+.sev-medium{
+    color:#ead06a;
+    background:#332e17;
+}
+
+.sev-high{
+    color:#ffb064;
+    background:#3a2615;
+}
+
+.sev-critical{
+    color:#ff8a91;
+    background:#3d1c20;
+}
+
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
+.alert-workspace{
+    min-height:660px;
+    padding:24px;
+}
+
+.alert-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:20px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:20px;
+}
+
+.alert-source{
+    color:var(--blue);
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+}
+
+.alert-title{
+    margin:7px 0 9px;
+    color:#fff;
+    font-size:1.5rem;
+    font-weight:650;
+    letter-spacing:-.02em;
+}
+
+.alert-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    color:var(--muted);
+    font-size:.75rem;
+}
+
+.meta-value{
+    color:#dce3ea;
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+}
+
+.explanation{
+    margin-top:20px;
+    background:#171c22;
+    border:1px solid #2f3945;
+    border-left:4px solid var(--blue);
+    border-radius:4px;
+    padding:15px 17px;
+    line-height:1.62;
+    color:#d0d6de;
+}
+
+.section-box{
+    margin-top:14px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    background:#15191f;
+    overflow:hidden;
+}
+
+.section-box-title{
+    padding:9px 12px;
+    background:#20252d;
+    border-bottom:1px solid var(--border);
+    color:#cdd5df;
+    text-transform:uppercase;
+    font-size:.68rem;
+    font-weight:750;
+    letter-spacing:.07em;
+}
+
+.section-box-content{
+    padding:14px 16px;
+    line-height:1.65;
+    color:#c8ced6;
+}
+
+.context-line{
+    display:grid;
+    grid-template-columns:14px 1fr;
+    gap:8px;
+    margin:4px 0;
+}
+
+.context-line:before{
+    content:"•";
+    color:var(--blue);
+}
+
+
+/* =========================================================
+   FEEDBACK
+   ========================================================= */
+
+.feedback-good{
+    border-color:#2d6145;
+}
+
+.feedback-good .section-box-title{
+    color:#82d9a8;
+    background:#17251d;
+}
+
+.feedback-warn{
+    border-color:#62532c;
+}
+
+.feedback-warn .section-box-title{
+    color:#e8ce72;
+    background:#292518;
+}
+
+.feedback-danger{
+    border-color:#68343a;
+}
+
+.feedback-danger .section-box-title{
+    color:#ff979d;
+    background:#2a191c;
+}
+
+.feedback-blue{
+    border-color:#30516f;
+}
+
+.feedback-blue .section-box-title{
+    color:#86c4ff;
+    background:#182431;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:20px;
+}
+
+.action{
+    border:1px solid #46515e;
+    background:#20252d;
+    color:#e0e6ed;
+    border-radius:4px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:.78rem;
+    transition:.12s;
+}
+
+.action:hover{
+    background:#29313a;
+    border-color:#5b6b7d;
+}
+
+.action:disabled{
+    opacity:.42;
+    cursor:not-allowed;
+}
+
+.decision{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid var(--border);
+}
+
+.decision-title{
+    color:var(--muted);
+    text-transform:uppercase;
+    font-size:.68rem;
+    font-weight:750;
+    letter-spacing:.07em;
+    margin-bottom:10px;
+}
+
+.choice{
+    border-radius:4px;
+    padding:10px 14px;
+    cursor:pointer;
+    font-weight:650;
+    font-size:.8rem;
+    margin-right:6px;
+}
+
+.choice.close{
+    background:#172820;
+    border:1px solid #326047;
+    color:#8cdfaf;
+}
+
+.choice.close:hover{
+    background:#1d3528;
+}
+
+.choice.escalate{
+    background:#2a1d18;
+    border:1px solid #6e472d;
+    color:#ffb879;
+}
+
+.choice.escalate:hover{
+    background:#382319;
+}
+
+.case-status{
+    margin-top:20px;
+    border-top:1px solid var(--border);
+    padding-top:14px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    color:var(--muted);
+    font-size:.7rem;
+}
+
+.case-status strong{
+    color:#dbe2e9;
+}
+
+.next-area{
+    margin-top:22px;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:min(440px,calc(100vw - 40px));
+    background:#1b2128;
+    border:1px solid #415063;
+    border-left:4px solid var(--cyan);
+    border-radius:5px;
+    box-shadow:0 8px 30px rgba(0,0,0,.55);
+    padding:15px 17px;
+    z-index:100;
+}
+
+.toast-title{
+    color:#fff;
+    font-size:.75rem;
+    font-weight:750;
+    margin-bottom:5px;
+}
+
+.toast-text{
+    color:#bdc6d0;
+    line-height:1.5;
+    font-size:.78rem;
+}
+
+
+/* =========================================================
+   FINAL
+   ========================================================= */
+
+#finalScreen{
+    max-width:1200px;
+    margin:0 auto;
+    padding:10px 0 40px;
+}
+
+.final-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:6px;
+    box-shadow:var(--shadow);
+    padding:30px;
+}
+
+.final-card h2{
+    font-size:2rem;
+    margin:4px 0 8px;
+    color:#fff;
+}
+
+.final-intro{
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.tier-card{
+    margin-top:28px;
+    padding:30px;
+    border-radius:6px;
+    background:#14191f;
+    text-align:center;
+}
+
+.tier-name{
+    font-size:clamp(2rem,5vw,3.5rem);
+    font-weight:750;
+    letter-spacing:-.035em;
+}
+
+.tier-title{
+    color:#fff;
+    font-size:1.16rem;
+    margin:7px 0 20px;
+}
+
+.tier-text{
+    max-width:760px;
+    margin:auto;
+    line-height:1.65;
+    color:#c4cbd4;
+}
+
+.reality-check{
+    text-align:center;
+    color:var(--muted);
+    font-size:.7rem;
+    margin:12px 0 25px;
+}
+
+.score-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin:22px 0;
+}
+
+.score-card{
+    background:#151a20;
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:15px;
+}
+
+.score-label{
+    color:var(--muted);
+    text-transform:uppercase;
+    font-size:.65rem;
+    font-weight:700;
+}
+
+.score-value{
+    color:#fff;
+    font-size:1.55rem;
+    margin-top:7px;
+    font-weight:650;
+}
+
+.timeline{
+    margin:28px 0;
+    border:1px solid var(--border);
+    border-radius:5px;
+    overflow:hidden;
+}
+
+.timeline-header{
+    background:var(--panel2);
+    border-bottom:1px solid var(--border);
+    padding:11px 14px;
+    text-transform:uppercase;
+    color:#cfd5dc;
+    font-size:.7rem;
+    font-weight:750;
+}
+
+.timeline-event{
+    display:grid;
+    grid-template-columns:70px 1fr 115px;
+    gap:12px;
+    padding:11px 14px;
+    border-bottom:1px solid #282e37;
+    font-size:.76rem;
+}
+
+.timeline-event:last-child{
+    border-bottom:0;
+}
+
+.timeline-event.incident{
+    background:#201719;
+}
+
+.timeline-time{
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+    color:var(--muted);
+}
+
+.timeline-name{
+    color:#dfe4ea;
+}
+
+.timeline-status{
+    color:var(--muted);
+    text-align:right;
+}
+
+.chain{
+    padding:22px;
+    background:#12161b;
+    border:1px solid #563238;
+    border-radius:5px;
+    color:#ffbcc0;
+    white-space:pre-wrap;
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+    line-height:1.45;
+    overflow:auto;
+}
+
+.big-message{
+    margin-top:18px;
+    padding:20px;
+    border:1px solid #364657;
+    background:#151b22;
+    border-radius:5px;
+    color:#dbe2e9;
+    line-height:1.65;
+}
+
+.big-message strong{
+    color:#fff;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .zone-strip{
+        grid-template-columns:1fr;
+    }
+
+    .boundary{
+        min-height:55px;
+    }
+
+    .main-grid{
+        grid-template-columns:1fr;
+    }
+
+    .feed{
+        height:320px;
+    }
+
+    .score-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+
+    .dashboard{
+        padding:10px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .topbar-path{
+        display:none;
+    }
+
+    .start-content{
+        padding:28px 22px;
+    }
+
+    .alert-workspace{
+        padding:17px;
+    }
+
+    .score-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .timeline-event{
+        grid-template-columns:55px 1fr;
+    }
+
+    .timeline-status{
+        grid-column:2;
+        text-align:left;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- ======================================================
+     START
+     ====================================================== -->
+
+<section id="startScreen">
+
+<div class="start-card">
+
+<div class="start-top"></div>
+
+<div class="start-content">
+
+<div class="kicker">
+Security Operations Center // IT + OT
+</div>
+
+<h1>En dag i SOC:en</h1>
+
+<div class="subtitle">
+Triage, kontext och analys under osäkerhet
+</div>
+
+<div class="intro">
+
+<p>
+Under ett SOC-pass kommer säkerhetslarm från användare,
+servrar, identitetssystem, nätverk och OT-miljöer.
+</p>
+
+<p>
+<strong>De flesta händelser är legitima.</strong>
+Samtidigt kan ett verkligt angrepp bestå av flera små
+aktiviteter som var för sig inte ser särskilt dramatiska ut.
+</p>
+
+<p>
+Undersök larmen, samla kontext, kontakta människor och
+avgör vilka ärenden som kan avslutas och vilka som behöver
+eskaleras.
+</p>
+
+</div>
+
+<div class="start-note">
+
+<strong>Ett larm är inte samma sak som en incident.</strong>
+
+<br><br>
+
+Din uppgift är att fatta ett rimligt beslut utifrån den
+information som finns tillgänglig just nu.
+
+</div>
+
+<button class="primary" onclick="startShift()">
+Starta SOC-passet
+</button>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- ======================================================
+     APP
+     ====================================================== -->
+
+<section id="app" class="hidden">
+
+<div class="topbar">
+
+<div class="topbar-left">
+
+<div class="product-mark">
+S
+</div>
+
+<div>
+<div class="topbar-title">
+Security Operations
+</div>
+
+<div class="topbar-path">
+Monitoring / Alert Review / IT + OT
+</div>
+</div>
+
+</div>
+
+<div class="clock" id="socClock">
+08:00:00
+</div>
+
+</div>
+
+
+<div class="dashboard">
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+<div class="stat-label">Alerts</div>
+<div class="stat-value" id="alertCounter">0</div>
+</div>
+
+<div class="stat stat-open">
+<div class="stat-label">Open</div>
+<div class="stat-value" id="openCounter">0</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">Resolved</div>
+<div class="stat-value" id="resolvedCounter">0</div>
+</div>
+
+<div class="stat stat-escalated">
+<div class="stat-label">Escalated</div>
+<div class="stat-value" id="escalatedCounter">0</div>
+</div>
+
+<div class="stat stat-waiting">
+<div class="stat-label">Waiting</div>
+<div class="stat-value" id="waitingCounter">0</div>
+</div>
+
+<div class="stat">
+<div class="stat-label">Security events</div>
+<div class="stat-value" id="eventCounter">18 421</div>
+</div>
+
+</div>
+
+
+<!-- ZONES -->
+
+<div class="zone-strip">
+
+<div class="zone">
+
+<div class="zone-title">
+<span class="zone-dot"></span>
+IT ZONE
+</div>
+
+<div class="zone-assets">
+<span class="asset">WORKSTATIONS</span>
+<span class="asset">IDENTITY</span>
+<span class="asset">WINDOWS</span>
+<span class="asset">LINUX</span>
+<span class="asset">SERVERS</span>
+<span class="asset">EDR</span>
+</div>
+
+</div>
+
+
+<div class="boundary" id="boundary">
+IT / OT<br>SECURITY BOUNDARY
+</div>
+
+
+<div class="zone ot">
+
+<div class="zone-title">
+<span class="zone-dot"></span>
+OT ZONE
+</div>
+
+<div class="zone-assets">
+<span class="asset">OT IDS</span>
+<span class="asset">JUMP HOST</span>
+<span class="asset">ENGINEERING WS</span>
+<span class="asset">HMI</span>
+<span class="asset">RTU / PLC</span>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div class="main-grid" id="mainGrid">
+
+<div class="panel">
+
+<div class="panel-header">
+<div class="panel-title">Alert Queue</div>
+<div class="panel-meta" id="queueMeta">0 alerts</div>
+</div>
+
+<div class="feed" id="feed"></div>
+
+</div>
+
+
+<div class="panel">
+
+<div class="panel-header">
+<div class="panel-title">Analyst Workspace</div>
+<div class="panel-meta">Triage view</div>
+</div>
+
+<div class="alert-workspace" id="workspace">
+
+<div style="color:var(--muted);line-height:1.7">
+Waiting for security telemetry...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="finalScreen" class="hidden"></div>
+
+</div>
+
+</section>
+
+
+<div id="toast" class="toast hidden"></div>
+
+
+<script>
+
+/* =========================================================
+   SCENARIO
+   ========================================================= */
+
+const events = [
+
+{
+time:"08:12",
+source:"EDR",
+zone:"IT",
+severity:"high",
+title:"Encoded PowerShell detected",
+asset:"IT-WS-142",
+user:"alex.n",
+
+explain:
+"EDR har upptäckt PowerShell där delar av kommandot är encoded. " +
+"Det förekommer både i legitima verktyg och vid attacker.",
+
+context:[
+"Asset: vanlig IT-workstation",
+"User role: utveckling / automation",
+"Parent process: AI development tool",
+"Destination: godkänd molntjänst",
+"Liknande aktivitet har observerats tidigare"
+],
+
+contact:{
+person:"Alex",
+text:
+"Ja. Jag använder en AI-agent som automatiserar ett jobb. Jag känner igen aktiviteten."
+},
+
+truth:"benign",
+
+closeFeedback:
+"Rimlig bedömning. Aktiviteten stämmer med användarens arbete och övrig telemetri.",
+
+earlyCloseFeedback:
+"Du stängde ärendet innan du samlade mer kontext. Den här gången var aktiviteten legitim.",
+
+escalateFeedback:
+"Aktiviteten var legitim. Eskaleringen skapar mer arbete än nödvändigt.",
+
+businessImpact:
+"Användaren och ytterligare personal behöver verifiera en legitim aktivitet."
+},
+
+
+{
+time:"08:46",
+source:"IDENTITY",
+zone:"IT",
+severity:"medium",
+title:"User added to privileged group",
+asset:"IDENTITY",
+user:"sara.l",
+
+explain:
+"Ett konto har fått utökade rättigheter. Behörighetsförändringar behöver ofta verifieras.",
+
+context:[
+"Utförd av IAM-ADMIN-02",
+"Change ticket: CHG-4821",
+"Godkänd av systemägare",
+"Behörigheten är tidsbegränsad"
+],
+
+contact:{
+person:"IAM-administratören",
+text:
+"Ja, ändringen är beställd och dokumenterad i CHG-4821."
+},
+
+truth:"benign",
+
+closeFeedback:
+"Ändringen är dokumenterad, godkänd och förväntad.",
+
+earlyCloseFeedback:
+"Det blev rätt den här gången, men privilegieändringar bör normalt verifieras.",
+
+escalateFeedback:
+"Ärendet var redan dokumenterat och kunde ha avslutats i normal triage.",
+
+businessImpact:
+"IAM och systemägare behöver lägga tid på att verifiera en redan dokumenterad förändring."
+},
+
+
+{
+time:"09:27",
+source:"LINUX",
+zone:"IT",
+severity:"medium",
+title:"Privileged command execution",
+asset:"LIN-SRV-07",
+user:"linux.admin",
+
+explain:
+"Ett privilegierat kommando har körts på en Linux-server.",
+
+context:[
+"Kommando exekverat via sudo",
+"Källa: administrationsnät",
+"Planerat patchfönster: 09:00–10:00",
+"Aktiviteten matchar normal serveradministration"
+],
+
+contact:{
+person:"Linux-administratören",
+text:
+"Bekräftat. Jag patchar servern just nu."
+},
+
+truth:"benign",
+
+closeFeedback:
+"Aktiviteten matchar ett känt patchfönster.",
+
+earlyCloseFeedback:
+"Bedömningen visade sig vara korrekt, men planerat underhåll verifierades inte först.",
+
+escalateFeedback:
+"Drift involveras i ett ärende som kunde ha avslutats i triage.",
+
+businessImpact:
+"Drift behöver avbryta pågående arbete för att verifiera planerat underhåll."
+},
+
+
+{
+time:"10:03",
+source:"AUTH",
+zone:"IT",
+severity:"low",
+title:"Repeated failed authentication",
+asset:"IT-WS-066",
+user:"maria.k",
+
+explain:
+"Flera misslyckade autentiseringar kan bero på fel lösenord, felkonfiguration eller obehörig åtkomst.",
+
+context:[
+"6 misslyckade försök",
+"Samma klient och användare",
+"Lyckad autentisering två minuter senare",
+"Ingen annan avvikande aktivitet"
+],
+
+contact:{
+person:"Maria",
+text:
+"Jag bytte lösenord i morse men Outlook använde fortfarande det gamla."
+},
+
+truth:"benign",
+
+closeFeedback:
+"Händelsen har en rimlig användarförklaring och inga andra indikatorer hittades.",
+
+earlyCloseFeedback:
+"Du fick rätt, men lösenordsfel kan även förekomma vid attacker.",
+
+escalateFeedback:
+"Grundläggande triage pekar på ett vanligt lösenordsproblem.",
+
+businessImpact:
+"Användaren störs trots att ärendet hade kunnat verifieras i triage."
+},
+
+
+{
+time:"10:41",
+source:"NETWORK",
+zone:"IT",
+severity:"medium",
+title:"Large internal data transfer",
+asset:"BACKUP-01",
+user:"system",
+
+explain:
+"En stor mängd data flyttas mellan två servrar. Datamängden säger inte varför överföringen sker.",
+
+context:[
+"Källa: FILE-03",
+"Destination: BACKUP-01",
+"Samma flöde observeras varje vardag",
+"Backupjobb registrerat i driftplan"
+],
+
+contact:null,
+
+truth:"benign",
+
+closeFeedback:
+"Trafiken matchar känd backupaktivitet och normal baseline.",
+
+earlyCloseFeedback:
+"Det var legitim backup, men datamängden ensam räcker inte för bedömning.",
+
+escalateFeedback:
+"Backup och drift behöver lägga tid på ett känt dataflöde.",
+
+businessImpact:
+"Drift behöver verifiera ett redan dokumenterat backupjobb."
+},
+
+
+{
+time:"11:18",
+source:"IDENTITY",
+zone:"IT",
+severity:"high",
+title:"Service account authentication anomaly",
+asset:"APP-SRV-12",
+user:"vendor.service",
+
+explain:
+"Ett servicekonto används på ett sätt som avviker från dess normala beteende.",
+
+context:[
+"Kontot används normalt av extern servicefunktion",
+"Ingen aktiv förändring hittas",
+"Ny källmaskin",
+"Kontot använder normalt en definierad åtkomstväg"
+],
+
+contact:{
+person:"Serviceansvarig",
+text:
+"Jag känner inte till något arbete idag. Leverantören ska inte vara inne just nu."
+},
+
+truth:"suspicious",
+chain:true,
+
+closeFeedback:
+"Aktiviteten saknar både change och verksamhetsförklaring.",
+
+earlyCloseFeedback:
+"Du stängde ett avvikande servicekonto utan att verifiera varför det användes.",
+
+escalateFeedback:
+"Rimlig eskalering. Kontoaktiviteten saknar legitim förklaring."
+},
+
+
+{
+time:"11:52",
+source:"EDR",
+zone:"IT",
+severity:"medium",
+title:"Command execution from service context",
+asset:"APP-SRV-12",
+user:"vendor.service",
+
+explain:
+"Ett kommando har körts under samma servicekonto som tidigare gav ett autentiseringslarm.",
+
+context:[
+"Samma konto som larmet 11:18",
+"Ny processkedja",
+"Ingen change ticket",
+"Kommandot är inte i sig bevis på skadlig aktivitet"
+],
+
+contact:{
+person:"Serviceansvarig",
+text:
+"Vi har fortfarande inte identifierat någon godkänd aktivitet för kontot."
+},
+
+truth:"suspicious",
+chain:true,
+
+closeFeedback:
+"Ytterligare en signal kopplad till samma servicekonto stängdes trots saknad förklaring.",
+
+earlyCloseFeedback:
+"Flera observationer gör att ärendet bör analyseras i ett större sammanhang.",
+
+escalateFeedback:
+"Rimligt. Flera datapunkter börjar peka mot samma konto."
+},
+
+
+{
+time:"12:34",
+source:"WINDOWS",
+zone:"IT",
+severity:"medium",
+title:"Administrative share access",
+asset:"IT-SRV-21",
+user:"it.admin",
+
+explain:
+"Administrativ Windows-åtkomst är vanlig vid drift, men samma teknik kan användas för lateral förflyttning.",
+
+context:[
+"Källa: känd administrationsserver",
+"Användare: IT-administratör",
+"Matchar normalt driftmönster",
+"Ingen koppling till servicekontot"
+],
+
+contact:{
+person:"IT-administratören",
+text:
+"Ja, det var jag. Jag installerade en uppdatering på IT-SRV-21."
+},
+
+truth:"benign",
+
+closeFeedback:
+"Här stöder kontexten legitim administration.",
+
+earlyCloseFeedback:
+"Det visade sig vara legitimt, men administration och lateral rörelse kan tekniskt likna varandra.",
+
+escalateFeedback:
+"IT-drift behöver verifiera aktivitet som redan passar normal baseline.",
+
+businessImpact:
+"IT-drift behöver lägga extra tid på att verifiera känd administration."
+},
+
+
+{
+time:"13:16",
+source:"NETWORK",
+zone:"BOUNDARY",
+severity:"critical",
+title:"Unexpected IT → OT connection attempt",
+asset:"IT-WS-233",
+user:"vendor.service",
+
+explain:
+"En IT-tillgång försöker nå en kontrollerad åtkomstpunkt mot OT.",
+
+context:[
+"Källa: IT-WS-233",
+"Konto: vendor.service",
+"Destination: OT-JUMP-02",
+"Ingen aktiv serviceaktivitet",
+"Samma konto förekommer i tidigare larm"
+],
+
+contact:{
+person:"Serviceansvarig",
+text:
+"Det här stämmer inte med något godkänt arbete."
+},
+
+truth:"malicious",
+chain:true,
+boundary:true,
+correlation:true,
+
+closeFeedback:
+"En IT→OT-zonövergång med ett tidigare avvikande konto kräver vidare hantering.",
+
+earlyCloseFeedback:
+"Zonmodellen gör händelsen särskilt viktig.",
+
+escalateFeedback:
+"Rimlig eskalering. Konto, tidigare händelser och zonövergång innebär förhöjd risk."
+},
+
+
+{
+time:"13:24",
+observed:"13:19",
+source:"OT IDS",
+zone:"OT",
+severity:"high",
+title:"Delayed OT IDS telemetry",
+asset:"OT-JUMP-02",
+user:"n/a",
+
+explain:
+"OT-IDS visar en avvikelse. Telemetrin observerades innan den nådde SOC.",
+
+context:[
+"Observerad: 13:19",
+"Mottagen i SOC: 13:24",
+"Källa: OT-JUMP-02",
+"Destination: engineering workstation",
+"Kommunikationsmönstret avviker från baseline"
+],
+
+contact:{
+person:"OT-drift",
+text:
+"Vi känner inte till något planerat arbete mellan systemen."
+},
+
+truth:"malicious",
+chain:true,
+correlation:true,
+
+closeFeedback:
+"OT-telemetrin förstärker tidigare misstanke.",
+
+earlyCloseFeedback:
+"OT-IDS bör analyseras tillsammans med tidigare IT-indikatorer.",
+
+escalateFeedback:
+"Rimlig eskalering. IT- och OT-observationer börjar bilda en gemensam kedja."
+},
+
+
+{
+time:"13:31",
+source:"OT IDS",
+zone:"OT",
+severity:"high",
+title:"Unusual engineering workstation activity",
+asset:"ENG-WS-04",
+user:"service.tech",
+
+explain:
+"Engineering workstation visar aktivitet som avviker från OT-driftens normala arbetssätt.",
+
+context:[
+"Ingen registrerad change window",
+"Aktiviteten följer OT-JUMP-02-händelsen",
+"Ny kommunikationssekvens",
+"Ingen motsvarande aktivitet i normal baseline"
+],
+
+contact:{
+person:"OT-teknikern",
+text:
+"Nej. Jag arbetar inte mot den här engineering workstation idag."
+},
+
+truth:"malicious",
+chain:true,
+correlation:true,
+
+closeFeedback:
+"Aktiviteten saknar verksamhetsförklaring och följer flera relaterade avvikelser.",
+
+earlyCloseFeedback:
+"Det finns nu flera samstämmiga signaler.",
+
+escalateFeedback:
+"Rimligt. OT-personal känner inte igen aktiviteten."
+},
+
+
+{
+time:"14:02",
+source:"SOC CORRELATION",
+zone:"IT + OT",
+severity:"critical",
+title:"Multiple alerts may be related",
+asset:"IT + OT",
+user:"multiple",
+
+explain:
+"Flera tidigare händelser delar konto, system eller tidsmässiga samband.",
+
+context:[
+"11:18 – servicekonto från ny källa",
+"11:52 – kommando under samma konto",
+"13:16 – oväntad IT → OT-anslutning",
+"13:19 – OT-IDS observerar avvikelse",
+"13:31 – engineering workstation avviker",
+"Verksamheten känner inte igen aktiviteten"
+],
+
+contact:null,
+
+truth:"malicious",
+chain:true,
+boundary:true,
+correlation:true,
+
+closeFeedback:
+"Korrelationen visar nu en sammanhängande kedja.",
+
+earlyCloseFeedback:
+"Helhetsbilden innehåller samstämmiga indikatorer från både IT och OT.",
+
+escalateFeedback:
+"Det finns nu grund för att behandla situationen som en potentiell incident."
+}
+
+];
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+const state = {
+
+currentIndex:-1,
+viewingIndex:-1,
+
+alerts:0,
+open:0,
+resolved:0,
+escalated:0,
+waiting:0,
+
+securityEvents:18421,
+
+cases:[],
+
+prematureClosures:0,
+benignEscalations:0,
+goodEscalations:0,
+reopened:0,
+
+tierScore:0,
+contextDecisions:0,
+riskyClosures:0,
+unnecessaryEscalations:0
+
+};
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+function startShift(){
+
+document
+.getElementById("startScreen")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+nextEvent();
+
+}
+
+
+/* =========================================================
+   EVENT FLOW
+   ========================================================= */
+
+function nextEvent(){
+
+state.currentIndex++;
+
+if(state.currentIndex >= events.length){
+showFinal();
+return;
+}
+
+const e = events[state.currentIndex];
+
+state.alerts++;
+state.open++;
+
+state.securityEvents +=
+Math.floor(Math.random()*800)+180;
+
+state.cases[state.currentIndex] = {
+
+status:"OPEN",
+
+context:false,
+
+contacted:false,
+
+contactAnswered:false,
+
+feedback:null,
+
+feedbackType:null,
+
+businessImpact:null,
+
+decision:null,
+
+scored:false
+
+};
+
+document
+.getElementById("socClock")
+.textContent = e.time + ":00";
+
+if(e.boundary){
+
+document
+.getElementById("boundary")
+.classList.add("alerting");
+
+}
+
+if(e.correlation){
+reopenRelevantCases();
+}
+
+addFeedItem(e,state.currentIndex);
+
+updateStats();
+
+showEvent(state.currentIndex);
+
+}
+
+
+/* =========================================================
+   FEED
+   ========================================================= */
+
+function addFeedItem(e,index){
+
+const feed =
+document.getElementById("feed");
+
+const div =
+document.createElement("div");
+
+div.className="feed-item";
+
+div.id="feed-"+index;
+
+div.onclick=()=>showEvent(index);
+
+div.innerHTML=`
+
+<div class="feed-topline">
+
+<div class="feed-time">
+${e.time}
+</div>
+
+<div
+class="feed-status status-open"
+id="feed-status-${index}">
+OPEN
+</div>
+
+</div>
+
+<div class="feed-title">
+${e.title}
+</div>
+
+<div class="feed-bottom">
+
+<span class="severity sev-${e.severity}">
+${e.severity.toUpperCase()}
+</span>
+
+<span>${e.source}</span>
+
+<span>•</span>
+
+<span>${e.asset}</span>
+
+</div>
+
+`;
+
+feed.prepend(div);
+
+document
+.getElementById("queueMeta")
+.textContent =
+state.alerts + " alerts";
+
+}
+
+
+function updateFeedStatus(index){
+
+const el =
+document.getElementById(
+"feed-status-"+index
+);
+
+if(!el) return;
+
+const status =
+state.cases[index].status;
+
+el.className="feed-status";
+
+if(status==="OPEN"){
+el.classList.add("status-open");
+}
+
+if(status==="RESOLVED"){
+el.classList.add("status-resolved");
+}
+
+if(status==="ESCALATED"){
+el.classList.add("status-escalated");
+}
+
+if(status==="REOPENED"){
+el.classList.add("status-reopened");
+}
+
+el.textContent=status;
+
+}
+
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
+function showEvent(index){
+
+state.viewingIndex=index;
+
+document
+.querySelectorAll(".feed-item")
+.forEach(
+x=>x.classList.remove("active")
+);
+
+const item =
+document.getElementById(
+"feed-"+index
+);
+
+if(item){
+item.classList.add("active");
+}
+
+const e=events[index];
+const c=state.cases[index];
+
+let contextHTML="";
+
+if(c.context){
+
+contextHTML=`
+
+<div class="section-box">
+
+<div class="section-box-title">
+Triage Context
+</div>
+
+<div class="section-box-content">
+
+${e.context.map(
+x=>`
+<div class="context-line">
+<div></div>
+<div>${x}</div>
+</div>
+`
+).join("")}
+
+</div>
+</div>
+
+`;
+
+}
+
+
+let contactHTML="";
+
+if(c.contacted && !c.contactAnswered){
+
+contactHTML=`
+
+<div class="section-box feedback-blue">
+
+<div class="section-box-title">
+Contact request
+</div>
+
+<div class="section-box-content">
+
+Kontaktar
+<strong>${e.contact.person}</strong>...
+
+<br><br>
+
+Status:
+<strong>WAITING FOR RESPONSE</strong>
+
+</div>
+</div>
+
+`;
+
+}
+
+
+if(c.contactAnswered){
+
+contactHTML=`
+
+<div class="section-box feedback-blue">
+
+<div class="section-box-title">
+Response received
+</div>
+
+<div class="section-box-content">
+
+<strong>${e.contact.person}</strong>
+
+<br><br>
+
+"${e.contact.text}"
+
+<br><br>
+
+<span style="color:var(--muted);font-size:.75rem">
+Svaret sparas i ärendet och kan användas i din fortsatta bedömning.
+</span>
+
+</div>
+</div>
+
+`;
+
+}
+
+
+let feedbackHTML="";
+
+if(c.feedback){
+
+feedbackHTML=`
+
+<div class="section-box ${c.feedbackType}">
+
+<div class="section-box-title">
+SOC Feedback
+</div>
+
+<div class="section-box-content">
+${c.feedback}
+</div>
+
+</div>
+
+`;
+
+}
+
+
+let businessHTML="";
+
+if(c.businessImpact){
+
+businessHTML=`
+
+<div class="section-box feedback-blue">
+
+<div class="section-box-title">
+Business Impact
+</div>
+
+<div class="section-box-content">
+
+${c.businessImpact}
+
+<br><br>
+
+<span style="color:var(--muted);font-size:.75rem">
+Säkerhet behöver balanseras mot påverkan på verksamheten.
+</span>
+
+</div>
+</div>
+
+`;
+
+}
+
+
+let correlationHTML="";
+
+if(c.status==="REOPENED"){
+
+correlationHTML=`
+
+<div class="section-box feedback-danger">
+
+<div class="section-box-title">
+Correlation Update
+</div>
+
+<div class="section-box-content">
+
+Ny information förändrar kontexten.
+
+<br><br>
+
+Det här ärendet hade tidigare stängts,
+men behöver nu bedömas igen.
+
+</div>
+</div>
+
+`;
+
+}
+
+
+let controlsHTML="";
+
+if(
+c.status==="OPEN" ||
+c.status==="REOPENED"
+){
+
+controlsHTML=`
+
+<div class="controls">
+
+<button
+class="action"
+${c.context ? "disabled" : ""}
+onclick="investigate(${index})">
+
+${c.context
+? "✓ KONTEXT HÄMTAD"
+: "UNDERSÖK VIDARE"}
+
+</button>
+
+
+${e.contact
+?
+`
+<button
+class="action"
+${c.contacted ? "disabled" : ""}
+onclick="contactPerson(${index})">
+
+${c.contactAnswered
+? "✓ SVAR MOTTAGET"
+:
+c.contacted
+? "VÄNTAR PÅ SVAR..."
+: "KONTAKTA PERSON"}
+
+</button>
+`
+:
+""}
+
+</div>
+
+
+<div class="decision">
+
+<div class="decision-title">
+Case disposition
+</div>
+
+<button
+class="choice close"
+onclick="closeCase(${index})">
+Stäng som legitimt
+</button>
+
+<button
+class="choice escalate"
+onclick="escalateCase(${index})">
+Eskalera
+</button>
+
+</div>
+
+`;
+
+}
+
+
+let nextHTML="";
+
+if(
+index===state.currentIndex &&
+(
+c.status==="RESOLVED" ||
+c.status==="ESCALATED"
+)
+){
+
+nextHTML=`
+
+<div class="next-area">
+
+<button
+class="primary"
+onclick="nextEvent()">
+Nästa alert
+</button>
+
+</div>
+
+`;
+
+}
+
+
+document
+.getElementById("workspace")
+.innerHTML=`
+
+<div class="alert-header">
+
+<div>
+
+<div class="alert-source">
+${e.source} / ${e.zone}
+</div>
+
+<div class="alert-title">
+${e.title}
+</div>
+
+<div class="alert-meta">
+
+<span>
+Time:
+<span class="meta-value">
+${e.time}
+</span>
+</span>
+
+<span>
+Asset:
+<span class="meta-value">
+${e.asset}
+</span>
+</span>
+
+<span>
+User:
+<span class="meta-value">
+${e.user}
+</span>
+</span>
+
+</div>
+
+</div>
+
+<span class="severity sev-${e.severity}">
+${e.severity.toUpperCase()}
+</span>
+
+</div>
+
+
+<div class="explanation">
+${e.explain}
+</div>
+
+${contextHTML}
+
+${contactHTML}
+
+${correlationHTML}
+
+${feedbackHTML}
+
+${businessHTML}
+
+${controlsHTML}
+
+${nextHTML}
+
+
+<div class="case-status">
+
+<span>
+STATUS:
+<strong>${c.status}</strong>
+</span>
+
+<span>
+CONTEXT:
+<strong>${c.context ? "YES" : "NO"}</strong>
+</span>
+
+<span>
+CONTACT:
+<strong>${c.contacted ? "YES" : "NO"}</strong>
+</span>
+
+<span>
+RESPONSE:
+<strong>${c.contactAnswered ? "YES" : "NO"}</strong>
+</span>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================================
+   INVESTIGATE
+   ========================================================= */
+
+function investigate(index){
+
+const c=state.cases[index];
+
+if(
+c.status!=="OPEN" &&
+c.status!=="REOPENED"
+){
+return;
+}
+
+if(!c.context){
+
+state.contextDecisions++;
+
+state.tierScore+=2;
+
+}
+
+c.context=true;
+
+showEvent(index);
+
+}
+
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+
+function contactPerson(index){
+
+const e=events[index];
+const c=state.cases[index];
+
+if(!e.contact || c.contacted){
+return;
+}
+
+c.contacted=true;
+
+state.waiting++;
+
+updateStats();
+
+showEvent(index);
+
+
+setTimeout(()=>{
+
+c.contactAnswered=true;
+
+state.waiting--;
+
+updateStats();
+
+/*
+   Byt inte automatiskt ärende om användaren
+   tittar på något annat när svaret kommer.
+*/
+
+if(state.viewingIndex===index){
+showEvent(index);
+}
+
+showToast(
+"Response received",
+`${e.contact.person} har svarat. Svaret finns kvar i ärendet.`
+);
+
+},2500);
+
+}
+
+
+/* =========================================================
+   CLOSE
+   ========================================================= */
+
+function closeCase(index){
+
+const e=events[index];
+const c=state.cases[index];
+
+if(
+c.status!=="OPEN" &&
+c.status!=="REOPENED"
+){
+return;
+}
+
+const didInvestigate =
+c.context ||
+c.contactAnswered;
+
+c.status="RESOLVED";
+c.decision="CLOSED";
+
+state.open--;
+state.resolved++;
+
+
+if(!c.scored){
+
+if(e.truth==="benign"){
+
+if(didInvestigate){
+state.tierScore+=2;
+}
+else{
+state.tierScore+=1;
+}
+
+}
+else{
+
+state.riskyClosures++;
+state.tierScore-=4;
+
+}
+
+c.scored=true;
+
+}
+
+
+if(e.truth==="benign"){
+
+if(didInvestigate){
+
+c.feedback=e.closeFeedback;
+c.feedbackType="feedback-good";
+
+}
+else{
+
+state.prematureClosures++;
+
+c.feedback=e.earlyCloseFeedback;
+c.feedbackType="feedback-warn";
+
+}
+
+}
+else{
+
+state.prematureClosures++;
+
+c.feedback=
+didInvestigate
+? e.closeFeedback
+: e.earlyCloseFeedback;
+
+c.feedbackType="feedback-danger";
+
+}
+
+updateFeedStatus(index);
+
+updateStats();
+
+showEvent(index);
+
+}
+
+
+/* =========================================================
+   ESCALATE
+   ========================================================= */
+
+function escalateCase(index){
+
+const e=events[index];
+const c=state.cases[index];
+
+if(
+c.status!=="OPEN" &&
+c.status!=="REOPENED"
+){
+return;
+}
+
+c.status="ESCALATED";
+c.decision="ESCALATED";
+
+state.open--;
+state.escalated++;
+
+
+if(!c.scored){
+
+if(e.truth==="benign"){
+
+state.unnecessaryEscalations++;
+state.tierScore-=2;
+
+}
+else{
+
+state.tierScore+=4;
+
+}
+
+c.scored=true;
+
+}
+
+
+c.feedback=e.escalateFeedback;
+
+
+if(e.truth==="benign"){
+
+state.benignEscalations++;
+
+c.feedbackType="feedback-warn";
+
+c.businessImpact=
+e.businessImpact ||
+"Ytterligare personer behöver lägga tid på ärendet.";
+
+}
+else{
+
+state.goodEscalations++;
+
+c.feedbackType="feedback-good";
+
+}
+
+updateFeedStatus(index);
+
+updateStats();
+
+showEvent(index);
+
+}
+
+
+/* =========================================================
+   REOPEN
+   ========================================================= */
+
+function reopenRelevantCases(){
+
+let reopenedNow=0;
+
+events.forEach((e,index)=>{
+
+if(index>=state.currentIndex){
+return;
+}
+
+const c=state.cases[index];
+
+if(!c){
+return;
+}
+
+if(
+e.chain &&
+e.truth!=="benign" &&
+c.status==="RESOLVED"
+){
+
+c.status="REOPENED";
+
+c.feedback=
+"Ny telemetri och nya samband förändrar kontexten. Ärendet behöver analyseras igen.";
+
+c.feedbackType="feedback-danger";
+
+state.resolved--;
+
+state.open++;
+
+state.reopened++;
+
+reopenedNow++;
+
+updateFeedStatus(index);
+
+}
+
+});
+
+
+if(reopenedNow>0){
+
+setTimeout(()=>{
+
+showToast(
+"Correlation update",
+`${reopenedNow} tidigare stängt ärende har återöppnats.`
+);
+
+},600);
+
+}
+
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+function updateStats(){
+
+document
+.getElementById("alertCounter")
+.textContent=state.alerts;
+
+document
+.getElementById("openCounter")
+.textContent=state.open;
+
+document
+.getElementById("resolvedCounter")
+.textContent=state.resolved;
+
+document
+.getElementById("escalatedCounter")
+.textContent=state.escalated;
+
+document
+.getElementById("waitingCounter")
+.textContent=state.waiting;
+
+document
+.getElementById("eventCounter")
+.textContent=
+state.securityEvents.toLocaleString("sv-SE");
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function showToast(title,text){
+
+const toast=
+document.getElementById("toast");
+
+toast.innerHTML=`
+
+<div class="toast-title">
+${title}
+</div>
+
+<div class="toast-text">
+${text}
+</div>
+
+`;
+
+toast.classList.remove("hidden");
+
+setTimeout(()=>{
+
+toast.classList.add("hidden");
+
+},7000);
+
+}
+
+
+/* =========================================================
+   TIER
+   ========================================================= */
+
+function getSocTier(){
+
+let score=state.tierScore;
+
+score+=state.goodEscalations*2;
+
+score-=state.reopened*2;
+
+
+if(state.benignEscalations>=4){
+
+return{
+
+tier:"SOC TIER 1",
+
+title:"BETTER SAFE THAN SORRY™",
+
+color:"#e7c65b",
+
+text:
+"Du var snabb på eskaleringsknappen. Få saker slank förbi, men verksamheten fick också svara på en hel del frågor.",
+
+detail:
+"Använd mer kontext för att skilja verklig risk från legitim aktivitet."
+
+};
+
+}
+
+
+if(state.riskyClosures>=3){
+
+return{
+
+tier:"SOC TIER 1",
+
+title:"THE QUICK CLOSER™",
+
+color:"#f39c4a",
+
+text:
+"Du gillar ett rent alertflöde. Några signaler fick dock lämna kön lite väl snabbt.",
+
+detail:
+"Låt osäkra ärenden leva längre när viktig kontext saknas."
+
+};
+
+}
+
+
+if(
+score>=24 &&
+state.benignEscalations<=2 &&
+state.riskyClosures<=1
+){
+
+return{
+
+tier:"SOC TIER 3",
+
+title:"CORRELATION WIZARD",
+
+color:"#44c487",
+
+text:
+"Du kombinerade teknisk telemetri, verksamhetskontext och tidigare händelser utan att eskalera allt som såg konstigt ut.",
+
+detail:
+"En enskild alert berättar sällan hela historien."
+
+};
+
+}
+
+
+if(score>=12){
+
+return{
+
+tier:"SOC TIER 2",
+
+title:"CONTEXT HUNTER",
+
+color:"#4da3ff",
+
+text:
+"Du använde ofta mer kontext innan du fattade beslut och höll osäkra ärenden öppna tillräckligt länge.",
+
+detail:
+"Bra balans mellan analys, eskalering och verksamhetspåverkan."
+
+};
+
+}
+
+
+return{
+
+tier:"SOC TIER 1",
+
+title:"ALERT APPRENTICE",
+
+color:"#e7c65b",
+
+text:
+"Du tog dig igenom SOC-passet, men några beslut hade vunnit på mer kontext.",
+
+detail:
+"Det är precis därför SOC-arbete är svårt."
+
+};
+
+}
+
+
+/* =========================================================
+   FINAL
+   ========================================================= */
+
+function showFinal(){
+
+document
+.getElementById("mainGrid")
+.classList.add("hidden");
+
+const final=
+document.getElementById("finalScreen");
+
+final.classList.remove("hidden");
+
+const socTier=getSocTier();
+
+
+const timeline=
+events.map((e,index)=>{
+
+const c=state.cases[index];
+
+return`
+
+<div class="timeline-event ${e.chain ? "incident" : ""}">
+
+<div class="timeline-time">
+${e.time}
+</div>
+
+<div class="timeline-name">
+
+${e.title}
+
+<div style="color:var(--muted);font-size:.68rem;margin-top:3px">
+${e.source} / ${e.asset}
+</div>
+
+</div>
+
+<div class="timeline-status">
+${c ? c.status : ""}
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+
+final.innerHTML=`
+
+<div class="final-card">
+
+<div class="kicker">
+End of shift // Correlation review
+</div>
+
+<h2>
+Vad hände egentligen?
+</h2>
+
+<div class="final-intro">
+
+Under dagen såg du legitim drift, säkerhetslarm
+och aktiviteter som först senare kunde kopplas ihop.
+
+</div>
+
+
+<div
+class="tier-card"
+style="
+border:1px solid ${socTier.color};
+box-shadow:0 0 22px ${socTier.color}15;
+">
+
+<div
+class="kicker"
+style="color:${socTier.color}">
+Shift complete // Analyst profile
+</div>
+
+<div
+class="tier-name"
+style="color:${socTier.color}">
+${socTier.tier}
+</div>
+
+<div class="tier-title">
+"${socTier.title}"
+</div>
+
+<div class="tier-text">
+
+${socTier.text}
+
+<br><br>
+
+<span style="color:var(--muted)">
+${socTier.detail}
+</span>
+
+</div>
+
+</div>
+
+
+<div class="reality-check">
+
+SOC REALITY CHECK:
+Detta är inte ett kompetenstest.
+Titeln bygger på dina beslut under den simulerade arbetsdagen.
+
+</div>
+
+
+<div class="score-grid">
+
+<div class="score-card">
+<div class="score-label">Resolved</div>
+<div class="score-value">${state.resolved}</div>
+</div>
+
+<div class="score-card">
+<div class="score-label">Escalated</div>
+<div class="score-value">${state.escalated}</div>
+</div>
+
+<div class="score-card">
+<div class="score-label">Reopened</div>
+<div class="score-value">${state.reopened}</div>
+</div>
+
+<div class="score-card">
+<div class="score-label">Benign escalations</div>
+<div class="score-value">${state.benignEscalations}</div>
+</div>
+
+</div>
+
+
+<div class="section-box feedback-blue">
+
+<div class="section-box-title">
+Din SOC-dag
+</div>
+
+<div class="section-box-content">
+
+<strong>${state.contextDecisions}</strong>
+ärenden analyserades med extra kontext.
+
+<br>
+
+<strong>${state.goodEscalations}</strong>
+relevanta händelser eskalerades.
+
+<br>
+
+<strong>${state.benignEscalations}</strong>
+legitima aktiviteter eskalerades.
+
+<br>
+
+<strong>${state.riskyClosures}</strong>
+misstänkta aktiviteter stängdes.
+
+<br>
+
+<strong>${state.reopened}</strong>
+tidigare stängda ärenden behövde återöppnas.
+
+</div>
+
+</div>
+
+
+<div class="timeline">
+
+<div class="timeline-header">
+Shift timeline
+</div>
+
+${timeline}
+
+</div>
+
+
+<div class="chain">
+11:18  SERVICE ACCOUNT ANOMALY
+          │
+          ▼
+11:52  COMMAND EXECUTION
+          │
+          ▼
+13:16  IT ───────────────► OT
+          │             ZONE BOUNDARY
+          ▼
+13:19  OT IDS OBSERVATION
+          │
+          │ telemetry arrives later
+          ▼
+13:31  ENGINEERING WORKSTATION
+          │
+          ▼
+14:02  SOC CORRELATION
+</div>
+
+
+<div class="big-message">
+
+<strong>
+Ett larm är inte samma sak som en incident.
+</strong>
+
+<br><br>
+
+SOC behöver kombinera teknisk telemetri,
+historik, zonmodell och verksamhetskontext
+för att förstå vad som faktiskt händer.
+
+</div>
+
+
+<div class="big-message">
+
+<strong>
+IT + OT
+</strong>
+
+<br><br>
+
+IT såg kontoaktivitet och kommandokörning.
+OT såg avvikande kommunikation.
+
+<br><br>
+
+Det var sambandet mellan miljöerna som gjorde
+attackkedjan synlig.
+
+</div>
+
+
+<div class="big-message">
+
+<strong>
+Varför kontaktar SOC mig?
+</strong>
+
+<br><br>
+
+Telemetrin kan visa att ett kommando kördes
+eller att en behörighet ändrades.
+
+Den kan inte alltid berätta varför.
+
+<br><br>
+
+När SOC frågar:
+
+<strong>
+"Var det du?"
+</strong>
+
+eller
+
+<strong>
+"Pågår det ett arbete här?"
+</strong>
+
+kan svaret vara en viktig del av incidentanalysen.
+
+</div>
+
+
+<button
+class="primary"
+onclick="location.reload()">
+
+Kör ett nytt SOC-pass
+
+</button>
+
+</div>
+
+`;
+
+}
+
+</script>
+
+</body>
+</html>
