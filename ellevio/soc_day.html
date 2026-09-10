@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>En dag i IT/OT-SOC:en | Elnätsbolaget AB</title>
+<title>En dag i IT/OT-SOC:en</title>
 
 <style>
 :root{
@@ -45,7 +45,9 @@ button{
     display:none !important;
 }
 
-/* START */
+/* =========================================================
+   START
+   ========================================================= */
 
 #startScreen{
     min-height:100vh;
@@ -115,7 +117,9 @@ h1{
     background:#103719;
 }
 
-/* APP */
+/* =========================================================
+   APP
+   ========================================================= */
 
 #app{
     max-width:1550px;
@@ -148,7 +152,9 @@ header{
     color:var(--yellow);
 }
 
-/* STATS */
+/* =========================================================
+   STATS
+   ========================================================= */
 
 .stats{
     display:grid;
@@ -186,7 +192,9 @@ header{
     color:var(--blue);
 }
 
-/* ZONES */
+/* =========================================================
+   ZONES
+   ========================================================= */
 
 .zone-layout{
     display:grid;
@@ -240,7 +248,9 @@ header{
     box-shadow:0 0 24px rgba(255,40,40,.25);
 }
 
-/* MAIN */
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 .main-grid{
     display:grid;
@@ -340,7 +350,9 @@ header{
     color:var(--red);
 }
 
-/* WORKSPACE */
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
 
 .alert-workspace{
     min-height:620px;
@@ -483,7 +495,9 @@ header{
     border-top:1px solid var(--border);
 }
 
-/* TOAST */
+/* =========================================================
+   TOAST
+   ========================================================= */
 
 .toast{
     position:fixed;
@@ -502,7 +516,9 @@ header{
     margin-bottom:6px;
 }
 
-/* FINAL */
+/* =========================================================
+   FINAL
+   ========================================================= */
 
 #finalScreen{
     padding:30px 0;
@@ -512,6 +528,32 @@ header{
     border:1px solid var(--green2);
     background:var(--panel);
     padding:28px;
+}
+
+.tier-card{
+    margin:28px 0 12px;
+    padding:30px;
+    background:#060b07;
+    text-align:center;
+}
+
+.tier-name{
+    font-size:clamp(1.8rem,5vw,3.4rem);
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.tier-title{
+    color:var(--white);
+    font-size:1.25rem;
+    margin-bottom:22px;
+}
+
+.reality-check{
+    text-align:center;
+    color:var(--dim);
+    font-size:.75rem;
+    margin:0 0 28px;
 }
 
 .timeline{
@@ -580,7 +622,12 @@ header{
     font-size:.8rem;
 }
 
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
 @media(max-width:950px){
+
     .stats{
         grid-template-columns:repeat(3,1fr);
     }
@@ -607,6 +654,7 @@ header{
 }
 
 @media(max-width:550px){
+
     .stats{
         grid-template-columns:repeat(2,1fr);
     }
@@ -620,18 +668,22 @@ header{
 
 <body>
 
+<!-- =======================================================
+     START
+     ======================================================= -->
+
 <section id="startScreen">
 
 <div class="start-card">
 
 <div class="kicker">
-ELNÄTSBOLAGET AB // SECURITY OPERATIONS CENTER
+SECURITY OPERATIONS CENTER // IT + OT
 </div>
 
 <h1>EN DAG I SOC:EN</h1>
 
 <div class="subtitle">
-IT + OT // analys under osäkerhet
+Analys under osäkerhet
 </div>
 
 <div class="intro">
@@ -665,6 +717,11 @@ Din uppgift är att fatta ett rimligt beslut
 utifrån den information som finns just nu.
 </strong>
 
+<br><br>
+
+När passet är klart får du dessutom se vilken
+SOC-analytikerprofil dina beslut skapade.
+
 </div>
 
 <button class="primary" onclick="startShift()">
@@ -676,12 +733,16 @@ STARTA SOC-PASSET &gt;
 </section>
 
 
+<!-- =======================================================
+     APP
+     ======================================================= -->
+
 <section id="app" class="hidden">
 
 <header>
 
 <div class="brand">
-ELNÄTSBOLAGET AB <span>// IT/OT SOC</span>
+SECURITY OPERATIONS <span>// IT/OT SOC</span>
 </div>
 
 <div class="clock" id="socClock">
@@ -1315,7 +1376,14 @@ const state = {
     prematureClosures:0,
     benignEscalations:0,
     goodEscalations:0,
-    reopened:0
+    reopened:0,
+
+    /* SOC PROFILE */
+
+    tierScore:0,
+    contextDecisions:0,
+    riskyClosures:0,
+    unnecessaryEscalations:0
 
 };
 
@@ -1374,7 +1442,9 @@ function nextEvent(){
 
         businessImpact:null,
 
-        decision:null
+        decision:null,
+
+        scored:false
     };
 
     document.getElementById("socClock")
@@ -1469,31 +1539,19 @@ function updateFeedStatus(index){
         "feed-status";
 
     if(status==="OPEN"){
-
-        el.classList.add(
-            "status-open"
-        );
+        el.classList.add("status-open");
     }
 
     if(status==="RESOLVED"){
-
-        el.classList.add(
-            "status-resolved"
-        );
+        el.classList.add("status-resolved");
     }
 
     if(status==="ESCALATED"){
-
-        el.classList.add(
-            "status-escalated"
-        );
+        el.classList.add("status-escalated");
     }
 
     if(status==="REOPENED"){
-
-        el.classList.add(
-            "status-reopened"
-        );
+        el.classList.add("status-reopened");
     }
 
     el.textContent = status;
@@ -1591,8 +1649,8 @@ function showEvent(index){
             <br><br>
 
             <span class="small">
-            Informationen ligger kvar i ärendet
-            och kan användas i din fortsatta bedömning.
+            Informationen ligger kvar i ärendet och
+            kan användas i din fortsatta bedömning.
             </span>
 
         </div>
@@ -1657,6 +1715,7 @@ function showEvent(index){
 
             <button
                 class="action"
+                ${c.context ? "disabled" : ""}
                 onclick="investigate(${index})">
 
                 ${
@@ -1917,6 +1976,17 @@ function investigate(index){
         return;
     }
 
+    /*
+       Poäng ges bara första gången kontext hämtas.
+    */
+
+    if(!c.context){
+
+        state.contextDecisions++;
+
+        state.tierScore += 2;
+    }
+
     c.context = true;
 
     showEvent(index);
@@ -1960,9 +2030,20 @@ function contactPerson(index){
 
         updateStats();
 
+        /*
+           Vi visar bara ärendet automatiskt om användaren
+           fortfarande tittar på just det ärendet.
+        */
 
-        showEvent(index);
+        const active =
+            document.getElementById("feed-"+index);
 
+        if(
+            active &&
+            active.classList.contains("active")
+        ){
+            showEvent(index);
+        }
 
         showToast(
             "NEW RESPONSE",
@@ -2010,6 +2091,37 @@ function closeCase(index){
     state.resolved++;
 
 
+    /*
+       SOC PROFILE SCORING
+    */
+
+    if(!c.scored){
+
+        if(e.truth==="benign"){
+
+            if(didInvestigate){
+                state.tierScore += 2;
+            }
+            else{
+                state.tierScore += 1;
+            }
+
+        }
+        else{
+
+            state.riskyClosures++;
+
+            state.tierScore -= 4;
+        }
+
+        c.scored = true;
+    }
+
+
+    /*
+       FEEDBACK
+    */
+
     if(e.truth==="benign"){
 
         if(didInvestigate){
@@ -2033,7 +2145,6 @@ function closeCase(index){
         }
 
     }
-
     else{
 
         state.prematureClosures++;
@@ -2086,6 +2197,28 @@ function escalateCase(index){
     state.open--;
 
     state.escalated++;
+
+
+    /*
+       SOC PROFILE SCORING
+    */
+
+    if(!c.scored){
+
+        if(e.truth==="benign"){
+
+            state.unnecessaryEscalations++;
+
+            state.tierScore -= 2;
+
+        }
+        else{
+
+            state.tierScore += 4;
+        }
+
+        c.scored = true;
+    }
 
 
     c.feedback =
@@ -2276,6 +2409,160 @@ function showToast(title,text){
 
 
 /* ==========================================================
+   SOC TIER / ANALYST PROFILE
+   ========================================================== */
+
+function getSocTier(){
+
+    let score =
+        state.tierScore;
+
+
+    /*
+       Extra vikt för bra incidenteskaleringar.
+    */
+
+    score +=
+        state.goodEscalations * 2;
+
+
+    /*
+       Återöppnade ärenden är inte katastrof,
+       men visar att första bedömningen missade
+       viktig kontext.
+    */
+
+    score -=
+        state.reopened * 2;
+
+
+    /*
+       PROFIL:
+       Mycket hög eskaleringsvilja.
+    */
+
+    if(
+        state.benignEscalations >= 4
+    ){
+
+        return {
+
+            tier:"SOC TIER 1",
+
+            title:"BETTER SAFE THAN SORRY™",
+
+            color:"#ffd166",
+
+            text:
+                "Du var snabb på eskaleringsknappen. " +
+                "Få saker slank förbi, men verksamheten fick också svara på en hel del frågor.",
+
+            detail:
+                "Nästa steg: använd mer kontext för att skilja verklig risk från legitim aktivitet."
+        };
+    }
+
+
+    /*
+       PROFIL:
+       Många misstänkta ärenden stängdes.
+    */
+
+    if(
+        state.riskyClosures >= 3
+    ){
+
+        return {
+
+            tier:"SOC TIER 1",
+
+            title:"THE QUICK CLOSER™",
+
+            color:"#ff9f43",
+
+            text:
+                "Du gillar ett rent alertflöde. Problemet är att några signaler fick lämna kön lite väl snabbt.",
+
+            detail:
+                "Nästa steg: låt osäkra ärenden leva lite längre när kontext saknas."
+        };
+    }
+
+
+    /*
+       TIER 3
+    */
+
+    if(
+        score >= 24 &&
+        state.benignEscalations <= 2 &&
+        state.riskyClosures <= 1
+    ){
+
+        return {
+
+            tier:"SOC TIER 3",
+
+            title:"CORRELATION WIZARD",
+
+            color:"#72ff72",
+
+            text:
+                "Du lyckades kombinera teknisk telemetri, verksamhetskontext och tidigare händelser utan att eskalera allt som såg konstigt ut.",
+
+            detail:
+                "Du verkar ha förstått dagens viktigaste princip: en enskild alert berättar sällan hela historien."
+        };
+    }
+
+
+    /*
+       TIER 2
+    */
+
+    if(
+        score >= 12
+    ){
+
+        return {
+
+            tier:"SOC TIER 2",
+
+            title:"CONTEXT HUNTER",
+
+            color:"#64b5ff",
+
+            text:
+                "Du använde ofta mer kontext innan du fattade beslut och höll flera osäkra ärenden öppna tillräckligt länge.",
+
+            detail:
+                "Bra balans mellan analys, eskalering och påverkan på verksamheten."
+        };
+    }
+
+
+    /*
+       DEFAULT TIER 1
+    */
+
+    return {
+
+        tier:"SOC TIER 1",
+
+        title:"ALERT APPRENTICE",
+
+        color:"#ffd166",
+
+        text:
+            "Du tog dig igenom SOC-passet, men några beslut hade vunnit på mer kontext innan ärendet stängdes eller eskalerades.",
+
+        detail:
+            "Det är precis därför SOC-arbete är svårt."
+    };
+}
+
+
+/* ==========================================================
    FINAL
    ========================================================== */
 
@@ -2297,6 +2584,10 @@ function showFinal(){
     final.classList.remove(
         "hidden"
     );
+
+
+    const socTier =
+        getSocTier();
 
 
     const timeline =
@@ -2398,7 +2689,9 @@ function showFinal(){
     }
 
 
-    if(state.reopened > 0){
+    if(
+        state.reopened > 0
+    ){
 
         summary += `
 
@@ -2421,7 +2714,8 @@ function showFinal(){
 
     if(
         state.benignEscalations <= 2 &&
-        state.goodEscalations >= 3
+        state.goodEscalations >= 3 &&
+        state.riskyClosures <= 1
     ){
 
         summary += `
@@ -2471,6 +2765,74 @@ function showFinal(){
 
         </p>
 
+
+        <!-- SOC TIER -->
+
+        <div
+            class="tier-card"
+            style="
+                border:1px solid ${socTier.color};
+                box-shadow:0 0 24px ${socTier.color}18;
+            "
+        >
+
+            <div
+                class="small"
+                style="
+                    color:${socTier.color};
+                    letter-spacing:.18em;
+                    margin-bottom:10px;
+                "
+            >
+                SHIFT COMPLETE // ANALYST PROFILE
+            </div>
+
+
+            <div
+                class="tier-name"
+                style="color:${socTier.color}"
+            >
+                ${socTier.tier}
+            </div>
+
+
+            <div class="tier-title">
+                "${socTier.title}"
+            </div>
+
+
+            <div
+                style="
+                    max-width:760px;
+                    margin:auto;
+                    line-height:1.7;
+                "
+            >
+
+                ${socTier.text}
+
+                <br><br>
+
+                <span style="color:#789078">
+                    ${socTier.detail}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="reality-check">
+
+            SOC REALITY CHECK:
+            Detta är inte ett kompetenstest.
+            Titeln bygger bara på dina beslut under
+            den här simulerade arbetsdagen.
+
+        </div>
+
+
+        <!-- SHIFT STATS -->
 
         <div class="score-grid">
 
@@ -2528,8 +2890,54 @@ function showFinal(){
         </div>
 
 
+        <!-- PROFILE BREAKDOWN -->
+
+        <div class="feedback-box feedback-blue">
+
+            <h4>
+            DIN SOC-DAG
+            </h4>
+
+            <strong>
+            ${state.contextDecisions}
+            </strong>
+            ärenden analyserades med extra kontext.
+
+            <br>
+
+            <strong>
+            ${state.goodEscalations}
+            </strong>
+            relevanta händelser eskalerades.
+
+            <br>
+
+            <strong>
+            ${state.benignEscalations}
+            </strong>
+            legitima aktiviteter eskalerades.
+
+            <br>
+
+            <strong>
+            ${state.riskyClosures}
+            </strong>
+            misstänkta aktiviteter stängdes.
+
+            <br>
+
+            <strong>
+            ${state.reopened}
+            </strong>
+            tidigare stängda ärenden behövde återöppnas.
+
+        </div>
+
+
         ${summary}
 
+
+        <!-- TIMELINE -->
 
         <div class="timeline">
 
@@ -2537,6 +2945,8 @@ function showFinal(){
 
         </div>
 
+
+        <!-- ATTACK CHAIN -->
 
         <div class="chain">
 11:18  SERVICE ACCOUNT ANOMALY
@@ -2559,6 +2969,8 @@ function showFinal(){
         </div>
 
 
+        <!-- LEARNING -->
+
         <div class="big-message">
 
             <strong>
@@ -2574,8 +2986,10 @@ function showFinal(){
         </div>
 
 
-        <div class="big-message"
-             style="border-color:#ff5c5c">
+        <div
+            class="big-message"
+            style="border-color:#ff5c5c"
+        >
 
             <strong>
             IT + OT
@@ -2597,8 +3011,10 @@ function showFinal(){
         </div>
 
 
-        <div class="big-message"
-             style="border-color:#64b5ff">
+        <div
+            class="big-message"
+            style="border-color:#64b5ff"
+        >
 
             <strong>
             VARFÖR KONTAKTAR SOC MIG?
@@ -2638,7 +3054,8 @@ function showFinal(){
 
         <button
             class="primary"
-            onclick="location.reload()">
+            onclick="location.reload()"
+        >
 
             KÖR ETT NYTT SOC-PASS
 
