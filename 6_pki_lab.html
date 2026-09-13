@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baalstorm // PKI LAB</title>
+
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+  --bg:#050805;
+  --panel:#0a100b;
+  --panel2:#0d160f;
+  --green:#39ff88;
+  --green2:#18c768;
+  --text:#d5ffe4;
+  --muted:#7cab8b;
+  --yellow:#ffd166;
+  --red:#ff5d73;
+  --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.6;
+}
+
+a{color:var(--green)}
+
+.wrapper{
+  width:min(1100px,calc(100% - 28px));
+  margin:auto;
+}
+
+header{
+  border-bottom:1px solid var(--border);
+  background:#030503;
+}
+
+nav{
+  min-height:65px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.logo{
+  color:var(--green);
+  font-weight:bold;
+  letter-spacing:.12em;
+}
+
+nav a{
+  text-decoration:none;
+  font-size:.82rem;
+}
+
+.hero{
+  padding:70px 0 45px;
+}
+
+.prompt{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+h1{
+  color:var(--green);
+  font-size:clamp(2.4rem,6vw,4.8rem);
+  margin:8px 0 14px;
+  line-height:1;
+}
+
+h2{
+  color:var(--green);
+  margin-top:0;
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:760px;
+}
+
+.level{
+  margin:28px 0;
+  border:1px solid var(--border);
+  background:var(--panel);
+}
+
+.level-head{
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  color:var(--green);
+  font-weight:bold;
+}
+
+.level-body{
+  padding:20px;
+}
+
+.task{
+  background:var(--panel2);
+  border-left:3px solid var(--green2);
+  padding:18px;
+  margin:15px 0;
+}
+
+.task strong{
+  color:var(--yellow);
+}
+
+.task code{
+  color:var(--green);
+}
+
+button{
+  margin-top:10px;
+  margin-right:8px;
+  padding:8px 13px;
+  border:1px solid var(--green);
+  background:transparent;
+  color:var(--green);
+  font-family:inherit;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--green);
+  color:#021006;
+}
+
+.reveal{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border:1px dashed var(--border);
+  color:#bdeacb;
+  background:#060b07;
+}
+
+.boss{
+  border-color:var(--red);
+}
+
+.boss .level-head{
+  color:var(--red);
+  border-color:var(--red);
+}
+
+.system{
+  margin:30px 0;
+  padding:16px;
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+
+footer{
+  border-top:1px solid var(--border);
+  margin-top:60px;
+  padding:30px 0;
+  color:var(--muted);
+  font-size:.8rem;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrapper">
+<nav>
+  <div class="logo">BAALSTORM // PKI LAB</div>
+  <div>
+    <a href="crypto_auth_lab.html">[ CRYPTO + AUTH ]</a>
+  </div>
+</nav>
+</div>
+</header>
+
+<main class="wrapper">
+
+<section class="hero">
+  <div class="prompt">$ ./start_pki_lab.sh</div>
+  <h1>PKI & CERTIFIKAT</h1>
+  <p>
+    Målet är att förstå hur certifikat knyter ihop en identitet
+    med en publik nyckel — och hur en klient avgör om den kan lita på certifikatet.
+  </p>
+</section>
+
+
+<section class="level">
+
+<div class="level-head">
+[ BASIC ] // CERTIFICATE FUNDAMENTALS
+</div>
+
+<div class="level-body">
+
+<div class="task">
+  <strong>UPPGIFT 01</strong>
+  <p>Ett digitalt certifikat kopplar ihop två saker. Vilka?</p>
+
+  <button onclick="toggle('a1')">SHOW ANSWER</button>
+
+  <div class="reveal" id="a1">
+    En publik nyckel och en identitet.
+  </div>
+</div>
+
+
+<div class="task">
+  <strong>UPPGIFT 02</strong>
+  <p>
+    Placera följande begrepp i rätt roll:
+    <code>CA</code>, <code>RA</code>, <code>CSR</code>.
+  </p>
+
+  <p>
+    A. Verifierar identiteten innan certifikatet utfärdas.<br>
+    B. Utfärdar och signerar certifikat.<br>
+    C. Innehåller publik nyckel och identitetsinformation som skickas för signering.
+  </p>
+
+  <button onclick="toggle('a2')">SHOW ANSWER</button>
+
+  <div class="reveal" id="a2">
+    A = RA<br>
+    B = CA<br>
+    C = CSR
+  </div>
+</div>
+
+
+<div class="task">
+  <strong>UPPGIFT 03</strong>
+
+  <p>
+    Varför finns den privata nyckeln normalt inte i ett servercertifikat?
+  </p>
+
+  <button onclick="toggle('a3')">SHOW ANSWER</button>
+
+  <div class="reveal" id="a3">
+    Certifikatet innehåller den publika nyckeln. Den privata nyckeln ska
+    förvaras säkert hos ägaren och används bland annat för signering och dekryptering.
+  </div>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level">
+
+<div class="level-head">
+[ INTERMEDIATE ] // TRUST CHAIN
+</div>
+
+<div class="level-body">
+
+<div class="task">
+  <strong>UPPGIFT 04</strong>
+
+  <p>
+    Rita en tillitskedja med:
+  </p>
+
+  <p>
+    <code>ROOT CA → INTERMEDIATE CA → SERVER CERTIFICATE</code>
+  </p>
+
+  <p>
+    Förklara varför webbläsaren behöver kunna bygga kedjan hela vägen
+    till en betrodd rot.
+  </p>
+
+  <button onclick="toggle('a4')">HINT</button>
+
+  <div class="reveal" id="a4">
+    Root-certifikatet finns som en trusted root i operativsystemet eller webbläsaren.
+  </div>
+</div>
+
+
+<div class="task">
+  <strong>UPPGIFT 05</strong>
+
+  <p>
+    Ett certifikat ger en webbläsarvarning. Nämn minst fyra möjliga orsaker.
+  </p>
+
+  <button onclick="toggle('a5')">SHOW ANSWER</button>
+
+  <div class="reveal" id="a5">
+    Exempel från materialet:<br><br>
+
+    • Root CA är inte betrodd<br>
+    • certifikatet har gått ut<br>
+    • trust chain kan inte verifieras<br>
+    • certifikatet har spärrats<br>
+    • certifikatet gäller en annan domän
+  </div>
+</div>
+
+
+<div class="task">
+  <strong>UPPGIFT 06</strong>
+
+  <p>
+    Vad är skillnaden mellan <code>CRL</code> och <code>OCSP</code>?
+  </p>
+
+  <button onclick="toggle('a6')">SHOW ANSWER</button>
+
+  <div class="reveal" id="a6">
+    CRL är en lista över certifikat som har återkallats.
+    OCSP används för en statusförfrågan för att kontrollera ett certifikats status.
+  </div>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE ] // INSPECT THE CERTIFICATE
+</div>
+
+<div class="level-body">
+
+<div class="task">
+  <strong>UPPGIFT 07</strong>
+
+  <p>
+    Öppna certifikatet för <code>baalstorm.se</code> i webbläsaren.
+  </p>
+
+  <p>Identifiera:</p>
+
+  <p>
+    [ ] giltighetstid<br>
+    [ ] servercertifikat<br>
+    [ ] mellanliggande certifikat<br>
+    [ ] Root CA<br>
+    [ ] publik nyckel<br>
+    [ ] SAN<br>
+    [ ] issuer<br>
+    [ ] subject
+  </p>
+
+  <p>
+    Fråga: kan du hitta serverns privata nyckel i certifikatet?
+  </p>
+
+  <button onclick="toggle('a7')">HINT</button>
+
+  <div class="reveal" id="a7">
+    Den privata nyckeln ska inte finnas i certifikatet.
+  </div>
+</div>
+
+
+<div class="task">
+  <strong>UPPGIFT 08</strong>
+
+  <p>
+    Jämför certifikatkedjan för två olika HTTPS-webbplatser.
+  </p>
+
+  <p>
+    Är deras Root CA samma?<br>
+    Använder de samma Intermediate CA?<br>
+    Vilka SAN-poster finns?
+  </p>
+</div>
+
+
+<div class="task">
+  <strong>UPPGIFT 09</strong>
+
+  <p>
+    Fånga en TLS-anslutning i Wireshark.
+  </p>
+
+  <p>
+    Leta efter TLS-handshake-meddelanden och försök identifiera
+    vilken information som hör till etableringen av TLS-sessionen.
+  </p>
+
+  <p style="color:var(--muted)">
+    Målet är inte att dekryptera trafiken utan att undersöka handshake-flödet.
+  </p>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level boss">
+
+<div class="level-head">
+[ BOSS ] // BUILD YOUR OWN TRUST
+</div>
+
+<div class="level-body">
+
+<div class="task">
+  <strong>BOSS 01</strong>
+
+  <p>
+    Skapa ett självsignerat certifikat med OpenSSL eller motsvarande.
+  </p>
+
+  <p>
+    Starta därefter en enkel webbserver som använder certifikatet.
+  </p>
+
+  <p>Dokumentera:</p>
+
+  <p>
+    1. Vad säger webbläsaren?<br>
+    2. Varför litar den inte på certifikatet?<br>
+    3. Vad skulle behöva ändras för att klienten skulle lita på det?
+  </p>
+
+  <button onclick="toggle('boss1')">CONCEPT HINT</button>
+
+  <div class="reveal" id="boss1">
+    Ett självsignerat certifikat är signerat med sin egen privata nyckel.
+    Webbläsaren har därför inte automatiskt en betrodd CA-kedja till certifikatet.
+  </div>
+</div>
+
+
+<div class="task">
+  <strong>BOSS 02 // INCIDENT ANALYSIS</strong>
+
+  <p>
+    En användare besöker <code>portal.example</code>.
+    Webbläsaren visar certifikatvarning.
+  </p>
+
+  <p>Du upptäcker:</p>
+
+  <p>
+    • domännamnet matchar inte certifikatet<br>
+    • certifikatet är fortfarande inom giltighetstiden<br>
+    • certifikatkedjan går inte till en betrodd Root CA
+  </p>
+
+  <p>
+    Är detta bevis på en Man-in-the-Middle-attack?
+  </p>
+
+  <button onclick="toggle('boss2')">SHOW DISCUSSION</button>
+
+  <div class="reveal" id="boss2">
+    Nej. Materialet beskriver att certifikatfel kan bero på
+    konfigurationsproblem, men också kan vara ett tecken på en
+    Man-in-the-Middle-attack. Mer undersökning krävs.
+  </div>
+</div>
+
+</div>
+</section>
+
+
+<div class="system">
+[SYSTEM] PKI handlar i grunden om tillit:
+kan klienten lita på att den publika nyckeln verkligen tillhör rätt identitet?
+</div>
+
+</main>
+
+
+<footer>
+<div class="wrapper">
+BAALSTORM // PKI TRAINING NODE
+</div>
+</footer>
+
+
+<script>
+function toggle(id){
+  const e=document.getElementById(id);
+  e.style.display=
+    e.style.display==="block"
+    ? "none"
+    : "block";
+}
+</script>
+
+</body>
+</html>
