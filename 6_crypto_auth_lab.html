@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baalstorm // Crypto & Auth Lab</title>
+
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+  --bg:#050805;
+  --panel:#0a100b;
+  --panel2:#0d160f;
+  --green:#39ff88;
+  --green2:#18c768;
+  --text:#d5ffe4;
+  --muted:#7cab8b;
+  --yellow:#ffd166;
+  --red:#ff5d73;
+  --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.6;
+}
+
+.wrapper{
+  width:min(1100px,calc(100% - 28px));
+  margin:auto;
+}
+
+header{
+  border-bottom:1px solid var(--border);
+  background:#030503;
+}
+
+nav{
+  min-height:65px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  color:var(--green);
+  font-weight:bold;
+  letter-spacing:.12em;
+}
+
+a{
+  color:var(--green);
+  text-decoration:none;
+}
+
+.hero{
+  padding:70px 0 45px;
+}
+
+.prompt{
+  color:var(--green);
+  font-size:.8rem;
+}
+
+h1{
+  margin:8px 0;
+  color:var(--green);
+  font-size:clamp(2.4rem,6vw,4.8rem);
+  line-height:1;
+}
+
+.hero p{
+  max-width:760px;
+  color:var(--muted);
+}
+
+.level{
+  margin:28px 0;
+  border:1px solid var(--border);
+  background:var(--panel);
+}
+
+.level-head{
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  color:var(--green);
+  font-weight:bold;
+}
+
+.level-body{
+  padding:20px;
+}
+
+.task{
+  margin:15px 0;
+  padding:18px;
+  background:var(--panel2);
+  border-left:3px solid var(--green2);
+}
+
+.task strong{
+  color:var(--yellow);
+}
+
+code{
+  color:var(--green);
+}
+
+button{
+  margin:10px 8px 0 0;
+  padding:8px 13px;
+  border:1px solid var(--green);
+  background:transparent;
+  color:var(--green);
+  font-family:inherit;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--green);
+  color:#021006;
+}
+
+.reveal{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border:1px dashed var(--border);
+  background:#060b07;
+}
+
+.flow{
+  color:var(--green);
+  background:#030603;
+  padding:15px;
+  overflow:auto;
+}
+
+.boss{
+  border-color:var(--red);
+}
+
+.boss .level-head{
+  border-color:var(--red);
+  color:var(--red);
+}
+
+footer{
+  border-top:1px solid var(--border);
+  margin-top:60px;
+  padding:30px 0;
+  color:var(--muted);
+  font-size:.8rem;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrapper">
+<nav>
+
+<div class="logo">
+BAALSTORM // CRYPTO + AUTH
+</div>
+
+<a href="pki_lab.html">
+[ PKI LAB ]
+</a>
+
+</nav>
+</div>
+</header>
+
+
+<main class="wrapper">
+
+<section class="hero">
+
+<div class="prompt">
+$ ./crypto_auth_challenges
+</div>
+
+<h1>
+CRYPTO // AUTH
+</h1>
+
+<p>
+Kryptering, hashfunktioner, digitala signaturer,
+MFA, SSO och WebAuthn.
+</p>
+
+</section>
+
+
+
+<section class="level">
+
+<div class="level-head">
+[ BASIC ] // KEYS
+</div>
+
+<div class="level-body">
+
+<div class="task">
+
+<strong>UPPGIFT 01</strong>
+
+<p>
+Alice vill skicka ett konfidentiellt meddelande till Bob
+med asymmetrisk kryptering.
+</p>
+
+<p>
+Vilken nyckel använder Alice?
+</p>
+
+<button onclick="toggle('a1')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a1">
+Bobs publika nyckel.
+Bob kan sedan dekryptera med sin privata nyckel.
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 02</strong>
+
+<p>
+Alice vill digitalt signera ett meddelande.
+Vilken nyckel använder hon?
+</p>
+
+<button onclick="toggle('a2')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a2">
+Alice använder sin privata nyckel.
+Bob kan verifiera signaturen med Alice publika nyckel.
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 03</strong>
+
+<p>Fyll i flödet:</p>
+
+<div class="flow">
+ALICE --[ ????? ]--> CIPHERTEXT --[ ????? ]--> BOB
+</div>
+
+<p>
+Vilka nycklar används för konfidentialitet?
+</p>
+
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level">
+
+<div class="level-head">
+[ INTERMEDIATE ] // HASH + SIGNATURE
+</div>
+
+<div class="level-body">
+
+<div class="task">
+
+<strong>UPPGIFT 04</strong>
+
+<p>
+Vilka av följande egenskaper hör till en hashfunktion?
+</p>
+
+<p>
+[ ] fast längd på utdata<br>
+[ ] deterministisk<br>
+[ ] enkel att beräkna baklänges<br>
+[ ] kollisionsresistent<br>
+[ ] avalanche-effekt
+</p>
+
+<button onclick="toggle('a4')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a4">
+Fast längd, deterministisk, kollisionsresistent och avalanche-effekt.
+Materialet beskriver hashfunktionen som en envägsfunktion.
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 05</strong>
+
+<p>
+Förklara skillnaden mellan ett hashvärde och en digital signatur.
+</p>
+
+<button onclick="toggle('a5')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a5">
+
+Hash fungerar som ett digitalt fingeravtryck och kan användas
+för att upptäcka förändringar.
+
+En digital signatur kombinerar detta med kryptografisk
+bekräftelse av avsändaren genom användning av den privata nyckeln.
+
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 06</strong>
+
+<p>
+Vad innebär avalanche-effekten?
+</p>
+
+<button onclick="toggle('a6')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a6">
+En liten förändring i indata leder till ett helt annat hashvärde.
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE ] // AUTHENTICATION
+</div>
+
+<div class="level-body">
+
+<div class="task">
+
+<strong>UPPGIFT 07</strong>
+
+<p>
+Sortera följande autentiseringsmetoder:
+</p>
+
+<p>
+lösenord<br>
+säkerhetsnyckel<br>
+fingeravtryck<br>
+position
+</p>
+
+<p>
+Kategorier:
+</p>
+
+<p>
+• något du vet<br>
+• något du har<br>
+• något du är<br>
+• någonstans du är
+</p>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 08</strong>
+
+<p>
+Vad är skillnaden mellan autentisering och auktorisering?
+</p>
+
+<button onclick="toggle('a8')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a8">
+
+Autentisering bekräftar användarens identitet.
+
+Auktorisering avgör vilka resurser den identifierade
+användaren får tillgång till.
+
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 09</strong>
+
+<p>
+En organisation använder SSO.
+Förklara följande flöde med egna ord:
+</p>
+
+<div class="flow">
+USER
+  |
+  v
+IDENTITY PROVIDER
+  |
+  v
+AUTHENTICATION
+  |
+  v
+"TICKET"
+  |
+  +------> SERVICE A
+  |
+  +------> SERVICE B
+</div>
+
+<p>
+Vad är den stora användarfördelen?
+</p>
+
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level">
+
+<div class="level-head">
+[ ADVANCED ] // WEBAUTHN
+</div>
+
+<div class="level-body">
+
+<div class="task">
+
+<strong>UPPGIFT 10</strong>
+
+<p>
+Sätt följande steg i rätt ordning vid registrering av en YubiKey/WebAuthn:
+</p>
+
+<p>
+A. Sajten lagrar Credential ID och publik nyckel.<br>
+B. YubiKey genererar ett nyckelpar.<br>
+C. Sajten skickar challenge och domäninformation.<br>
+D. Browsern kommunicerar med YubiKey.
+</p>
+
+<button onclick="toggle('a10')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a10">
+C → D → B → A
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 11</strong>
+
+<p>
+Var lagras den privata nyckeln vid användning av YubiKey enligt materialet?
+</p>
+
+<button onclick="toggle('a11')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a11">
+Den privata nyckeln stannar i YubiKey och lämnar inte enheten.
+</div>
+
+</div>
+
+
+<div class="task">
+
+<strong>UPPGIFT 12</strong>
+
+<p>
+Varför beskrivs FIDO2/YubiKey som phishing-resistant MFA?
+</p>
+
+<button onclick="toggle('a12')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="a12">
+
+Materialet lyfter bland annat:
+
+<br><br>
+
+• site-bunden autentisering<br>
+• privat nyckel lämnar inte enheten<br>
+• ny challenge för varje inloggning<br>
+• fysisk närvaro krävs<br>
+• motståndskraft mot proxy-phishing
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+
+<section class="level boss">
+
+<div class="level-head">
+[ BOSS ] // EVE & MALLORY
+</div>
+
+<div class="level-body">
+
+<div class="task">
+
+<strong>BOSS 01</strong>
+
+<p>
+Alice skickar ett meddelande till Bob.
+</p>
+
+<p>
+Eve kan läsa all nätverkstrafik men ändrar inget.
+Mallory kan både läsa och manipulera trafik.
+</p>
+
+<p>
+För varje säkerhetsmekanism nedan, beskriv vad den hjälper till att skydda:
+</p>
+
+<p>
+1. symmetrisk kryptering<br>
+2. asymmetrisk kryptering för konfidentialitet<br>
+3. hash<br>
+4. digital signatur
+</p>
+
+<p>
+Använd begreppen:
+<code>konfidentialitet</code>,
+<code>riktighet</code> och
+<code>autentisering</code>.
+</p>
+
+</div>
+
+
+<div class="task">
+
+<strong>BOSS 02 // WEBAUTHN LOGIN</strong>
+
+<p>
+Beskriv hela inloggningsflödet:
+</p>
+
+<div class="flow">
+SERVER → CHALLENGE → BROWSER → YUBIKEY
+                         |
+                         v
+                    SIGNATURE
+                         |
+                         v
+SERVER ← VERIFY WITH PUBLIC KEY
+</div>
+
+<p>
+Vilken del av flödet kräver den privata nyckeln?
+Var finns den?
+</p>
+
+</div>
+
+</div>
+</section>
+
+</main>
+
+
+<footer>
+<div class="wrapper">
+BAALSTORM // CRYPTOGRAPHY & IDENTITY TRAINING
+</div>
+</footer>
+
+
+<script>
+function toggle(id){
+  const e=document.getElementById(id);
+  e.style.display=
+    e.style.display==="block"
+    ? "none"
+    : "block";
+}
+</script>
+
+</body>
+</html>
