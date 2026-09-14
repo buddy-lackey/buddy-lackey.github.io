@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Baalstorm // Crypto Deep Dive</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+    --bg:#050805;
+    --panel:#08100a;
+    --panel2:#0c160f;
+
+    --green:#39ff88;
+    --green2:#15c96b;
+
+    --text:#d9ffe6;
+    --muted:#79a989;
+
+    --yellow:#ffd166;
+    --orange:#ff9f43;
+    --red:#ff5d73;
+    --blue:#62b6ff;
+
+    --border:#1d5d35;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+
+    background:
+        radial-gradient(circle at 80% 0%, rgba(57,255,136,.06), transparent 35%),
+        var(--bg);
+
+    color:var(--text);
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    line-height:1.65;
+}
+
+.wrapper{
+    width:min(1120px,calc(100% - 28px));
+    margin:auto;
+}
+
+a{
+    color:var(--green);
+}
+
+header{
+    background:#030503;
+    border-bottom:1px solid var(--border);
+}
+
+nav{
+    min-height:66px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:20px;
+}
+
+.logo{
+    color:var(--green);
+    font-weight:bold;
+    letter-spacing:.12em;
+}
+
+.nav-status{
+    color:var(--muted);
+    font-size:.77rem;
+}
+
+.hero{
+    padding:75px 0 50px;
+}
+
+.prompt{
+    color:var(--green);
+    font-size:.8rem;
+}
+
+h1{
+    margin:10px 0 18px;
+
+    color:var(--green);
+
+    font-size:clamp(2.6rem,7vw,5.2rem);
+    line-height:.95;
+
+    letter-spacing:-.05em;
+}
+
+h2,
+h3{
+    color:var(--green);
+}
+
+.hero p{
+    max-width:800px;
+    color:var(--muted);
+}
+
+.system{
+    margin:25px 0;
+
+    padding:17px;
+
+    border:1px solid var(--border);
+    background:#060b07;
+
+    color:#a7cfb4;
+}
+
+.system::before{
+    content:"[SYSTEM] ";
+    color:var(--green);
+    font-weight:bold;
+}
+
+.warning{
+    border-color:#765c20;
+    color:#ffdda0;
+}
+
+.warning::before{
+    content:"[IMPORTANT] ";
+    color:var(--yellow);
+}
+
+
+/* =========================================================
+   CONCEPT BLOCKS
+   ========================================================= */
+
+.concept{
+    margin:30px 0;
+
+    border:1px solid var(--border);
+    background:var(--panel);
+}
+
+.concept-head{
+    padding:13px 17px;
+
+    border-bottom:1px solid var(--border);
+
+    color:var(--green);
+    font-weight:bold;
+}
+
+.concept-body{
+    padding:22px;
+}
+
+.diagram{
+    padding:18px;
+
+    background:#020503;
+    border:1px solid #153f25;
+
+    color:#aaffc7;
+
+    overflow:auto;
+
+    white-space:pre;
+    line-height:1.5;
+}
+
+code{
+    color:var(--green);
+}
+
+
+/* =========================================================
+   LEVELS
+   ========================================================= */
+
+.level{
+    margin:35px 0;
+
+    border:1px solid var(--border);
+    background:var(--panel);
+}
+
+.level-head{
+    padding:13px 17px;
+
+    border-bottom:1px solid var(--border);
+
+    color:var(--green);
+    font-weight:bold;
+}
+
+.level-body{
+    padding:20px;
+}
+
+.task{
+    margin:16px 0;
+    padding:19px;
+
+    border-left:3px solid var(--green2);
+
+    background:var(--panel2);
+}
+
+.task-id{
+    color:var(--yellow);
+    font-weight:bold;
+}
+
+.question{
+    margin-top:12px;
+}
+
+.option{
+    margin:6px 0;
+    color:#c8ecd3;
+}
+
+button{
+    margin:10px 8px 0 0;
+
+    padding:8px 13px;
+
+    border:1px solid var(--green);
+
+    background:transparent;
+    color:var(--green);
+
+    font:inherit;
+
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--green);
+    color:#021006;
+}
+
+button.answer{
+    border-color:var(--blue);
+    color:var(--blue);
+}
+
+button.answer:hover{
+    background:var(--blue);
+    color:#02080e;
+}
+
+.reveal{
+    display:none;
+
+    margin-top:13px;
+    padding:14px;
+
+    border:1px dashed var(--border);
+
+    background:#050a06;
+
+    color:#bee9cc;
+}
+
+.reveal strong{
+    color:var(--yellow);
+}
+
+
+/* =========================================================
+   FLOW / TABLE
+   ========================================================= */
+
+.flow-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+}
+
+.flow-card{
+    padding:18px;
+
+    border:1px solid var(--border);
+
+    background:#050a06;
+}
+
+.flow-card strong{
+    color:var(--green);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+
+    margin:18px 0;
+
+    font-size:.9rem;
+}
+
+th,
+td{
+    border:1px solid var(--border);
+    padding:12px;
+    text-align:left;
+    vertical-align:top;
+}
+
+th{
+    color:var(--green);
+    background:#071008;
+}
+
+
+/* =========================================================
+   BOSS
+   ========================================================= */
+
+.boss{
+    border-color:var(--red);
+}
+
+.boss > .level-head{
+    color:var(--red);
+    border-color:var(--red);
+}
+
+.boss .task{
+    border-left-color:var(--red);
+}
+
+
+/* =========================================================
+   TEACHER
+   ========================================================= */
+
+.teacher{
+    margin:40px 0;
+
+    border:1px solid #604c18;
+
+    background:#100d05;
+}
+
+.teacher-head{
+    padding:13px 17px;
+
+    border-bottom:1px solid #604c18;
+
+    color:var(--yellow);
+    font-weight:bold;
+}
+
+.teacher-body{
+    display:none;
+    padding:22px;
+}
+
+.teacher-body p{
+    color:#dccda5;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+    margin-top:70px;
+
+    padding:30px 0;
+
+    border-top:1px solid var(--border);
+
+    color:var(--muted);
+
+    font-size:.78rem;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:750px){
+
+    .flow-grid{
+        grid-template-columns:1fr;
+    }
+
+    nav{
+        align-items:flex-start;
+        flex-direction:column;
+        justify-content:center;
+        padding:13px 0;
+    }
+
+    table{
+        font-size:.78rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrapper">
+
+<nav>
+
+    <div class="logo">
+        BAALSTORM // CRYPTO DEEP DIVE
+    </div>
+
+    <div class="nav-status">
+        PKI // HASH // SIGNATURE // ENCRYPTION
+    </div>
+
+</nav>
+
+</div>
+</header>
+
+
+<main class="wrapper">
+
+
+<!-- ======================================================
+     HERO
+     ====================================================== -->
+
+<section class="hero">
+
+<div class="prompt">
+$ ./understand_crypto --deeper
+</div>
+
+<h1>
+WHAT IS ACTUALLY SIGNED?
+</h1>
+
+<p>
+Du vet redan att publika och privata nycklar används
+för kryptering och digitala signaturer.
+
+Nu kommer de jobbiga frågorna.
+
+Var ligger hashvärdet?
+
+Vad är egentligen en digital signatur?
+
+Vad händer om vi både signerar och krypterar?
+
+Och varför litar datorn på ett certifikat?
+</p>
+
+</section>
+
+
+<div class="system">
+
+Målet här är inte att memorera fler ord.
+
+Målet är att kunna följa datan genom hela processen.
+
+</div>
+
+
+
+<!-- ======================================================
+     CONCEPT 1
+     ====================================================== -->
+
+<section class="concept">
+
+<div class="concept-head">
+00 // HASH ÄR EN MELLANPRODUKT
+</div>
+
+<div class="concept-body">
+
+<p>
+En vanlig missuppfattning är att ett digitalt certifikat
+innehåller både ett hashvärde och en signerad kopia av samma hash.
+</p>
+
+<p>
+Förenklat ser processen istället ut så här:
+</p>
+
+<div class="diagram">
+CERTIFICATE DATA
+      │
+      │
+      ▼
+    HASH()
+      │
+      ▼
+   DIGEST
+      │
+      │ + CA PRIVATE KEY
+      ▼
+SIGNATURE ALGORITHM
+      │
+      ▼
+DIGITAL SIGNATURE
+</div>
+
+<p>
+Hashvärdet behövs för att skapa signaturen,
+men behöver normalt inte lagras som ett eget fält.
+
+Klienten kan beräkna hashvärdet igen.
+</p>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     CONCEPT 2
+     ====================================================== -->
+
+<section class="concept">
+
+<div class="concept-head">
+01 // SIGN THEN ENCRYPT
+</div>
+
+<div class="concept-body">
+
+<p>
+Antag att Alice vill skicka en fil till Bob.
+Hon vill ha både:
+</p>
+
+<p>
+<strong>Riktighet + autentisering</strong> genom digital signatur
+och <strong>konfidentialitet</strong> genom kryptering.
+</p>
+
+
+<div class="flow-grid">
+
+<div class="flow-card">
+
+<strong>ALICE</strong>
+
+<div class="diagram">
+FILE
+ │
+ ├── HASH
+ │     │
+ │     ▼
+ │   SIGN
+ │     │
+ │     ▼
+ │ SIGNATURE
+ │
+ ▼
+FILE + SIGNATURE
+ │
+ ▼
+ENCRYPT FOR BOB
+ │
+ ▼
+CIPHERTEXT
+</div>
+
+</div>
+
+
+<div class="flow-card">
+
+<strong>BOB</strong>
+
+<div class="diagram">
+CIPHERTEXT
+ │
+ ▼
+DECRYPT
+ │
+ ▼
+FILE + SIGNATURE
+ │
+ ├── HASH FILE
+ │
+ └── VERIFY SIGNATURE
+        │
+        ▼
+      VALID?
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<div class="system warning">
+
+Det finns flera riktiga kryptografiska protokoll och format.
+
+Bygg därför inte egna kryptografiska protokoll utifrån
+den här förenklade modellen.
+
+Här använder vi modellen för att förstå principerna.
+
+</div>
+
+
+
+<!-- ======================================================
+     BASIC
+     ====================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ BASIC ] // FOLLOW THE DATA
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 01
+</div>
+
+<div class="question">
+
+Alice har filen:
+
+<code>rapport.pdf</code>
+
+Hon beräknar SHA-256 över filen.
+
+Vad får hon?
+
+</div>
+
+<div class="option">
+A) En krypterad PDF
+</div>
+
+<div class="option">
+B) Ett hashvärde med fast längd
+</div>
+
+<div class="option">
+C) En digital signatur
+</div>
+
+<button
+    class="answer"
+    onclick="toggle('q1')">
+    SHOW ANSWER
+</button>
+
+<div class="reveal" id="q1">
+
+<strong>B.</strong>
+
+Hashfunktionen producerar ett hashvärde.
+
+Ingen signering har ännu skett.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 02
+</div>
+
+<div class="question">
+
+Alice ändrar ett enda tecken i dokumentet.
+
+Vad händer med SHA-256-värdet?
+
+</div>
+
+<button onclick="toggle('q2h')">
+HINT
+</button>
+
+<button
+    class="answer"
+    onclick="toggle('q2')">
+SHOW ANSWER
+</button>
+
+
+<div class="reveal" id="q2h">
+
+Tänk på avalanche-effekten.
+
+</div>
+
+<div class="reveal" id="q2">
+
+Hashvärdet blir i praktiken helt annorlunda.
+
+Det är detta som gör att förändringar i data lätt kan upptäckas.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 03
+</div>
+
+<div class="question">
+
+Har Alice bevisat att det är hon som skapade dokumentet
+bara genom att publicera SHA-256-värdet?
+
+</div>
+
+<button
+    class="answer"
+    onclick="toggle('q3')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q3">
+
+Nej.
+
+Vem som helst kan beräkna ett hashvärde.
+
+Hash ger inte i sig autentisering av avsändaren.
+
+Det är därför digital signatur tillför något ytterligare.
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     INTERMEDIATE
+     ====================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ INTERMEDIATE ] // DIGITAL SIGNATURE
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 04
+</div>
+
+<div class="question">
+
+Vad används för att skapa Alices digitala signatur?
+
+</div>
+
+<div class="option">
+A) Alices publika nyckel
+</div>
+
+<div class="option">
+B) Bobs publika nyckel
+</div>
+
+<div class="option">
+C) Alices privata nyckel
+</div>
+
+<div class="option">
+D) Bobs privata nyckel
+</div>
+
+
+<button
+    class="answer"
+    onclick="toggle('q4')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q4">
+
+<strong>C – Alices privata nyckel.</strong>
+
+Bob verifierar sedan signaturen med Alices publika nyckel.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 05
+</div>
+
+<div class="question">
+
+Ligger det ursprungliga SHA-256-värdet nödvändigtvis
+som ett separat fält bredvid signaturen?
+
+</div>
+
+<button
+    class="answer"
+    onclick="toggle('q5')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q5">
+
+Nej.
+
+Hashvärdet är normalt en mellanprodukt.
+
+Verifieraren kan själv beräkna ett nytt hashvärde över datan.
+
+Signaturen lagras däremot.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 06
+</div>
+
+<div class="question">
+
+Mallory ändrar fältet <code>Subject</code> i ett
+CA-signerat certifikat efter att det utfärdats.
+
+Kan Mallory bara låta den gamla signaturen ligga kvar?
+
+</div>
+
+<button
+    class="answer"
+    onclick="toggle('q6')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q6">
+
+Signaturen kan ligga kvar rent som bytes,
+men den kommer inte längre att verifiera.
+
+När klienten beräknar hash över det modifierade innehållet
+kommer resultatet inte längre passa den digitala signaturen.
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     CHALLENGE
+     ====================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE ] // SIGN + ENCRYPT
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 07
+</div>
+
+<div class="question">
+
+Alice ska skicka <code>secret.txt</code> till Bob.
+
+Hon gör:
+
+</div>
+
+<div class="diagram">
+1. signera filen
+2. kombinera FILE + SIGNATURE
+3. kryptera paketet för Bob
+</div>
+
+<p>
+Vilken information kan Eve se utan Bobs privata nyckel?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('q7')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q7">
+
+I den förenklade modellen ligger både filen och signaturen
+inne i det krypterade innehållet.
+
+Eve kan därför inte läsa filen eller den inneslutna signaturen
+utan att kunna dekryptera paketet.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 08
+</div>
+
+<div class="question">
+
+Bob dekrypterar paketet.
+
+Han får:
+
+</div>
+
+<div class="diagram">
+FILE
++
+ALICE'S SIGNATURE
+</div>
+
+<p>
+Vilken nyckel behöver Bob nu för att verifiera signaturen?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('q8')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q8">
+
+Alices publika nyckel.
+
+Det är alltså en annan nyckel än den som användes när
+Bob dekrypterade med sin privata nyckel.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 09
+</div>
+
+<div class="question">
+
+Vilka två helt olika saker bevisar de två lagren?
+
+</div>
+
+<table>
+
+<tr>
+<th>Operation</th>
+<th>Nyckel</th>
+<th>Vad vill vi uppnå?</th>
+</tr>
+
+<tr>
+<td>Signering</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>Kryptering till Bob</td>
+<td>?</td>
+<td>?</td>
+</tr>
+
+</table>
+
+
+<button
+    class="answer"
+    onclick="toggle('q9')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q9">
+
+<strong>Signering:</strong><br>
+Alices privata nyckel → riktighet och autentisering.
+
+<br><br>
+
+<strong>Kryptering:</strong><br>
+Bobs publika nyckel → konfidentialitet.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 10
+</div>
+
+<div class="question">
+
+Varför bör vi inte säga:
+
+</div>
+
+<div class="diagram">
+"Alice krypterar hashen med sin privata nyckel"
+</div>
+
+<p>
+som en universell teknisk definition av digital signatur?
+</p>
+
+<button onclick="toggle('q10h')">
+HINT
+</button>
+
+<button
+    class="answer"
+    onclick="toggle('q10')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q10h">
+
+Fundera på om RSA och ECDSA fungerar exakt likadant.
+
+</div>
+
+<div class="reveal" id="q10">
+
+Formuleringen fungerar ibland som pedagogisk förenkling,
+framför allt när man introducerar RSA.
+
+Men olika signeringsalgoritmer använder olika matematik.
+
+En bättre generell formulering är:
+
+<br><br>
+
+<strong>
+Signeringsalgoritmen använder hashvärdet och den privata
+nyckeln för att skapa en digital signatur.
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     PKI CHALLENGE
+     ====================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ ADVANCED ] // WHO DO YOU TRUST?
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 11
+</div>
+
+<div class="question">
+
+Du verifierar signaturen på:
+
+</div>
+
+<div class="diagram">
+www.example.com
+       │
+       ▼
+Intermediate CA
+       │
+       ▼
+Root CA
+</div>
+
+<p>
+Vem signerar Root CA-certifikatet?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('q11')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q11">
+
+Ett root-certifikat är normalt självsignerat.
+
+Men självsigneringen är inte i sig anledningen till att du
+litar på certifikatet.
+
+Tilliten kommer från att Root CA:n finns som en betrodd
+trust anchor i klientens trust store.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 12
+</div>
+
+<div class="question">
+
+Kan du kryptografiskt verifiera att:
+
+</div>
+
+<div class="diagram">
+SERVER CERT
+was signed by
+INTERMEDIATE CA
+</div>
+
+<p>
+utan att samtidigt behöva "tro" att CA:n är en bra organisation?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('q12')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q12">
+
+Ja.
+
+Du kan kryptografiskt kontrollera att signaturen stämmer.
+
+Det är en annan fråga än om du väljer att lita på
+utfärdaren som trust anchor.
+
+<strong>Kryptografisk verifiering och tillit är alltså inte exakt samma sak.</strong>
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 13
+</div>
+
+<div class="question">
+
+Du får ett certifikat och dess SHA-256 fingerprint
+från organisationens säkerhetsansvarige via telefon.
+
+Du jämför sedan fingerprint med certifikatet du fått
+över nätverket.
+
+Vad har du gjort?
+</div>
+
+<button
+    class="answer"
+    onclick="toggle('q13')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q13">
+
+Du har gjort en form av out-of-band-verifiering.
+
+Du använder en separat kanal för att verifiera att
+certifikatet du fått är det certifikat organisationen
+förväntar sig.
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     BOSS
+     ====================================================== -->
+
+<section class="level boss">
+
+<div class="level-head">
+[ BOSS ] // CRYPTO FORENSICS
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 01 // TWO BLOBS
+</div>
+
+<p>
+En elev säger:
+</p>
+
+<div class="diagram">
+"Certifikatet borde väl innehålla:
+
+CERTIFICATE
+HASH
+SIGNED HASH
+
+annars kan datorn inte jämföra?"
+</div>
+
+<p>
+Förklara varför klienten inte behöver få originalhashen
+skickad till sig.
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('b1')">
+SHOW DISCUSSION
+</button>
+
+<div class="reveal" id="b1">
+
+Klienten har redan certifikatets innehåll.
+
+Den kan därför själv köra samma hashfunktion över det
+signerade innehållet.
+
+Det som behöver följa med är den digitala signaturen samt
+information om vilka algoritmer som används.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 02 // EVIL CERTIFICATE
+</div>
+
+<p>
+Mallory kopierar ett legitimt certifikat för
+<code>bank.example</code>.
+
+Hon byter den publika nyckeln i certifikatet mot sin egen.
+
+All annan text behålls.
+
+</p>
+
+<p>
+Varför fungerar inte detta?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('b2')">
+SHOW DISCUSSION
+</button>
+
+<div class="reveal" id="b2">
+
+Den publika nyckeln ingår i den data som CA:n har signerat.
+
+När Mallory ändrar nyckeln ändras det signerade innehållet.
+
+Den ursprungliga CA-signaturen verifierar därför inte längre.
+
+Mallory kan skapa en ny signatur med sin egen privata nyckel,
+men den signaturen är inte en giltig signatur från den CA
+som klienten förväntar sig.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 03 // SIGNED AND ENCRYPTED
+</div>
+
+<p>
+Alice skickar Bob:
+</p>
+
+<div class="diagram">
+Encrypt_Bob(
+    message,
+    Signature_Alice(message)
+)
+</div>
+
+<p>
+Bob lyckas dekryptera med sin privata nyckel.
+
+Betyder det automatiskt att meddelandet kom från Alice?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('b3')">
+SHOW DISCUSSION
+</button>
+
+<div class="reveal" id="b3">
+
+Nej.
+
+Att Bob kan dekryptera betyder i första hand att innehållet
+har krypterats så att hans nyckel kan användas för dekryptering.
+
+Bob måste fortfarande verifiera Alices digitala signatur
+med Alices publika nyckel.
+
+Kryptering och signering löser olika problem.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 04 // THE REAL TRUST PROBLEM
+</div>
+
+<p>
+Bob har verifierat den digitala signaturen matematiskt.
+
+Men hur vet Bob att den publika nyckeln han använder
+verkligen är Alices?
+</p>
+
+<button
+    class="answer"
+    onclick="toggle('b4')">
+SHOW DISCUSSION
+</button>
+
+<div class="reveal" id="b4">
+
+Det är precis det problem som PKI och certifikat försöker lösa.
+
+Ett certifikat binder en identitet till en publik nyckel,
+och en betrodd CA signerar denna koppling.
+
+Men även PKI måste till slut börja i någon form av
+förhandstillit — en trust anchor.
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     TEACHER MODE
+     ====================================================== -->
+
+<section class="teacher">
+
+<div class="teacher-head">
+[ TEACHER MODE ] // VARFÖR DE HÄR FRÅGORNA ÄR BRA
+</div>
+
+<div style="padding:0 20px 18px">
+
+<button onclick="toggle('teacher')">
+TOGGLE TEACHER NOTES
+</button>
+
+</div>
+
+<div class="teacher-body" id="teacher">
+
+<p>
+Frågor som "var ligger hashen?" eller "varför måste jag lita
+på root-certifikatet?" är ofta ett tecken på att studenten
+försöker bygga en faktisk mental modell istället för att
+memorera begrepp.
+</p>
+
+<p>
+Ett bra sätt att svara är därför att hela tiden fråga:
+</p>
+
+<div class="diagram">
+1. Vilken DATA finns just nu?
+
+2. Vilken OPERATION gör vi?
+
+3. Vilken NYCKEL används?
+
+4. Vilket NYTT VÄRDE produceras?
+
+5. Vad skickas till mottagaren?
+
+6. Vad kan mottagaren själv räkna fram?
+</div>
+
+<p>
+Detta fungerar för hashfunktioner, digitala signaturer,
+certifikat och kryptering.
+</p>
+
+<p>
+Det hjälper också till att undvika den vanliga sammanblandningen:
+
+</p>
+
+<div class="diagram">
+HASHING       ≠ ENCRYPTION
+
+SIGNING       ≠ ENCRYPTION
+
+CERTIFICATE   ≠ PRIVATE KEY
+
+VALID SIGNATURE ≠ AUTOMATIC TRUST
+
+ENCRYPTED FOR BOB ≠ SIGNED BY ALICE
+</div>
+
+</div>
+
+</section>
+
+
+
+<div class="system">
+
+END OF LAB //
+
+Om du kan följa varje byte från dokument → hash → signatur →
+kryptering → dekryptering → verifiering har kryptografin
+börjat bli betydligt mindre magisk.
+
+</div>
+
+</main>
+
+
+<footer>
+
+<div class="wrapper">
+BAALSTORM // CRYPTOGRAPHY DEEP DIVE TRAINING NODE
+</div>
+
+</footer>
+
+
+<script>
+
+function toggle(id){
+
+    const element =
+        document.getElementById(id);
+
+    if(!element){
+        return;
+    }
+
+    element.style.display =
+        element.style.display === "block"
+        ? "none"
+        : "block";
+}
+
+</script>
+
+</body>
+</html>
