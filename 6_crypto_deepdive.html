@@ -4,35 +4,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Baalstorm // X.509 Signature Verification Lab</title>
+<title>Baalstorm // Crypto Deep Dive</title>
+
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 
 <style>
 :root{
     --bg:#050805;
-    --panel:#09100b;
+    --panel:#0a100b;
     --panel2:#0d160f;
+
     --green:#39ff88;
     --green2:#18c768;
+
     --text:#d5ffe4;
     --muted:#7cab8b;
+
     --yellow:#ffd166;
     --red:#ff5d73;
     --blue:#62b6ff;
+
     --border:#1d5d35;
 }
 
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+}
 
-html{scroll-behavior:smooth}
+html{
+    scroll-behavior:smooth;
+}
 
 body{
     margin:0;
+
     background:
-        radial-gradient(circle at 85% 0%,rgba(57,255,136,.06),transparent 35%),
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(57,255,136,.06),
+            transparent 35%
+        ),
         var(--bg);
+
     color:var(--text);
-    font-family:"Courier New",monospace;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
     line-height:1.65;
 }
 
@@ -48,9 +68,11 @@ header{
 
 nav{
     min-height:66px;
+
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:space-between;
+
     gap:20px;
 }
 
@@ -66,7 +88,7 @@ nav{
 }
 
 .hero{
-    padding:70px 0 45px;
+    padding:72px 0 48px;
 }
 
 .prompt{
@@ -75,30 +97,34 @@ nav{
 }
 
 h1{
+    margin:10px 0 20px;
+
     color:var(--green);
+
     font-size:clamp(2.5rem,7vw,5rem);
     line-height:.95;
+
     letter-spacing:-.05em;
-    margin:10px 0 20px;
 }
 
-h2,h3{
+h2,
+h3{
     color:var(--green);
-}
-
-p{
-    max-width:950px;
 }
 
 .hero p{
+    max-width:900px;
     color:var(--muted);
 }
 
 .system,
 .warning{
     margin:25px 0;
-    padding:16px;
+
+    padding:17px;
+
     border:1px solid var(--border);
+
     background:#060b07;
 }
 
@@ -109,8 +135,8 @@ p{
 }
 
 .warning{
-    border-color:#6d551b;
-    color:#ffe0a0;
+    border-color:#755c20;
+    color:#ffdda0;
 }
 
 .warning::before{
@@ -121,15 +147,19 @@ p{
 
 .section,
 .level{
-    margin:32px 0;
+    margin:34px 0;
+
     border:1px solid var(--border);
+
     background:var(--panel);
 }
 
 .section-head,
 .level-head{
     padding:13px 17px;
+
     border-bottom:1px solid var(--border);
+
     color:var(--green);
     font-weight:bold;
 }
@@ -139,26 +169,13 @@ p{
     padding:22px;
 }
 
-.diagram,
-.terminal{
-    margin:16px 0;
-    padding:18px;
-    background:#020503;
-    border:1px solid #153f25;
-    color:#aaffc7;
-    overflow:auto;
-    white-space:pre;
-    line-height:1.5;
-}
-
-.terminal{
-    color:#c8ffd9;
-}
-
 .task{
-    margin:17px 0;
+    margin:18px 0;
+
     padding:19px;
+
     background:var(--panel2);
+
     border-left:3px solid var(--green2);
 }
 
@@ -167,46 +184,83 @@ p{
     font-weight:bold;
 }
 
-button{
-    margin-top:10px;
-    padding:8px 13px;
-    background:transparent;
-    border:1px solid var(--blue);
-    color:var(--blue);
-    font:inherit;
-    cursor:pointer;
+.diagram,
+.terminal{
+    margin:16px 0;
+
+    padding:18px;
+
+    background:#020503;
+
+    border:1px solid #153f25;
+
+    color:#aaffc7;
+
+    white-space:pre;
+    overflow:auto;
+
+    line-height:1.5;
 }
 
-button:hover{
-    color:#02080e;
-    background:var(--blue);
-}
-
-.reveal{
-    display:none;
-    margin-top:14px;
-    padding:14px;
-    border:1px dashed var(--border);
-    background:#050a06;
-}
-
-.reveal strong{
-    color:var(--yellow);
+.terminal{
+    color:#d1ffde;
 }
 
 code{
     color:var(--green);
 }
 
+button{
+    margin-top:10px;
+
+    padding:8px 13px;
+
+    background:transparent;
+
+    color:var(--blue);
+
+    border:1px solid var(--blue);
+
+    font:inherit;
+
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--blue);
+    color:#02080e;
+}
+
+.reveal{
+    display:none;
+
+    margin-top:14px;
+
+    padding:15px;
+
+    background:#050a06;
+
+    border:1px dashed var(--border);
+}
+
+.reveal strong{
+    color:var(--yellow);
+}
+
 table{
     width:100%;
+
     border-collapse:collapse;
+
     margin:18px 0;
 }
 
-th,td{
-    padding:11px;
+th,
+td{
+    padding:12px;
+
     border:1px solid var(--border);
+
     text-align:left;
     vertical-align:top;
 }
@@ -231,48 +285,66 @@ th{
 
 .teacher{
     margin:40px 0;
+
     border:1px solid #69531e;
+
     background:#100d05;
 }
 
 .teacher-head{
     padding:13px 17px;
-    border-bottom:1px solid #69531e;
+
     color:var(--yellow);
+
+    border-bottom:1px solid #69531e;
+
     font-weight:bold;
 }
 
 .teacher-body{
     display:none;
+
     padding:22px;
 }
 
 footer{
     margin-top:70px;
+
     padding:30px 0;
+
     border-top:1px solid var(--border);
+
     color:var(--muted);
+
     font-size:.8rem;
 }
 
-@media(max-width:700px){
+@media(max-width:720px){
+
     nav{
         padding:12px 0;
+
         flex-direction:column;
+
         align-items:flex-start;
     }
+
 }
 </style>
 </head>
 
+
 <body>
 
+
 <header>
+
 <div class="wrapper">
+
 <nav>
 
 <div class="logo">
-BAALSTORM // X.509 VERIFY LAB
+BAALSTORM // CRYPTO DEEP DIVE
 </div>
 
 <div class="status">
@@ -280,189 +352,192 @@ DATA → HASH → SIGNATURE → VERIFY
 </div>
 
 </nav>
+
 </div>
+
 </header>
+
 
 
 <main class="wrapper">
 
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
 <section class="hero">
 
 <div class="prompt">
-$ ./x509_verify --follow-the-bytes
+$ ./crypto_deepdive --understand-the-flow
 </div>
 
 <h1>
-HOW DOES THE CLIENT ACTUALLY VERIFY IT?
+HOW DOES A DIGITAL SIGNATURE ACTUALLY WORK?
 </h1>
 
 <p>
-Vi vet att en CA har signerat ett certifikat.
-Men hur kan klienten kontrollera signaturen när det inte finns
-något separat hashvärde lagrat i certifikatet?
-</p>
+Vad händer egentligen när en CA signerar ett certifikat?
 
-<p>
-I den här labben följer vi exakt vilka data som finns,
-vilket hashvärde klienten räknar fram och hur detta används
-tillsammans med den digitala signaturen.
+Vad är skillnaden mellan ett hashvärde och en digital signatur?
+
+Varför blir signaturen annorlunda om innehållet ändras?
+
+Och hur kan klienten verifiera certifikatet när det inte finns
+något separat hashvärde lagrat i certifikatet?
 </p>
 
 </section>
 
 
 <div class="system">
-MÅLET ÄR INTE ATT MEMORERA "HASH + PRIVATE KEY = SIGNATURE".
-MÅLET ÄR ATT FÖRSTÅ VAD VERIFIERAREN FAKTISKT GÖR.
+MÅLET ÄR ATT FÖRSTÅ RELATIONEN MELLAN
+DATA, HASH, DIGITAL SIGNATUR OCH VERIFIERING.
 </div>
 
 
 
-<!-- =========================================================
+<!-- =====================================================
      00
-     ========================================================= -->
+===================================================== -->
 
 <section class="section">
 
 <div class="section-head">
-00 // VAD FINNS I CERTIFIKATET?
+00 // FYRA SAKER ATT HÅLLA ISÄR
 </div>
 
 <div class="section-body">
 
 <p>
-Ett X.509-certifikat kan förenklat beskrivas som:
+Vi börjar med fyra olika saker:
 </p>
 
-<div class="diagram">Certificate
-│
-├── tbsCertificate
-│
-├── signatureAlgorithm
-│
-└── signatureValue</div>
+<div class="diagram">DATA
+
+HASHVÄRDE
+
+DIGITAL SIGNATUR
+
+NYCKEL</div>
 
 <p>
-<code>tbsCertificate</code> betyder ungefär:
+De är inte samma sak.
 </p>
 
-<div class="diagram">TO BE SIGNED CERTIFICATE</div>
+<table>
 
-<p>
-Den innehåller bland annat:
-</p>
+<tr>
+<th>Begrepp</th>
+<th>Vad betyder det?</th>
+</tr>
 
-<div class="diagram">tbsCertificate
-│
-├── Version
-├── Serial Number
-├── Issuer
-├── Validity
-├── Subject
-├── Subject Public Key
-├── SAN
-├── Extensions
-└── ...</div>
+<tr>
+<td>Data</td>
+<td>Det innehåll som ska skyddas och signeras</td>
+</tr>
 
-<p>
-Den digitala signaturen ligger separat som:
-</p>
+<tr>
+<td>Hashvärde</td>
+<td>Ett värde som räknas fram från datan</td>
+</tr>
 
-<div class="diagram">signatureValue</div>
+<tr>
+<td>Digital signatur</td>
+<td>Ett kryptografiskt värde som skapas med hjälp av hashvärdet och den privata nyckeln</td>
+</tr>
 
-<div class="warning">
-DET FINNS NORMALT INTE ETT SEPARAT FÄLT SOM HETER H1
-DÄR DEN URSPRUNGLIGA HASHEN LIGGER.
+<tr>
+<td>Nyckel</td>
+<td>Privat nyckel används vid signering, publik nyckel vid verifiering</td>
+</tr>
+
+</table>
+
 </div>
 
-</div>
 </section>
 
 
 
-<!-- =========================================================
+<!-- =====================================================
      01
-     ========================================================= -->
+===================================================== -->
 
 <section class="section">
 
 <div class="section-head">
-01 // NÄR CA:N SKAPAR SIGNATUREN
+01 // STEG 1 — DATA BLIR ETT HASHVÄRDE
 </div>
 
 <div class="section-body">
 
 <p>
-Antag att certifikatets signerade data kallas <code>D</code>.
+Antag att en CA ska skapa ett certifikat för:
 </p>
 
-<div class="diagram">D = DER-kodad tbsCertificate</div>
+<div class="diagram">example.com</div>
 
 <p>
-CA:n beräknar:
+Certifikatet innehåller exempelvis:
 </p>
 
-<div class="diagram">D
-│
-▼
-HASH
-│
-▼
-H1</div>
+<div class="diagram">Subject
+
+Issuer
+
+Giltighetstid
+
+Publik nyckel
+
+SAN = example.com
+
+...</div>
 
 <p>
-Exempel:
+Vi kallar allt det signerade innehållet:
 </p>
 
-<div class="diagram">H1 = SHA256(D)</div>
+<div class="diagram">DATA 1</div>
 
 <p>
-Sedan använder CA:n sitt privata nyckelmaterial och den valda
-signeringsalgoritmen.
+Det första som sker är att en hashfunktion används:
 </p>
 
-<div class="diagram">H1
-│
-│ + CA PRIVATE KEY
-│
-▼
-SIGNATURE ALGORITHM
-│
-▼
-S1</div>
+<div class="diagram">DATA 1
+   │
+   ▼
+ HASH()
+   │
+   ▼
+  H1</div>
 
 <p>
-Det färdiga certifikatet innehåller därför ungefär:
+H1 är hashvärdet.
 </p>
 
-<div class="diagram">┌─────────────────────────────┐
-│ D = tbsCertificate          │
-├─────────────────────────────┤
-│ signatureAlgorithm          │
-├─────────────────────────────┤
-│ S1 = signatureValue         │
-└─────────────────────────────┘</div>
-
-<p>
-H1 var en mellanprodukt.
-</p>
+<div class="system">
+HASHVÄRDET ÄR ETT RESULTAT AV CERTIFIKATETS INNEHÅLL.
+</div>
 
 </div>
+
 </section>
 
 
 
-<!-- =========================================================
+<!-- =====================================================
      BASIC
-     ========================================================= -->
+===================================================== -->
 
 <section class="level">
 
 <div class="level-head">
-[ BASIC ] // WHERE DID H1 GO?
+[ BASIC ] // DATA → HASH
 </div>
 
 <div class="level-body">
+
 
 <div class="task">
 
@@ -471,21 +546,51 @@ QUESTION 01
 </div>
 
 <p>
-Vilka två centrala saker har klienten tillgång till direkt
-från certifikatet?
+Vad händer om vi ändrar:
 </p>
 
-<button onclick="toggle('a1')">SHOW ANSWER</button>
+<div class="diagram">example.com</div>
 
-<div class="reveal" id="a1">
+<p>
+till:
+</p>
 
-<strong>tbsCertificate och signatureValue.</strong>
+<div class="diagram">example.se</div>
 
-Den har alltså både datan som signerades och signaturen.
+<p>
+Kommer hashvärdet normalt att vara samma?
+</p>
+
+<button onclick="toggle('q1')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q1">
+
+<strong>Nej.</strong>
+
+Datan har förändrats.
+
+Därför förändras normalt också hashvärdet.
+
+<div class="diagram">example.com
+     │
+     ▼
+    H1
+
+
+example.se
+     │
+     ▼
+    H2
+
+
+H1 ≠ H2</div>
 
 </div>
 
 </div>
+
 
 
 <div class="task">
@@ -495,21 +600,187 @@ QUESTION 02
 </div>
 
 <p>
-Behöver klienten få H1 skickat till sig?
+Är hashvärdet hemligt?
 </p>
 
-<button onclick="toggle('a2')">SHOW ANSWER</button>
+<button onclick="toggle('q2')">
+SHOW ANSWER
+</button>
 
-<div class="reveal" id="a2">
+<div class="reveal" id="q2">
 
 Nej.
 
-Klienten har <code>tbsCertificate</code> och kan själv köra
-samma hashfunktion över exakt samma data.
+Vem som helst kan använda samma hashfunktion och räkna fram
+hashvärdet från datan.
 
 </div>
 
 </div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     02
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+02 // STEG 2 — HASHVÄRDET ANVÄNDS FÖR ATT SKAPA SIGNATUREN
+</div>
+
+<div class="section-body">
+
+<p>
+CA:n har nu:
+</p>
+
+<div class="diagram">H1</div>
+
+<p>
+CA:n använder sedan:
+</p>
+
+<div class="diagram">H1
+
++
+
+CA:S PRIVATA NYCKEL</div>
+
+<p>
+i signeringsprocessen.
+</p>
+
+<div class="diagram">DATA 1
+   │
+   ▼
+ HASH
+   │
+   ▼
+  H1
+   │
+   │ + CA PRIVATE KEY
+   ▼
+ SIGN
+   │
+   ▼
+  S1</div>
+
+<p>
+S1 är den digitala signaturen.
+</p>
+
+<div class="system">
+HASHVÄRDET OCH DEN DIGITALA SIGNATUREN ÄR TVÅ OLIKA SAKER.
+</div>
+
+<p>
+Ett enkelt sätt att tänka är:
+</p>
+
+<div class="diagram">DATA
+ ↓
+HASH
+ ↓
+HASHVÄRDE
+ ↓
+SIGNERING MED PRIVAT NYCKEL
+ ↓
+DIGITAL SIGNATUR</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SAME KEY DIFFERENT DATA
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ INTERMEDIATE ] // SAME KEY — DIFFERENT DATA
+</div>
+
+<div class="level-body">
+
+<p>
+Nu skapar samma CA två certifikat.
+</p>
+
+
+<div class="task">
+
+<div class="task-id">
+CERTIFICATE A
+</div>
+
+<div class="diagram">example.com
+     │
+     ▼
+   DATA 1
+     │
+     ▼
+    HASH
+     │
+     ▼
+     H1
+     │
+     │ CA PRIVATE KEY
+     ▼
+    SIGN
+     │
+     ▼
+     S1</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+CERTIFICATE B
+</div>
+
+<p>
+Samma CA skapar nu ett certifikat för:
+</p>
+
+<div class="diagram">example.se</div>
+
+<p>
+CA:n använder exakt samma privata nyckel.
+</p>
+
+<div class="diagram">example.se
+     │
+     ▼
+   DATA 2
+     │
+     ▼
+    HASH
+     │
+     ▼
+     H2
+     │
+     │ SAME CA PRIVATE KEY
+     ▼
+    SIGN
+     │
+     ▼
+     S2</div>
+
+</div>
+
 
 
 <div class="task">
@@ -519,447 +790,216 @@ QUESTION 03
 </div>
 
 <p>
-Vad får klienten om den beräknar:
+Blir S1 och S2 samma digitala signatur eftersom CA:n använder
+samma privata nyckel?
 </p>
 
-<div class="diagram">SHA256(tbsCertificate)</div>
+<button onclick="toggle('q3')">
+SHOW ANSWER
+</button>
 
-<button onclick="toggle('a3')">SHOW ANSWER</button>
+<div class="reveal" id="q3">
 
-<div class="reveal" id="a3">
+<strong>Nej.</strong>
 
-Ett nytt beräknat hashvärde.
+Innehållet är olika.
 
-Vi kallar detta:
+Därför får vi olika hashvärden:
 
-<div class="diagram">H2</div>
+<div class="diagram">DATA 1 → H1
 
-Om certifikatets signerade data är exakt oförändrad kommer
-H2 att motsvara den digest som användes när signaturen skapades.
+DATA 2 → H2</div>
+
+Och signeringen görs utifrån olika hashvärden:
+
+<div class="diagram">H1 + CA PRIVATE KEY → S1
+
+H2 + CA PRIVATE KEY → S2</div>
+
+Därför blir signaturerna olika.
 
 </div>
 
 </div>
 
 </div>
+
 </section>
 
 
 
-<!-- =========================================================
-     02
-     ========================================================= -->
+<!-- =====================================================
+     KEY IDEA
+===================================================== -->
 
 <section class="section">
 
 <div class="section-head">
-02 // NU KOMMER SJÄLVA VERIFIERINGEN
+03 // DEN PRIVATA NYCKELN ÄR INTE DET ENDA SOM PÅVERKAR SIGNATUREN
 </div>
 
 <div class="section-body">
 
-<p>
-Klienten har nu:
-</p>
+<div class="diagram">CERTIFICATE A
 
-<div class="diagram">D  = tbsCertificate
+example.com
+     │
+     ▼
+     H1
+     │
+     │ CA PRIVATE KEY
+     ▼
+     S1
 
-H2 = Hash(D)
 
-S1 = signatureValue
+CERTIFICATE B
 
-Q  = CA public key</div>
-
-<p>
-Det viktiga är att klienten INTE gör:
-</p>
-
-<div class="diagram">H1 == H2</div>
-
-<p>
-eftersom det inte finns något separat H1 att läsa från certifikatet.
-</p>
-
-<p>
-I stället gör klienten konceptuellt:
-</p>
-
-<div class="diagram">VERIFY(
-    CA_PUBLIC_KEY,
-    SIGNATURE_VALUE,
-    H2
-)</div>
-
-<p>
-Verifieringsalgoritmen svarar:
-</p>
-
-<div class="diagram">VALID
-
-eller
-
-INVALID</div>
+example.se
+     │
+     ▼
+     H2
+     │
+     │ SAME CA PRIVATE KEY
+     ▼
+     S2</div>
 
 <div class="system">
-DET ÄR SIGNATUREN SOM ÄR DET KRYPTOGRAFISKA REFERENSVÄRDET.
-HASHEN RÄKNAS FRAM PÅ NYTT AV VERIFIERAREN.
+SAMMA PRIVATA NYCKEL + OLIKA DATA
+GER OLIKA DIGITALA SIGNATURER.
 </div>
 
+<p>
+Den digitala signaturen är alltså kopplad till både:
+</p>
+
+<div class="diagram">DET SIGNERADE INNEHÅLLET
+
++
+
+DEN PRIVATA NYCKELN</div>
+
 </div>
+
 </section>
 
 
 
-<!-- =========================================================
-     IMPORTANT DISTINCTION
-     ========================================================= -->
+<!-- =====================================================
+     CERTIFICATE CONTENT
+===================================================== -->
 
 <section class="section">
 
 <div class="section-head">
-03 // MÅSTE MAN "BACKA" SIGNATUREN?
+04 // VAD FINNS SEDAN I CERTIFIKATET?
 </div>
 
 <div class="section-body">
 
 <p>
-Det beror på signeringsalgoritmen.
+Det färdiga certifikatet innehåller förenklat:
 </p>
+
+<div class="diagram">CERTIFIKAT
+
+├── Certifikatets innehåll
+│
+├── Information om signeringsalgoritm
+│
+└── Digital signatur S1</div>
 
 <p>
-Det är därför farligt att generellt säga:
+Det viktiga är:
 </p>
 
-<div class="diagram">"Klienten dekrypterar signaturen med CA:s publika nyckel."</div>
+<div class="diagram">CERTIFIKATETS DATA FINNS
 
-<p>
-Det fungerar som en förenklad pedagogisk bild för vissa äldre
-RSA-signaturer, men det beskriver inte digitala signaturer generellt.
-</p>
+DIGITALA SIGNATUREN FINNS
 
-<table>
-
-<tr>
-<th>Algoritm</th>
-<th>Vad händer vid verifiering?</th>
-</tr>
-
-<tr>
-<td>RSA PKCS#1 v1.5</td>
-<td>
-En publik RSA-operation görs på signaturen och en signerad
-kodningsstruktur kontrolleras. Där ingår information om digesten.
-</td>
-</tr>
-
-<tr>
-<td>RSA-PSS</td>
-<td>
-En annan RSA-signaturkodning används. Det är inte bara att
-"plocka ut en hash".
-</td>
-</tr>
-
-<tr>
-<td>ECDSA</td>
-<td>
-Signaturen består av matematiska värden r och s.
-Ingen gammal hash "dekrypteras" ur signaturen.
-</td>
-</tr>
-
-</table>
+MEN H1 BEHÖVER INTE FINNAS
+SOM ETT SEPARAT FÄLT</div>
 
 <div class="warning">
-DEN GENERELLA MODELLEN ÄR DÄRFÖR:
-VERIFY(PUBLIC_KEY, SIGNATURE, DATA/DIGEST)
+DET FINNS ALLTSÅ INTE NÖDVÄNDIGTVIS ETT FÄLT DÄR DET STÅR:
+
+H1 = ABC123...
 </div>
 
+<p>
+Varför behövs inte det?
+</p>
+
+<p>
+För att klienten själv kan räkna fram hashvärdet från
+certifikatets innehåll.
+</p>
+
 </div>
+
 </section>
 
 
 
-<!-- =========================================================
-     RSA DEEP DIVE
-     ========================================================= -->
+<!-- =====================================================
+     VERIFY INTRO
+===================================================== -->
 
 <section class="level">
 
 <div class="level-head">
-[ INTERMEDIATE ] // RSA PKCS#1 v1.5
+[ INTERMEDIATE ] // NOW VERIFY IT
 </div>
 
 <div class="level-body">
 
 <p>
-Nu använder vi RSA PKCS#1 v1.5 eftersom den är pedagogiskt
-bra för att förstå var jämförelsen faktiskt sker.
+Nu får en klient certifikatet.
 </p>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 01 // CLIENT HASHES THE CERTIFICATE
-</div>
-
-<div class="diagram">tbsCertificate
-      │
-      ▼
-    SHA-256
-      │
-      ▼
-      H2</div>
-
-<p>
-H2 är klientens egen beräkning.
-</p>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 02 // CLIENT PROCESSES THE SIGNATURE
-</div>
 
 <p>
 Klienten har:
 </p>
 
-<div class="diagram">S1 = signatureValue
+<div class="diagram">CERTIFIKATETS DATA
 
-CA public key =
-    n
-    e</div>
+DIGITAL SIGNATUR S1</div>
 
 <p>
-För RSA kan den publika RSA-operationen förenklat beskrivas:
+Klienten kan också få fram CA:ns publika nyckel via
+certifikatkedjan.
 </p>
-
-<div class="diagram">M = S1^e mod n</div>
-
-<p>
-Resultatet är inte vanlig klartext.
-</p>
-
-<p>
-Det är en strukturerad RSA-signaturkodning.
-</p>
-
-</div>
 
 
 <div class="task">
 
 <div class="task-id">
-STEP 03 // VERIFY THE ENCODING
+STEP 01 // CALCULATE THE HASH AGAIN
 </div>
 
 <p>
-För PKCS#1 v1.5 innehåller den verifierade strukturen
-konceptuellt:
+Klienten tar certifikatets signerade innehåll:
 </p>
 
-<div class="diagram">PKCS#1 SIGNATURE ENCODING
-
-00 01 FF FF FF FF ...
-      │
-      └── padding
-
-DigestInfo
-│
-├── Hash algorithm = SHA-256
-│
-└── Digest = H1</div>
+<div class="diagram">DATA 1</div>
 
 <p>
-Här finns alltså den digestinformation som skapades under
-signeringen kodad inne i RSA-signaturstrukturen.
+och använder samma typ av hashfunktion:
 </p>
 
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 04 // THE COMPARISON
-</div>
+<div class="diagram">DATA 1
+   │
+   ▼
+ HASH()
+   │
+   ▼
+  H2</div>
 
 <p>
-Nu har verifieraren två värden:
-</p>
-
-<div class="diagram">Från egen beräkning:
-
-H2 = SHA256(tbsCertificate)
-
-
-Från RSA-signaturverifieringen:
-
-H1 = digest representerad
-     i den signerade strukturen</div>
-
-<p>
-Då kan verifieraren kontrollera:
-</p>
-
-<div class="diagram">H1 == H2 ?</div>
-
-<button onclick="toggle('rsa1')">SHOW RESULT</button>
-
-<div class="reveal" id="rsa1">
-
-Om de matchar och RSA-signaturkodningen i övrigt är giltig:
-
-<div class="diagram">SIGNATURE VALID</div>
-
-Om de inte matchar:
-
-<div class="diagram">SIGNATURE INVALID</div>
-
-</div>
-
-</div>
-
-</div>
-</section>
-
-
-
-<!-- =========================================================
-     RSA OVERVIEW
-     ========================================================= -->
-
-<section class="section">
-
-<div class="section-head">
-04 // HELA RSA-FLÖDET
-</div>
-
-<div class="section-body">
-
-<div class="diagram">                  CA SKAPAR
-
-
-tbsCertificate
-      │
-      ▼
-    SHA-256
-      │
-      ▼
-      H1
-      │
-      │ + CA PRIVATE KEY
-      ▼
-RSA PKCS#1 SIGN
-      │
-      ▼
-      S1
-
-
-CERTIFICATE:
-
-┌────────────────────────────┐
-│ tbsCertificate             │
-├────────────────────────────┤
-│ sha256WithRSAEncryption    │
-├────────────────────────────┤
-│ signatureValue = S1        │
-└────────────────────────────┘
-
-
-                KLIENT VERIFIERAR
-
-
-tbsCertificate
-      │
-      ▼
-    SHA-256
-      │
-      ▼
-      H2
-                              S1
-                              │
-                              │ CA public key
-                              ▼
-                         RSA VERIFY
-                              │
-                              ▼
-                       digest information
-                              │
-                              ▼
-                             H1
-
-
-                    H1 == H2 ?
-
-                     │      │
-                    YES     NO
-                     │      │
-                     ▼      ▼
-
-                   VALID  INVALID</div>
-
-</div>
-</section>
-
-
-
-<!-- =========================================================
-     ATTACK
-     ========================================================= -->
-
-<section class="level">
-
-<div class="level-head">
-[ CHALLENGE ] // MALLORY CHANGES THE CERTIFICATE
-</div>
-
-<div class="level-body">
-
-<div class="task">
-
-<div class="task-id">
-SCENARIO
-</div>
-
-<p>
-Originalet:
-</p>
-
-<div class="diagram">D1
-│
-▼
-SHA256
-│
-▼
-H1
-│
-▼
-SIGN
-│
-▼
-S1</div>
-
-<p>
-Mallory ändrar:
-</p>
-
-<div class="diagram">SAN = www.example.com
-
-till
-
-SAN = evil.example</div>
-
-<p>
-Nu har hon D2.
+Vi kallar klientens nyberäknade hashvärde för H2.
 </p>
 
 </div>
+
 
 
 <div class="task">
@@ -969,24 +1009,252 @@ QUESTION 04
 </div>
 
 <p>
-Kan Mallory beräkna:
+Var finns H1 som klienten ska jämföra H2 med?
 </p>
 
-<div class="diagram">H2 = SHA256(D2)</div>
+<button onclick="toggle('q4')">
+SHOW ANSWER
+</button>
 
-<button onclick="toggle('a4')">SHOW ANSWER</button>
+<div class="reveal" id="q4">
 
-<div class="reveal" id="a4">
+Det finns normalt inget separat lagrat H1-fält.
 
-<strong>Ja.</strong>
+Klienten gör alltså inte en vanlig jämförelse:
 
-Hashfunktionen är publik.
+<div class="diagram">H1 == H2</div>
 
-Det finns inget hemligt med H2.
+mot två hashfält.
+
+I stället används H2 tillsammans med den digitala signaturen
+och CA:ns publika nyckel i signaturverifieringen.
 
 </div>
 
 </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     VERIFY
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+05 // VAD HÄNDER I VERIFY?
+</div>
+
+<div class="section-body">
+
+<p>
+Nu har klienten tre viktiga saker:
+</p>
+
+<div class="diagram">H2
+
+DIGITAL SIGNATUR S1
+
+CA:S PUBLIKA NYCKEL</div>
+
+<p>
+Dessa används av signaturverifieringen:
+</p>
+
+<div class="diagram">CERTIFIKATETS DATA
+        │
+        ▼
+      HASH
+        │
+        ▼
+       H2
+        │
+        │
+S1 ─────┼──────┐
+        │      │
+CA      │      │
+PUBLIC ─┘      │
+KEY            │
+               ▼
+             VERIFY
+               │
+        ┌──────┴──────┐
+        │             │
+      VALID         INVALID</div>
+
+<p>
+Det här är den centrala modellen.
+</p>
+
+<div class="system">
+VERIFY KONTROLLERAR OM DEN DIGITALA SIGNATUREN ÄR GILTIG
+FÖR DET HASHVÄRDE SOM KLIENTEN PRECIS HAR RÄKNAT FRAM.
+</div>
+
+<p>
+CA:ns publika nyckel används för att göra denna kontroll.
+</p>
+
+<p>
+Vi behöver alltså inte tänka:
+</p>
+
+<div class="diagram">"Var finns gamla H1?"</div>
+
+<p>
+utan:
+</p>
+
+<div class="diagram">"Är S1 en giltig signatur
+för H2
+med CA:ns publika nyckel?"</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     VERY IMPORTANT VERIFY
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+06 // VERIFY — ENKLASTE MENTALA MODELLEN
+</div>
+
+<div class="section-body">
+
+<p>
+Tänk att funktionen får tre saker:
+</p>
+
+<div class="diagram">VERIFY(
+
+    hashvärde,
+
+    digital signatur,
+
+    publik nyckel
+
+)</div>
+
+<p>
+Och svarar:
+</p>
+
+<div class="diagram">VALID
+
+eller
+
+INVALID</div>
+
+<p>
+Exempel:
+</p>
+
+<div class="diagram">H2
++
+S1
++
+CA PUBLIC KEY
+       │
+       ▼
+     VERIFY
+       │
+       ▼
+     VALID</div>
+
+<p>
+Det betyder:
+</p>
+
+<div class="diagram">Den digitala signaturen S1
+är giltig för det hashvärde H2
+som klienten räknade fram.</div>
+
+<div class="warning">
+EXAKT HUR VERIFY GÖR DEN MATEMATISKA KONTROLLEN
+BEROR PÅ SIGNATURALGORITMEN.
+
+I DEN HÄR UPPGIFTEN FOKUSERAR VI PÅ FÖRSTÅELSEN,
+INTE DEN UNDERLIGGANDE MATEMATIKEN.
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ATTACK
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE ] // MALLORY CHANGES THE CERTIFICATE
+</div>
+
+<div class="level-body">
+
+<p>
+Originalcertifikatet:
+</p>
+
+<div class="diagram">example.com
+     │
+     ▼
+     H1
+     │
+     │ CA PRIVATE KEY
+     ▼
+     S1</div>
+
+<p>
+Certifikatet skickas ut som:
+</p>
+
+<div class="diagram">DATA 1
+
++
+
+SIGNATURE S1</div>
+
+
+<div class="task">
+
+<div class="task-id">
+STEP 01 // MALLORY MODIFIES IT
+</div>
+
+<p>
+Mallory ändrar:
+</p>
+
+<div class="diagram">example.com</div>
+
+<p>
+till:
+</p>
+
+<div class="diagram">example.se</div>
+
+<p>
+Nu är certifikatets data annorlunda.
+</p>
+
+<div class="diagram">DATA 2</div>
+
+</div>
+
 
 
 <div class="task">
@@ -996,31 +1264,33 @@ QUESTION 05
 </div>
 
 <p>
-Certifikatet innehåller fortfarande gamla:
+Kan Mallory beräkna hashvärdet för DATA 2?
 </p>
 
-<div class="diagram">S1</div>
+<button onclick="toggle('q5')">
+SHOW ANSWER
+</button>
 
-<p>
-Vad händer när klienten verifierar?
-</p>
+<div class="reveal" id="q5">
 
-<button onclick="toggle('a5')">SHOW ANSWER</button>
+<strong>Ja.</strong>
 
-<div class="reveal" id="a5">
+Mallory kan beräkna:
 
-Klienten räknar:
+<div class="diagram">DATA 2
+   │
+   ▼
+ HASH
+   │
+   ▼
+  H2</div>
 
-<div class="diagram">Hash(D2) = H2</div>
-
-Den gamla signaturen S1 hör däremot till det ursprungliga
-D1/H1.
-
-Verifieringen misslyckas.
+Hashning är inte hemlig.
 
 </div>
 
 </div>
+
 
 
 <div class="task">
@@ -1030,835 +1300,1044 @@ QUESTION 06
 </div>
 
 <p>
-Kan Mallory bara stoppa in H2 någonstans?
+Kan Mallory bara "byta H1 till H2"?
 </p>
 
-<button onclick="toggle('a6')">SHOW ANSWER</button>
+<button onclick="toggle('q6')">
+SHOW ANSWER
+</button>
 
-<div class="reveal" id="a6">
+<div class="reveal" id="q6">
 
 Nej.
 
-Det finns inget separat H1-fält som hon kan ersätta.
+Det finns inget separat H1-fält som hon behöver eller kan
+ersätta på det sättet.
 
-Hon behöver skapa en helt ny giltig:
+Problemet är den digitala signaturen.
 
-<div class="diagram">S2</div>
+Certifikatet har fortfarande:
 
-och det kräver CA:ns privata nyckel.
+<div class="diagram">S1</div>
+
+och S1 skapades för det ursprungliga innehållet.
 
 </div>
 
 </div>
 
-</div>
-</section>
 
-
-
-<!-- =========================================================
-     ECDSA
-     ========================================================= -->
-
-<section class="level">
-
-<div class="level-head">
-[ ADVANCED ] // VARFÖR "DECRYPT THE SIGNATURE" ÄR FEL GENERELLT
-</div>
-
-<div class="level-body">
 
 <div class="task">
 
 <div class="task-id">
-ECDSA
+STEP 02 // CLIENT VERIFIES THE MODIFIED CERTIFICATE
 </div>
 
 <p>
-Antag att certifikatet i stället använder ECDSA.
+Klienten får nu:
 </p>
 
+<div class="diagram">DATA 2
+
++
+
+GAMLA SIGNATUREN S1</div>
+
 <p>
-Signaturen består då ungefär av:
+Klienten räknar:
 </p>
 
-<div class="diagram">signature = (r, s)</div>
+<div class="diagram">DATA 2
+   │
+   ▼
+ HASH
+   │
+   ▼
+  H2</div>
 
 <p>
-Klienten beräknar fortfarande:
-</p>
-
-<div class="diagram">H2 = Hash(tbsCertificate)</div>
-
-<p>
-Men den "öppnar" inte signaturen och hittar H1.
-</p>
-
-<p>
-I stället används H2, <code>r</code>, <code>s</code> och
-CA:ns publika nyckel i elliptisk-kurv-matematik.
+Sedan:
 </p>
 
 <div class="diagram">H2
 +
-(r,s)
+S1
 +
-CA public key
-       │
-       ▼
-ECDSA VERIFY
-       │
-       ▼
-VALID / INVALID</div>
-
-<div class="warning">
-DETTA ÄR VARFÖR DEN SÄKRA GENERELLA FORMULERINGEN ÄR:
-SIGNATURE VERIFICATION — INTE "DECRYPT SIGNATURE".
-</div>
+CA PUBLIC KEY
+      │
+      ▼
+    VERIFY
+      │
+      ▼
+   INVALID</div>
 
 </div>
 
-</div>
-</section>
-
-
-
-<!-- =========================================================
-     PRACTICAL OPENSSL
-     ========================================================= -->
-
-<section class="level">
-
-<div class="level-head">
-[ PRACTICAL ] // INSPECT A REAL CERTIFICATE
-</div>
-
-<div class="level-body">
 
 
 <div class="task">
 
 <div class="task-id">
-TASK 01 // VIEW CERTIFICATE
-</div>
-
-<div class="terminal">$ openssl x509 -in leaf.pem -text -noout</div>
-
-<p>
-Leta efter:
-</p>
-
-<div class="diagram">Issuer
-
-Subject
-
-Subject Public Key Info
-
-X509v3 Subject Alternative Name
-
-Signature Algorithm
-
-Signature Value</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-TASK 02 // IDENTIFY SIGNATURE ALGORITHM
+QUESTION 07
 </div>
 
 <p>
-Du kan till exempel se:
+Vad skulle Mallory behöva för att det modifierade
+certifikatet ska bli giltigt?
 </p>
 
-<div class="diagram">Signature Algorithm:
-    sha256WithRSAEncryption</div>
+<button onclick="toggle('q7')">
+SHOW ANSWER
+</button>
 
-<p>
-Det berättar bland annat vilken hashfunktion som ingår
-i signaturmekanismen.
-</p>
+<div class="reveal" id="q7">
 
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-TASK 03 // VERIFY THE CERTIFICATE CHAIN
-</div>
-
-<p>
-Om du har:
-</p>
-
-<div class="diagram">leaf.pem
-intermediate.pem
-root.pem</div>
-
-<p>
-kan du låta OpenSSL verifiera kedjan:
-</p>
-
-<div class="terminal">$ openssl verify \
-  -CAfile root.pem \
-  -untrusted intermediate.pem \
-  leaf.pem</div>
-
-<p>
-Vid lyckad verifiering:
-</p>
-
-<div class="terminal">leaf.pem: OK</div>
-
-<p>
-OpenSSL gör då bland annat den kryptografiska
-signaturverifieringen åt dig.
-</p>
-
-</div>
-
-</div>
-</section>
-
-
-
-<!-- =========================================================
-     PRACTICAL PYTHON
-     ========================================================= -->
-
-<section class="level">
-
-<div class="level-head">
-[ PRACTICAL++ ] // CALCULATE THE DIGEST YOURSELF
-</div>
-
-<div class="level-body">
-
-<p>
-I den här övningen gör vi flödet mer synligt.
-</p>
-
-<p>
-Installera Python-paketet:
-</p>
-
-<div class="terminal">$ pip install cryptography</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 01 // LOAD CERTIFICATES
-</div>
-
-<div class="terminal">from cryptography import x509
-
-with open("leaf.pem", "rb") as f:
-    leaf = x509.load_pem_x509_certificate(f.read())
-
-with open("issuer.pem", "rb") as f:
-    issuer = x509.load_pem_x509_certificate(f.read())</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 02 // GET THE EXACT SIGNED BYTES
-</div>
-
-<div class="terminal">tbs = leaf.tbs_certificate_bytes
-
-print("TBS length:", len(tbs))</div>
-
-<p>
-Det här är viktigt:
-</p>
-
-<div class="warning">
-HASHEN SKA BERÄKNAS ÖVER DEN EXAKTA DER-KODADE
-tbsCertificate-DATAN — INTE ÖVER TEXTEN SOM OPENSSL VISAR.
-</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 03 // GET SIGNATURE
-</div>
-
-<div class="terminal">signature = leaf.signature
-
-print("Signature length:", len(signature))
-print(signature.hex())</div>
-
-<p>
-Detta är certifikatets:
-</p>
-
-<div class="diagram">signatureValue</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 04 // FIND HASH ALGORITHM
-</div>
-
-<div class="terminal">hash_algorithm = leaf.signature_hash_algorithm
-
-print(hash_algorithm.name)</div>
-
-<p>
-Exempel:
-</p>
-
-<div class="terminal">sha256</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 05 // CALCULATE H2 YOURSELF
-</div>
-
-<div class="terminal">from cryptography.hazmat.primitives import hashes
-
-hasher = hashes.Hash(hash_algorithm)
-
-hasher.update(tbs)
-
-H2 = hasher.finalize()
-
-print("H2:", H2.hex())</div>
-
-<p>
-Nu har DU gjort samma typ av digestberäkning som behövs vid
-signaturverifieringen.
-</p>
-
-<div class="diagram">H2 = Hash(tbsCertificate)</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-STEP 06 // GET ISSUER PUBLIC KEY
-</div>
-
-<div class="terminal">public_key = issuer.public_key()
-
-print(public_key)</div>
-
-<p>
-Det är utfärdarens publika nyckel som ska verifiera
-certifikatets signatur.
-</p>
-
-</div>
-
-</div>
-</section>
-
-
-
-<!-- =========================================================
-     PYTHON RSA PREHASHED
-     ========================================================= -->
-
-<section class="level">
-
-<div class="level-head">
-[ PRACTICAL+++ ] // VERIFY YOUR H2 DIRECTLY
-</div>
-
-<div class="level-body">
-
-<p>
-Om certifikatet använder RSA PKCS#1 v1.5 kan vi uttryckligen
-låta biblioteket verifiera den hash vi själva räknat fram.
-</p>
-
-<div class="terminal">from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.asymmetric import utils
-
-public_key.verify(
-    signature,
-    H2,
-    padding.PKCS1v15(),
-    utils.Prehashed(hash_algorithm)
-)
-
-print("SIGNATURE VALID")</div>
-
-<p>
-Här händer exakt det vi försöker förstå:
-</p>
-
-<div class="diagram">DU RÄKNADE:
-
-H2 = Hash(tbsCertificate)
-
-
-SEDAN GER DU VERIFY():
-
-H2
-signatureValue
-CA public key
-
-
-RESULTAT:
-
-VALID / EXCEPTION</div>
-
-<div class="system">
-DET FINNS FORTFARANDE INGET SEPARAT H1-FÄLT I CERTIFIKATET.
-SIGNATURVERIFIERINGSALGORITMEN KONTROLLERAR ATT SIGNATUREN
-ÄR GILTIG FÖR DEN DIGEST DU HAR BERÄKNAT.
-</div>
-
-</div>
-</section>
-
-
-
-<!-- =========================================================
-     MUTATION TEST
-     ========================================================= -->
-
-<section class="level">
-
-<div class="level-head">
-[ CHALLENGE ] // BREAK ONE BYTE
-</div>
-
-<div class="level-body">
-
-<div class="task">
-
-<div class="task-id">
-TASK
-</div>
-
-<p>
-Kopiera den signerade datan:
-</p>
-
-<div class="terminal">modified = bytearray(tbs)</div>
-
-<p>
-Ändra en byte:
-</p>
-
-<div class="terminal">modified[20] ^= 0x01</div>
-
-<p>
-Beräkna en ny digest:
-</p>
-
-<div class="terminal">hasher = hashes.Hash(hash_algorithm)
-hasher.update(bytes(modified))
-H3 = hasher.finalize()
-
-print("Original H2:", H2.hex())
-print("Modified H3:", H3.hex())</div>
-
-<p>
-Försök sedan verifiera samma gamla signatur mot H3:
-</p>
-
-<div class="terminal">public_key.verify(
-    signature,
-    H3,
-    padding.PKCS1v15(),
-    utils.Prehashed(hash_algorithm)
-)</div>
-
-<button onclick="toggle('mutate')">WHAT SHOULD HAPPEN?</button>
-
-<div class="reveal" id="mutate">
-
-Verifieringen ska misslyckas.
-
-Du har nu själv demonstrerat:
+Hon skulle behöva skapa en ny digital signatur:
     
-<div class="diagram">D1 → H2 → S1 verifies
+<div class="diagram">DATA 2
+   │
+   ▼
+ HASH
+   │
+   ▼
+  H2
+   │
+   │ CA PRIVATE KEY
+   ▼
+ SIGN
+   │
+   ▼
+  S2</div>
 
-D2 → H3 → S1 does NOT verify</div>
-
-Det är inte hashen i sig som angriparen inte kan skapa.
-
-Angriparen kan skapa H3.
-
-Det är en ny giltig signatur för H3 som angriparen saknar
-CA:ns privata nyckel för att skapa.
+Men Mallory har inte CA:ns privata nyckel.
 
 </div>
 
 </div>
 
 </div>
+
 </section>
 
 
 
-<!-- =========================================================
-     FINGERPRINT
-     ========================================================= -->
+<!-- =====================================================
+     CA VS MALLORY
+===================================================== -->
 
 <section class="section">
 
 <div class="section-head">
-05 // FINGERPRINT — EN HELT ANNAN HASH
+07 // CA KAN SKAPA S2 — MALLORY KAN INTE
 </div>
 
 <div class="section-body">
 
 <p>
-Visa certifikatets fingerprint:
+Den legitima CA:n kan göra:
 </p>
 
-<div class="terminal">$ openssl x509 \
-  -in leaf.pem \
-  -noout \
-  -fingerprint \
-  -sha256</div>
+<div class="diagram">example.com
+     │
+     ▼
+     H1
+     │
+     │ CA PRIVATE KEY
+     ▼
+     S1
+
+
+example.se
+     │
+     ▼
+     H2
+     │
+     │ SAME CA PRIVATE KEY
+     ▼
+     S2</div>
 
 <p>
-Detta kan ge:
+Mallory kan däremot bara komma så här långt:
 </p>
 
-<div class="diagram">SHA256 Fingerprint=
-A1:B2:C3:D4:...</div>
+<div class="diagram">example.se
+     │
+     ▼
+     H2
+     │
+     ▼
+     ???
+
+     ↑
+
+MISSING:
+CA PRIVATE KEY</div>
+
+<div class="system">
+SÄKERHETEN LIGGER INTE I ATT HASHVÄRDET ÄR HEMLIGT.
+
+SÄKERHETEN LIGGER I ATT MALLORY INTE KAN SKAPA
+EN NY GILTIG CA-SIGNATUR.
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PRACTICAL
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ PRACTICAL ] // FIND IT IN A REAL CERTIFICATE
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+TASK 01 // OPEN THE CERTIFICATE
+</div>
 
 <p>
-Detta är inte H2 ovan.
+Öppna ett certifikat i Windows eller med OpenSSL.
+</p>
+
+<p>
+Leta efter:
+</p>
+
+<div class="diagram">Subject
+
+Issuer
+
+Validity
+
+Public Key
+
+SAN
+
+Signature Algorithm
+
+Signature
+
+Fingerprint / Tumavtryck</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+TASK 02 // OPENSSL
+</div>
+
+<p>
+Om certifikatet är sparat som:
+</p>
+
+<div class="diagram">cert.pem</div>
+
+<p>
+kör:
+</p>
+
+<div class="terminal">$ openssl x509 -in cert.pem -text -noout</div>
+
+<p>
+Leta efter:
+</p>
+
+<div class="diagram">Signature Algorithm
+
+Signature Value</div>
+
+<p>
+Den stora mängden hexdata under Signature Value är
+certifikatets digitala signatur.
+</p>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 08
+</div>
+
+<p>
+Kan du hitta ett vanligt separat fält som innehåller:
+</p>
+
+<div class="diagram">H1 = hashvärdet som CA:n använde</div>
+
+<button onclick="toggle('q8')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q8">
+
+Nej.
+
+Hashvärdet behöver inte ligga där som ett separat fält.
+
+Verifieraren kan beräkna hashvärdet igen från certifikatets data.
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FINGERPRINT
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+08 // FINGERPRINT ÄR INTE SAMMA SAK
+</div>
+
+<div class="section-body">
+
+<p>
+När du öppnar ett certifikat kan du också se:
+</p>
+
+<div class="diagram">Fingerprint
+
+eller
+
+Tumavtryck</div>
+
+<p>
+Det är en annan användning av en hashfunktion.
+</p>
+
+<div class="diagram">HELA CERTIFIKATET
+       │
+       ▼
+      HASH
+       │
+       ▼
+  FINGERPRINT</div>
+
+<p>
+Det används bland annat för att identifiera ett specifikt certifikat.
 </p>
 
 <table>
 
 <tr>
-<th>Värde</th>
-<th>Beräknas över</th>
-<th>Syfte</th>
+<th>Begrepp</th>
+<th>Vad är det?</th>
 </tr>
 
 <tr>
-<td>H2</td>
-<td>tbsCertificate</td>
-<td>Signaturverifiering</td>
+<td>Hashvärde vid signering</td>
+<td>Beräknas från signerad data och används i signeringsprocessen</td>
 </tr>
 
 <tr>
-<td>signatureValue</td>
-<td>Skapas från signerad data/digest + privat nyckel</td>
-<td>Bevis för signaturen</td>
+<td>Digital signatur</td>
+<td>Skapas med hjälp av hashvärdet och den privata nyckeln</td>
 </tr>
 
 <tr>
 <td>Fingerprint</td>
-<td>Vanligen hela certifikatet</td>
-<td>Identifiera certifikatet</td>
+<td>Hash som används för att identifiera certifikatet</td>
 </tr>
 
 </table>
 
+<div class="system">
+FINGERPRINT ≠ DIGITAL SIGNATUR
 </div>
+
+</div>
+
 </section>
 
 
 
-<!-- =========================================================
-     BOSS
-     ========================================================= -->
+<!-- =====================================================
+     VERIFY QUESTIONS
+===================================================== -->
 
-<section class="level boss">
+<section class="level">
 
 <div class="level-head">
-[ BOSS ] // EXPLAIN IT WITHOUT MAGIC
+[ CHALLENGE+ ] // UNDERSTAND VERIFY
 </div>
 
 <div class="level-body">
 
-<div class="task">
-
-<div class="task-id">
-BOSS 01
-</div>
-
-<p>
-En elev säger:
-</p>
-
-<div class="diagram">"Klienten räknar H2.
-
-Men var finns H1 som den ska jämföra mot?"</div>
-
-<button onclick="toggle('b1')">SHOW MODEL ANSWER</button>
-
-<div class="reveal" id="b1">
-
-Det finns normalt inget separat H1-fält.
-
-Klienten använder sin nyberäknade digest tillsammans med
-signatureValue och CA:ns publika nyckel i signaturverifieringen.
-
-För RSA PKCS#1 v1.5 kan verifieringen pedagogiskt ses som att
-digestinformationen som signaturen representerar kontrolleras
-mot den digest klienten själv räknat fram.
-
-</div>
-
-</div>
-
 
 <div class="task">
 
 <div class="task-id">
-BOSS 02
+QUESTION 09
 </div>
 
 <p>
-Varför kan Mallory inte bara räkna fram H3 efter att hon
-ändrat certifikatet?
+Klienten har:
 </p>
 
-<button onclick="toggle('b2')">SHOW MODEL ANSWER</button>
+<div class="diagram">CERTIFICATE DATA
 
-<div class="reveal" id="b2">
+SIGNATURE S1
 
-Hon kan.
-
-Problemet är inte H3.
-
-Problemet är att hon inte kan skapa en giltig digital signatur
-för H3 med CA:ns privata nyckel.
-
-</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-BOSS 03
-</div>
+CA PUBLIC KEY</div>
 
 <p>
-Varför bör man inte säga:
+Vad gör klienten först?
 </p>
 
-<div class="diagram">"Man dekrypterar signaturen
-med den publika nyckeln."</div>
+<button onclick="toggle('q9')">
+SHOW ANSWER
+</button>
 
-<button onclick="toggle('b3')">SHOW MODEL ANSWER</button>
+<div class="reveal" id="q9">
 
-<div class="reveal" id="b3">
-
-Det är en RSA-specifik förenkling och beskriver inte
-digital signaturverifiering generellt.
-
-ECDSA fungerar exempelvis inte så alls.
-
-Den generella termen är:
-
-<div class="diagram">VERIFY SIGNATURE</div>
-
-</div>
-
-</div>
-
-
-<div class="task">
-
-<div class="task-id">
-BOSS 04
-</div>
-
-<p>
-Fyll i:
-</p>
+Klienten räknar fram ett hashvärde från certifikatets signerade data.
 
 <div class="diagram">DATA
-  ↓
-______
-  ↓
-DIGEST
-  ↓
-______
-  ↓
-SIGNATURE</div>
-
-<button onclick="toggle('b4')">SHOW ANSWER</button>
-
-<div class="reveal" id="b4">
-
-<div class="diagram">DATA
-  ↓
-HASH FUNCTION
-  ↓
-DIGEST
-  ↓
-SIGNATURE ALGORITHM
-+ PRIVATE KEY
-  ↓
-SIGNATURE</div>
+ ↓
+HASH
+ ↓
+H</div>
 
 </div>
 
 </div>
+
 
 
 <div class="task">
 
 <div class="task-id">
-BOSS 05
+QUESTION 10
 </div>
 
 <p>
-Fyll i verifieringssidan:
+Vad används hashvärdet till efter det?
 </p>
 
-<div class="diagram">tbsCertificate
-      ↓
-    ______
-      ↓
-      H2
+<button onclick="toggle('q10')">
+SHOW ANSWER
+</button>
 
-H2 + ______ + ______
-          ↓
-       VERIFY
-          ↓
-   VALID / INVALID</div>
+<div class="reveal" id="q10">
 
-<button onclick="toggle('b5')">SHOW ANSWER</button>
+Det används tillsammans med:
 
-<div class="reveal" id="b5">
+<div class="diagram">DIGITAL SIGNATUR
 
-<div class="diagram">tbsCertificate
-      ↓
-     HASH
-      ↓
-      H2
++
 
-H2 + signatureValue + CA public key
-              ↓
-           VERIFY
-              ↓
-       VALID / INVALID</div>
+CA:S PUBLIKA NYCKEL</div>
+
+i signaturverifieringen.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+QUESTION 11
+</div>
+
+<p>
+Vad frågar VERIFY egentligen?
+</p>
+
+<button onclick="toggle('q11')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="q11">
+
+Förenklat:
+
+<div class="diagram">"Är den här digitala signaturen
+giltig för det här hashvärdet
+med den här publika nyckeln?"</div>
+
+Om ja:
+
+<div class="diagram">VALID</div>
+
+Om nej:
+
+<div class="diagram">INVALID</div>
 
 </div>
 
 </div>
 
 </div>
+
 </section>
 
 
 
-<!-- =========================================================
-     TEACHER
-     ========================================================= -->
+<!-- =====================================================
+     TRUST
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+09 // MEN VEM ÄGER DEN PUBLIKA NYCKELN?
+</div>
+
+<div class="section-body">
+
+<p>
+Vi har nu förstått den kryptografiska verifieringen.
+</p>
+
+<div class="diagram">HASH
++
+SIGNATURE
++
+CA PUBLIC KEY
+      │
+      ▼
+    VERIFY</div>
+
+<p>
+Men ytterligare en fråga återstår:
+</p>
+
+<div class="diagram">VARFÖR LITAR VI PÅ
+DENNA CA?</div>
+
+<p>
+Det är här certifikatkedjan kommer in:
+</p>
+
+<div class="diagram">SERVER CERTIFICATE
+       │
+       ▼
+INTERMEDIATE CA
+       │
+       ▼
+ROOT CA</div>
+
+<p>
+Root CA:n finns normalt redan som betrodd i operativsystemets
+eller webbläsarens trust store.
+</p>
+
+<div class="system">
+SIGNATURVERIFIERING KONTROLLERAR KRYPTOGRAFIN.
+
+TRUST STORE AVGÖR VILKA ROOT CA:S KLIENTEN VÄLJER ATT LITA PÅ.
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     COMPLETE FLOW
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+10 // HELA FLÖDET
+</div>
+
+<div class="section-body">
+
+<div class="diagram">==================================================
+                 CA SKAPAR CERTIFIKATET
+==================================================
+
+CERTIFICATE DATA
+       │
+       ▼
+      HASH
+       │
+       ▼
+      H1
+       │
+       │ + CA PRIVATE KEY
+       ▼
+     SIGN
+       │
+       ▼
+      S1
+
+
+CERTIFIKATET INNEHÅLLER:
+
+DATA
++
+S1
+
+
+==================================================
+                 KLIENT VERIFIERAR
+==================================================
+
+CERTIFICATE DATA
+       │
+       ▼
+      HASH
+       │
+       ▼
+       H2
+       │
+       │
+S1 ────┼────────┐
+       │        │
+CA     │        │
+PUBLIC ┘        │
+KEY             │
+                ▼
+              VERIFY
+                │
+         ┌──────┴──────┐
+         │             │
+       VALID         INVALID</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     BOSS
+===================================================== -->
+
+<section class="level boss">
+
+<div class="level-head">
+[ BOSS ] // EXPLAIN THE WHOLE THING
+</div>
+
+<div class="level-body">
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 01 // HASH VS SIGNATURE
+</div>
+
+<p>
+Är hashvärdet och den digitala signaturen samma sak?
+</p>
+
+<button onclick="toggle('b1')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="b1">
+
+Nej.
+
+<div class="diagram">DATA
+ ↓
+HASH
+ ↓
+HASHVÄRDE
+ ↓
+SIGNERING
+ ↓
+DIGITAL SIGNATUR</div>
+
+Hashvärdet används i processen för att skapa signaturen.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 02 // SAME PRIVATE KEY
+</div>
+
+<p>
+Samma CA använder samma privata nyckel för att signera:
+</p>
+
+<div class="diagram">example.com
+
+och
+
+example.se</div>
+
+<p>
+Varför blir signaturerna olika?
+</p>
+
+<button onclick="toggle('b2')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="b2">
+
+Innehållet är olika.
+
+Därför får vi:
+
+<div class="diagram">DATA 1 ≠ DATA 2
+
+↓
+
+H1 ≠ H2
+
+↓
+
+S1 ≠ S2</div>
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 03 // WHERE IS H1?
+</div>
+
+<p>
+Klienten räknar fram H2.
+
+Var finns gamla H1?
+</p>
+
+<button onclick="toggle('b3')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="b3">
+
+H1 behöver inte finnas som ett separat lagrat hashfält.
+
+Klienten använder H2 tillsammans med signaturen och
+CA:ns publika nyckel i VERIFY.
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 04 // VERIFY
+</div>
+
+<p>
+Vad används vid signaturverifiering?
+</p>
+
+<button onclick="toggle('b4')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="b4">
+
+Förenklat:
+
+<div class="diagram">NYBERÄKNAT HASHVÄRDE
+
++
+
+DIGITAL SIGNATUR
+
++
+
+CA PUBLIC KEY
+
+↓
+
+VERIFY</div>
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 05 // MALLORY
+</div>
+
+<p>
+Mallory ändrar certifikatet.
+
+Vad kan hon göra?
+</p>
+
+<button onclick="toggle('b5')">
+SHOW ANSWER
+</button>
+
+<div class="reveal" id="b5">
+
+Mallory kan:
+
+<div class="diagram">✓ Ändra data
+
+✓ Räkna fram en ny hash
+
+✓ Räkna fram ett nytt fingerprint</div>
+
+Men Mallory kan inte:
+
+<div class="diagram">✗ Skapa en ny giltig CA-signatur
+
+utan
+
+CA:S PRIVATA NYCKEL</div>
+
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<div class="task-id">
+BOSS 06 // ONE SENTENCE
+</div>
+
+<p>
+Förklara en digital signatur med en enda mening.
+</p>
+
+<button onclick="toggle('b6')">
+SHOW MODEL ANSWER
+</button>
+
+<div class="reveal" id="b6">
+
+En digital signatur är ett kryptografiskt värde som skapas
+från den signerade datan, vanligtvis via ett hashvärde,
+med hjälp av den privata nyckeln och som senare kan verifieras
+med den publika nyckeln.
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     TEACHER MODE
+===================================================== -->
 
 <section class="teacher">
 
 <div class="teacher-head">
-[ TEACHER MODE ] // THE FIVE QUESTIONS
+[ TEACHER MODE ] // MENTAL MODEL
 </div>
 
 <div style="padding:16px 22px 0">
-<button onclick="toggle('teacher')">TOGGLE NOTES</button>
+
+<button onclick="toggle('teacher')">
+TOGGLE TEACHER NOTES
+</button>
+
 </div>
+
 
 <div class="teacher-body" id="teacher">
 
 <p>
-För varje signaturövning, låt eleverna svara på fem frågor:
+Målet är att eleverna ska kunna rita två flöden från minnet.
 </p>
 
-<div class="diagram">1. VILKEN DATA SIGNERADES?
+<h3>SIGNERING</h3>
 
-2. VILKEN HASHFUNKTION ANVÄNDES?
+<div class="diagram">DATA
+ ↓
+HASH
+ ↓
+HASHVÄRDE
+ ↓
+SIGN + PRIVATE KEY
+ ↓
+DIGITAL SIGNATUR</div>
 
-3. VILKEN SIGNATUR HAR VI?
+<h3>VERIFIERING</h3>
 
-4. VILKEN PUBLIK NYCKEL SKA VERIFIERA DEN?
-
-5. VAD RÄKNAR VERIFIERAREN FRAM SJÄLV?</div>
+<div class="diagram">DATA
+ ↓
+HASH
+ ↓
+HASHVÄRDE ─────────┐
+                   │
+SIGNATURE ─────────┤
+                   │
+PUBLIC KEY ────────┘
+          │
+          ▼
+       VERIFY
+          │
+     VALID / INVALID</div>
 
 <p>
-Den viktiga formuleringen är:
+Eleven bör förstå följande:
 </p>
 
-<div class="diagram">Verifieraren beräknar själv digesten
-över den signerade datan.
+<div class="diagram">1. Hash och signatur är olika saker.
 
-Digesten används sedan tillsammans
-med signaturen och signerarens publika nyckel
-för att verifiera signaturen.</div>
+2. Signaturen skapas utifrån den signerade datan.
+
+3. Ändras datan ändras hashvärdet.
+
+4. Ändrad data kräver en ny signatur.
+
+5. Samma privata nyckel kan skapa många olika signaturer
+   eftersom datan som signeras är olika.
+
+6. Hashvärdet är inte hemligt.
+
+7. Ett nytt hashvärde räcker inte för en angripare.
+
+8. En ny giltig signatur kräver den privata nyckeln.
+
+9. Klienten räknar själv fram hashvärdet igen.
+
+10. Hashvärdet används tillsammans med signaturen
+    och den publika nyckeln i VERIFY.</div>
 
 <p>
-Undvik helst:
+Undvik att gå in på:
 </p>
 
-<div class="diagram">"Hashen ligger i certifikatet."
+<div class="diagram">ASN.1
 
-"Klienten jämför två hashfält."
+DER
 
-"Signaturen är hashen."
+DigestInfo
 
-"Alla signaturer dekrypteras
-med den publika nyckeln."</div>
+RSA padding
+
+modulär exponentiering
+
+ECDSA r/s
+
+signaturkodning</div>
+
+<p>
+om målet för lektionen är förståelse snarare än
+implementation.
+</p>
+
+<p>
+Om elever frågar exakt vad som händer inne i VERIFY kan
+man svara:
+</p>
+
+<div class="diagram">"Signaturalgoritmen använder
+hashvärdet, signaturen och den publika nyckeln
+för att matematiskt kontrollera om signaturen
+är giltig för just detta innehåll."</div>
+
+<p>
+Det räcker på denna nivå.
+</p>
 
 </div>
 
 </section>
+
 
 
 <div class="system">
 END OF LAB //
 
-tbsCertificate → HASH → H2
+SIGN:
 
-H2 + signatureValue + issuer public key → VERIFY
+DATA → HASH → SIGNATURE
 
-DET ÄR DET CENTRALA FLÖDET.
+
+VERIFY:
+
+DATA → HASH
+
+HASH + SIGNATURE + PUBLIC KEY → VERIFY
 </div>
+
 
 </main>
 
 
+
 <footer>
+
 <div class="wrapper">
-BAALSTORM // X.509 SIGNATURE VERIFICATION TRAINING NODE
+
+BAALSTORM // CRYPTOGRAPHY DEEP DIVE TRAINING NODE
+
 </div>
+
 </footer>
 
 
+
 <script>
+
 function toggle(id){
-    const e=document.getElementById(id);
-    if(!e) return;
+
+    const e =
+        document.getElementById(id);
+
+    if(!e){
+        return;
+    }
 
     e.style.display =
-        e.style.display==="block"
+        e.style.display === "block"
         ? "none"
         : "block";
 }
+
 </script>
+
 
 </body>
 </html>
