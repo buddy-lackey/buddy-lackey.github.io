@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Cloud Architect Boss</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+ --bg:#050805;--panel:#0a100b;--panel2:#0d160f;
+ --green:#39ff88;--green2:#18c768;--text:#d5ffe4;
+ --muted:#7cab8b;--yellow:#ffd166;--red:#ff5d73;
+ --blue:#62b6ff;--border:#1d5d35;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",monospace;line-height:1.65}
+.wrap{width:min(1080px,calc(100% - 28px));margin:auto}
+header{background:#030503;border-bottom:1px solid var(--border)}
+nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo,h1,h2,h3{color:var(--green)}
+.hero{padding:75px 0 50px}
+h1{font-size:clamp(2.5rem,7vw,5rem);line-height:.95}
+.muted{color:var(--muted)}
+.level{margin:32px 0;border:1px solid var(--border);background:var(--panel)}
+.head{padding:13px 17px;border-bottom:1px solid var(--border);color:var(--green);font-weight:bold}
+.body{padding:22px}
+.task{margin:20px 0;padding:20px;background:var(--panel2);border-left:3px solid var(--green2)}
+.id{color:var(--yellow);font-weight:bold}
+.diagram{margin:15px 0;padding:18px;background:#020503;border:1px solid #153f25;color:#aaffc7;white-space:pre;overflow:auto}
+button{padding:9px 14px;margin:4px;background:transparent;border:1px solid var(--blue);color:var(--blue);font:inherit;cursor:pointer}
+.answer{display:none;padding:14px;margin-top:12px;border:1px dashed var(--border)}
+.correct{color:var(--green)!important;border-color:var(--green)!important}
+.wrong{color:var(--red)!important;border-color:var(--red)!important}
+.system,.alert,.warning{padding:16px;margin:22px 0;background:#060b07;border:1px solid var(--border)}
+.system:before{content:"[SYSTEM] ";color:var(--green);font-weight:bold}
+.alert{border-color:var(--red);color:#ffadb9}
+.alert:before{content:"[ALERT] ";color:var(--red);font-weight:bold}
+.warning{border-color:#755c20;color:#ffdda0}
+.warning:before{content:"[IMPORTANT] ";color:var(--yellow);font-weight:bold}
+.boss{border-color:var(--red)} .boss .head{color:var(--red);border-color:var(--red)}
+.rank{text-align:center;padding:30px;border:1px solid var(--green);font-size:1.2rem}
+.big{font-size:3rem;color:var(--green)}
+footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<header><div class="wrap"><nav>
+<div class="logo">BAALSTORM // CLOUD ARCHITECT</div>
+<div id="score"></div>
+</nav></div></header>
+
+<main class="wrap">
+
+<section class="hero">
+<div class="muted">$ ./cloud_architect --customer baalstorm-industries</div>
+<h1>FINAL CLOUD MISSION</h1>
+<p class="muted">
+Du har blivit inkallad för att hjälpa Baalstorm Industries att förstå hur deras IT-miljö ska flyttas till molnet.
+</p>
+</section>
+
+<div class="system">
+THIS LAB COMBINES CLOUD, ON-PREM, HYBRID ENVIRONMENTS, DELIVERY MODELS AND SHARED RESPONSIBILITY.
+</div>
+
+<section class="level">
+<div class="head">00 // CUSTOMER BRIEF</div>
+<div class="body">
+
+<div class="diagram">BAALSTORM INDUSTRIES
+
+EMPLOYEES:
+500
+
+CURRENT ENVIRONMENT:
+
+├── Physical Windows servers
+├── Legacy application
+├── Public web application
+├── Database
+├── Email
+├── File storage
+└── Batch processing jobs</div>
+
+<p>Ledningen har ett mål:</p>
+
+<div class="diagram">"MOVE TO THE CLOUD."</div>
+
+<p>Men deras nuvarande plan är:</p>
+
+<div class="diagram">"Put everything on virtual machines."</div>
+
+<div class="warning">
+ALLA MOLNTJÄNSTER BEHÖVER INTE VARA VIRTUELLA SERVRAR.
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ PHASE 1 ] // LEGACY SYSTEM</div>
+<div class="body">
+
+<div class="task quiz" data-answer="iaas">
+<div class="id">MISSION 01</div>
+
+<div class="diagram">LEGACY APPLICATION
+
+Requires:
+Specific Windows installation
+
+IT must:
+Install OS
+Configure OS
+Install application
+Maintain application</div>
+
+<p>Vilken leveransform stämmer bäst med behovet?</p>
+
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+
+<div class="answer">
+IaaS. Kunden behöver här kontroll över den virtuella servern och operativsystemet.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ PHASE 2 ] // NEW WEB APPLICATION</div>
+<div class="body">
+
+<div class="task quiz" data-answer="paas">
+<div class="id">MISSION 02</div>
+
+<div class="diagram">DEVELOPMENT TEAM:
+
+"We want to deploy our application.
+
+We do NOT want to manage:
+- servers
+- operating systems
+- runtime patching"</div>
+
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+
+<div class="answer">
+PaaS motsvarar beskrivningen: leverantören hanterar infrastrukturen, operativsystemet och plattformen medan kunden fokuserar på applikationen.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ PHASE 3 ] // EMAIL</div>
+<div class="body">
+
+<div class="task quiz" data-answer="saas">
+<div class="id">MISSION 03</div>
+
+<p>Företaget vill använda en färdig molnbaserad e-postapplikation.</p>
+
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+
+<div class="answer">SaaS.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ PHASE 4 ] // EVENT PROCESSING</div>
+<div class="body">
+
+<div class="task quiz" data-answer="faas">
+<div class="id">MISSION 04</div>
+
+<div class="diagram">REQUIREMENT:
+
+When a file arrives:
+
+1. Run code
+2. Process metadata
+3. Finish
+
+No permanent server should be managed.</div>
+
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+
+<div class="answer">
+FaaS. Kodfunktioner kan köras on-demand utan att kunden behöver hantera server eller runtime.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ PHASE 5 ] // THE ENVIRONMENT IS NOW HYBRID</div>
+<div class="body">
+
+<div class="diagram">ON-PREM
+└── Legacy ERP
+
+CLOUD
+├── IaaS workload
+├── PaaS web application
+└── FaaS processing
+
+SaaS
+└── Email</div>
+
+<div class="task quiz" data-answer="yes">
+<div class="id">MISSION 05</div>
+
+<p>Är miljön hybrid?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">
+Ja. Miljön kombinerar on-prem och olika molntjänster.
+</div>
+</div>
+
+<div class="task quiz" data-answer="responsibility">
+<div class="id">MISSION 06</div>
+
+<p>Vilken utmaning kan uppstå när flera system och leverantörer kombineras?</p>
+
+<button data-choice="responsibility">Ansvarsfördelningen kan bli oklar</button>
+<button data-choice="nosecurity">Säkerhet behövs inte längre</button>
+<button data-choice="noconnection">System kan aldrig integreras</button>
+
+<div class="answer">
+Ansvarsfördelningen kan bli oklar när flera leverantörer och system är inblandade.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level boss">
+<div class="head">[ BOSS ] // SECURITY INCIDENT</div>
+<div class="body">
+
+<div class="alert">
+UNAUTHORIZED CLOUD ACCESS DETECTED
+</div>
+
+<div class="diagram">ACCOUNT:
+
+admin@baalstorm.se
+
+SERVICE:
+
+Cloud SaaS
+
+MFA:
+
+DISABLED
+
+PERMISSIONS:
+
+ADMINISTRATOR
+
+RESULT:
+
+Sensitive data accessed</div>
+
+<div class="task quiz" data-answer="customer">
+<div class="id">BOSS 01</div>
+
+<p>
+Leverantören driver infrastrukturen och applikationen.
+Vem ansvarar fortfarande för hur kundens egna användare och behörigheter hanteras?
+</p>
+
+<button data-choice="customer">CUSTOMER</button>
+<button data-choice="provider">PROVIDER</button>
+
+<div class="answer">
+Kunden ansvarar fortfarande för hur tjänsten används, identiteter och behörigheter.
+</div>
+</div>
+
+<div class="task quiz" data-answer="no">
+<div class="id">BOSS 02</div>
+
+<p>Bevisar incidenten att molnleverantörens datacenter blivit hackat?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">
+Nej. Ett säkerhetsproblem kan uppstå genom hur kunden använder eller konfigurerar en molntjänst.
+</div>
+</div>
+
+<div class="task quiz" data-answer="shared">
+<div class="id">BOSS 03</div>
+
+<p>Vilken modell beskriver säkerhetsansvaret bäst?</p>
+
+<button data-choice="provider">Provider Responsibility</button>
+<button data-choice="customer">Customer Only</button>
+<button data-choice="shared">Shared Responsibility</button>
+
+<div class="answer">
+Shared Responsibility — kunden outsourcar delar av IT-miljön, inte hela säkerhetsansvaret.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">FINAL // ARCHITECT REPORT</div>
+<div class="body">
+
+<div class="diagram">LEGACY SERVER
+      ↓
+     IaaS
+
+WEB APPLICATION
+      ↓
+     PaaS
+
+EMAIL
+      ↓
+     SaaS
+
+EVENT FUNCTION
+      ↓
+     FaaS
+
+
+ON-PREM + CLOUD
+      ↓
+ HYBRID ENVIRONMENT
+
+
+SECURITY
+      ↓
+SHARED RESPONSIBILITY</div>
+
+<div class="rank">
+<div>FINAL SCORE</div>
+<div class="big"><span id="final">0</span>/<span id="total"></span></div>
+<div id="rank">MISSION IN PROGRESS</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<footer><div class="wrap">BAALSTORM // CLOUD ARCHITECT FINAL NODE</div></footer>
+
+<script>
+let score=0,completed=0;
+const qs=document.querySelectorAll(".quiz"),total=qs.length;
+
+document.getElementById("score").textContent="0 / "+total;
+document.getElementById("total").textContent=total;
+
+qs.forEach(q=>q.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+
+ if(q.dataset.done)return;
+ q.dataset.done=1;
+ completed++;
+
+ if(b.dataset.choice===q.dataset.answer){
+   score++;
+   b.classList.add("correct");
+ }else{
+   b.classList.add("wrong");
+
+   q.querySelectorAll("button").forEach(x=>{
+     if(x.dataset.choice===q.dataset.answer)
+       x.classList.add("correct");
+   });
+ }
+
+ q.querySelector(".answer").style.display="block";
+ q.querySelectorAll("button").forEach(x=>x.disabled=true);
+
+ document.getElementById("score").textContent=score+" / "+total;
+ document.getElementById("final").textContent=score;
+
+ if(completed===total){
+
+   let text;
+
+   const p=score/total;
+
+   if(p===1)
+     text="RANK: CLOUD ARCHITECT";
+   else if(p>=.75)
+     text="RANK: CLOUD ENGINEER";
+   else if(p>=.5)
+     text="RANK: CLOUD OPERATOR";
+   else
+     text="RANK: RETURN TO TRAINING";
+
+   document.getElementById("rank").textContent=text;
+ }
+}));
+</script>
+
+</body>
+</html>
