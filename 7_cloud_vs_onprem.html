@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Cloud vs On-Prem</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+ --bg:#050805;--panel:#0a100b;--panel2:#0d160f;
+ --green:#39ff88;--green2:#18c768;--text:#d5ffe4;
+ --muted:#7cab8b;--yellow:#ffd166;--red:#ff5d73;
+ --blue:#62b6ff;--border:#1d5d35;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",monospace;line-height:1.65}
+.wrap{width:min(1050px,calc(100% - 28px));margin:auto}
+header{border-bottom:1px solid var(--border);background:#030503}
+nav{min-height:64px;display:flex;justify-content:space-between;align-items:center}
+.logo,h1,h2{color:var(--green)}
+.hero{padding:70px 0 45px}
+h1{font-size:clamp(2.5rem,7vw,5rem);line-height:.95}
+.muted{color:var(--muted)}
+.level{margin:32px 0;border:1px solid var(--border);background:var(--panel)}
+.head{padding:13px 17px;border-bottom:1px solid var(--border);color:var(--green);font-weight:bold}
+.body{padding:22px}
+.task{padding:20px;margin:20px 0;background:var(--panel2);border-left:3px solid var(--green2)}
+.id{color:var(--yellow);font-weight:bold}
+.diagram{padding:17px;background:#020503;border:1px solid #153f25;color:#aaffc7;white-space:pre;overflow:auto;margin:15px 0}
+button{padding:9px 14px;margin:4px;background:transparent;border:1px solid var(--blue);color:var(--blue);font:inherit;cursor:pointer}
+.answer{display:none;padding:14px;margin-top:12px;border:1px dashed var(--border)}
+.correct{color:var(--green)!important;border-color:var(--green)!important}
+.wrong{color:var(--red)!important;border-color:var(--red)!important}
+.system,.warning{padding:16px;margin:22px 0;border:1px solid var(--border);background:#060b07}
+.system:before{content:"[SYSTEM] ";color:var(--green);font-weight:bold}
+.warning{border-color:#755c20;color:#ffdda0}
+.warning:before{content:"[IMPORTANT] ";color:var(--yellow);font-weight:bold}
+.boss{border-color:var(--red)} .boss .head{color:var(--red)}
+footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<header><div class="wrap"><nav>
+<div class="logo">BAALSTORM // CLOUD VS ON-PREM</div>
+<div id="score">0</div>
+</nav></div></header>
+
+<main class="wrap">
+
+<section class="hero">
+<div class="muted">$ ./compare_environment</div>
+<h1>CLOUD OR ON-PREM?</h1>
+<p class="muted">
+Plats. Ägande. Skalbarhet. Underhåll. Säkerhetsansvar. Kostnad.
+</p>
+</section>
+
+<div class="system">
+MISSION: FÖRSTÅ VAD SOM FAKTISKT FÖRÄNDRAS NÄR IT-RESURSER FLYTTAS TILL MOLNET.
+</div>
+
+<section class="level">
+<div class="head">00 // TWO ENVIRONMENTS</div>
+<div class="body">
+
+<div class="diagram">ON-PREM
+
+Organisationens egen miljö
+Egen fysisk infrastruktur
+Organisationen ansvarar för hela miljön
+
+
+CLOUD
+
+Resurser hyrs från molnleverantör
+Leverantören driver fysisk infrastruktur
+Säkerhetsansvaret delas</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ BASIC ] // IDENTIFY THE PROPERTY</div>
+<div class="body">
+
+<div class="task quiz" data-answer="cloud">
+<div class="id">MISSION 01 // LOCATION</div>
+<p>Servrarna står i datorhallar som tillhör molnleverantören.</p>
+<button data-choice="cloud">CLOUD</button>
+<button data-choice="onprem">ON-PREM</button>
+<div class="answer">Cloud — den fysiska infrastrukturen finns hos leverantören.</div>
+</div>
+
+<div class="task quiz" data-answer="onprem">
+<div class="id">MISSION 02 // OWNERSHIP</div>
+<p>Organisationen köper och äger själv servrar, nätverksutrustning och lagring.</p>
+<button data-choice="cloud">CLOUD</button>
+<button data-choice="onprem">ON-PREM</button>
+<div class="answer">On-premises.</div>
+</div>
+
+<div class="task quiz" data-answer="cloud">
+<div class="id">MISSION 03 // SCALE</div>
+<p>Kapacitet kan snabbt ökas eller minskas utan att organisationen först köper nya fysiska servrar.</p>
+<button data-choice="cloud">CLOUD</button>
+<button data-choice="onprem">ON-PREM</button>
+<div class="answer">Cloud — hög skalbarhet är en av egenskaperna som lyfts i materialet.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ INTERMEDIATE ] // SCENARIOS</div>
+<div class="body">
+
+<div class="task quiz" data-answer="scalability">
+<div class="id">MISSION 04 // TRAFFIC SPIKE</div>
+
+<div class="diagram">NORMAL TRAFFIC:
+2,000 users/day
+
+TOMORROW:
+150,000 users expected</div>
+
+<p>Vilken egenskap hos molnet är särskilt relevant?</p>
+
+<button data-choice="ownership">Ägande</button>
+<button data-choice="scalability">Skalbarhet</button>
+<button data-choice="location">Plats</button>
+
+<div class="answer">Skalbarhet — resurser kan snabbare ökas och minskas efter behov.</div>
+</div>
+
+<div class="task quiz" data-answer="onprem">
+<div class="id">MISSION 05 // NEW CAPACITY</div>
+
+<div class="diagram">CURRENT:
+
+All physical servers are full.
+
+PLAN:
+
+Buy new server
+Wait for delivery
+Rack server
+Cable server
+Install OS</div>
+
+<p>Vilken miljö beskriver detta?</p>
+
+<button data-choice="cloud">CLOUD</button>
+<button data-choice="onprem">ON-PREM</button>
+
+<div class="answer">On-premises — ökad kapacitet kräver här fysiskt inköp och installation.</div>
+</div>
+
+<div class="task quiz" data-answer="cloud">
+<div class="id">MISSION 06 // PAYMENT</div>
+
+<p>Organisationen hyr resurser och betalar utifrån användning i stället för att göra hela den fysiska investeringen från början.</p>
+
+<button data-choice="cloud">CLOUD</button>
+<button data-choice="onprem">ON-PREM</button>
+
+<div class="answer">Cloud.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ CHALLENGE ] // SECURITY</div>
+<div class="body">
+
+<div class="task quiz" data-answer="no">
+<div class="id">MISSION 07</div>
+
+<div class="diagram">CEO:
+
+"The cloud provider has better
+security teams than us.
+
+Therefore anything we put in
+the cloud is automatically secure."</div>
+
+<p>Är slutsatsen korrekt?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">
+Nej. Molnet är inte automatiskt säkert. Kundens användning och konfiguration kan fortfarande skapa säkerhetsproblem.
+</div>
+</div>
+
+<div class="task quiz" data-answer="shared">
+<div class="id">MISSION 08</div>
+<p>Hur beskrivs säkerhetsansvaret i molnet?</p>
+
+<button data-choice="provider">Endast leverantören</button>
+<button data-choice="customer">Endast kunden</button>
+<button data-choice="shared">Delat ansvar</button>
+
+<div class="answer">Delat ansvar.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level boss">
+<div class="head">[ BOSS ] // EXPANSION</div>
+<div class="body">
+
+<div class="diagram">BAALSTORM INDUSTRIES
+
+Current:
+10 physical servers
+
+Problem:
+Capacity almost exhausted
+
+New project:
+Demand is difficult to predict</div>
+
+<div class="task quiz" data-answer="cloudscale">
+<div class="id">BOSS 01</div>
+<p>Vilken skillnad mellan cloud och on-prem är mest relevant?</p>
+
+<button data-choice="cloudscale">Molnets högre skalbarhet</button>
+<button data-choice="physical">Molnet kräver fler egna fysiska servrar</button>
+<button data-choice="allsecure">Molnet tar bort allt säkerhetsansvar</button>
+
+<div class="answer">
+Molnets skalbarhet är särskilt relevant när resursbehovet snabbt kan förändras.
+</div>
+</div>
+
+<div class="task quiz" data-answer="no">
+<div class="id">BOSS 02</div>
+<p>Om projektet flyttas till molnet — försvinner organisationens säkerhetsansvar?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">Nej. Delar av IT-miljön outsourcas, inte hela säkerhetsansvaret.</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<footer><div class="wrap">BAALSTORM // CLOUD COMPARISON NODE</div></footer>
+
+<script>
+let score=0,total=document.querySelectorAll(".quiz").length;
+document.querySelectorAll(".quiz").forEach(q=>{
+ q.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  if(q.dataset.done)return;
+  q.dataset.done=1;
+  if(b.dataset.choice===q.dataset.answer){score++;b.classList.add("correct")}
+  else{
+   b.classList.add("wrong");
+   q.querySelectorAll("button").forEach(x=>{
+    if(x.dataset.choice===q.dataset.answer)x.classList.add("correct")
+   });
+  }
+  q.querySelector(".answer").style.display="block";
+  q.querySelectorAll("button").forEach(x=>x.disabled=true);
+  document.getElementById("score").textContent=score+" / "+total;
+ });
+});
+document.getElementById("score").textContent="0 / "+total;
+</script>
+
+</body>
+</html>
