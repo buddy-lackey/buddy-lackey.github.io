@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Baalstorm // Cloud Security Lab</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+    --bg:#050805;
+    --panel:#0a100b;
+    --panel2:#0d160f;
+    --green:#39ff88;
+    --green2:#18c768;
+    --text:#d5ffe4;
+    --muted:#7cab8b;
+    --yellow:#ffd166;
+    --red:#ff5d73;
+    --blue:#62b6ff;
+    --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(circle at 80% 0%,rgba(57,255,136,.07),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    font-family:"Courier New",monospace;
+    line-height:1.65;
+}
+
+.wrapper{
+    width:min(1120px,calc(100% - 28px));
+    margin:auto;
+}
+
+header{
+    background:#030503;
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+nav{
+    min-height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.logo{
+    color:var(--green);
+    font-weight:bold;
+    letter-spacing:.08em;
+}
+
+.status{
+    color:var(--muted);
+    font-size:.8rem;
+}
+
+.score{
+    color:var(--yellow);
+}
+
+.hero{
+    padding:72px 0 48px;
+}
+
+.prompt{
+    color:var(--green);
+    font-size:.85rem;
+}
+
+h1{
+    color:var(--green);
+    font-size:clamp(2.5rem,7vw,5rem);
+    line-height:.95;
+    letter-spacing:-.05em;
+    margin:10px 0 20px;
+}
+
+h2,h3{color:var(--green)}
+
+.hero p{
+    color:var(--muted);
+    max-width:900px;
+}
+
+.system,
+.warning,
+.alert{
+    margin:25px 0;
+    padding:17px;
+    border:1px solid var(--border);
+    background:#060b07;
+}
+
+.system::before{
+    content:"[SYSTEM] ";
+    color:var(--green);
+    font-weight:bold;
+}
+
+.warning{
+    border-color:#755c20;
+    color:#ffdda0;
+}
+
+.warning::before{
+    content:"[IMPORTANT] ";
+    color:var(--yellow);
+    font-weight:bold;
+}
+
+.alert{
+    border-color:#7c2635;
+    color:#ffadb9;
+}
+
+.alert::before{
+    content:"[ALERT] ";
+    color:var(--red);
+    font-weight:bold;
+}
+
+.section,
+.level{
+    margin:34px 0;
+    border:1px solid var(--border);
+    background:var(--panel);
+}
+
+.section-head,
+.level-head{
+    padding:13px 17px;
+    border-bottom:1px solid var(--border);
+    color:var(--green);
+    font-weight:bold;
+}
+
+.section-body,
+.level-body{
+    padding:22px;
+}
+
+.task{
+    margin:20px 0;
+    padding:20px;
+    background:var(--panel2);
+    border-left:3px solid var(--green2);
+}
+
+.task-id{
+    color:var(--yellow);
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.diagram,
+.terminal{
+    margin:16px 0;
+    padding:18px;
+    background:#020503;
+    border:1px solid #153f25;
+    color:#aaffc7;
+    white-space:pre;
+    overflow:auto;
+    line-height:1.5;
+}
+
+button{
+    margin:6px 5px 6px 0;
+    padding:9px 14px;
+    background:transparent;
+    color:var(--blue);
+    border:1px solid var(--blue);
+    font:inherit;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--blue);
+    color:#02080e;
+}
+
+button.correct{
+    color:var(--green);
+    border-color:var(--green);
+}
+
+button.wrong{
+    color:var(--red);
+    border-color:var(--red);
+}
+
+.result{
+    display:none;
+    margin-top:14px;
+    padding:15px;
+    background:#050a06;
+    border:1px dashed var(--border);
+}
+
+.result.good{
+    border-color:var(--green);
+    color:#baffcf;
+}
+
+.result.bad{
+    border-color:var(--red);
+    color:#ffc0ca;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+}
+
+th,td{
+    padding:12px;
+    border:1px solid var(--border);
+    text-align:left;
+    vertical-align:top;
+}
+
+th{
+    color:var(--green);
+    background:#061008;
+}
+
+.provider{color:var(--blue)}
+.customer{color:var(--yellow)}
+
+.bar{
+    margin:12px 0 25px;
+}
+
+.bar-label{
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    margin-bottom:5px;
+}
+
+.bar-track{
+    height:24px;
+    display:flex;
+    border:1px solid var(--border);
+    background:#020503;
+}
+
+.bar-customer{
+    background:#80661f;
+}
+
+.bar-provider{
+    background:#174b72;
+}
+
+.legend{
+    color:var(--muted);
+    font-size:.85rem;
+}
+
+.boss{
+    border-color:var(--red);
+}
+
+.boss .level-head{
+    color:var(--red);
+    border-color:var(--red);
+}
+
+.boss .task{
+    border-left-color:var(--red);
+}
+
+.badge{
+    display:inline-block;
+    padding:3px 8px;
+    border:1px solid var(--border);
+    color:var(--green);
+    margin:3px;
+    font-size:.82rem;
+}
+
+.final-score{
+    text-align:center;
+    padding:30px;
+    border:1px solid var(--green);
+    background:#030704;
+}
+
+.final-score .number{
+    color:var(--green);
+    font-size:3rem;
+    font-weight:bold;
+}
+
+footer{
+    margin-top:70px;
+    padding:30px 0;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:.8rem;
+}
+
+@media(max-width:720px){
+    nav{
+        padding:12px 0;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrapper">
+<nav>
+
+<div class="logo">
+BAALSTORM // CLOUD SECURITY
+</div>
+
+<div class="status">
+SCORE:
+<span class="score" id="score">0</span>
+/
+<span id="maxScore">0</span>
+</div>
+
+</nav>
+</div>
+</header>
+
+
+<main class="wrapper">
+
+<section class="hero">
+
+<div class="prompt">
+$ ./cloud_lab --shared-responsibility
+</div>
+
+<h1>
+WHO SECURES THE CLOUD?
+</h1>
+
+<p>
+Du flyttar system till molnet.
+
+Men vem ansvarar egentligen för säkerheten?
+
+Molnleverantören?
+
+Du?
+
+Eller båda?
+</p>
+
+</section>
+
+
+<div class="system">
+MISSION: FÖRSTÅ IaaS, PaaS, SaaS OCH SHARED RESPONSIBILITY MODEL.
+</div>
+
+
+<!-- =====================================================
+     INTRO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+00 // CLOUD DOES NOT MEAN "NOT MY PROBLEM"
+</div>
+
+<div class="section-body">
+
+<p>
+När en organisation flyttar system till molnet försvinner
+inte säkerhetsansvaret.
+</p>
+
+<p>
+Ansvaret delas mellan:
+</p>
+
+<div class="diagram">CLOUD PROVIDER
+       +
+    CUSTOMER</div>
+
+<p>
+Det brukar kallas:
+</p>
+
+<div class="diagram">SHARED RESPONSIBILITY MODEL</div>
+
+<p>
+En enkel mental modell är:
+</p>
+
+<div class="diagram">CLOUD PROVIDER
+
+Security OF the cloud
+
+Datacenter
+Fysisk hårdvara
+Underliggande molninfrastruktur
+
+
+CUSTOMER
+
+Security IN the cloud
+
+Data
+Identiteter
+Behörigheter
+Konfiguration
+Applikationer
+
+...beroende på vilken tjänst som används.</div>
+
+<div class="warning">
+EXAKT ANSVARSFÖRDELNING BEROR PÅ TJÄNSTEN.
+
+IaaS, PaaS OCH SaaS GER KUNDEN OLIKA MYCKET ANSVAR.
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     DELIVERY MODELS
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+01 // IaaS vs PaaS vs SaaS
+</div>
+
+<div class="section-body">
+
+<table>
+
+<tr>
+<th>Modell</th>
+<th>Du får...</th>
+<th>Du hanterar typiskt...</th>
+</tr>
+
+<tr>
+<td><strong>IaaS</strong></td>
+<td>Virtuell infrastruktur</td>
+<td>OS, applikationer, konfiguration, identiteter och data</td>
+</tr>
+
+<tr>
+<td><strong>PaaS</strong></td>
+<td>En plattform för din applikation</td>
+<td>Applikation, data, identiteter och tjänstekonfiguration</td>
+</tr>
+
+<tr>
+<td><strong>SaaS</strong></td>
+<td>En färdig applikation</td>
+<td>Användare, åtkomst, data och kundspecifik konfiguration</td>
+</tr>
+
+</table>
+
+<div class="diagram">MER KUNDANSVAR
+      ◄──────────────────────────────►
+ON-PREM       IaaS       PaaS       SaaS
+                              MER LEVERANTÖRSANSVAR</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     VISUAL RESPONSIBILITY
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+02 // RESPONSIBILITY SHIFT
+</div>
+
+<div class="section-body">
+
+<p>
+När vi går mot SaaS hanterar leverantören mer av tekniken.
+</p>
+
+<div class="bar">
+
+<div class="bar-label">
+<span>ON-PREMISE</span>
+<span>Customer</span>
+</div>
+
+<div class="bar-track">
+<div class="bar-customer" style="width:100%"></div>
+</div>
+
+</div>
+
+
+<div class="bar">
+
+<div class="bar-label">
+<span>IaaS</span>
+<span>Customer / Provider</span>
+</div>
+
+<div class="bar-track">
+<div class="bar-customer" style="width:70%"></div>
+<div class="bar-provider" style="width:30%"></div>
+</div>
+
+</div>
+
+
+<div class="bar">
+
+<div class="bar-label">
+<span>PaaS</span>
+<span>Customer / Provider</span>
+</div>
+
+<div class="bar-track">
+<div class="bar-customer" style="width:42%"></div>
+<div class="bar-provider" style="width:58%"></div>
+</div>
+
+</div>
+
+
+<div class="bar">
+
+<div class="bar-label">
+<span>SaaS</span>
+<span>Customer / Provider</span>
+</div>
+
+<div class="bar-track">
+<div class="bar-customer" style="width:22%"></div>
+<div class="bar-provider" style="width:78%"></div>
+</div>
+
+</div>
+
+<div class="legend">
+<span class="customer">■ CUSTOMER</span>
+&nbsp;&nbsp;
+<span class="provider">■ CLOUD PROVIDER</span>
+</div>
+
+<div class="warning">
+STAPLARNA ÄR EN PEDAGOGISK VISUALISERING — INTE PROCENTUELL
+ANSVARSFÖRDELNING.
+
+ÄVEN MED SaaS HAR KUNDEN FORTFARANDE SÄKERHETSANSVAR.
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     BASIC
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ BASIC ] // IDENTIFY THE SERVICE MODEL
+</div>
+
+<div class="level-body">
+
+
+<div class="task quiz" data-answer="iaas">
+
+<div class="task-id">
+MISSION 01
+</div>
+
+<p>
+Du hyr en virtuell Linux-server.
+</p>
+
+<p>
+Du installerar själv:
+</p>
+
+<div class="diagram">Ubuntu
+
+nginx
+
+PHP
+
+PostgreSQL
+
+Din webbapplikation</div>
+
+<p>
+Vilken leveransmodell beskriver detta bäst?
+</p>
+
+<button onclick="answer(this,'iaas')">IaaS</button>
+<button onclick="answer(this,'paas')">PaaS</button>
+<button onclick="answer(this,'saas')">SaaS</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="paas">
+
+<div class="task-id">
+MISSION 02
+</div>
+
+<p>
+Du laddar upp din webbapplikation till en molntjänst.
+</p>
+
+<p>
+Leverantören hanterar underliggande:
+</p>
+
+<div class="diagram">Servrar
+
+Operativsystem
+
+Runtime
+
+Plattform</div>
+
+<p>
+Du fokuserar främst på applikationen och dess data.
+</p>
+
+<button onclick="answer(this,'iaas')">IaaS</button>
+<button onclick="answer(this,'paas')">PaaS</button>
+<button onclick="answer(this,'saas')">SaaS</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="saas">
+
+<div class="task-id">
+MISSION 03
+</div>
+
+<p>
+Företaget använder en färdig webbaserad e-post- och
+samarbetstjänst.
+</p>
+
+<p>
+Användarna loggar in och använder applikationen.
+</p>
+
+<p>
+Företaget installerar inte själva operativsystem,
+mailserver eller applikationsplattform.
+</p>
+
+<button onclick="answer(this,'iaas')">IaaS</button>
+<button onclick="answer(this,'paas')">PaaS</button>
+<button onclick="answer(this,'saas')">SaaS</button>
+
+<div class="result"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     RESPONSIBILITY
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ INTERMEDIATE ] // WHO OWNS THE PROBLEM?
+</div>
+
+<div class="level-body">
+
+
+<div class="task quiz" data-answer="provider">
+
+<div class="task-id">
+MISSION 04 // DATACENTER
+</div>
+
+<p>
+Du använder en virtuell server hos en molnleverantör.
+</p>
+
+<p>
+Vem ansvarar för den fysiska säkerheten i
+molnleverantörens datacenter?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+MISSION 05 // ROOT PASSWORD
+</div>
+
+<p>
+Du kör Linux på en virtuell server via IaaS.
+</p>
+
+<p>
+Administratören konfigurerar:
+</p>
+
+<div class="diagram">root
+password: Password123</div>
+
+<p>
+Vem ansvarar för den dåliga lösenordshanteringen?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+MISSION 06 // PATCH THE VM
+</div>
+
+<p>
+Du kör Ubuntu på en IaaS-VM.
+</p>
+
+<p>
+Operativsystemet har inte patchats på 14 månader.
+</p>
+
+<p>
+Vem ansvarar normalt för att kundens Ubuntu-installation
+hålls uppdaterad?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="provider">
+
+<div class="task-id">
+MISSION 07 // PHYSICAL SERVER
+</div>
+
+<p>
+Den fysiska server som kör din virtuella maskin får ett
+hårdvarufel.
+</p>
+
+<p>
+Vem ansvarar för den underliggande fysiska servern?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     INCIDENT 1
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE ] // "BUT IT WAS IN THE CLOUD!"
+</div>
+
+<div class="level-body">
+
+<div class="alert">
+SECURITY INCIDENT DETECTED
+</div>
+
+<div class="diagram">HOST:
+web01
+
+TYPE:
+IaaS Virtual Machine
+
+OS:
+Ubuntu
+
+LAST PATCHED:
+14 months ago
+
+SERVICE:
+Vulnerable web service
+
+RESULT:
+Remote compromise</div>
+
+<p>
+IT-chefen säger:
+</p>
+
+<div class="diagram">"Det ligger ju i molnet.
+
+Molnleverantören skulle ha patchat servern."</div>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+MISSION 08
+</div>
+
+<p>
+Vem ansvarar normalt för patchningen av operativsystemet
+i denna IaaS-VM?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="no">
+
+<div class="task-id">
+MISSION 09
+</div>
+
+<p>
+Har IT-chefen rätt när han säger att molnleverantören
+automatiskt ansvarar för allt eftersom servern ligger
+i molnet?
+</p>
+
+<button onclick="answer(this,'yes')">YES</button>
+<button onclick="answer(this,'no')">NO</button>
+
+<div class="result"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     INCIDENT 2
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE+ ] // PUBLIC DATA
+</div>
+
+<div class="level-body">
+
+<div class="alert">
+DATA EXPOSURE DETECTED
+</div>
+
+<div class="diagram">STORAGE:
+
+customer-files
+
+FILE:
+
+customers.csv
+
+ACCESS:
+
+PUBLIC</div>
+
+<p>
+Molnleverantörens storage-tjänst fungerar precis som den ska.
+</p>
+
+<p>
+Men någon hos kunden har konfigurerat åtkomsten så att
+informationen kan läsas publikt.
+</p>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+MISSION 10
+</div>
+
+<p>
+Vem ansvarar för den felaktiga access-konfigurationen?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="no">
+
+<div class="task-id">
+MISSION 11
+</div>
+
+<p>
+Har molnleverantören nödvändigtvis blivit hackad?
+</p>
+
+<button onclick="answer(this,'yes')">YES</button>
+<button onclick="answer(this,'no')">NO</button>
+
+<div class="result"></div>
+
+</div>
+
+<div class="system">
+EN SÄKER MOLNPLATTFORM KAN FORTFARANDE KONFIGURERAS OSÄKERT.
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     SAME APP DIFFERENT MODEL
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+03 // SAME APPLICATION — DIFFERENT RESPONSIBILITY
+</div>
+
+<div class="section-body">
+
+<p>
+Antag att Baalstorm Industries driver en webbapplikation.
+</p>
+
+<h3>IaaS</h3>
+
+<div class="diagram">CLOUD PROVIDER
+├── Datacenter
+├── Physical servers
+└── Virtualization
+
+CUSTOMER
+├── Operating system
+├── Web server
+├── Application
+├── Accounts
+├── Configuration
+└── Data</div>
+
+
+<h3>PaaS</h3>
+
+<div class="diagram">CLOUD PROVIDER
+├── Datacenter
+├── Physical servers
+├── Virtualization
+├── Operating system
+└── Application platform
+
+CUSTOMER
+├── Application
+├── Accounts
+├── Configuration
+└── Data</div>
+
+
+<h3>SaaS</h3>
+
+<div class="diagram">CLOUD PROVIDER
+├── Infrastructure
+├── Operating system
+├── Platform
+└── Application
+
+CUSTOMER
+├── Users
+├── Access
+├── Customer configuration
+└── Data</div>
+
+<div class="system">
+NÄR TJÄNSTEMODELLEN FÖRÄNDRAS FLYTTAS ANSVARSGRÄNSEN.
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     MODEL SWITCH
+===================================================== -->
+
+<section class="level">
+
+<div class="level-head">
+[ CHALLENGE++ ] // MOVE THE RESPONSIBILITY
+</div>
+
+<div class="level-body">
+
+
+<div class="task quiz" data-answer="provider">
+
+<div class="task-id">
+MISSION 12
+</div>
+
+<p>
+Tidigare körde du en webbapplikation på en IaaS-VM och
+ansvarade själv för Linux.
+</p>
+
+<p>
+Nu flyttar du applikationen till en PaaS där leverantören
+hanterar det underliggande operativsystemet.
+</p>
+
+<p>
+Vem ansvarar nu för patchningen av detta underliggande OS?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+MISSION 13
+</div>
+
+<p>
+Applikationen har följande kod:
+</p>
+
+<div class="diagram">if (user.role != "admin") {
+    // TODO: implement authorization later
+}
+
+showAdminPanel();</div>
+
+<p>
+Applikationen körs på PaaS.
+</p>
+
+<p>
+Vem ansvarar för den osäkra applikationskoden?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+MISSION 14
+</div>
+
+<p>
+Företaget använder en SaaS-tjänst.
+</p>
+
+<p>
+En administratör ger av misstag:
+</p>
+
+<div class="diagram">user@baalstorm.se
+
+ROLE:
+
+GLOBAL ADMIN</div>
+
+<p>
+Vem ansvarar normalt för kundens tilldelning av
+behörigheter?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     BOSS
+===================================================== -->
+
+<section class="level boss">
+
+<div class="level-head">
+[ BOSS ] // BAALSTORM INDUSTRIES GOES CLOUD
+</div>
+
+<div class="level-body">
+
+<div class="diagram">BAALSTORM INDUSTRIES
+
+EMPLOYEES:
+500
+
+CURRENT ENVIRONMENT:
+
+Windows Servers
+Web Application
+SQL Database
+File Storage
+Email
+Identity
+Backups</div>
+
+<p>
+Ledningen har fattat beslut:
+</p>
+
+<div class="diagram">"MOVE EVERYTHING TO THE CLOUD.
+
+THEN SECURITY IS THE
+CLOUD PROVIDER'S PROBLEM."</div>
+
+<div class="alert">
+MANAGEMENT ASSUMPTION DETECTED
+</div>
+
+
+<div class="task quiz" data-answer="no">
+
+<div class="task-id">
+BOSS 01
+</div>
+
+<p>
+Är ledningens påstående korrekt?
+</p>
+
+<button onclick="answer(this,'yes')">YES</button>
+<button onclick="answer(this,'no')">NO</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="iaas">
+
+<div class="task-id">
+BOSS 02
+</div>
+
+<p>
+Baalstorm behöver en virtuell Windows Server där IT-avdelningen
+själv vill installera och administrera operativsystem och programvara.
+</p>
+
+<p>
+Vilken modell passar bäst?
+</p>
+
+<button onclick="answer(this,'iaas')">IaaS</button>
+<button onclick="answer(this,'paas')">PaaS</button>
+<button onclick="answer(this,'saas')">SaaS</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="paas">
+
+<div class="task-id">
+BOSS 03
+</div>
+
+<p>
+Utvecklarna vill köra sin egen webbapplikation men vill
+slippa administrera operativsystem och webbserver.
+</p>
+
+<p>
+Vilken modell passar bäst?
+</p>
+
+<button onclick="answer(this,'iaas')">IaaS</button>
+<button onclick="answer(this,'paas')">PaaS</button>
+<button onclick="answer(this,'saas')">SaaS</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="saas">
+
+<div class="task-id">
+BOSS 04
+</div>
+
+<p>
+Företaget vill använda en färdig molnbaserad e-posttjänst.
+</p>
+
+<p>
+Vilken modell passar bäst?
+</p>
+
+<button onclick="answer(this,'iaas')">IaaS</button>
+<button onclick="answer(this,'paas')">PaaS</button>
+<button onclick="answer(this,'saas')">SaaS</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="alert">
+NEW INCIDENT //
+
+COMPROMISED USER ACCOUNT
+</div>
+
+<div class="diagram">ACCOUNT:
+
+admin@baalstorm.se
+
+MFA:
+DISABLED
+
+PASSWORD:
+REUSED
+
+RESULT:
+Unauthorized access to cloud data</div>
+
+
+<div class="task quiz" data-answer="customer">
+
+<div class="task-id">
+BOSS 05
+</div>
+
+<p>
+Tjänsten är SaaS.
+</p>
+
+<p>
+Molnleverantören driver infrastrukturen och applikationen.
+</p>
+
+<p>
+Men kunden har inte aktiverat MFA och administratören
+återanvänder sitt lösenord.
+</p>
+
+<p>
+Vem har fortfarande ansvar för kundens identiteter och
+hur de används?
+</p>
+
+<button onclick="answer(this,'customer')">CUSTOMER</button>
+<button onclick="answer(this,'provider')">CLOUD PROVIDER</button>
+
+<div class="result"></div>
+
+</div>
+
+
+<div class="task quiz" data-answer="no">
+
+<div class="task-id">
+BOSS 06 // FINAL QUESTION
+</div>
+
+<p>
+Betyder:
+</p>
+
+<div class="diagram">SaaS</div>
+
+<p>
+att kunden inte längre har något säkerhetsansvar?
+</p>
+
+<button onclick="answer(this,'yes')">YES</button>
+<button onclick="answer(this,'no')">NO</button>
+
+<div class="result"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     FINAL MODEL
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+04 // THE MODEL TO REMEMBER
+</div>
+
+<div class="section-body">
+
+<div class="diagram">ON-PREMISE
+│
+│ Kunden hanterar nästan hela stacken
+│
+▼
+
+IaaS
+│
+│ Leverantören tar infrastrukturen
+│ Kunden hanterar mycket ovanför den
+│
+▼
+
+PaaS
+│
+│ Leverantören hanterar även plattformen
+│ Kunden fokuserar mer på app/data
+│
+▼
+
+SaaS
+│
+│ Leverantören hanterar nästan hela
+│ den tekniska stacken
+│
+▼
+
+CUSTOMER STILL MANAGES:
+
+IDENTITY
+ACCESS
+DATA
+CUSTOMER CONFIGURATION
+HOW THE SERVICE IS USED</div>
+
+<div class="system">
+CLOUD SECURITY IS SHARED SECURITY.
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+     FINAL SCORE
+===================================================== -->
+
+<section class="section">
+
+<div class="section-head">
+05 // LAB RESULT
+</div>
+
+<div class="section-body">
+
+<div class="final-score">
+
+<div>
+MISSION SCORE
+</div>
+
+<div class="number">
+<span id="finalScore">0</span>
+/
+<span id="finalMax">0</span>
+</div>
+
+<div id="rank">
+COMPLETE THE MISSIONS
+</div>
+
+<br>
+
+<button onclick="resetLab()">
+RESET LAB
+</button>
+
+</div>
+
+</div>
+</section>
+
+
+<footer>
+<div class="wrapper">
+
+BAALSTORM // CLOUD SECURITY TRAINING NODE
+
+</div>
+</footer>
+
+</main>
+
+
+<script>
+
+let score = 0;
+
+const quizzes = document.querySelectorAll(".quiz");
+
+const maxScore = quizzes.length;
+
+document.getElementById("maxScore").textContent = maxScore;
+document.getElementById("finalMax").textContent = maxScore;
+
+
+function answer(button, choice){
+
+    const task = button.closest(".quiz");
+
+    if(task.dataset.completed === "true"){
+        return;
+    }
+
+    const correct = task.dataset.answer;
+
+    const result = task.querySelector(".result");
+
+    task.dataset.completed = "true";
+
+    const buttons = task.querySelectorAll("button");
+
+    buttons.forEach(btn => {
+        btn.disabled = true;
+    });
+
+
+    if(choice === correct){
+
+        score++;
+
+        button.classList.add("correct");
+
+        result.className = "result good";
+
+        result.innerHTML =
+        "<strong>[CORRECT]</strong><br><br>" +
+        explanation(correct, task);
+
+    }else{
+
+        button.classList.add("wrong");
+
+        result.className = "result bad";
+
+        result.innerHTML =
+        "<strong>[INCORRECT]</strong><br><br>" +
+        explanation(correct, task);
+
+        buttons.forEach(btn => {
+
+            const onclick =
+                btn.getAttribute("onclick") || "";
+
+            if(onclick.includes("'" + correct + "'")){
+                btn.classList.add("correct");
+            }
+
+        });
+
+    }
+
+    result.style.display = "block";
+
+    updateScore();
+}
+
+
+function explanation(answer, task){
+
+    const id =
+        task.querySelector(".task-id").textContent.trim();
+
+
+    if(id.includes("MISSION 01"))
+        return "En virtuell server där kunden själv hanterar operativsystem och programvara är typiskt IaaS.";
+
+    if(id.includes("MISSION 02"))
+        return "När leverantören hanterar den underliggande plattformen medan kunden fokuserar på sin applikation är det typiskt PaaS.";
+
+    if(id.includes("MISSION 03"))
+        return "En färdig applikation som används som tjänst är SaaS.";
+
+    if(id.includes("MISSION 04"))
+        return "Molnleverantören ansvarar för sin fysiska infrastruktur och datacentersäkerhet.";
+
+    if(id.includes("MISSION 05"))
+        return "Kunden ansvarar för sina konton, autentisering och konfiguration i den virtuella servern.";
+
+    if(id.includes("MISSION 06"))
+        return "I IaaS ansvarar kunden normalt för operativsystemet i sin virtuella maskin, inklusive patchning.";
+
+    if(id.includes("MISSION 07"))
+        return "Den underliggande fysiska infrastrukturen tillhör molnleverantörens ansvarsområde.";
+
+    if(id.includes("MISSION 08"))
+        return "Detta är IaaS. Kunden administrerar operativsystemet och ansvarar därför normalt för dess patchning.";
+
+    if(id.includes("MISSION 09"))
+        return "Att något körs i molnet betyder inte att molnleverantören automatiskt ansvarar för hela säkerhetsstacken.";
+
+    if(id.includes("MISSION 10"))
+        return "Kunden har konfigurerat åtkomsten till sin data. En felaktig kundkonfiguration är normalt kundens ansvar.";
+
+    if(id.includes("MISSION 11"))
+        return "Nej. En tjänst kan exponera information utan att själva molnplattformen har blivit komprometterad. Felkonfiguration kan räcka.";
+
+    if(id.includes("MISSION 12"))
+        return "När leverantören hanterar det underliggande operativsystemet som en del av PaaS flyttas detta ansvar från kunden till leverantören.";
+
+    if(id.includes("MISSION 13"))
+        return "PaaS tar inte bort kundens ansvar för den egna applikationskoden.";
+
+    if(id.includes("MISSION 14"))
+        return "Kunden ansvarar fortfarande för hur de egna användarna och behörigheterna konfigureras i tjänsten.";
+
+    if(id.includes("BOSS 01"))
+        return "Molnet flyttar och delar ansvar. Det eliminerar inte kundens säkerhetsansvar.";
+
+    if(id.includes("BOSS 02"))
+        return "IaaS passar när kunden vill administrera sin egen virtuella server och operativsystem.";
+
+    if(id.includes("BOSS 03"))
+        return "PaaS passar när utvecklarna vill fokusera på applikationen medan leverantören hanterar den underliggande plattformen.";
+
+    if(id.includes("BOSS 04"))
+        return "En färdig molnbaserad e-postapplikation är ett typiskt exempel på SaaS.";
+
+    if(id.includes("BOSS 05"))
+        return "SaaS innebär inte att kundens identitets- och åtkomstansvar försvinner. Kunden måste fortfarande hantera sina användare och säkerhetsinställningar.";
+
+    if(id.includes("BOSS 06"))
+        return "SaaS flyttar mycket ansvar till leverantören, men kunden har fortfarande ansvar för bland annat identiteter, åtkomst, data och kundspecifik konfiguration.";
+
+    return "Rätt svar: " + answer;
+}
+
+
+function updateScore(){
+
+    document.getElementById("score").textContent = score;
+
+    document.getElementById("finalScore").textContent = score;
+
+    const completed =
+        document.querySelectorAll(
+            '.quiz[data-completed="true"]'
+        ).length;
+
+    const rank =
+        document.getElementById("rank");
+
+    if(completed < maxScore){
+
+        rank.textContent =
+            "MISSIONS COMPLETED: " +
+            completed +
+            "/" +
+            maxScore;
+
+        return;
+    }
+
+
+    const percent =
+        score / maxScore;
+
+
+    if(percent === 1){
+
+        rank.innerHTML =
+            '<span style="color:#39ff88">' +
+            'RANK: CLOUD SECURITY ARCHITECT' +
+            '</span>';
+
+    }else if(percent >= .8){
+
+        rank.innerHTML =
+            '<span style="color:#39ff88">' +
+            'RANK: CLOUD DEFENDER' +
+            '</span>';
+
+    }else if(percent >= .6){
+
+        rank.innerHTML =
+            '<span style="color:#ffd166">' +
+            'RANK: CLOUD OPERATOR' +
+            '</span>';
+
+    }else{
+
+        rank.innerHTML =
+            '<span style="color:#ff5d73">' +
+            'RANK: SHARED RESPONSIBILITY INCIDENT' +
+            '</span>';
+
+    }
+
+}
+
+
+function resetLab(){
+
+    score = 0;
+
+    document.querySelectorAll(".quiz")
+        .forEach(task => {
+
+            delete task.dataset.completed;
+
+            const result =
+                task.querySelector(".result");
+
+            result.style.display = "none";
+            result.innerHTML = "";
+            result.className = "result";
+
+            task.querySelectorAll("button")
+                .forEach(btn => {
+
+                    btn.disabled = false;
+
+                    btn.classList.remove(
+                        "correct",
+                        "wrong"
+                    );
+
+                });
+
+        });
+
+    updateScore();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+updateScore();
+
+</script>
+
+</body>
+</html>
