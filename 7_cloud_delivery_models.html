@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Cloud Delivery Models</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+ --bg:#050805;--panel:#0a100b;--panel2:#0d160f;
+ --green:#39ff88;--green2:#18c768;--text:#d5ffe4;
+ --muted:#7cab8b;--yellow:#ffd166;--red:#ff5d73;
+ --blue:#62b6ff;--border:#1d5d35;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:"Courier New",monospace;line-height:1.65;
+}
+.wrap{width:min(1050px,calc(100% - 28px));margin:auto}
+header{border-bottom:1px solid var(--border);background:#030503}
+nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo,h1,h2,h3{color:var(--green)}
+.hero{padding:70px 0 45px}
+h1{font-size:clamp(2.5rem,7vw,5rem);line-height:.95;margin:10px 0}
+.muted{color:var(--muted)}
+.system,.warning{
+ padding:16px;margin:22px 0;background:#060b07;border:1px solid var(--border)
+}
+.system:before{content:"[SYSTEM] ";color:var(--green);font-weight:bold}
+.warning{border-color:#755c20;color:#ffdda0}
+.warning:before{content:"[IMPORTANT] ";color:var(--yellow);font-weight:bold}
+.level{margin:32px 0;border:1px solid var(--border);background:var(--panel)}
+.head{padding:13px 17px;border-bottom:1px solid var(--border);color:var(--green);font-weight:bold}
+.body{padding:22px}
+.task{
+ margin:20px 0;padding:20px;background:var(--panel2);
+ border-left:3px solid var(--green2)
+}
+.id{color:var(--yellow);font-weight:bold}
+.diagram{
+ padding:17px;margin:15px 0;background:#020503;border:1px solid #153f25;
+ color:#aaffc7;white-space:pre;overflow:auto
+}
+button{
+ background:transparent;color:var(--blue);border:1px solid var(--blue);
+ padding:9px 14px;margin:4px;font:inherit;cursor:pointer
+}
+button:hover{background:var(--blue);color:#000}
+.answer{
+ display:none;padding:14px;margin-top:12px;border:1px dashed var(--border)
+}
+.correct{border-color:var(--green)!important;color:var(--green)!important}
+.wrong{border-color:var(--red)!important;color:var(--red)!important}
+.boss{border-color:var(--red)}
+.boss .head{color:var(--red);border-color:var(--red)}
+.score{color:var(--yellow)}
+footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrap">
+<nav>
+<div class="logo">BAALSTORM // CLOUD DELIVERY MODELS</div>
+<div>SCORE: <span class="score" id="score">0</span>/<span id="max">0</span></div>
+</nav>
+</div>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+<div class="muted">$ ./identify_service_model</div>
+<h1>IaaS // PaaS // SaaS // FaaS</h1>
+<p class="muted">
+Hur mycket av IT-stacken hanterar du själv — och hur mycket hanterar molnleverantören?
+</p>
+</section>
+
+<div class="system">
+MISSION: IDENTIFIERA RÄTT LEVERANSFORM UTIFRÅN VAD KUNDEN OCH LEVERANTÖREN HANTERAR.
+</div>
+
+<section class="level">
+<div class="head">00 // THE MODELS</div>
+<div class="body">
+
+<div class="diagram">IaaS
+Infrastructure as a Service
+→ Servrar, lagring, nätverk, virtuella maskiner
+
+
+PaaS
+Platform as a Service
+→ Färdig utvecklings- och driftsplattform
+
+
+SaaS
+Software as a Service
+→ Färdig applikation
+
+
+FaaS
+Function as a Service
+→ Kodfunktioner körs on-demand</div>
+
+<div class="warning">
+JU MER AV TJÄNSTEN LEVERANTÖREN HANTERAR,
+DESTO MINDRE AV DEN UNDERLIGGANDE TEKNIKEN BEHÖVER KUNDEN HANTERA.
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ BASIC ] // IDENTIFY</div>
+<div class="body">
+
+<div class="task quiz" data-answer="iaas">
+<div class="id">MISSION 01</div>
+<p>Du hyr en virtuell server och installerar själv Ubuntu, nginx och din applikation.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">IaaS — du hyr infrastrukturen men hanterar själv operativsystem och applikation.</div>
+</div>
+
+<div class="task quiz" data-answer="saas">
+<div class="id">MISSION 02</div>
+<p>Du loggar in i en färdig molnbaserad applikation via webbläsaren.</p>
+<p>Leverantören driver och uppdaterar själva applikationen.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">SaaS — kunden använder en färdig applikation.</div>
+</div>
+
+<div class="task quiz" data-answer="paas">
+<div class="id">MISSION 03</div>
+<p>Du utvecklar en webbapplikation men vill inte administrera servrar, OS eller runtime.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">PaaS — leverantören hanterar infrastrukturen, OS och plattformen.</div>
+</div>
+
+<div class="task quiz" data-answer="faas">
+<div class="id">MISSION 04</div>
+<p>Du laddar upp en kodfunktion. Leverantören kör den när en händelse inträffar.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">FaaS — funktioner körs on-demand utan att du behöver hantera servrar eller runtime.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ INTERMEDIATE ] // WHAT DO YOU MANAGE?</div>
+<div class="body">
+
+<div class="task quiz" data-answer="iaas">
+<div class="id">MISSION 05</div>
+<div class="diagram">CUSTOMER TASKS:
+
+Install OS
+Patch OS
+Install database
+Configure web server
+Deploy application</div>
+<p>Vilken modell passar bäst?</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">IaaS. Kunden har stor kontroll men också mer eget underhåll.</div>
+</div>
+
+<div class="task quiz" data-answer="paas">
+<div class="id">MISSION 06</div>
+<div class="diagram">PROVIDER:
+
+Infrastructure
+Operating system
+Runtime
+Platform
+
+CUSTOMER:
+
+Application
+Data</div>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">PaaS.</div>
+</div>
+
+<div class="task quiz" data-answer="saas">
+<div class="id">MISSION 07</div>
+<div class="diagram">PROVIDER:
+
+Infrastructure
+Platform
+Application
+Application updates
+
+CUSTOMER:
+
+Users
+Permissions
+Data
+How service is used</div>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">SaaS.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ CHALLENGE ] // BAALSTORM WEB</div>
+<div class="body">
+
+<div class="task quiz" data-answer="paas">
+<div class="id">MISSION 08</div>
+
+<div class="diagram">PROJECT:
+
+Baalstorm Web
+
+REQUIREMENT:
+
+"We want to build our own web application,
+but nobody wants to patch Linux servers."</div>
+
+<p>Vilken leveransform passar beskrivningen bäst?</p>
+
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+
+<div class="answer">
+PaaS. Kunden bygger applikationen medan leverantören hanterar den underliggande plattformen.
+</div>
+</div>
+
+<div class="task quiz" data-answer="faas">
+<div class="id">MISSION 09</div>
+
+<div class="diagram">REQUIREMENT:
+
+"When a file is uploaded,
+run a small function that creates a thumbnail."
+
+No dedicated server should be managed.</div>
+
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+
+<div class="answer">FaaS passar beskrivningen: en kodfunktion körs on-demand.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level boss">
+<div class="head">[ BOSS ] // BUILD THE STACK</div>
+<div class="body">
+
+<div class="task quiz" data-answer="saas">
+<div class="id">BOSS 01</div>
+<p>500 användare behöver en färdig molnbaserad e-postapplikation.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">SaaS.</div>
+</div>
+
+<div class="task quiz" data-answer="iaas">
+<div class="id">BOSS 02</div>
+<p>Ett äldre system kräver en specifik OS-installation som IT-avdelningen själv måste administrera.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">IaaS ger kunden kontroll över den virtuella servern och dess OS.</div>
+</div>
+
+<div class="task quiz" data-answer="faas">
+<div class="id">BOSS 03</div>
+<p>En liten kodfunktion ska köras automatiskt när ett event inträffar.</p>
+<button data-choice="iaas">IaaS</button>
+<button data-choice="paas">PaaS</button>
+<button data-choice="saas">SaaS</button>
+<button data-choice="faas">FaaS</button>
+<div class="answer">FaaS.</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="wrap">BAALSTORM // CLOUD DELIVERY TRAINING NODE</div>
+</footer>
+
+<script>
+let score=0;
+const quizzes=document.querySelectorAll(".quiz");
+document.getElementById("max").textContent=quizzes.length;
+
+quizzes.forEach(q=>{
+ q.querySelectorAll("button").forEach(b=>{
+  b.onclick=()=>{
+   if(q.dataset.done)return;
+   q.dataset.done="1";
+
+   const ok=b.dataset.choice===q.dataset.answer;
+   if(ok){score++;b.classList.add("correct")}
+   else{
+    b.classList.add("wrong");
+    q.querySelectorAll("button").forEach(x=>{
+     if(x.dataset.choice===q.dataset.answer)x.classList.add("correct");
+    });
+   }
+
+   q.querySelector(".answer").style.display="block";
+   q.querySelectorAll("button").forEach(x=>x.disabled=true);
+   document.getElementById("score").textContent=score;
+  };
+ });
+});
+</script>
+
+</body>
+</html>
