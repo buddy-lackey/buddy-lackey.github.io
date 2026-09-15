@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Hybrid Cloud Lab</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+ --bg:#050805;--panel:#0a100b;--panel2:#0d160f;
+ --green:#39ff88;--green2:#18c768;--text:#d5ffe4;
+ --muted:#7cab8b;--yellow:#ffd166;--red:#ff5d73;
+ --blue:#62b6ff;--border:#1d5d35;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",monospace;line-height:1.65}
+.wrap{width:min(1050px,calc(100% - 28px));margin:auto}
+header{background:#030503;border-bottom:1px solid var(--border)}
+nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo,h1,h2{color:var(--green)}
+.hero{padding:70px 0 45px}
+h1{font-size:clamp(2.5rem,7vw,5rem);line-height:.95}
+.muted{color:var(--muted)}
+.level{margin:32px 0;border:1px solid var(--border);background:var(--panel)}
+.head{padding:13px 17px;border-bottom:1px solid var(--border);color:var(--green);font-weight:bold}
+.body{padding:22px}
+.task{margin:20px 0;padding:20px;background:var(--panel2);border-left:3px solid var(--green2)}
+.id{color:var(--yellow);font-weight:bold}
+.diagram{margin:15px 0;padding:18px;background:#020503;border:1px solid #153f25;color:#aaffc7;white-space:pre;overflow:auto}
+button{padding:9px 14px;margin:4px;background:transparent;border:1px solid var(--blue);color:var(--blue);font:inherit;cursor:pointer}
+.answer{display:none;margin-top:12px;padding:14px;border:1px dashed var(--border)}
+.correct{color:var(--green)!important;border-color:var(--green)!important}
+.wrong{color:var(--red)!important;border-color:var(--red)!important}
+.system,.alert,.warning{padding:16px;margin:22px 0;background:#060b07;border:1px solid var(--border)}
+.system:before{content:"[SYSTEM] ";color:var(--green);font-weight:bold}
+.alert{border-color:var(--red);color:#ffadb9}
+.alert:before{content:"[ALERT] ";color:var(--red);font-weight:bold}
+.warning{border-color:#755c20;color:#ffdda0}
+.warning:before{content:"[IMPORTANT] ";color:var(--yellow);font-weight:bold}
+.boss{border-color:var(--red)} .boss .head{color:var(--red)}
+footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<header><div class="wrap"><nav>
+<div class="logo">BAALSTORM // HYBRID CLOUD</div>
+<div id="score"></div>
+</nav></div></header>
+
+<main class="wrap">
+
+<section class="hero">
+<div class="muted">$ ./map_hybrid_environment</div>
+<h1>NOT EVERYTHING IS CLOUD.</h1>
+<p class="muted">
+Verkligheten är ofta en blandning av on-prem, moln och olika leverantörer.
+</p>
+</section>
+
+<div class="system">
+MISSION: FÖRSTÅ VARFÖR HYBRIDMILJÖER KAN GÖRA INTEGRATIONER OCH ANSVARSFÖRDELNING MER KOMPLICERADE.
+</div>
+
+<section class="level">
+<div class="head">00 // HYBRID</div>
+<div class="body">
+
+<p>
+Mellan helt on-prem och helt publikt moln finns många hybridvarianter.
+</p>
+
+<div class="diagram">ON-PREM
+   │
+   ├──────────┐
+   │          │
+   ▼          ▼
+CLOUD      SaaS
+   │          │
+   └────┬─────┘
+        │
+        ▼
+  INTEGRATIONS</div>
+
+<div class="warning">
+NÄR FLERA SYSTEM OCH LEVERANTÖRER ÄR INBLANDADE
+KAN ANSVARSFÖRDELNINGEN BLI OKLAR.
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ BASIC ] // IS IT HYBRID?</div>
+<div class="body">
+
+<div class="task quiz" data-answer="yes">
+<div class="id">MISSION 01</div>
+
+<div class="diagram">ON-PREM:
+File Server
+Legacy ERP
+
+CLOUD:
+Web Application
+Database</div>
+
+<p>Är detta en hybridmiljö?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">Ja. Organisationen använder både egen lokal miljö och molntjänster.</div>
+</div>
+
+<div class="task quiz" data-answer="no">
+<div class="id">MISSION 02</div>
+
+<div class="diagram">ALL SYSTEMS:
+
+Physical servers
+inside company's own datacenter</div>
+
+<p>Är detta en hybridmiljö?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">Nej. Beskrivningen är on-premises.</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ INTERMEDIATE ] // FOLLOW THE CONNECTIONS</div>
+<div class="body">
+
+<div class="diagram">BAALSTORM INDUSTRIES
+
+ON-PREM
+├── Identity
+├── File Server
+└── ERP
+      │
+      │ integrations
+      ▼
+CLOUD
+├── Web Application
+└── Database
+      │
+      ▼
+SaaS
+└── Collaboration service</div>
+
+<div class="task quiz" data-answer="complexity">
+<div class="id">MISSION 03</div>
+<p>Vad lyfts som en utmaning när många system och leverantörer kombineras?</p>
+
+<button data-choice="nothing">Ingen särskild skillnad</button>
+<button data-choice="complexity">Ansvarsfördelningen kan bli oklar</button>
+<button data-choice="nosecurity">Säkerhetsansvar försvinner</button>
+
+<div class="answer">
+Flera leverantörer och integrationer kan göra ansvarsfördelningen mer svåröverskådlig.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ CHALLENGE ] // THE FORGOTTEN ACCOUNT</div>
+<div class="body">
+
+<div class="alert">EMPLOYEE OFFBOARDING INCIDENT</div>
+
+<div class="diagram">USER:
+
+alice@baalstorm.se
+
+
+MONDAY:
+
+Employee leaves company
+
+
+ON-PREM ACCOUNT:
+DISABLED
+
+
+CLOUD/SaaS ACCOUNT:
+STILL ACTIVE</div>
+
+<div class="task quiz" data-answer="integration">
+<div class="id">MISSION 04</div>
+
+<p>Vilken typ av hybridproblem illustrerar detta bäst?</p>
+
+<button data-choice="hardware">Trasig fysisk server</button>
+<button data-choice="integration">Systemen/integrationerna hanterar inte samma förändring</button>
+<button data-choice="scaling">För mycket skalbarhet</button>
+
+<div class="answer">
+Miljön består av flera system. En förändring i ett system innebär inte automatiskt att alla andra system förändras.
+</div>
+</div>
+
+<div class="task quiz" data-answer="yes">
+<div class="id">MISSION 05</div>
+<p>Kan säkerhetsproblem uppstå även om både on-prem-systemet och molntjänsten fungerar tekniskt?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">
+Ja. Problem kan uppstå i hur systemen används, konfigureras och integreras.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level">
+<div class="head">[ CHALLENGE+ ] // WHO OWNS THIS?</div>
+<div class="body">
+
+<div class="diagram">SYSTEM A
+Vendor Alpha
+
+SYSTEM B
+Cloud Provider Beta
+
+SYSTEM C
+SaaS Provider Gamma
+
+CUSTOMER
+Baalstorm Industries</div>
+
+<p>
+Ett informationsflöde går genom samtliga system.
+</p>
+
+<div class="task quiz" data-answer="clarify">
+<div class="id">MISSION 06</div>
+
+<p>Vad blir särskilt viktigt i en sådan miljö?</p>
+
+<button data-choice="ignore">Anta att varje leverantör ansvarar för allt</button>
+<button data-choice="clarify">Tydliggöra ansvar mellan organisation och leverantörer</button>
+<button data-choice="remove">Ta bort alla säkerhetskontroller</button>
+
+<div class="answer">
+När många leverantörer är inblandade behöver ansvarsfördelningen vara tydlig.
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="level boss">
+<div class="head">[ BOSS ] // MAP THE ENVIRONMENT</div>
+<div class="body">
+
+<div class="diagram">BAALSTORM INDUSTRIES
+
+HQ
+│
+├── On-prem ERP
+├── Local file server
+│
+├───────────────┐
+│               │
+▼               ▼
+Cloud Web      Cloud Database
+│
+▼
+SaaS Service</div>
+
+<div class="alert">
+SECURITY INCIDENT
+
+Customer data exists in several systems.
+
+Nobody knows which team owns
+access control for one integration.
+</div>
+
+<div class="task quiz" data-answer="responsibility">
+<div class="id">BOSS 01</div>
+
+<p>Vilken av presentationens hybridutmaningar syns tydligast?</p>
+
+<button data-choice="performance">Datorerna är för långsamma</button>
+<button data-choice="responsibility">Ansvarsfördelningen har blivit oklar</button>
+<button data-choice="nocloud">Miljön innehåller inget moln</button>
+
+<div class="answer">
+Ansvarsfördelningen är oklar — precis den typ av problem som kan uppstå när flera system och leverantörer kombineras.
+</div>
+</div>
+
+<div class="task quiz" data-answer="no">
+<div class="id">BOSS 02</div>
+
+<p>Kan organisationen anta att en leverantör automatiskt ansvarar för säkerheten i alla integrationer?</p>
+
+<button data-choice="yes">YES</button>
+<button data-choice="no">NO</button>
+
+<div class="answer">Nej. Ansvar behöver förstås och tydliggöras för respektive system och integration.</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<footer><div class="wrap">BAALSTORM // HYBRID ENVIRONMENT TRAINING NODE</div></footer>
+
+<script>
+let score=0;
+const qs=document.querySelectorAll(".quiz"),total=qs.length;
+document.getElementById("score").textContent="0 / "+total;
+
+qs.forEach(q=>q.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+ if(q.dataset.done)return;
+ q.dataset.done=1;
+
+ if(b.dataset.choice===q.dataset.answer){
+  score++;b.classList.add("correct");
+ }else{
+  b.classList.add("wrong");
+  q.querySelectorAll("button").forEach(x=>{
+   if(x.dataset.choice===q.dataset.answer)x.classList.add("correct");
+  });
+ }
+
+ q.querySelector(".answer").style.display="block";
+ q.querySelectorAll("button").forEach(x=>x.disabled=true);
+ document.getElementById("score").textContent=score+" / "+total;
+}));
+</script>
+
+</body>
+</html>
