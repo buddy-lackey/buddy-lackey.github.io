@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Baalstorm // Azure First Cloud Lab</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+    --bg:#050805;
+    --panel:#0a100b;
+    --panel2:#0d160f;
+    --green:#39ff88;
+    --green2:#18c768;
+    --text:#d5ffe4;
+    --muted:#7cab8b;
+    --yellow:#ffd166;
+    --red:#ff5d73;
+    --blue:#62b6ff;
+    --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(circle at 80% 0%,rgba(57,255,136,.07),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    font-family:"Courier New",monospace;
+    line-height:1.65;
+}
+
+.wrapper{
+    width:min(1100px,calc(100% - 28px));
+    margin:auto;
+}
+
+header{
+    background:#030503;
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+nav{
+    min-height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.logo{
+    color:var(--green);
+    font-weight:bold;
+    letter-spacing:.06em;
+}
+
+.progress-text{
+    color:var(--yellow);
+    font-size:.85rem;
+}
+
+.progress{
+    height:4px;
+    background:#071009;
+}
+
+.progress-bar{
+    width:0;
+    height:100%;
+    background:var(--green);
+    transition:.3s;
+}
+
+.hero{
+    padding:72px 0 48px;
+}
+
+.prompt{
+    color:var(--green);
+    font-size:.85rem;
+}
+
+h1{
+    color:var(--green);
+    font-size:clamp(2.5rem,7vw,5rem);
+    line-height:.95;
+    letter-spacing:-.05em;
+    margin:10px 0 20px;
+}
+
+h2,h3{
+    color:var(--green);
+}
+
+.hero p{
+    max-width:850px;
+    color:var(--muted);
+}
+
+.system,
+.warning,
+.alert,
+.success{
+    margin:22px 0;
+    padding:17px;
+    background:#060b07;
+    border:1px solid var(--border);
+}
+
+.system::before{
+    content:"[SYSTEM] ";
+    color:var(--green);
+    font-weight:bold;
+}
+
+.warning{
+    border-color:#755c20;
+    color:#ffdda0;
+}
+
+.warning::before{
+    content:"[WARNING] ";
+    color:var(--yellow);
+    font-weight:bold;
+}
+
+.alert{
+    border-color:#7c2635;
+    color:#ffadb9;
+}
+
+.alert::before{
+    content:"[SECURITY] ";
+    color:var(--red);
+    font-weight:bold;
+}
+
+.success{
+    border-color:var(--green);
+    color:#baffcf;
+}
+
+.success::before{
+    content:"[CHECKPOINT] ";
+    color:var(--green);
+    font-weight:bold;
+}
+
+.mission{
+    margin:35px 0;
+    border:1px solid var(--border);
+    background:var(--panel);
+}
+
+.mission.completed{
+    border-color:var(--green);
+}
+
+.mission-head{
+    padding:14px 18px;
+    border-bottom:1px solid var(--border);
+    color:var(--green);
+    font-weight:bold;
+}
+
+.mission-body{
+    padding:22px;
+}
+
+.objective{
+    color:var(--yellow);
+}
+
+.terminal,
+.diagram{
+    margin:17px 0;
+    padding:18px;
+    background:#020503;
+    border:1px solid #153f25;
+    color:#aaffc7;
+    white-space:pre;
+    overflow:auto;
+    line-height:1.5;
+}
+
+code{
+    color:#aaffc7;
+}
+
+.steps{
+    margin:20px 0;
+    padding-left:24px;
+}
+
+.steps li{
+    margin:10px 0;
+}
+
+.check{
+    margin:20px 0;
+    padding:17px;
+    background:var(--panel2);
+    border-left:3px solid var(--green2);
+}
+
+.question{
+    margin:20px 0;
+    padding:18px;
+    background:var(--panel2);
+    border-left:3px solid var(--yellow);
+}
+
+button{
+    padding:9px 14px;
+    margin:5px 5px 5px 0;
+    background:transparent;
+    border:1px solid var(--blue);
+    color:var(--blue);
+    font:inherit;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--blue);
+    color:#02080e;
+}
+
+button.good{
+    border-color:var(--green);
+    color:var(--green);
+}
+
+button.bad{
+    border-color:var(--red);
+    color:var(--red);
+}
+
+.reveal{
+    display:none;
+    margin-top:13px;
+    padding:14px;
+    border:1px dashed var(--border);
+    color:#baffcf;
+}
+
+.complete{
+    border-color:var(--green);
+    color:var(--green);
+}
+
+.complete:hover{
+    background:var(--green);
+    color:#020503;
+}
+
+.tag{
+    display:inline-block;
+    padding:3px 8px;
+    margin:3px;
+    border:1px solid var(--border);
+    color:var(--green);
+    font-size:.8rem;
+}
+
+.danger-zone{
+    border-color:var(--red);
+}
+
+.danger-zone .mission-head{
+    color:var(--red);
+    border-color:var(--red);
+}
+
+.final{
+    text-align:center;
+    padding:35px;
+    border:1px solid var(--green);
+    margin:35px 0;
+    background:#030704;
+}
+
+.final-number{
+    color:var(--green);
+    font-size:3rem;
+    font-weight:bold;
+}
+
+footer{
+    margin-top:70px;
+    padding:30px 0;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:.8rem;
+}
+
+@media(max-width:700px){
+    nav{
+        padding:10px 0;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="wrapper">
+
+<nav>
+
+<div class="logo">
+BAALSTORM // AZURE CLOUD LAB
+</div>
+
+<div class="progress-text">
+MISSIONS:
+<span id="done">0</span>/<span id="total">0</span>
+</div>
+
+</nav>
+
+</div>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+</header>
+
+
+<main class="wrapper">
+
+<section class="hero">
+
+<div class="prompt">
+$ ./azure_lab --build --secure --destroy
+</div>
+
+<h1>
+YOUR FIRST CLOUD WORKLOAD
+</h1>
+
+<p>
+I den här labben ska du skapa en riktig molnmiljö,
+publicera en webbserver, konfigurera nätverksåtkomst
+och analysera vem som ansvarar för säkerheten.
+</p>
+
+<p>
+Sedan ska du ta bort miljön.
+</p>
+
+<div>
+<span class="tag">AZURE</span>
+<span class="tag">IaaS</span>
+<span class="tag">LINUX</span>
+<span class="tag">NETWORKING</span>
+<span class="tag">NSG</span>
+<span class="tag">SHARED RESPONSIBILITY</span>
+</div>
+
+</section>
+
+
+<div class="warning">
+MOLNRESURSER KAN KOSTA PENGAR.
+
+ANVÄND DIN AZURE STUDENT-SUBSCRIPTION, VÄLJ SMÅ RESURSER
+OCH TA BORT LABBMILJÖN NÄR DU ÄR KLAR.
+
+SKAPA INTE DYRA RESURSER BARA FÖR ATT DU HAR KREDIT.
+</div>
+
+
+<div class="system">
+MISSION OBJECTIVE: BUILD → EXPOSE → SECURE → ANALYZE → DESTROY
+</div>
+
+
+<!-- =====================================================
+MISSION 01
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 01 ] // CREATE RESOURCE GROUP
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Skapa en container för labbens Azure-resurser.
+</p>
+
+<div class="diagram">SUBSCRIPTION
+      │
+      ▼
+RESOURCE GROUP
+      │
+      ├── VM
+      ├── Network
+      ├── Public IP
+      └── Disk</div>
+
+<ol class="steps">
+
+<li>Logga in i Azure Portal.</li>
+
+<li>Kontrollera att du använder rätt subscription.</li>
+
+<li>Sök efter <strong>Resource groups</strong>.</li>
+
+<li>Skapa en ny Resource Group.</li>
+
+</ol>
+
+<p>Använd exempelvis:</p>
+
+<div class="terminal">rg-cloudlab-student01</div>
+
+<p>
+Välj en region som är tillgänglig för din student-subscription.
+</p>
+
+<div class="question">
+
+<strong>QUESTION:</strong>
+
+<p>
+Varför är det praktiskt att lägga labbens resurser
+i samma Resource Group?
+</p>
+
+<button onclick="reveal(this)">
+REVEAL
+</button>
+
+<div class="reveal">
+Resurserna blir enklare att organisera och du kan senare
+ta bort hela Resource Group för att städa bort labbmiljön.
+</div>
+
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 02
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 02 ] // DEPLOY LINUX VM
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Skapa en liten Linux-baserad virtuell maskin.
+</p>
+
+<p>
+Skapa en ny Virtual Machine i Resource Group från Mission 01.
+</p>
+
+<p>Exempel:</p>
+
+<div class="terminal">VM NAME:
+web01
+
+OPERATING SYSTEM:
+Ubuntu Linux
+
+AUTHENTICATION:
+SSH public key
+
+SIZE:
+Choose a small / inexpensive size available
+for your subscription.</div>
+
+<div class="warning">
+TILLGÄNGLIGA VM-STORLEKAR OCH PRISER KAN VARIERA
+MELLAN REGIONER OCH SUBSCRIPTIONS.
+
+KONTROLLERA DEN VISade KOSTNADEN INNAN DU SKAPAR VM:N.
+</div>
+
+<p>
+När VM:n skapas kommer du upptäcka att Azure behöver
+fler resurser än bara själva VM:n.
+</p>
+
+<div class="diagram">Virtual Machine
+      │
+      ├── Network Interface
+      │
+      ├── Virtual Network
+      │
+      ├── Public IP
+      │
+      └── OS Disk</div>
+
+<div class="question">
+
+<strong>QUESTION:</strong>
+
+<p>
+Är en virtuell maskin i Azure bara en enda isolerad resurs?
+</p>
+
+<button onclick="quiz(this,false)">YES</button>
+<button onclick="quiz(this,true)">NO</button>
+
+<div class="reveal">
+Nej. En fungerande VM använder flera Azure-resurser,
+exempelvis nätverk, nätverksinterface, disk och eventuellt
+en publik IP-adress.
+</div>
+
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 03
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 03 ] // CONNECT
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Anslut till din VM via SSH.
+</p>
+
+<p>
+Hitta VM:ns publika IP-adress.
+</p>
+
+<div class="terminal">VM
+└── Overview
+    └── Public IP address</div>
+
+<p>Anslut från din dator:</p>
+
+<div class="terminal">ssh USERNAME@PUBLIC_IP</div>
+
+<p>Exempel:</p>
+
+<div class="terminal">ssh azureuser@20.x.x.x</div>
+
+<div class="success">
+Du ska nu ha ett shell på din Linux-server i Azure.
+</div>
+
+<p>Kontrollera vilken maskin du är på:</p>
+
+<div class="terminal">hostname
+
+whoami
+
+ip addr</div>
+
+<div class="question">
+
+<strong>THINK:</strong>
+
+<p>
+Servern finns i Microsofts datacenter.
+
+Vem administrerar operativsystemet inne i denna IaaS-VM?
+</p>
+
+<button onclick="quiz(this,true)">CUSTOMER</button>
+<button onclick="quiz(this,false)">MICROSOFT</button>
+
+<div class="reveal">
+CUSTOMER. I en IaaS-modell hanterar kunden normalt
+operativsystemet i sin virtuella maskin.
+</div>
+
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 04
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 04 ] // INSTALL WEB SERVER
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Installera nginx på VM:n.
+</p>
+
+<div class="terminal">sudo apt update
+
+sudo apt install nginx -y</div>
+
+<p>Kontrollera status:</p>
+
+<div class="terminal">systemctl status nginx</div>
+
+<p>Du kan också testa lokalt på servern:</p>
+
+<div class="terminal">curl http://localhost</div>
+
+<div class="success">
+Om du får HTML tillbaka kör nginx.
+</div>
+
+<p>
+Testa nu från din egen webbläsare:
+</p>
+
+<div class="terminal">http://PUBLIC_IP</div>
+
+<div class="question">
+
+<strong>QUESTION:</strong>
+
+<p>
+Fungerar webbsidan från Internet?
+</p>
+
+<p>
+Om inte — fundera på vilka nätverksregler som styr
+trafiken till VM:n.
+</p>
+
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 05
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 05 ] // OPEN TCP/80
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Tillåt HTTP-trafik till webbservern.
+</p>
+
+<p>
+Undersök VM:ns nätverksinställningar och
+Network Security Group.
+</p>
+
+<p>
+Skapa eller kontrollera att det finns en inbound-regel
+som tillåter:
+</p>
+
+<div class="terminal">PROTOCOL:
+TCP
+
+DESTINATION PORT:
+80
+
+ACTION:
+ALLOW</div>
+
+<div class="diagram">INTERNET
+    │
+    │ TCP/80
+    ▼
+Public IP
+    │
+    ▼
+Network Security Group
+    │
+    ▼
+Network Interface
+    │
+    ▼
+Linux VM
+    │
+    ▼
+nginx</div>
+
+<p>
+Testa igen:
+</p>
+
+<div class="terminal">http://PUBLIC_IP</div>
+
+<div class="success">
+Du bör nu kunna nå nginx från din webbläsare.
+</div>
+
+<div class="alert">
+DU HAR JUST FÖRÄNDRAT SERVERNS ATTACK SURFACE.
+
+EN TJÄNST SOM INTE VAR ÅTKOMLIG FRÅN INTERNET
+ÄR NU PUBLIKT ÅTKOMLIG.
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 06
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 06 ] // REDUCE ATTACK SURFACE
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Undersök vilka portar som exponeras.
+</p>
+
+<p>
+Kontrollera inbound-reglerna för VM:n.
+</p>
+
+<div class="diagram">QUESTION:
+
+WHO CAN ACCESS TCP/22?
+
+0.0.0.0/0 ?
+        │
+        ▼
+ENTIRE INTERNET</div>
+
+<p>
+HTTP-servern ska vara publik i denna labb.
+</p>
+
+<p>
+Men behöver SSH vara tillgängligt från hela Internet?
+</p>
+
+<div class="question">
+
+<strong>QUESTION:</strong>
+
+<p>
+Vilken princip säger att vi endast bör ge den åtkomst
+som faktiskt behövs?
+</p>
+
+<button onclick="quiz(this,true)">
+LEAST PRIVILEGE
+</button>
+
+<button onclick="quiz(this,false)">
+ALLOW EVERYTHING
+</button>
+
+<div class="reveal">
+Least privilege. Ge bara den åtkomst som behövs
+för uppgiften.
+</div>
+
+</div>
+
+<p>
+Om din labbmiljö och anslutning tillåter det kan du
+begränsa SSH-regelns source till din egen publika IP-adress
+i stället för hela Internet.
+</p>
+
+<div class="diagram">BEFORE
+
+Internet
+├── TCP/80 ─────► nginx
+└── TCP/22 ─────► SSH
+
+
+AFTER
+
+Internet
+└── TCP/80 ─────► nginx
+
+Your IP
+└── TCP/22 ─────► SSH</div>
+
+<div class="warning">
+ÄNDRA INTE SSH-REGELN PÅ ETT SÄTT SOM LÅSER UTE DIG
+FRÅN DIN EGEN VM.
+
+KONTROLLERA DIN REGEL INNAN DU SPARAR.
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 07
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 07 ] // SHARED RESPONSIBILITY
+</div>
+
+<div class="mission-body">
+
+<p class="objective">
+OBJECTIVE: Identifiera vem som ansvarar för vad i miljön du precis skapade.
+</p>
+
+<div class="diagram">AZURE IaaS
+
+Microsoft
+│
+├── Datacenter
+├── Physical hardware
+└── Underlying cloud infrastructure
+
+
+Customer
+│
+├── Linux OS
+├── nginx
+├── Configuration
+├── Accounts
+├── Data
+└── Access rules</div>
+
+
+<div class="question">
+
+<strong>QUESTION 01:</strong>
+
+<p>Vem ansvarar för den fysiska servern?</p>
+
+<button onclick="quiz(this,true)">MICROSOFT</button>
+<button onclick="quiz(this,false)">CUSTOMER</button>
+
+<div class="reveal">
+Molnleverantören ansvarar för den underliggande
+fysiska infrastrukturen.
+</div>
+
+</div>
+
+
+<div class="question">
+
+<strong>QUESTION 02:</strong>
+
+<p>Vem ansvarar för att köra apt update i din IaaS-VM?</p>
+
+<button onclick="quiz(this,true)">CUSTOMER</button>
+<button onclick="quiz(this,false)">MICROSOFT</button>
+
+<div class="reveal">
+Kunden administrerar operativsystemet i denna IaaS-VM.
+</div>
+
+</div>
+
+
+<div class="question">
+
+<strong>QUESTION 03:</strong>
+
+<p>Vem ansvarar för hur du konfigurerar åtkomsten till VM:n?</p>
+
+<button onclick="quiz(this,true)">CUSTOMER</button>
+<button onclick="quiz(this,false)">MICROSOFT</button>
+
+<div class="reveal">
+Kunden ansvarar för sin konfiguration och hur tjänsten används.
+</div>
+
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MISSION 08
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ MISSION 08 ] // INCIDENT ANALYSIS
+</div>
+
+<div class="mission-body">
+
+<div class="alert">
+SECURITY INCIDENT DETECTED
+</div>
+
+<div class="diagram">HOST:
+web01
+
+MODEL:
+IaaS
+
+PUBLIC:
+YES
+
+SSH:
+Internet accessible
+
+HTTP:
+Internet accessible
+
+OS:
+Not patched for 14 months
+
+nginx:
+Outdated</div>
+
+<p>
+IT-chefen säger:
+</p>
+
+<div class="terminal">"Microsoft owns the datacenter.
+
+Therefore Microsoft should have
+patched nginx and Ubuntu."</div>
+
+
+<div class="question">
+
+<strong>QUESTION:</strong>
+
+<p>Har IT-chefen rätt?</p>
+
+<button onclick="quiz(this,false)">YES</button>
+<button onclick="quiz(this,true)">NO</button>
+
+<div class="reveal">
+Nej. Detta är en IaaS-VM. Kunden ansvarar normalt för
+operativsystemet och programvaran som kunden installerar
+i den virtuella maskinen.
+</div>
+
+</div>
+
+<div class="system">
+CLOUD DOES NOT REMOVE RESPONSIBILITY.
+
+IT MOVES THE RESPONSIBILITY BOUNDARY.
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ MARK MISSION COMPLETE ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+OPTIONAL
+===================================================== -->
+
+<section class="mission">
+
+<div class="mission-head">
+[ OPTIONAL ] // FIND THE AZURE RESOURCES
+</div>
+
+<div class="mission-body">
+
+<p>
+Gå tillbaka till din Resource Group.
+</p>
+
+<p>
+Identifiera vilka resurser Azure skapade.
+</p>
+
+<div class="check">
+
+Kan du hitta:
+
+<br><br>
+
+[ ] Virtual Machine<br>
+[ ] Virtual Network<br>
+[ ] Network Interface<br>
+[ ] Network Security Group<br>
+[ ] Public IP<br>
+[ ] Disk
+
+</div>
+
+<p>
+Försök rita sambandet mellan resurserna.
+</p>
+
+<div class="diagram">RESOURCE GROUP
+│
+├── ?
+├── ?
+├── ?
+├── ?
+└── ?</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+DESTROY
+===================================================== -->
+
+<section class="mission danger-zone">
+
+<div class="mission-head">
+[ FINAL MISSION ] // DESTROY THE LAB
+</div>
+
+<div class="mission-body">
+
+<div class="alert">
+DO NOT SKIP THIS MISSION
+</div>
+
+<p class="objective">
+OBJECTIVE: Ta bort labbmiljön när du är klar.
+</p>
+
+<p>
+Gå till Resource Group som du skapade:
+</p>
+
+<div class="terminal">rg-cloudlab-student01</div>
+
+<p>
+Kontrollera först att Resource Group endast innehåller
+resurser från denna labb.
+</p>
+
+<p>
+Ta därefter bort Resource Group.
+</p>
+
+<div class="diagram">DELETE RESOURCE GROUP
+
+        │
+        ▼
+
+Virtual Machine
+Network Interface
+Public IP
+Virtual Network
+NSG
+Disk
+
+        │
+        ▼
+
+DELETED</div>
+
+<div class="warning">
+ATT STOPPA EN VM OCH ATT TA BORT EN MILJÖ ÄR INTE SAMMA SAK.
+
+RESURSER SOM FINNS KVAR KAN FORTFARANDE HA KOSTNADER.
+</div>
+
+<div class="question">
+
+<strong>FINAL QUESTION:</strong>
+
+<p>
+Varför är cleanup en viktig del av arbete i molnet?
+</p>
+
+<button onclick="reveal(this)">
+REVEAL
+</button>
+
+<div class="reveal">
+Molnresurser skapas snabbt och kan fortsätta existera
+och generera kostnader tills de tas bort.
+
+Att förstå resursers livscykel är därför en viktig del
+av molndrift.
+</div>
+
+</div>
+
+<button class="complete" onclick="completeMission(this)">
+[ LAB DESTROYED ]
+</button>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+FINAL
+===================================================== -->
+
+<section class="final">
+
+<div>
+LAB STATUS
+</div>
+
+<div class="final-number">
+<span id="finalDone">0</span>/<span id="finalTotal">0</span>
+</div>
+
+<div id="finalStatus">
+MISSIONS IN PROGRESS
+</div>
+
+</section>
+
+
+<section class="mission">
+
+<div class="mission-head">
+[ DEBRIEF ] // WHAT DID YOU ACTUALLY LEARN?
+</div>
+
+<div class="mission-body">
+
+<div class="diagram">YOU CREATED:
+
+Azure Resource Group
+        │
+        ▼
+Virtual Machine
+        │
+        ▼
+Linux
+        │
+        ▼
+nginx
+        │
+        ▼
+Public HTTP service
+
+
+YOU CONFIGURED:
+
+Network access
+Attack surface
+SSH access
+
+
+YOU ANALYZED:
+
+IaaS
+Shared Responsibility
+Cloud resources
+Security configuration
+Resource lifecycle</div>
+
+<div class="system">
+YOU DID NOT JUST "CREATE A VM".
+
+YOU BUILT AND SECURED A SMALL CLOUD ENVIRONMENT.
+</div>
+
+</div>
+</section>
+
+</main>
+
+
+<footer>
+<div class="wrapper">
+BAALSTORM // AZURE TRAINING NODE // BUILD → SECURE → DESTROY
+</div>
+</footer>
+
+
+<script>
+
+const missions =
+    document.querySelectorAll(
+        ".mission .complete"
+    );
+
+const total =
+    missions.length;
+
+document.getElementById("total").textContent =
+    total;
+
+document.getElementById("finalTotal").textContent =
+    total;
+
+
+function completeMission(button){
+
+    const mission =
+        button.closest(".mission");
+
+    if(mission.dataset.completed === "true")
+        return;
+
+    mission.dataset.completed = "true";
+
+    mission.classList.add("completed");
+
+    button.textContent =
+        "[ MISSION COMPLETE ✓ ]";
+
+    button.disabled = true;
+
+    updateProgress();
+}
+
+
+function updateProgress(){
+
+    const done =
+        document.querySelectorAll(
+            '.mission[data-completed="true"]'
+        ).length;
+
+    document.getElementById("done").textContent =
+        done;
+
+    document.getElementById("finalDone").textContent =
+        done;
+
+    const percentage =
+        total === 0
+        ? 0
+        : (done / total) * 100;
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        percentage + "%";
+
+
+    if(done === total){
+
+        document.getElementById(
+            "finalStatus"
+        ).innerHTML =
+            '<span style="color:#39ff88">' +
+            'CLOUD LAB COMPLETE' +
+            '</span>';
+
+    }else{
+
+        document.getElementById(
+            "finalStatus"
+        ).textContent =
+            "MISSIONS IN PROGRESS";
+
+    }
+}
+
+
+function reveal(button){
+
+    const box =
+        button.parentElement.querySelector(
+            ".reveal"
+        );
+
+    box.style.display = "block";
+
+    button.disabled = true;
+}
+
+
+function quiz(button,correct){
+
+    const question =
+        button.closest(".question");
+
+    if(question.dataset.answered === "true")
+        return;
+
+    question.dataset.answered = "true";
+
+    const buttons =
+        question.querySelectorAll("button");
+
+    buttons.forEach(b=>{
+        b.disabled = true;
+    });
+
+    if(correct){
+
+        button.classList.add("good");
+
+    }else{
+
+        button.classList.add("bad");
+
+    }
+
+    const revealBox =
+        question.querySelector(".reveal");
+
+    if(revealBox)
+        revealBox.style.display = "block";
+}
+
+
+updateProgress();
+
+</script>
+
+</body>
+</html>
