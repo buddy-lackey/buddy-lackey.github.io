@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALEF-93 // BONUS LAB // FIDO2 SECURITY KEY</title>
+<style>
+:root{
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --green:#00e89d;
+  --soft:#7dffcf;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+  --yellow:#e6c86e;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Consolas,"Courier New",monospace;
+  line-height:1.65;
+}
+main{max-width:920px;margin:0 auto;padding:46px 22px 90px}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+.return{display:inline-block;margin-bottom:42px;color:var(--muted)}
+.eyebrow{color:var(--muted);letter-spacing:.13em;font-size:.85rem;margin-bottom:8px}
+h1{font-size:clamp(2rem,6vw,4rem);line-height:1.05;margin:0 0 18px;color:#effff9;font-weight:700}
+.status{color:var(--green);margin:18px 0 38px}
+.blink{animation:blink 1.05s steps(1,end) infinite}
+@keyframes blink{50%{opacity:0}}
+.intro{max-width:760px;color:#b9d3ca;font-size:1.05rem;margin-bottom:42px}
+.notice{border:1px solid var(--border);background:var(--panel);padding:18px 20px;margin:30px 0 48px}
+.notice strong{color:var(--yellow)}
+section{margin-top:56px}
+.section-title{color:var(--green);font-size:.95rem;letter-spacing:.08em;margin-bottom:22px}
+.challenge{
+  border:1px solid var(--border);
+  background:var(--panel);
+  margin:20px 0 30px;
+  padding:24px;
+}
+.challenge-no{color:var(--muted);font-size:.78rem;letter-spacing:.13em;margin-bottom:4px}
+.challenge h2{font-size:1.25rem;margin:0 0 17px;color:#effff9}
+.challenge p{margin:10px 0}
+.scenario{
+  background:var(--panel2);
+  border-left:2px solid var(--green);
+  padding:14px 16px;
+  margin:18px 0;
+  color:#c8ddd6;
+}
+pre{
+  background:#030605;
+  border:1px solid #102c24;
+  padding:15px;
+  overflow:auto;
+  color:var(--soft);
+  font:14px/1.55 Consolas,"Courier New",monospace;
+}
+code{color:var(--soft);font-family:inherit}
+ul,ol{padding-left:24px}
+li{margin:7px 0}
+details{
+  margin-top:20px;
+  border-top:1px solid var(--border);
+  padding-top:14px;
+}
+summary{cursor:pointer;color:var(--green);user-select:none}
+details p,details li{color:#a9c7bd}
+.small{font-size:.88rem;color:var(--muted)}
+.prize{
+  margin-top:58px;
+  border:1px dashed var(--green);
+  padding:24px;
+  background:var(--panel);
+}
+.prize .big{color:var(--soft);font-size:1.25rem}
+footer{margin-top:70px;color:#49675e;font-size:.8rem}
+</style>
+</head>
+<body>
+<main>
+
+<a class="return" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="eyebrow">BONUS LAB</div>
+<h1>BUILD YOUR OWN SECURITY KEY</h1>
+<div class="status">● FIDO2/WEBAUTHN ONLINE<span class="blink">_</span></div>
+
+<p class="intro">
+This is an optional hardware lab for the curious. Turn a Raspberry Pi Pico 2
+into a FIDO2/WebAuthn authenticator, use it to authenticate, and investigate
+why a security key is fundamentally different from storing a secret on a USB drive.
+</p>
+
+<div class="notice">
+<strong>NOT A REQUIRED COURSE LAB.</strong><br>
+Completing this lab does not affect the mandatory course exercises.
+If you complete it and demonstrate your working security key to the teacher,
+you will receive a <strong>secret prize</strong>.<br><br>
+No. The prize is not documented here.
+</div>
+
+<section>
+<div class="section-title">// BEFORE YOU START</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 01</div>
+<h2>What are you actually building?</h2>
+
+<p>You need:</p>
+<ul>
+<li>Raspberry Pi Pico 2 (RP2350)</li>
+<li>a USB data cable</li>
+<li>a Windows, Linux or macOS computer</li>
+<li>a modern browser</li>
+</ul>
+
+<p>You do <strong>not</strong> need a separate Raspberry Pi, Arduino, breadboard
+or custom PCB.</p>
+
+<div class="scenario">
+A normal USB flash drive stores data. A FIDO2 authenticator is an active device:
+it receives protocol messages and performs cryptographic operations.
+</div>
+
+<pre>USB storage:
+private-key.pem  →  computer reads secret
+
+FIDO2 authenticator:
+challenge  →  authenticator  →  cryptographic response
+                    │
+               secret stays here</pre>
+
+<p><strong>Question:</strong> Why is the second model interesting from a security perspective?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+A readable private-key file can potentially be copied by software that can access it.
+A hardware authenticator instead exposes operations: the computer asks it to perform
+an authentication operation and receives the result. The private credential material
+does not need to be exported during normal authentication.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// FLASH THE AUTHENTICATOR</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 02</div>
+<h2>From development board to FIDO2 device</h2>
+
+<p>We will use the open-source <strong>Pico FIDO2</strong> firmware.</p>
+
+<p>
+<a href="https://github.com/LibreFido/pico-fido2" target="_blank" rel="noopener">
+github.com/LibreFido/pico-fido2
+</a>
+</p>
+
+<ol>
+<li>Read the current project/release instructions.</li>
+<li>Download firmware intended for <strong>Raspberry Pi Pico 2 / RP2350</strong>.</li>
+<li>Disconnect the Pico 2.</li>
+<li>Hold <code>BOOTSEL</code> while connecting the USB cable.</li>
+<li>Release <code>BOOTSEL</code>.</li>
+<li>Verify that the Pico boot volume appears. On Pico 2 it is normally <code>RP2350</code>.</li>
+<li>Copy the appropriate <code>.uf2</code> firmware to the device.</li>
+<li>Allow the board to reboot.</li>
+</ol>
+
+<p class="small">
+Open-source firmware changes over time. Do not blindly use an old filename from a lab sheet;
+identify the current RP2350/Pico 2 release yourself.
+</p>
+
+<p><strong>Question:</strong> The device appeared as USB storage during flashing.
+Why can it appear as something completely different after reboot?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+USB devices describe themselves to the host. The firmware running on the microcontroller
+determines which USB interfaces and protocols the device exposes. The BOOTSEL ROM provides
+one behaviour; the newly installed authenticator firmware provides another.
+</p>
+</details>
+</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 03</div>
+<h2>Prove that something changed</h2>
+
+<p>Inspect the Pico after flashing.</p>
+
+<p>On Linux, start with:</p>
+<pre>lsusb</pre>
+
+<p>On Windows, investigate Device Manager or PowerShell.</p>
+
+<p>Try to identify:</p>
+<ul>
+<li>Vendor ID (VID)</li>
+<li>Product ID (PID)</li>
+<li>USB interfaces/classes exposed by the device</li>
+</ul>
+
+<p><strong>Question:</strong> What evidence shows that you are no longer merely talking to a USB mass-storage device?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Look at how the operating system enumerates the device and which interfaces it exposes.
+A FIDO authenticator normally communicates using the FIDO HID transport rather than behaving
+like ordinary removable storage.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// WEBAUTHN</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 04</div>
+<h2>Create a credential</h2>
+
+<p>
+Use a reputable WebAuthn/FIDO2 test environment, or a test mechanism recommended
+by the firmware project.
+</p>
+
+<p>Register your Pico 2 as an authenticator.</p>
+
+<div class="scenario">
+Do not just celebrate when it works. Pay attention to what the browser asks you to do
+and what information appears to be associated with the new credential.
+</div>
+
+<p>Then disconnect the Pico, attempt authentication, reconnect it, and authenticate again.</p>
+
+<p><strong>Question:</strong> What does the server need in order to verify a later authentication?
+Does it need your private key?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+WebAuthn uses public-key credentials. The authenticator retains the secret/private
+credential material required to produce an assertion, while the relying party keeps
+information that allows the assertion to be verified. The server does not need the
+authenticator's private key.
+</p>
+</details>
+</div>
+
+<div class="challenge" data-clue="FLAG{the_private_key_is_not_the_password}">
+<div class="challenge-no">CHALLENGE 05</div>
+<h2>Follow the challenge</h2>
+
+<p>Explain the authentication path in your own words:</p>
+
+<pre>WEB APPLICATION
+       │
+    WebAuthn
+       │
+ BROWSER / OS
+       │
+     CTAP2
+       │
+    USB HID
+       │
+    PICO 2</pre>
+
+<p>Then complete this simplified sequence:</p>
+
+<pre>server creates __________
+          ↓
+authenticator performs __________
+          ↓
+server performs __________</pre>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+A simplified answer is: the server creates a fresh challenge, the authenticator creates
+the required cryptographic assertion using its credential, and the relying party verifies
+the returned assertion. The real WebAuthn data structures contain more than just a bare
+challenge and signature, which is worth investigating if you continue deeper.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// RELYING PARTIES</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 06</div>
+<h2>One key. Two sites.</h2>
+
+<p>If possible, register the same Pico 2 with two different WebAuthn test relying parties.</p>
+
+<p>Investigate:</p>
+<ul>
+<li>Does FIDO2 simply reuse one universal credential everywhere?</li>
+<li>What is a Relying Party ID?</li>
+<li>How does this design affect credential reuse?</li>
+<li>Why is the RP relationship relevant to phishing resistance?</li>
+</ul>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+FIDO/WebAuthn credentials are scoped to relying parties rather than being a universal
+shared password sent to every site. The authenticator/browser protocol also binds
+authentication to the relying-party context. This is an important reason WebAuthn
+credentials behave differently from reusable passwords.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// USER PRESENCE</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 07</div>
+<h2>Connected does not mean approved</h2>
+
+<div class="scenario">
+Assume malware is running on the computer while your security key is connected.
+The computer can communicate with the authenticator.
+</div>
+
+<p>Investigate the FIDO concepts:</p>
+<ul>
+<li><strong>UP</strong> — User Presence</li>
+<li><strong>UV</strong> — User Verification</li>
+</ul>
+
+<p><strong>Question:</strong> Why might an authenticator require a physical interaction or local verification before completing an operation?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+User Presence establishes that a user is physically interacting with the authenticator
+for the operation. User Verification goes further by verifying the user locally, for
+example using a PIN or another supported mechanism. Merely having the device connected
+should not necessarily authorize every possible operation.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// THREAT MODEL</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 08</div>
+<h2>What does your key actually protect?</h2>
+
+<p>Consider three attackers:</p>
+
+<pre>ATTACKER A
+Malware running on your computer.
+
+ATTACKER B
+Has stolen the Pico and has physical access to it.
+
+ATTACKER C
+Controls a phishing site impersonating a legitimate service.</pre>
+
+<p>For each attacker, explain:</p>
+<ul>
+<li>what FIDO2 helps protect against,</li>
+<li>what depends on the authenticator hardware/firmware,</li>
+<li>what attacks may still remain possible.</li>
+</ul>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Do not treat “uses FIDO2” as equivalent to “secure against everything.” Protocol design,
+client compromise, physical extraction, authenticator implementation and user verification
+address different parts of the threat model. A useful security analysis states which
+attacker capabilities a control is intended to resist.
+</p>
+</details>
+</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 09</div>
+<h2>USB file vs hardware authenticator</h2>
+
+<p>Compare these three authentication mechanisms:</p>
+
+<pre>A: password
+
+B: USB drive containing private.pem
+
+C: FIDO2 credential on Pico 2</pre>
+
+<p>For each one, reason about:</p>
+<ul>
+<li>Can the authentication secret be copied?</li>
+<li>Does secret material need to be exposed to the host during normal use?</li>
+<li>What changes if the host contains malware?</li>
+<li>What changes if the physical device is stolen?</li>
+<li>How does phishing affect the mechanism?</li>
+</ul>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+The important distinction is not simply “hardware versus software.” Ask where the secret
+exists, whether it is exportable, what operation the host is allowed to request, how the
+credential is bound to a relying party, and what an attacker gains from compromising the host
+or stealing the device.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// GO DEEPER</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 10 // OPTIONAL+</div>
+<h2>Read the implementation</h2>
+
+<p>Open the Pico FIDO2 source code.</p>
+
+<p>Find code related to at least three of these:</p>
+<ul>
+<li>credential creation</li>
+<li>assertions</li>
+<li>CTAP</li>
+<li>PIN / user verification</li>
+<li>user presence</li>
+<li>cryptographic key material</li>
+</ul>
+
+<p>You do not need to understand every line.</p>
+
+<p><strong>Goal:</strong> move from:</p>
+<pre>"I copied a UF2 file."</pre>
+<p>to:</p>
+<pre>"I can roughly explain what this firmware is doing."</pre>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Security engineers frequently rely on libraries and existing implementations. Understanding
+the architecture, trust boundaries and important security-sensitive components is often more
+valuable than pretending every component was written from scratch.
+</p>
+</details>
+</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 11 // EXTREME MODE</div>
+<h2>Build it yourself</h2>
+
+<p>Build the firmware from source rather than using the pre-built UF2.</p>
+
+<p>Document:</p>
+<ol>
+<li>toolchain,</li>
+<li>SDK/dependencies,</li>
+<li>build commands/options,</li>
+<li>generated UF2,</li>
+<li>flash procedure.</li>
+</ol>
+
+<p>Then investigate:</p>
+<p><strong>What are USB VID and PID, and why should a product developer care who owns the identifiers being used?</strong></p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+VID/PID values identify USB devices and products to the host. Building a prototype and
+shipping a product are different situations; identifiers, firmware provenance, update
+security and production provisioning all become part of the engineering problem.
+</p>
+</details>
+</div>
+</section>
+
+<section>
+<div class="section-title">// FINAL CHECK</div>
+
+<div class="challenge">
+<div class="challenge-no">CHALLENGE 12</div>
+<h2>Show that you understand it</h2>
+
+<p>To complete the bonus lab, demonstrate to the teacher:</p>
+
+<ul>
+<li>a Raspberry Pi Pico 2 running FIDO2 authenticator firmware,</li>
+<li>successful WebAuthn registration,</li>
+<li>successful authentication,</li>
+<li>an explanation of <code>challenge → authenticator → assertion → verification</code>,</li>
+<li>why this is different from storing <code>private.pem</code> on a USB drive.</li>
+</ul>
+
+<p>One final question:</p>
+
+<p><strong>Have you built a YubiKey?</strong></p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Not literally. YubiKey is a Yubico product. You have built a FIDO2/WebAuthn-compatible
+hardware authenticator. Protocol compatibility does not automatically give a development
+board the physical protection, production controls, provisioning, certifications or other
+security properties of a commercial security key.
+</p>
+</details>
+</div>
+</section>
+
+<div class="prize">
+<div class="big">🎁 SECRET PRIZE AVAILABLE</div>
+<p>
+Bring your working authenticator to the teacher and say:
+</p>
+<pre>I built my own FIDO2 key.</pre>
+<p class="small">Prize contents: [REDACTED]</p>
+</div>
+
+<footer>
+ALEF-93 // OPTIONAL HARDWARE LAB // curiosity is a feature
+</footer>
+
+<!-- FLAG{source_code_is_part_of_the_interface} -->
+<!-- A security key should keep secrets. A web page cannot. -->
+<script>
+console.log("ALEF-93 diagnostic: authenticator lab loaded.");
+console.log("FLAG{ctap_connects_client_and_authenticator}");
+const rpLesson = "FLAG{credentials_belong_to_relying_parties}";
+</script>
+</main>
+</body>
+</html>
