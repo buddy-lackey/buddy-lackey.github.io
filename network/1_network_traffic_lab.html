@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Traffic Lab</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+<style>
+:root{--bg:#050805;--p:#0a100b;--g:#39ff88;--t:#d5ffe4;--m:#7cab8b;--y:#ffd166;--r:#ff5d73;--b:#62b6ff;--bd:#1d5d35}
+*{box-sizing:border-box}body{margin:0;background:#050805;color:var(--t);font:16px/1.6 "Courier New",monospace}main{max-width:1050px;margin:auto;padding:45px 20px 100px}h1{font-size:clamp(42px,7vw,72px);line-height:.95;color:white}h2{color:white}.g{color:var(--g)}.m{color:var(--m)}.mission{border:1px solid var(--bd);background:var(--p);padding:24px;margin:50px 0}.level{color:var(--g);letter-spacing:2px;font-size:12px}.net{white-space:pre;overflow:auto;background:#020402;border:1px dashed var(--bd);padding:22px;color:var(--g)}.packet{border:1px solid var(--b);background:#071018;padding:15px;margin:15px 0}.q{border-left:3px solid var(--b);padding:15px;background:#071018;margin:18px 0}button{font:inherit;color:var(--g);background:#07150d;border:1px solid var(--bd);padding:9px 13px;margin:4px;cursor:pointer}.yes{background:var(--g)!important;color:#021006!important}.no{border-color:var(--r)!important;color:var(--r)!important}.hidden{display:none;border-left:2px solid var(--g);padding:12px;margin-top:10px}.alert{border:1px solid #725f22;color:var(--y);padding:18px;background:#171407}
+</style>
+</head>
+<body><main>
+<p class="g">$ ./traffic_analyzer --capture lesson01</p>
+<h1>TRAFFIC<br>LAB</h1>
+<p class="m">Observera destinationen. Identifiera kommunikationsformen.</p>
+
+<section class="mission"><div class="level">BASIC // CAPTURE 01</div><h2>ONE → ONE</h2>
+<div class="net">CLIENT-01 ───────────────▶ SERVER-01
+192.168.1.10              192.168.1.50</div>
+<div class="packet">DESTINATION: 192.168.1.50<br>RECIPIENTS: ONE SPECIFIC HOST</div>
+<div class="q">Trafiktyp?<br><button onclick="ans(this,1)">UNICAST</button><button onclick="ans(this,0)">BROADCAST</button><button onclick="ans(this,0)">MULTICAST</button></div></section>
+
+<section class="mission"><div class="level">BASIC // CAPTURE 02</div><h2>ONE → EVERYONE</h2>
+<div class="net">             ┌── PC-02
+PC-01 ──SWITCH── PC-03
+             ├── PC-04
+             └── PC-05</div>
+<div class="packet">DESTINATION MAC: FF:FF:FF:FF:FF:FF</div>
+<div class="q">Vad ser du?<br><button onclick="ans(this,0)">Unicast</button><button onclick="ans(this,1)">Broadcast</button><button onclick="ans(this,0)">Anycast</button></div>
+<div class="hidden" id="bc">Ethernet-adressen FF:FF:FF:FF:FF:FF är broadcast. Alla enheter i samma broadcast-domän kan ta emot ramen.</div><button onclick="show('bc')">[+] EXPLAIN</button></section>
+
+<section class="mission"><div class="level">INTERMEDIATE // CAPTURE 03</div><h2>ONE → GROUP</h2>
+<div class="net">             ┌── HOST-A [JOINED]
+SOURCE ──────┼── HOST-B
+             ├── HOST-C [JOINED]
+             └── HOST-D [JOINED]</div>
+<div class="packet">IPv4 MULTICAST RANGE: 224.0.0.0 – 239.255.255.255</div>
+<div class="q">Vilka ska ta emot multicasttrafiken?<br><button onclick="ans(this,1)">De som gått med i gruppen</button><button onclick="ans(this,0)">Alla på Internet</button><button onclick="ans(this,0)">Exakt en host</button></div></section>
+
+<section class="mission"><div class="level">INTERMEDIATE // CAPTURE 04</div><h2>WHY NOT BROADCAST?</h2>
+<p>En tjänst behöver leverera samma trafik till en bestämd grupp mottagare.</p>
+<div class="q">Varför kan multicast vara bättre än broadcast?<br><button onclick="ans(this,1)">Endast gruppmedlemmar behöver ta emot trafiken</button><button onclick="ans(this,0)">Broadcast når alltid färre enheter</button></div></section>
+
+<section class="mission"><div class="level">CHALLENGE // CAPTURE 05</div><h2>ANYCAST</h2>
+<p>Flera tjänsteinstanser annonserar samma IP-adress. Routing avgör vilken instans trafiken når.</p>
+<div class="net">                  ┌── SERVICE EU
+CLIENT ── ROUTING ─┼── SERVICE US
+                  └── SERVICE ASIA
+
+        SAME SERVICE ADDRESS</div>
+<div class="q">Kommunikationsform?<br><button onclick="ans(this,0)">Broadcast</button><button onclick="ans(this,1)">Anycast</button><button onclick="ans(this,0)">P2P</button></div>
+</section>
+
+<section class="mission"><div class="level">CHALLENGE+ // CAPTURE 06</div><h2>BROADCAST ADDRESS</h2>
+<div class="packet">NETWORK: 192.168.1.0/24</div>
+<div class="q">Vilken broadcastadress används för subnätet enligt lektionens exempel?<br><button onclick="ans(this,0)">192.168.1.0</button><button onclick="ans(this,0)">192.168.1.1</button><button onclick="ans(this,1)">192.168.1.255</button></div></section>
+
+<section class="mission"><div class="level">BOSS // TRAFFIC CLASSIFICATION</div><h2>CLASSIFY THE CAPTURES</h2>
+<div class="packet">A: Laptop → specifik webbserver</div><div class="q"><button onclick="ans(this,1)">UNICAST</button><button onclick="ans(this,0)">BROADCAST</button></div>
+<div class="packet">B: Ethernet frame → FF:FF:FF:FF:FF:FF</div><div class="q"><button onclick="ans(this,1)">BROADCAST</button><button onclick="ans(this,0)">ANYCAST</button></div>
+<div class="packet">C: Sender → hosts that joined a group</div><div class="q"><button onclick="ans(this,1)">MULTICAST</button><button onclick="ans(this,0)">UNICAST</button></div>
+<div class="alert">SOC QUESTION: Vilken av trafiktyperna skulle kunna skapa mycket onödig trafik om den användes för att nå alla enheter hela tiden? Motivera.</div>
+</section>
+</main>
+<script>
+function ans(b,x){let p=b.parentElement;if(p.dataset.done)return;p.dataset.done=1;p.querySelectorAll("button").forEach(z=>z.disabled=true);b.classList.add(x?"yes":"no")}
+function show(x){let e=document.getElementById(x);e.style.display=e.style.display==="block"?"none":"block"}
+</script></body></html>
