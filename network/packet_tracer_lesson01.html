@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="sv">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Packet Tracer Lab 01</title><link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+<style>
+:root{--bg:#050805;--p:#0a100b;--g:#39ff88;--t:#d5ffe4;--m:#7cab8b;--y:#ffd166;--r:#ff5d73;--b:#62b6ff;--bd:#1d5d35}*{box-sizing:border-box}body{margin:0;background:#050805;color:var(--t);font:16px/1.6 "Courier New",monospace}header{position:sticky;top:0;background:#050805ee;border-bottom:1px solid var(--bd);padding:12px;text-align:center;color:var(--g)}main{max-width:1050px;margin:auto;padding:45px 20px 100px}h1{font-size:clamp(40px,7vw,72px);line-height:.95;color:white}h2{color:white}.g{color:var(--g)}.m{color:var(--m)}.mission{border:1px solid var(--bd);background:var(--p);padding:24px;margin:50px 0}.level{color:var(--g);font-size:12px;letter-spacing:2px}pre{background:#020402;border:1px solid var(--bd);padding:20px;color:var(--g);overflow:auto}.check{border-left:3px solid var(--b);background:#071018;padding:15px;margin:12px 0}button{font:inherit;color:var(--g);background:#07150d;border:1px solid var(--g);padding:9px 13px;cursor:pointer}.done{background:var(--g)!important;color:#021006!important}.warn{border:1px solid #725f22;background:#171407;color:var(--y);padding:18px}.boss{border:2px solid var(--r)}
+</style></head>
+<body>
+<header>BAALSTORM // PACKET TRACER OPERATIONS // LAB 01</header>
+<main>
+<p class="g">$ packet-tracer --training network-basics</p>
+<h1>BUILD YOUR<br>FIRST NETWORK</h1>
+<p class="m">Målet är inte avancerad Cisco-konfiguration. Målet är att göra lektionens nätverksbegrepp synliga.</p>
+
+<section class="mission"><div class="level">BASIC // LAB 01</div><h2>HELLO, PACKET TRACER</h2>
+<p>Starta Packet Tracer och skapa ett nytt tomt projekt.</p>
+<div class="check">01. Hitta kategorin <b>End Devices</b>.</div>
+<div class="check">02. Hitta <b>Switches</b>.</div>
+<div class="check">03. Hitta <b>Routers</b>.</div>
+<div class="check">04. Hitta verktyget för anslutningar/kablar.</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">BASIC // LAB 02</div><h2>BUILD A LAN</h2>
+<p>Placera ut:</p>
+<pre>2 × PC
+1 × Switch</pre>
+<p>Koppla båda datorerna till switchen.</p>
+<pre>PC0 ─────┐
+         ├──── SWITCH0
+PC1 ─────┘</pre>
+<div class="check">Vilka enheter är slutenheter?</div>
+<div class="check">Vilken är den mellanliggande nätverksenheten?</div>
+<div class="check">Vilken fysisk topologi har du byggt?</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">INTERMEDIATE // LAB 03</div><h2>GROW THE NETWORK</h2>
+<p>Bygg ut till fyra datorer.</p>
+<pre>PC0 ─┐
+PC1 ─┤
+     ├── SWITCH0
+PC2 ─┤
+PC3 ─┘</pre>
+<div class="check">Identifiera topologin.</div>
+<div class="check">Vad händer med kommunikationen om SWITCH0 försvinner?</div>
+<div class="check">Vilken fördel ger switchen jämfört med att försöka koppla varje PC direkt till alla andra?</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">INTERMEDIATE // LAB 04</div><h2>CLIENT + SERVER</h2>
+<p>Lägg till en server.</p>
+<pre>PC0 ──┐
+PC1 ──┤
+PC2 ──┼── SWITCH0 ─── SERVER0
+PC3 ──┘</pre>
+<div class="check">Vilken roll har SERVER0?</div>
+<div class="check">Vilken roll har PC0 när den begär en tjänst från SERVER0?</div>
+<div class="check">Kan SERVER0 erbjuda flera olika tjänster?</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">CHALLENGE // LAB 05</div><h2>PHYSICAL TOPOLOGY</h2>
+<p>Jämför Packet Tracer-nätet med en fysisk installation.</p>
+<div class="check">Var skulle switchen kunna stå i verkligheten?</div>
+<div class="check">Hur skulle datorerna anslutas fysiskt?</div>
+<div class="check">Vilket nätverksmedium använder du?</div>
+<div class="check">Vilken information skulle du vilja ha på en fysisk nätverksskiss?</div>
+<div class="warn">Dokumentera nätet med en egen fysisk skiss.</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">CHALLENGE // LAB 06</div><h2>ADD ANOTHER LAN</h2>
+<p>Skapa ett andra separat LAN.</p>
+<pre>LAN-A                       LAN-B
+
+PC0 ─┐                     PC4 ─┐
+PC1 ─┼── SW0          SW1 ─┼── PC5
+PC2 ─┘                     PC6 ─┘</pre>
+<div class="check">Hur många LAN ser du?</div>
+<div class="check">Kan de två separata LAN:en automatiskt kommunicera bara för att de finns i samma Packet Tracer-fil?</div>
+<div class="check">Vilken typ av mellanliggande enhet skulle kunna användas för kommunikation mellan olika nät?</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">CHALLENGE+ // LAB 07</div><h2>ADD THE ROUTER</h2>
+<p>Lägg en router mellan näten. Fokus ligger på <b>arkitekturen</b>; full routingkonfiguration kommer senare.</p>
+<pre>LAN-A                                  LAN-B
+
+PC ─┐                                  ┌─ PC
+PC ─┼─ SW0 ───── ROUTER0 ───── SW1 ───┼─ PC
+PC ─┘                                  └─ PC</pre>
+<div class="check">Vilken funktion fyller ROUTER0 i designen?</div>
+<div class="check">Är router och switch samma typ av nätverkskomponent?</div>
+<div class="check">Rita den logiska strukturen på papper.</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission"><div class="level">CHALLENGE++ // LAB 08</div><h2>PACKET OBSERVATION</h2>
+<p>Om ni har gått igenom hur Packet Tracers Simulation Mode används: skicka enkel trafik mellan två enheter och observera hur den rör sig.</p>
+<pre>SOURCE
+   │
+   ▼
+SWITCH
+   │
+   ▼
+DESTINATION</pre>
+<div class="check">Vilken enhet är källa?</div>
+<div class="check">Vilken är destination?</div>
+<div class="check">Vilka mellanliggande enheter passerar trafiken?</div>
+<div class="check">Kan du koppla observationen till begreppen slutenhet och mellanliggande nätverksenhet?</div>
+<button onclick="done(this)">[ ] LAB COMPLETE</button></section>
+
+<section class="mission boss"><div class="level">BOSS // LAB 09</div><h2>BUILD BAALSTORM HQ</h2>
+<p>Du får nu bara kravspecifikationen. Designen gör du själv.</p>
+<pre>BAALSTORM HQ
+
+12 client computers
+2 switches
+1 server
+1 router
+1 wireless access point
+
+REQUIREMENTS:
+
+- klienterna ska kunna anslutas till LAN
+- en server ska finnas
+- Wi-Fi ska finnas
+- en väg mot ett externt nät ska finnas
+- designen ska gå att förklara</pre>
+<div class="check">Bygg nätverket utan att kopiera en färdig bild.</div>
+<div class="check">Identifiera alla slutenheter.</div>
+<div class="check">Identifiera alla mellanliggande enheter.</div>
+<div class="check">Beskriv nätverksmediet för varje typ av anslutning.</div>
+<div class="check">Beskriv den fysiska topologin.</div>
+<div class="check">Beskriv klient/server-relationen.</div>
+<div class="check">Vad händer om en switch går ner?</div>
+<div class="check">Var skulle du senare vilja placera säkerhetskontroller?</div>
+<button onclick="done(this)">[ ] BOSS COMPLETE</button></section>
+
+<section class="mission"><div class="level">DEBRIEF</div><h2>MISSION REPORT</h2>
+<pre>YOU SHOULD NOW BE ABLE TO:
+
+[+] identify endpoints
+[+] identify intermediary devices
+[+] build a basic LAN
+[+] recognize star topology
+[+] explain client/server
+[+] distinguish physical and logical design
+[+] explain why routers are needed between networks
+[+] build a basic network in Packet Tracer</pre>
+<p class="g">student@baalstorm:~$ _</p></section>
+</main>
+<script>function done(b){b.classList.toggle("done");b.textContent=b.classList.contains("done")?"[✓] COMPLETE":"[ ] LAB COMPLETE"}</script>
+</body></html>
