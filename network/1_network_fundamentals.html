@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Network Fundamentals</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+<style>
+:root{--bg:#050805;--panel:#0a100b;--panel2:#0d160f;--green:#39ff88;--green2:#18c768;--text:#d5ffe4;--muted:#7cab8b;--yellow:#ffd166;--red:#ff5d73;--blue:#62b6ff;--border:#1d5d35}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#102117,#050805 42%);color:var(--text);font:16px/1.6 "Courier New",monospace}header{position:sticky;top:0;z-index:10;background:#050805ee;border-bottom:1px solid var(--border)}nav,main{max-width:1050px;margin:auto;padding:16px 22px}nav{display:flex;justify-content:space-between;color:var(--green)}main{padding-bottom:100px}h1{font-size:clamp(38px,7vw,72px);line-height:.95;color:white}h2{color:white}h3,.green{color:var(--green)}.muted{color:var(--muted)}.yellow{color:var(--yellow)}.box,.mission{border:1px solid var(--border);background:var(--panel);padding:22px;margin:25px 0}.mission{margin-top:55px}.level{color:var(--green);font-size:12px;letter-spacing:2px}.terminal,pre{background:#020402;border:1px solid var(--border);padding:18px;color:var(--green);overflow:auto;white-space:pre-wrap}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.card{border:1px solid var(--border);background:var(--panel2);padding:16px}.q{border-left:3px solid var(--blue);background:#071018;padding:18px;margin:18px 0}button{background:#07150d;border:1px solid var(--green2);color:var(--green);font:inherit;padding:9px 13px;cursor:pointer;margin:4px}button:hover,.ok{background:var(--green)!important;color:#021006!important}.bad{border-color:var(--red)!important;color:var(--red)!important}.answer{display:none;border-left:2px solid var(--green);padding:12px;margin-top:12px}.progress{height:7px;border:1px solid var(--border);width:280px}.bar{height:100%;width:0;background:var(--green)}footer{text-align:center;border-top:1px solid var(--border);padding:30px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><nav><b>BAALSTORM // NETWORK OPS</b><div><span id="score">0</span>/7 <div class="progress"><div class="bar" id="bar"></div></div></div></nav></header>
+<main>
+<section>
+<p class="green">$ ./course2 --lesson 01 --mode fundamentals</p>
+<h1>NETWORK<br>FUNDAMENTALS</h1>
+<p class="muted">Förstå infrastrukturen innan du försöker säkra den.</p>
+<div class="terminal">[+] NETWORK OPERATIONS ONLINE
+[+] TRAINING ENVIRONMENT LOADED
+[+] OBJECTIVE: IDENTIFY → CLASSIFY → ANALYZE</div>
+</section>
+
+<section class="mission">
+<div class="level">BASIC // MISSION 01</div><h2>LAN OR WAN?</h2>
+<p>Ett lokalt kontor har 35 datorer, skrivare och servrar sammankopplade via switchar.</p>
+<div class="q">Vilken typ av nätverk beskriver detta?<br><button onclick="pick(this,true)">LAN</button><button onclick="pick(this,false)">WAN</button></div>
+<p>Företagets kontor i Stockholm, Malmö och Kiruna kopplas sedan samman.</p>
+<div class="q">Vad behövs för att beskriva nätverket mellan platserna?<br><button onclick="pick(this,false)">LAN</button><button onclick="pick(this,true)">WAN</button></div>
+</section>
+
+<section class="mission">
+<div class="level">BASIC // MISSION 02</div><h2>IDENTIFY THE HARDWARE</h2>
+<div class="grid">
+<div class="card"><h3>PC-01</h3>Skapar och tar emot data.</div>
+<div class="card"><h3>SW-01</h3>Sammankopplar enheter.</div>
+<div class="card"><h3>FW-01</h3>Kontrollerar trafik mellan nät.</div>
+<div class="card"><h3>AP-01</h3>Ger trådlös nätverksanslutning.</div>
+</div>
+<div class="q">Vilken är en <b>slutenhet</b>?<br><button onclick="pick(this,true)">PC-01</button><button onclick="pick(this,false)">SW-01</button><button onclick="pick(this,false)">FW-01</button></div>
+<div class="q">Vilka räknas här som mellanliggande nätverksenheter?<br><button onclick="pick(this,true)">Switch, firewall och AP</button><button onclick="pick(this,false)">Endast PC-01</button></div>
+</section>
+
+<section class="mission">
+<div class="level">INTERMEDIATE // MISSION 03</div><h2>NETWORK MEDIA</h2>
+<pre>LINK-A  electrical impulses
+LINK-B  light pulses
+LINK-C  electromagnetic waves</pre>
+<div class="q">Matcha LINK-A.<br><button onclick="pick(this,true)">Kopparkabel</button><button onclick="pick(this,false)">Fiber</button><button onclick="pick(this,false)">Trådlöst</button></div>
+<div class="q">Matcha LINK-B.<br><button onclick="pick(this,false)">Koppar</button><button onclick="pick(this,true)">Fiber</button><button onclick="pick(this,false)">Wi-Fi</button></div>
+</section>
+
+<section class="mission">
+<div class="level">INTERMEDIATE // MISSION 04</div><h2>PROTOCOL REQUIRED</h2>
+<p>Två datorer är fysiskt anslutna men behöver gemensamma regler för hur kommunikationen ska ske.</p>
+<div class="terminal">SOURCE → ? → DESTINATION</div>
+<div class="q">Vad kallas reglerna för kommunikationen?<br><button onclick="pick(this,true)">Protokoll</button><button onclick="pick(this,false)">Topologi</button><button onclick="pick(this,false)">Medium</button></div>
+<div class="answer" id="proto">Protokoll definierar regler som gör att sändare och mottagare kan kommunicera på ett begripligt sätt.</div>
+<button onclick="toggle('proto')">[+] ANALYSIS</button>
+</section>
+
+<section class="mission">
+<div class="level">CHALLENGE // MISSION 05</div><h2>CLIENT OR SERVER?</h2>
+<pre>PC-07 ───── HTTP request ────▶ WEB-01
+PC-07 ◀──── HTML response ──── WEB-01</pre>
+<div class="q">Vilken roll har WEB-01?<br><button onclick="pick(this,true)">Server</button><button onclick="pick(this,false)">Klient</button></div>
+<div class="q">Kan samma dator vara både klient och server?<br><button onclick="pick(this,true)">Ja</button><button onclick="pick(this,false)">Nej</button></div>
+</section>
+
+<section class="mission">
+<div class="level">CHALLENGE // MISSION 06</div><h2>P2P DETECTED</h2>
+<p>Fyra datorer delar resurser direkt med varandra. Ingen central server administrerar tjänsten.</p>
+<pre>NODE-A ↔ NODE-B
+   ↕       ↕
+NODE-C ↔ NODE-D</pre>
+<div class="q">Vilken modell passar bäst?<br><button onclick="pick(this,false)">Central klient/server</button><button onclick="pick(this,true)">Peer-to-Peer</button></div>
+<div class="answer" id="p2p">I P2P kan datorerna agera både klient och server. Presentationen lyfter enkelhet och låg kostnad, men även administration, skalbarhet och säkerhet som utmaningar.</div>
+<button onclick="toggle('p2p')">[+] SECURITY NOTE</button>
+</section>
+
+<section class="mission">
+<div class="level">BOSS // MISSION 07</div><h2>NETWORK TRIAGE</h2>
+<pre>INCIDENT NET-001
+
+24 employee laptops
+2 switches
+1 firewall
+1 wireless access point
+1 Internet connection
+1 internal web server</pre>
+<div class="q">Vilka är slutenheter?<br><button onclick="pick(this,true)">Laptops + webbserver</button><button onclick="pick(this,false)">Switch + firewall</button></div>
+<div class="q">Vilken komponent är rimligast mellan det interna nätet och Internet?<br><button onclick="pick(this,false)">Laptop</button><button onclick="pick(this,true)">Firewall</button></div>
+<div class="terminal">MISSION OBJECTIVE:
+Förklara för en kurskamrat hur data kan gå från en laptop,
+via mellanliggande nätverksenheter, till en server.</div>
+</section>
+</main>
+<footer>BAALSTORM // COURSE 2 // NETWORK FUNDAMENTALS</footer>
+<script>
+let s=0,answered=new WeakSet();
+function pick(b,right){let q=b.parentElement;if(answered.has(q))return;answered.add(q);q.querySelectorAll("button").forEach(x=>x.disabled=true);b.classList.add(right?"ok":"bad");if(right){s++;document.getElementById("score").textContent=s;document.getElementById("bar").style.width=(s/7*100)+"%"}}
+function toggle(id){let e=document.getElementById(id);e.style.display=e.style.display==="block"?"none":"block"}
+</script>
+</body>
+</html>
