@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="sv">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Network Architect</title><link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+<style>
+:root{--bg:#050805;--p:#0a100b;--g:#39ff88;--t:#d5ffe4;--m:#7cab8b;--y:#ffd166;--r:#ff5d73;--b:#62b6ff;--bd:#1d5d35}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#102117,#050805 40%);color:var(--t);font:16px/1.6 "Courier New",monospace}main{max-width:1050px;margin:auto;padding:50px 20px 100px}h1{font-size:clamp(40px,7vw,74px);line-height:.95;color:white}h2{color:white}.g{color:var(--g)}.m{color:var(--m)}.case,.mission{border:1px solid var(--bd);background:var(--p);padding:22px;margin:35px 0}.mission{margin-top:55px}.level{font-size:12px;color:var(--g);letter-spacing:2px}pre{background:#020402;border:1px dashed var(--bd);padding:20px;color:var(--g);overflow:auto}.q{border-left:3px solid var(--b);padding:15px;background:#071018;margin:16px 0}button{font:inherit;background:#07150d;border:1px solid var(--g);color:var(--g);padding:9px 13px;margin:4px;cursor:pointer}.ok{background:var(--g)!important;color:#021006!important}.bad{color:var(--r)!important;border-color:var(--r)!important}.warn{border:1px solid #725f22;background:#171407;color:var(--y);padding:18px}
+</style></head>
+<body><main>
+<p class="g">$ ./network_architect --case BAAL-200</p>
+<h1>NETWORK<br>ARCHITECT</h1>
+<div class="case"><b>CASE FILE: BAAL-200</b><br><br>
+Företaget har 200 anställda.<br>
+Avdelningar: HR, Ekonomi, Produktion och IT.<br>
+Företaget behöver Internet, interna tjänster, Wi-Fi och möjlighet att växa.<br><br>
+<b>YOUR ROLE:</b> Network Architect</div>
+
+<section class="mission"><div class="level">BASIC // DESIGN 01</div><h2>CHOOSE A TOPOLOGY</h2>
+<p>Alla klienter ska inte ligga på en enda gemensam kabel. Företaget vill använda centrala switchar.</p>
+<div class="q">Vilken grundtopologi är vanligast i dagens LAN?<br><button onclick="a(this,1)">STJÄRNA</button><button onclick="a(this,0)">BUSS</button><button onclick="a(this,0)">RING</button></div>
+<pre> PC ─┐
+ PC ─┼── [ SWITCH ]
+ PC ─┤
+ PC ─┘</pre></section>
+
+<section class="mission"><div class="level">INTERMEDIATE // DESIGN 02</div><h2>SCALE IT</h2>
+<p>En switch räcker inte. Access-switchar behöver kopplas vidare uppåt i en hierarki.</p>
+<pre>             [ CORE ]
+              /    \
+       [DIST-A]    [DIST-B]
+        /   \        /   \
+     ACCESS ACCESS ACCESS ACCESS</pre>
+<div class="q">Vilken topologi beskriver detta bäst?<br><button onclick="a(this,1)">Träd</button><button onclick="a(this,0)">Ring</button><button onclick="a(this,0)">Bus</button></div></section>
+
+<section class="mission"><div class="level">INTERMEDIATE // DESIGN 03</div><h2>PHYSICAL VS LOGICAL</h2>
+<p>Dokument A visar kablar, switchplacering och uttag. Dokument B visar hur nät och trafik hänger ihop.</p>
+<div class="q">Dokument A är främst...<br><button onclick="a(this,1)">Fysisk topologi</button><button onclick="a(this,0)">Logisk topologi</button></div>
+<div class="q">Dokument B är främst...<br><button onclick="a(this,0)">Fysisk topologi</button><button onclick="a(this,1)">Logisk topologi</button></div></section>
+
+<section class="mission"><div class="level">CHALLENGE // DESIGN 04</div><h2>PLACE THE FIREWALL</h2>
+<pre>INTERNET
+   │
+   ?
+   │
+CORE NETWORK
+   │
+   ├── HR
+   ├── ECONOMY
+   └── PRODUCTION</pre>
+<div class="q">Vilken komponent är naturlig vid gränsen mellan Internet och organisationens nät?<br><button onclick="a(this,1)">Firewall</button><button onclick="a(this,0)">Laptop</button><button onclick="a(this,0)">Printer</button></div></section>
+
+<section class="mission"><div class="level">CHALLENGE // DESIGN 05</div><h2>FAILURE ANALYSIS</h2>
+<p>Alla 200 klienter är beroende av samma centrala switch och den går sönder.</p>
+<div class="q">Vad illustrerar incidenten?<br><button onclick="a(this,1)">En central komponent kan bli en kritisk felpunkt</button><button onclick="a(this,0)">Broadcast fungerar inte</button></div>
+<p class="warn">ARCHITECT TASK: Diskutera hur redundans eller flera vägar skulle kunna minska konsekvensen.</p></section>
+
+<section class="mission"><div class="level">CHALLENGE+ // DESIGN 06</div><h2>SECURITY ZONES</h2>
+<p>Presentationens scenario frågar om HR, ekonomi och produktion bör segmenteras i olika VLAN/säkerhetszoner, även om VLAN behandlas senare i kursen.</p>
+<pre>[ HR ]       [ ECONOMY ]       [ PRODUCTION ]
+   │              │                  │
+   └────────── NETWORK ──────────────┘</pre>
+<div class="q">Skulle sådan separation främst synas i den fysiska kabelritningen eller den logiska nätverksdesignen?<br><button onclick="a(this,0)">Enbart fysisk</button><button onclick="a(this,1)">Logisk</button></div></section>
+
+<section class="mission"><div class="level">BOSS // FINAL DESIGN</div><h2>SUBMIT ARCHITECTURE</h2>
+<pre>REQUIREMENTS
+
+[ ] 200 employees
+[ ] Internet connectivity
+[ ] Central switches
+[ ] Firewall
+[ ] HR
+[ ] Economy
+[ ] Production
+[ ] Wi-Fi
+[ ] Internal server
+[ ] Future expansion</pre>
+<p>Rita nu din egen <b>fysiska skiss</b> och en separat <b>logisk skiss</b>.</p>
+<div class="q">På den fysiska skissen: markera switchar, firewall, AP, servrar och anslutningar.</div>
+<div class="q">På den logiska skissen: visa vilka grupper/nät som kommunicerar och var säkerhetsgränser kan behövas.</div>
+<div class="q">BOSS QUESTION: Vad händer med nätverket om en central komponent går ner? Vilka användare påverkas?</div>
+<div class="warn">BONUS SECURITY: Markera tre platser där en säkerhetskontroll skulle kunna placeras. Motivera varför.</div>
+</section>
+</main><script>function a(b,x){let q=b.parentElement;if(q.dataset.d)return;q.dataset.d=1;q.querySelectorAll("button").forEach(z=>z.disabled=true);b.classList.add(x?"ok":"bad")}</script></body></html>
