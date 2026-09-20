@@ -1,1 +1,884 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
+<title>Baalstorm // Packet Tracer Introduction</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+ --bg:#050805;
+ --panel:#0a100b;
+ --panel2:#0d160f;
+ --green:#39ff88;
+ --green2:#18c768;
+ --text:#d5ffe4;
+ --muted:#7cab8b;
+ --yellow:#ffd166;
+ --red:#ff5d73;
+ --blue:#62b6ff;
+ --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+ margin:0;
+ background:
+ radial-gradient(circle at 50% 0,#102117,#050805 42%);
+ color:var(--text);
+ font:16px/1.65 "Courier New",monospace;
+}
+
+header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:#050805ee;
+ border-bottom:1px solid var(--border);
+}
+
+nav{
+ max-width:1100px;
+ margin:auto;
+ padding:12px 20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:20px;
+}
+
+.logo{
+ color:var(--green);
+ font-weight:bold;
+}
+
+.progress-wrap{
+ width:300px;
+}
+
+.progress-text{
+ color:var(--muted);
+ font-size:11px;
+}
+
+.progress{
+ height:7px;
+ border:1px solid var(--border);
+ margin-top:4px;
+}
+
+.bar{
+ height:100%;
+ width:0;
+ background:var(--green);
+ transition:.3s;
+}
+
+main{
+ max-width:1050px;
+ margin:auto;
+ padding:50px 20px 100px;
+}
+
+.hero{
+ padding-bottom:45px;
+ border-bottom:1px solid var(--border);
+}
+
+.prompt{color:var(--green)}
+
+h1{
+ font-size:clamp(40px,7vw,74px);
+ line-height:.95;
+ color:white;
+ margin:12px 0;
+}
+
+h2{color:white}
+h3{color:var(--green)}
+
+.muted{color:var(--muted)}
+.yellow{color:var(--yellow)}
+.green{color:var(--green)}
+.blue{color:var(--blue)}
+
+.tags{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:25px;
+}
+
+.tag{
+ border:1px solid var(--border);
+ padding:5px 9px;
+ color:var(--green);
+ font-size:12px;
+}
+
+.mission{
+ border:1px solid var(--border);
+ background:var(--panel);
+ padding:24px;
+ margin:55px 0;
+}
+
+.level{
+ color:var(--green);
+ font-size:12px;
+ letter-spacing:2px;
+}
+
+pre,.terminal{
+ background:#020402;
+ border:1px solid var(--border);
+ padding:20px;
+ color:var(--green);
+ overflow:auto;
+ white-space:pre-wrap;
+}
+
+.diagram{
+ background:#020402;
+ border:1px dashed var(--border);
+ padding:22px;
+ color:var(--green);
+ overflow:auto;
+ white-space:pre;
+}
+
+.info{
+ border-left:3px solid var(--blue);
+ background:#071018;
+ padding:16px;
+ margin:18px 0;
+}
+
+.warning{
+ border:1px solid #725f22;
+ background:#171407;
+ color:var(--yellow);
+ padding:18px;
+ margin:20px 0;
+}
+
+.task{
+ border-left:3px solid var(--green);
+ background:#071009;
+ padding:15px;
+ margin:13px 0;
+}
+
+.question{
+ border-left:3px solid var(--blue);
+ background:#071018;
+ padding:15px;
+ margin:18px 0;
+}
+
+.answer{
+ display:none;
+ margin-top:12px;
+ padding:12px;
+ border-left:2px solid var(--green);
+ background:#061008;
+}
+
+button{
+ font:inherit;
+ background:#07150d;
+ border:1px solid var(--green2);
+ color:var(--green);
+ padding:9px 14px;
+ cursor:pointer;
+ margin:4px;
+}
+
+button:hover{
+ background:var(--green);
+ color:#021006;
+}
+
+.done{
+ background:var(--green)!important;
+ color:#021006!important;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ margin:20px 0;
+}
+
+td,th{
+ border:1px solid var(--border);
+ padding:12px;
+ text-align:left;
+}
+
+th{
+ color:var(--green);
+ background:#071009;
+}
+
+.boss{
+ border:2px solid var(--red);
+}
+
+footer{
+ text-align:center;
+ color:var(--muted);
+ border-top:1px solid var(--border);
+ padding:30px;
+}
+
+@media(max-width:700px){
+ nav{display:block}
+ .progress-wrap{margin-top:8px;width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+ <div class="logo">BAALSTORM // PACKET TRACER</div>
+
+ <div class="progress-wrap">
+  <div class="progress-text">
+   TRAINING PROGRESS:
+   <span id="progressText">0 / 9</span>
+  </div>
+  <div class="progress">
+   <div class="bar" id="bar"></div>
+  </div>
+ </div>
+</nav>
+</header>
+
+<main>
+
+<section class="hero">
+
+<div class="prompt">
+student@baalstorm:~$ ./packet_tracer --tutorial
+</div>
+
+<h1>PACKET TRACER<br>BOOT CAMP</h1>
+
+<p class="muted">
+Din första introduktion till Cisco Packet Tracer.
+</p>
+
+<div class="tags">
+ <span class="tag">PACKET TRACER</span>
+ <span class="tag">NETWORKING</span>
+ <span class="tag">SWITCH</span>
+ <span class="tag">ROUTER</span>
+ <span class="tag">IP</span>
+ <span class="tag">PING</span>
+ <span class="tag">SIMULATION</span>
+</div>
+
+<div class="terminal">
+[+] TRAINING ENVIRONMENT READY
+[+] PRIOR EXPERIENCE REQUIRED: NONE
+[+] OBJECTIVE: BUILD YOUR FIRST NETWORK
+
+MISSION FLOW:
+
+EXPLORE
+   ↓
+PLACE DEVICES
+   ↓
+CONNECT
+   ↓
+CONFIGURE
+   ↓
+TEST
+   ↓
+OBSERVE TRAFFIC
+</div>
+
+</section>
+
+
+<!-- 01 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 01</div>
+
+<h2>EXPLORE THE INTERFACE</h2>
+
+<p>
+Starta Cisco Packet Tracer och skapa ett nytt tomt projekt.
+</p>
+
+<p>
+Klicka runt i programmet innan du bygger något.
+</p>
+
+<div class="task">
+<strong>TASK 01</strong><br>
+Hitta kategorin <strong>End Devices</strong>.
+</div>
+
+<div class="task">
+<strong>TASK 02</strong><br>
+Hitta kategorin <strong>Network Devices</strong>.
+</div>
+
+<div class="task">
+<strong>TASK 03</strong><br>
+Hitta switchar och routrar.
+</div>
+
+<div class="task">
+<strong>TASK 04</strong><br>
+Hitta Connections / kablar.
+</div>
+
+<div class="task">
+<strong>TASK 05</strong><br>
+Hitta Realtime och Simulation Mode.
+</div>
+
+<div class="question">
+Vad tror du skillnaden är mellan Realtime och Simulation?
+
+<button onclick="reveal('r1')">REVEAL</button>
+
+<div class="answer" id="r1">
+Realtime låter nätverket fungera löpande.
+
+Simulation Mode kan användas för att observera hur trafik och
+protokollhändelser rör sig genom nätverket.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 02 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 02</div>
+
+<h2>PLACE YOUR FIRST DEVICES</h2>
+
+<p>Placera följande enheter:</p>
+
+<pre>2 × PC
+1 × Switch</pre>
+
+<p>Döp dem gärna till:</p>
+
+<pre>PC-A
+PC-B
+SW-01</pre>
+
+<div class="diagram">PC-A
+
+
+          SW-01
+
+
+PC-B</div>
+
+<p>
+Än så länge finns inga anslutningar.
+</p>
+
+<div class="question">
+Vilka av enheterna är slutenheter?
+
+<button onclick="reveal('r2')">ANSWER</button>
+
+<div class="answer" id="r2">
+PC-A och PC-B.
+
+De skapar eller tar emot data.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 03 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 03</div>
+
+<h2>CONNECT THE DEVICES</h2>
+
+<p>
+Anslut båda datorerna till switchen.
+</p>
+
+<div class="diagram">PC-A ─────────┐
+              │
+            SW-01
+              │
+PC-B ─────────┘</div>
+
+<div class="task">
+Observera vilka portar Packet Tracer använder.
+</div>
+
+<p>Du bör få något som liknar:</p>
+
+<pre>PC-A FastEthernet0
+        │
+        ▼
+SW-01 FastEthernet0/1</pre>
+
+<div class="question">
+Vilken roll har switchen?
+
+<button onclick="reveal('r3')">ANSWER</button>
+
+<div class="answer" id="r3">
+Switchen är en mellanliggande nätverksenhet som
+sammankopplar enheter i nätverket.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 04 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 04</div>
+
+<h2>CONFIGURE IP</h2>
+
+<p>
+Nu behöver datorerna adresser.
+</p>
+
+<p>
+Öppna PC-A och konfigurera:
+</p>
+
+<pre>IP Address: 192.168.10.10
+Subnet Mask: 255.255.255.0</pre>
+
+<p>Konfigurera PC-B:</p>
+
+<pre>IP Address: 192.168.10.20
+Subnet Mask: 255.255.255.0</pre>
+
+<div class="diagram">PC-A
+192.168.10.10
+      │
+      │
+    SW-01
+      │
+      │
+PC-B
+192.168.10.20</div>
+
+<div class="info">
+Subnetting behandlas mer senare.
+
+Just nu räcker det att båda datorerna ligger i samma
+<code>192.168.10.x</code>-nät med samma subnet mask.
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 05 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 05</div>
+
+<h2>OPEN THE COMMAND PROMPT</h2>
+
+<p>
+Öppna PC-A och leta upp dess Command Prompt.
+</p>
+
+<p>Kör:</p>
+
+<pre>ipconfig</pre>
+
+<p>
+Försök identifiera IP-adressen du precis konfigurerade.
+</p>
+
+<div class="terminal">
+PC&gt; ipconfig
+
+IP Address...................... 192.168.10.10
+Subnet Mask..................... 255.255.255.0
+</div>
+
+<div class="question">
+Är kommandot information om PC-A eller switchen?
+
+<button onclick="reveal('r5')">ANSWER</button>
+
+<div class="answer" id="r5">
+PC-A.
+
+Du kör kommandot på slutenheten.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 06 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 06</div>
+
+<h2>FIRST PING</h2>
+
+<p>
+Från PC-A:
+</p>
+
+<pre>ping 192.168.10.20</pre>
+
+<div class="diagram">PC-A
+192.168.10.10
+      │
+      │   PING
+      ▼
+    SW-01
+      │
+      ▼
+PC-B
+192.168.10.20</div>
+
+<p>
+Om nätverket är korrekt byggt bör PC-B svara.
+</p>
+
+<div class="warning">
+Det första försöket kan ibland bete sig annorlunda medan
+nätverket lär sig information som behövs för kommunikationen.
+
+Testa ping igen innan du börjar felsöka.
+</div>
+
+<div class="question">
+Vad har du precis verifierat?
+
+<button onclick="reveal('r6')">ANSWER</button>
+
+<div class="answer" id="r6">
+Att PC-A och PC-B kan kommunicera över det nätverk du byggt.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 07 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 07</div>
+
+<h2>BREAK THE NETWORK</h2>
+
+<p>
+Nu ska du medvetet skapa ett fel.
+</p>
+
+<p>
+Ändra PC-B till:
+</p>
+
+<pre>192.168.20.20</pre>
+
+<p>Kör sedan från PC-A:</p>
+
+<pre>ping 192.168.20.20</pre>
+
+<div class="diagram">PC-A                         PC-B
+192.168.10.10               192.168.20.20
+      │                          │
+      └──────── SW-01 ──────────┘
+
+        SAME SWITCH
+        DIFFERENT IP NETWORKS</div>
+
+<div class="question">
+Fungerar kommunikationen fortfarande på samma sätt?
+
+<button onclick="reveal('r7')">ANALYSIS</button>
+
+<div class="answer" id="r7">
+Datorerna är nu konfigurerade för olika IP-nät.
+
+En switch ensam routar inte IP-trafik mellan olika nät.
+För det behövs routing.
+
+Återställ PC-B till 192.168.10.20 efter testet.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- 08 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 08</div>
+
+<h2>ENTER SIMULATION MODE</h2>
+
+<p>
+Återställ först:
+</p>
+
+<pre>PC-A: 192.168.10.10
+PC-B: 192.168.10.20</pre>
+
+<p>
+Byt sedan från <strong>Realtime</strong> till
+<strong>Simulation</strong>.
+</p>
+
+<p>
+Skicka trafik mellan PC-A och PC-B.
+</p>
+
+<div class="diagram">SOURCE
+ PC-A
+   │
+   │ packet
+   ▼
+ SW-01
+   │
+   │ packet
+   ▼
+ PC-B
+DESTINATION</div>
+
+<div class="task">
+Observera vilken väg trafiken tar.
+</div>
+
+<div class="task">
+Identifiera source och destination.
+</div>
+
+<div class="task">
+Identifiera den mellanliggande enheten.
+</div>
+
+<div class="task">
+Klicka på ett paket/event och undersök vilken information
+Packet Tracer visar.
+</div>
+
+<div class="question">
+Kan du nu se skillnaden mellan en slutenhet och en
+mellanliggande nätverksenhet?
+
+<button onclick="reveal('r8')">ANALYSIS</button>
+
+<div class="answer" id="r8">
+PC-A och PC-B är ändpunkterna.
+
+SW-01 är en mellanliggande enhet som hjälper kommunikationen
+att färdas mellan dem.
+</div>
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- BOSS -->
+
+<section class="mission boss">
+
+<div class="level">BOSS // MISSION 09</div>
+
+<h2>BUILD WITHOUT INSTRUCTIONS</h2>
+
+<p>
+Nu får du bara en kravspecifikation.
+</p>
+
+<div class="terminal">
+NETWORK REQUEST: NET-BOOT-01
+
+Build a small office network.
+
+REQUIREMENTS:
+
+4 × PC
+1 × Switch
+
+NETWORK:
+192.168.50.0/24
+
+All PCs must communicate.
+</div>
+
+<p>
+Du bestämmer själv adresserna.
+</p>
+
+<div class="task">
+Placera ut alla enheter.
+</div>
+
+<div class="task">
+Koppla nätverket.
+</div>
+
+<div class="task">
+Konfigurera fyra unika IP-adresser.
+</div>
+
+<div class="task">
+Verifiera konfigurationen med ipconfig.
+</div>
+
+<div class="task">
+Verifiera kommunikationen med ping.
+</div>
+
+<div class="task">
+Använd Simulation Mode och följ trafik mellan två datorer.
+</div>
+
+<div class="question">
+<strong>BOSS QUESTION</strong><br><br>
+
+Förklara nätverket för en annan student utan att använda
+Packet Tracer-bilden.
+
+Du måste använda orden:
+
+<pre>slutenhet
+switch
+nätverksmedium
+IP-adress
+protokoll
+källa
+destination</pre>
+</div>
+
+<button onclick="complete(this)">[ ] BOSS COMPLETE</button>
+
+</section>
+
+
+<section class="mission">
+
+<div class="level">DEBRIEF</div>
+
+<h2>TRAINING COMPLETE</h2>
+
+<div class="terminal">
+PACKET TRACER SKILLS
+
+[+] Navigate interface
+[+] Place devices
+[+] Connect devices
+[+] Configure IPv4
+[+] Use ipconfig
+[+] Test with ping
+[+] Create faults
+[+] Troubleshoot
+[+] Observe packets
+[+] Use Simulation Mode
+
+STATUS: READY FOR NETWORK LABS
+</div>
+
+<h3>NEXT MISSION</h3>
+
+<pre>packet_tracer_lesson01.html</pre>
+
+</section>
+
+</main>
+
+<footer>
+BAALSTORM // COURSE 2<br>
+PACKET TRACER BOOT CAMP
+</footer>
+
+<script>
+
+const completed = new Set();
+const total = 9;
+
+function reveal(id){
+ const e=document.getElementById(id);
+ e.style.display =
+  e.style.display==="block" ? "none" : "block";
+}
+
+function complete(button){
+
+ const section=button.closest(".mission");
+
+ if(completed.has(section)){
+  completed.delete(section);
+  button.classList.remove("done");
+  button.textContent="[ ] MISSION COMPLETE";
+ }
+ else{
+  completed.add(section);
+  button.classList.add("done");
+  button.textContent="[✓] MISSION COMPLETE";
+ }
+
+ update();
+}
+
+function update(){
+
+ const count=completed.size;
+
+ document.getElementById("progressText").textContent=
+  count+" / "+total;
+
+ document.getElementById("bar").style.width=
+  Math.min((count/total)*100,100)+"%";
+}
+
+</script>
+
+</body>
+</html>
