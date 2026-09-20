@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Baalstorm Industries // Case 01</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+ --bg:#050805;
+ --panel:#0a100b;
+ --panel2:#0d160f;
+ --green:#39ff88;
+ --green2:#18c768;
+ --text:#d5ffe4;
+ --muted:#7cab8b;
+ --yellow:#ffd166;
+ --red:#ff5d73;
+ --blue:#62b6ff;
+ --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+ margin:0;
+ background:
+   radial-gradient(circle at 50% 0,#102117,#050805 42%);
+ color:var(--text);
+ font:16px/1.65 "Courier New",monospace;
+}
+
+header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:#050805ee;
+ border-bottom:1px solid var(--border);
+ backdrop-filter:blur(6px);
+}
+
+nav{
+ max-width:1100px;
+ margin:auto;
+ padding:13px 20px;
+ display:flex;
+ justify-content:space-between;
+ gap:20px;
+ align-items:center;
+}
+
+.logo{
+ color:var(--green);
+ font-weight:bold;
+}
+
+.status{
+ font-size:12px;
+ color:var(--muted);
+}
+
+.progress{
+ width:260px;
+ height:7px;
+ border:1px solid var(--border);
+ margin-top:4px;
+}
+
+.bar{
+ width:0;
+ height:100%;
+ background:var(--green);
+ transition:.3s;
+}
+
+main{
+ max-width:1050px;
+ margin:auto;
+ padding:50px 20px 100px;
+}
+
+.hero{
+ padding-bottom:45px;
+ border-bottom:1px solid var(--border);
+}
+
+.prompt{color:var(--green)}
+
+h1{
+ font-size:clamp(42px,7vw,78px);
+ line-height:.93;
+ color:white;
+ margin:15px 0;
+}
+
+h2{color:white}
+h3{color:var(--green)}
+
+.muted{color:var(--muted)}
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+
+.tags{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:24px;
+}
+
+.tag{
+ border:1px solid var(--border);
+ padding:5px 9px;
+ color:var(--green);
+ font-size:12px;
+}
+
+.terminal,pre{
+ background:#020402;
+ border:1px solid var(--border);
+ padding:20px;
+ color:var(--green);
+ overflow:auto;
+ white-space:pre-wrap;
+}
+
+.casefile{
+ border:1px solid var(--green);
+ background:#061008;
+ padding:25px;
+ margin:35px 0;
+}
+
+.mission{
+ border:1px solid var(--border);
+ background:var(--panel);
+ padding:25px;
+ margin:55px 0;
+}
+
+.level{
+ color:var(--green);
+ font-size:12px;
+ letter-spacing:2px;
+}
+
+.diagram{
+ background:#020402;
+ border:1px dashed var(--border);
+ padding:22px;
+ color:var(--green);
+ overflow:auto;
+ white-space:pre;
+ margin:20px 0;
+}
+
+.task{
+ border-left:3px solid var(--green);
+ background:#071009;
+ padding:15px;
+ margin:14px 0;
+}
+
+.question{
+ border-left:3px solid var(--blue);
+ background:#071018;
+ padding:16px;
+ margin:18px 0;
+}
+
+.warning{
+ border:1px solid #725f22;
+ background:#171407;
+ color:var(--yellow);
+ padding:18px;
+ margin:20px 0;
+}
+
+.incident{
+ border:1px solid var(--red);
+ background:#17070a;
+ padding:20px;
+ margin:20px 0;
+}
+
+.answer{
+ display:none;
+ border-left:2px solid var(--green);
+ background:#061008;
+ padding:14px;
+ margin-top:12px;
+}
+
+button{
+ font:inherit;
+ background:#07150d;
+ border:1px solid var(--green2);
+ color:var(--green);
+ padding:9px 14px;
+ margin:4px;
+ cursor:pointer;
+}
+
+button:hover{
+ background:var(--green);
+ color:#021006;
+}
+
+button.done{
+ background:var(--green);
+ color:#021006;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ margin:20px 0;
+}
+
+th,td{
+ border:1px solid var(--border);
+ padding:12px;
+ text-align:left;
+}
+
+th{
+ color:var(--green);
+ background:#071009;
+}
+
+.boss{
+ border:2px solid var(--red);
+}
+
+footer{
+ border-top:1px solid var(--border);
+ text-align:center;
+ color:var(--muted);
+ padding:35px;
+}
+
+@media(max-width:700px){
+ nav{display:block}
+ .progress{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+
+<div class="logo">
+BAALSTORM INDUSTRIES // NETWORK OPS
+</div>
+
+<div>
+ <div class="status">
+ CASE PROGRESS:
+ <span id="progressText">0 / 9</span>
+ </div>
+
+ <div class="progress">
+  <div class="bar" id="bar"></div>
+ </div>
+</div>
+
+</nav>
+</header>
+
+
+<main>
+
+<section class="hero">
+
+<div class="prompt">
+student@baalstorm:~$ ./case --open NET-001
+</div>
+
+<h1>BUILD THE<br>COMPANY NETWORK</h1>
+
+<p class="muted">
+CASE 01 // Grundläggande nätverksdesign
+</p>
+
+<div class="tags">
+ <span class="tag">LAN</span>
+ <span class="tag">WAN</span>
+ <span class="tag">SWITCH</span>
+ <span class="tag">ROUTER</span>
+ <span class="tag">FIREWALL</span>
+ <span class="tag">TOPOLOGY</span>
+ <span class="tag">CLIENT/SERVER</span>
+</div>
+
+<div class="terminal">
+[+] CASE FILE LOADED
+[+] ORGANIZATION: BAALSTORM INDUSTRIES
+[+] EMPLOYEES: 200
+[+] CURRENT NETWORK: NOT DOCUMENTED
+
+YOUR ROLE:
+JUNIOR NETWORK ENGINEER
+</div>
+
+</section>
+
+
+<section class="casefile">
+
+<h2>CASE FILE // BAALSTORM INDUSTRIES</h2>
+
+<p>
+Baalstorm Industries har vuxit snabbt och har nu
+<strong>200 anställda</strong>.
+</p>
+
+<table>
+<tr>
+ <th>Avdelning</th>
+ <th>Användare</th>
+</tr>
+
+<tr>
+ <td>HR</td>
+ <td>20</td>
+</tr>
+
+<tr>
+ <td>Ekonomi</td>
+ <td>30</td>
+</tr>
+
+<tr>
+ <td>Produktion</td>
+ <td>100</td>
+</tr>
+
+<tr>
+ <td>IT</td>
+ <td>20</td>
+</tr>
+
+<tr>
+ <td>Ledning / övriga</td>
+ <td>30</td>
+</tr>
+</table>
+
+<p>Företaget behöver dessutom:</p>
+
+<pre>
+Internetanslutning
+Wi-Fi
+Interna servrar
+Skrivare
+Switchar
+Brandvägg
+Möjlighet att växa
+</pre>
+
+<div class="warning">
+OBS:
+
+Du behöver inte kunna VLAN, subnetting eller avancerad routing ännu.
+
+Använd endast de nätverksbegrepp du hittills har gått igenom.
+</div>
+
+</section>
+
+
+<!-- MISSION 1 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 01</div>
+
+<h2>IDENTIFY THE ENDPOINTS</h2>
+
+<p>
+Innan du designar nätverket måste du veta vilka typer av
+enheter som finns.
+</p>
+
+<div class="diagram">
+BAALSTORM INDUSTRIES
+
+200 × computers
+ 12 × printers
+  4 × servers
+  8 × switches
+  6 × wireless access points
+  1 × router
+  1 × firewall
+</div>
+
+<div class="question">
+Vilka av dessa är typiska <strong>slutenheter</strong>?
+</div>
+
+<button onclick="reveal('a1')">
+[+] VISA SVAR
+</button>
+
+<div class="answer" id="a1">
+Exempel på slutenheter är datorer, servrar och skrivare.
+
+De kan vara källa eller destination för data.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 2 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 02</div>
+
+<h2>INTERMEDIARY DEVICES</h2>
+
+<p>
+Nu identifierar du de enheter som sammankopplar eller
+kontrollerar kommunikationen.
+</p>
+
+<pre>
+SWITCH
+ROUTER
+FIREWALL
+WIRELESS ACCESS POINT
+</pre>
+
+<div class="question">
+Varför räknas dessa som mellanliggande nätverksenheter?
+</div>
+
+<button onclick="reveal('a2')">
+[+] ANALYSIS
+</button>
+
+<div class="answer" id="a2">
+De hjälper till att transportera, styra eller kontrollera
+kommunikation mellan slutenheter och nätverk.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 3 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 03</div>
+
+<h2>BUILD THE FIRST LAN</h2>
+
+<p>
+IT-avdelningen vill börja enkelt.
+</p>
+
+<div class="diagram">
+PC ───┐
+PC ───┤
+PC ───┼──── SWITCH
+PC ───┤
+PC ───┘
+</div>
+
+<div class="question">
+Vilken fysisk topologi visas?
+</div>
+
+<button onclick="reveal('a3')">
+[+] VISA SVAR
+</button>
+
+<div class="answer" id="a3">
+Stjärntopologi.
+
+Enheterna ansluter till en central nod, vanligtvis en switch.
+</div>
+
+<div class="question">
+Vad händer med dessa datorers anslutning om den centrala
+switchen går sönder?
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 4 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 04</div>
+
+<h2>SCALE TO 200 USERS</h2>
+
+<p>
+En enda switch är inte en rimlig bild av hela företagets
+nätverk.
+</p>
+
+<p>
+Flera switchar används.
+</p>
+
+<div class="diagram">
+                  [ CENTRAL SWITCH ]
+                    /     |      \
+                   /      |       \
+                  /       |        \
+             [SW-HR]  [SW-ECO]  [SW-PROD]
+                |         |          |
+              USERS     USERS      USERS
+</div>
+
+<div class="question">
+Vilken av topologierna från lektionen börjar den här
+strukturen likna?
+</div>
+
+<button onclick="reveal('a4')">
+[+] VISA SVAR
+</button>
+
+<div class="answer" id="a4">
+En trädstruktur:
+
+flera stjärnor sammankopplas hierarkiskt.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 5 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 05</div>
+
+<h2>CONNECT TO THE INTERNET</h2>
+
+<p>
+Företaget behöver Internet.
+</p>
+
+<p>Du har följande komponenter:</p>
+
+<pre>
+INTERNET
+
+ROUTER
+
+FIREWALL
+
+INTERNAL NETWORK
+</pre>
+
+<p>
+Rita hur du tycker att komponenterna ska placeras.
+</p>
+
+<div class="question">
+Var skulle du placera brandväggen?
+
+Motivera varför.
+</div>
+
+<button onclick="reveal('a5')">
+[+] EXAMPLE
+</button>
+
+<div class="answer" id="a5">
+
+En förenklad design skulle exempelvis kunna visa:
+
+<pre>
+INTERNET
+   │
+ROUTER
+   │
+FIREWALL
+   │
+INTERNAL NETWORK
+</pre>
+
+Den exakta designen kan variera.
+
+Det viktiga här är att studenten kan identifiera
+säkerhetsgränsen mellan företagets interna nät och externa nät.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 6 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 06</div>
+
+<h2>CLIENT / SERVER</h2>
+
+<p>
+Företaget har en intern webbserver.
+</p>
+
+<div class="diagram">
+EMPLOYEE-PC
+
+     │
+     │ request
+     ▼
+
+ INTERNAL WEB SERVER
+
+     │
+     │ response
+     ▼
+
+EMPLOYEE-PC
+</div>
+
+<div class="question">
+Vilken enhet agerar klient?
+</div>
+
+<div class="question">
+Vilken enhet agerar server?
+</div>
+
+<div class="question">
+Kan servern hantera flera klienter?
+</div>
+
+<button onclick="reveal('a6')">
+[+] ANALYSIS
+</button>
+
+<div class="answer" id="a6">
+Den anställdes dator/programvara agerar klient när den begär
+tjänsten.
+
+Webbservern tillhandahåller tjänsten.
+
+En server kan hantera flera klienter.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 7 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 07</div>
+
+<h2>PHYSICAL VS LOGICAL</h2>
+
+<p>
+IT-chefen vill ha två dokument.
+</p>
+
+<h3>DOCUMENT A</h3>
+
+<pre>
+Switcharnas placering
+Kablar
+Accesspunkter
+Serverrum
+Uttag
+</pre>
+
+<h3>DOCUMENT B</h3>
+
+<pre>
+Vilka delar av nätverket som kommunicerar
+Hur nätverket är strukturerat
+Var olika grupper av system finns
+Trafikflöden
+</pre>
+
+<div class="question">
+Vilket dokument beskriver främst fysisk topologi?
+</div>
+
+<div class="question">
+Vilket beskriver främst logisk topologi?
+</div>
+
+<button onclick="reveal('a7')">
+[+] ANSWER
+</button>
+
+<div class="answer" id="a7">
+DOCUMENT A = fysisk topologi.
+
+DOCUMENT B = logisk topologi.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- MISSION 8 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE+ // MISSION 08</div>
+
+<h2>SECURITY QUESTION</h2>
+
+<p>
+Företaget har följande grupper:
+</p>
+
+<div class="diagram">
+[ HR ]
+
+[ ECONOMY ]
+
+[ PRODUCTION ]
+
+[ IT ]
+</div>
+
+<p>
+IT-chefen frågar:
+</p>
+
+<div class="terminal">
+"Behöver verkligen alla delar av företaget
+kunna kommunicera fritt med varandra?"
+</div>
+
+<div class="question">
+Diskutera:
+
+Varför skulle man kunna vilja separera olika delar av
+företagets nätverk?
+</div>
+
+<div class="warning">
+Du behöver INTE designa VLAN ännu.
+
+Det kommer senare.
+
+Just nu ska du bara resonera kring varför separation kan vara
+intressant ur drift- och säkerhetsperspektiv.
+</div>
+
+<button onclick="reveal('a8')">
+[+] SECURITY HINT
+</button>
+
+<div class="answer" id="a8">
+Exempel att resonera kring:
+
+HR och ekonomi kan hantera känslig information.
+
+Produktionssystem kan ha andra säkerhets- och
+tillgänglighetskrav än vanliga klienter.
+
+IT kan behöva administrativ åtkomst som vanliga användare
+inte behöver.
+
+Hur separationen faktiskt implementeras behandlas senare.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- BOSS -->
+
+<section class="mission boss">
+
+<div class="level">BOSS // MISSION 09</div>
+
+<h2>DESIGN BAALSTORM INDUSTRIES</h2>
+
+<div class="terminal">
+FROM: CIO
+TO: JUNIOR NETWORK ENGINEER
+
+We need a first network design.
+
+Requirements:
+
+200 employees
+HR
+Economy
+Production
+IT
+
+Internet access
+Wi-Fi
+Internal servers
+Printers
+
+The network must be able to grow.
+
+Submit:
+
+1 physical network diagram
+1 logical network diagram
+1 written explanation
+</div>
+
+<h3>PART 1 // PHYSICAL</h3>
+
+<div class="task">
+Rita företagets fysiska nätverk.
+</div>
+
+<p>Försök få med:</p>
+
+<pre>
+Internet
+Router
+Firewall
+Switches
+Wireless Access Points
+Servers
+Clients
+Network media
+</pre>
+
+
+<h3>PART 2 // LOGICAL</h3>
+
+<div class="task">
+Rita en separat logisk skiss.
+</div>
+
+<p>
+Visa åtminstone:
+</p>
+
+<pre>
+HR
+
+ECONOMY
+
+PRODUCTION
+
+IT
+
+SERVERS
+
+INTERNET
+</pre>
+
+
+<h3>PART 3 // EXPLAIN</h3>
+
+<div class="question">
+Varför valde du den topologi du valde?
+</div>
+
+<div class="question">
+Vilka är slutenheterna?
+</div>
+
+<div class="question">
+Vilka är de mellanliggande enheterna?
+</div>
+
+<div class="question">
+Vilken roll har brandväggen?
+</div>
+
+<div class="question">
+Var använder nätverket klient/server-modellen?
+</div>
+
+<div class="question">
+Vad händer om en central switch går sönder?
+</div>
+
+<div class="question">
+Vilka delar av nätverket tycker du borde separeras i framtiden?
+Motivera — men konfigurera ingenting ännu.
+</div>
+
+
+<h3>BONUS // TRAFFIC</h3>
+
+<div class="task">
+Beskriv med ord hur trafik färdas när en användare öppnar
+företagets interna webbserver.
+</div>
+
+<p>Använd begreppen:</p>
+
+<pre>
+SOURCE
+DESTINATION
+CLIENT
+SERVER
+NETWORK MEDIA
+SWITCH
+PROTOCOL
+</pre>
+
+<button onclick="complete(this)">
+[ ] BOSS COMPLETE
+</button>
+
+</section>
+
+
+<section class="mission">
+
+<div class="level">CASE STATUS</div>
+
+<h2>NETWORK DESIGN SUBMITTED</h2>
+
+<div class="terminal">
+CASE NET-001
+
+[+] endpoints identified
+[+] intermediary devices identified
+[+] topology selected
+[+] client/server analyzed
+[+] physical topology documented
+[+] logical topology documented
+[+] security requirements identified
+
+STATUS:
+
+INITIAL NETWORK DESIGN COMPLETE
+</div>
+
+<p class="green">
+student@baalstorm:~$ _
+</p>
+
+<div class="warning">
+CASE FILE WILL RETURN.
+
+Nätverket är inte färdigdesignat.
+
+Du har ännu inte arbetat med exempelvis adressering,
+subnetting, VLAN eller routing.
+
+Baalstorm Industries kommer att behöva dig igen.
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+BAALSTORM INDUSTRIES<br>
+NETWORK OPERATIONS // CASE NET-001
+</footer>
+
+
+<script>
+
+const completed = new Set();
+const total = 9;
+
+function reveal(id){
+
+ const e=document.getElementById(id);
+
+ e.style.display =
+   e.style.display==="block"
+   ? "none"
+   : "block";
+}
+
+function complete(button){
+
+ const section=button.closest(".mission");
+
+ if(completed.has(section)){
+
+   completed.delete(section);
+
+   button.classList.remove("done");
+
+   button.textContent=
+     "[ ] MISSION COMPLETE";
+
+ } else {
+
+   completed.add(section);
+
+   button.classList.add("done");
+
+   button.textContent=
+     "[✓] MISSION COMPLETE";
+ }
+
+ updateProgress();
+}
+
+function updateProgress(){
+
+ const n=completed.size;
+
+ document.getElementById("progressText")
+   .textContent=n+" / "+total;
+
+ document.getElementById("bar")
+   .style.width=
+   Math.min((n/total)*100,100)+"%";
+}
+
+</script>
+
+</body>
+</html>
