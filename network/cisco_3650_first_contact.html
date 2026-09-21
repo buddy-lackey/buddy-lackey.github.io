@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Baalstorm // Cisco Catalyst 3650 First Contact</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+  --bg:#050805;
+  --panel:#0a100b;
+  --panel2:#0d160f;
+  --green:#39ff88;
+  --green2:#18c768;
+  --text:#d5ffe4;
+  --muted:#7cab8b;
+  --yellow:#ffd166;
+  --red:#ff5d73;
+  --blue:#62b6ff;
+  --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(57,255,136,.06),transparent 25%),
+    radial-gradient(circle at 85% 20%,rgba(98,182,255,.04),transparent 25%),
+    var(--bg);
+  color:var(--text);
+  font-family:"Courier New",monospace;
+  line-height:1.6;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,.012) 0,
+    rgba(255,255,255,.012) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  z-index:999;
+}
+
+.container{
+  width:min(1120px,92%);
+  margin:auto;
+}
+
+header{
+  border-bottom:1px solid var(--border);
+  padding:60px 0 35px;
+}
+
+.kicker{
+  color:var(--green);
+  font-size:.82rem;
+  letter-spacing:.18em;
+  margin-bottom:10px;
+}
+
+h1{
+  margin:0;
+  color:var(--green);
+  font-size:clamp(2rem,5vw,4.2rem);
+  line-height:1;
+  text-shadow:0 0 18px rgba(57,255,136,.18);
+}
+
+.subtitle{
+  color:var(--muted);
+  max-width:850px;
+  margin-top:20px;
+}
+
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:25px;
+}
+
+.badge{
+  border:1px solid var(--border);
+  color:var(--green);
+  padding:5px 9px;
+  font-size:.75rem;
+}
+
+.progress-wrap{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(5,8,5,.96);
+  border-bottom:1px solid var(--border);
+  padding:10px 0;
+  backdrop-filter:blur(6px);
+}
+
+.progress-info{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:.8rem;
+  margin-bottom:6px;
+}
+
+.progress{
+  height:7px;
+  background:#071008;
+  border:1px solid var(--border);
+}
+
+.progress-bar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--green2),var(--green));
+  transition:.3s;
+  box-shadow:0 0 12px rgba(57,255,136,.3);
+}
+
+main{
+  padding:35px 0 80px;
+}
+
+section{
+  margin:34px 0;
+}
+
+.panel{
+  background:linear-gradient(180deg,var(--panel),#070b08);
+  border:1px solid var(--border);
+  padding:24px;
+  box-shadow:0 0 30px rgba(0,0,0,.25);
+}
+
+.panel + .panel{margin-top:18px}
+
+h2{
+  color:var(--green);
+  margin:0 0 18px;
+  font-size:1.35rem;
+}
+
+h3{
+  color:var(--blue);
+  margin-top:24px;
+}
+
+p{margin:10px 0}
+
+.muted{color:var(--muted)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+.green{color:var(--green)}
+.blue{color:var(--blue)}
+
+.level{
+  display:inline-block;
+  margin-bottom:10px;
+  padding:3px 8px;
+  border:1px solid var(--border);
+  color:var(--green);
+  font-size:.72rem;
+  letter-spacing:.15em;
+}
+
+.level.intermediate{
+  color:var(--yellow);
+  border-color:#6c5b25;
+}
+
+.level.challenge{
+  color:var(--blue);
+  border-color:#23506b;
+}
+
+.level.boss{
+  color:var(--red);
+  border-color:#71313c;
+}
+
+.terminal{
+  background:#020403;
+  border:1px solid #174c2d;
+  padding:18px;
+  margin:16px 0;
+  overflow:auto;
+  white-space:pre-wrap;
+  color:#bfffd4;
+  box-shadow:inset 0 0 25px rgba(0,0,0,.6);
+}
+
+.prompt{color:var(--green)}
+.cmd{color:#fff}
+.comment{color:var(--muted)}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:15px;
+}
+
+.card{
+  border:1px solid var(--border);
+  background:var(--panel2);
+  padding:18px;
+}
+
+.card strong{
+  color:var(--green);
+}
+
+.diagram{
+  background:#020403;
+  border:1px dashed var(--border);
+  padding:20px;
+  overflow:auto;
+  color:#caffd8;
+  white-space:pre;
+  line-height:1.4;
+}
+
+.task{
+  border-left:3px solid var(--green);
+  padding:10px 15px;
+  margin:16px 0;
+  background:rgba(57,255,136,.035);
+}
+
+.warning{
+  border-left:3px solid var(--yellow);
+  padding:12px 15px;
+  background:rgba(255,209,102,.05);
+  margin:16px 0;
+}
+
+.danger{
+  border-left:3px solid var(--red);
+  padding:12px 15px;
+  background:rgba(255,93,115,.05);
+  margin:16px 0;
+}
+
+.info{
+  border-left:3px solid var(--blue);
+  padding:12px 15px;
+  background:rgba(98,182,255,.05);
+  margin:16px 0;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+  background:#071009;
+  border:1px solid var(--green2);
+  color:var(--green);
+  padding:9px 13px;
+  margin:4px 5px 4px 0;
+}
+
+button:hover{
+  background:#0c1a10;
+  box-shadow:0 0 12px rgba(57,255,136,.12);
+}
+
+button.done{
+  background:var(--green2);
+  color:#001d0c;
+}
+
+.reveal{
+  display:none;
+  margin-top:12px;
+  padding:15px;
+  border:1px dashed var(--border);
+  background:#050a06;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:15px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:10px;
+  text-align:left;
+  vertical-align:top;
+}
+
+th{
+  color:var(--green);
+  background:#08100a;
+}
+
+.checklist label{
+  display:block;
+  margin:8px 0;
+}
+
+input[type="checkbox"]{
+  accent-color:var(--green);
+}
+
+hr{
+  border:0;
+  border-top:1px solid var(--border);
+  margin:30px 0;
+}
+
+footer{
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  padding:30px 0 60px;
+  font-size:.85rem;
+}
+
+@media(max-width:650px){
+  .panel{padding:17px}
+  .diagram{font-size:.78rem}
+  table{font-size:.8rem}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <div class="kicker">BAALSTORM NETWORK OPERATIONS // LAB 01</div>
+    <h1>CISCO CATALYST 3650<br>FIRST CONTACT</h1>
+
+    <p class="subtitle">
+      Din uppgift är inte att konfigurera ett avancerat nätverk.
+      Din uppgift är att lära känna en riktig switch, hitta två olika
+      managementvägar och kunna bevisa vad som händer när en av dem försvinner.
+    </p>
+
+    <div class="badges">
+      <span class="badge">CATALYST 3650</span>
+      <span class="badge">IOS XE</span>
+      <span class="badge">CONSOLE</span>
+      <span class="badge">MGMT</span>
+      <span class="badge">HTTPS</span>
+      <span class="badge">PACKET TRACER</span>
+    </div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="container">
+    <div class="progress-info">
+      <span>MISSION PROGRESS</span>
+      <span id="progressText">0 / 10</span>
+    </div>
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+
+<section>
+<div class="panel">
+  <span class="level">BRIEFING</span>
+  <h2>// TARGET PROFILE</h2>
+
+  <div class="grid">
+    <div class="card">
+      <strong>DEVICE</strong><br>
+      Cisco Catalyst 3650
+    </div>
+
+    <div class="card">
+      <strong>MANAGEMENT PORT</strong><br>
+      MGMT<br>
+      IOS: GigabitEthernet0/0
+    </div>
+
+    <div class="card">
+      <strong>MANAGEMENT IP</strong><br>
+      192.168.1.99 /24
+    </div>
+
+    <div class="card">
+      <strong>WEB MANAGEMENT</strong><br>
+      HTTPS<br>
+      https://192.168.1.99
+    </div>
+
+    <div class="card">
+      <strong>CREDENTIALS</strong><br>
+      Samma credentials som för FortiSwitch.
+    </div>
+
+    <div class="card">
+      <strong>CONSOLE</strong><br>
+      Fortinet RJ45 console-kabel<br>
+      Tera Term
+    </div>
+  </div>
+
+  <div class="warning">
+    <strong>RULE OF ENGAGEMENT:</strong>
+    Börja med att observera. Ändra inte VLAN, trunkar, STP, routing,
+    firmware eller andra inställningar om läraren inte uttryckligen säger till.
+  </div>
+
+  <div class="terminal">MISSION PHILOSOPHY
+
+DISCOVER
+   ↓
+CONNECT
+   ↓
+IDENTIFY
+   ↓
+OBSERVE
+   ↓
+VERIFY
+   ↓
+BREAK
+   ↓
+RECOVER</div>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level">BASIC // MISSION 01</span>
+  <h2>// PHYSICAL RECON</h2>
+
+  <p>Undersök den fysiska Catalyst-switchen innan du ansluter något.</p>
+
+  <div class="task">
+    Hitta följande på switchen:
+    <div class="checklist">
+      <label>□ CONSOLE-port</label>
+      <label>□ MGMT-port</label>
+      <label>□ Vanliga Ethernet-switchportar</label>
+      <label>□ Stack-portar om de finns</label>
+      <label>□ Status-LED</label>
+    </div>
+  </div>
+
+  <div class="diagram">                 CISCO CATALYST 3650
+
+        MANAGEMENT / CONTROL
+             ┌──────────────┐
+             │ CONSOLE      │ ← Serial
+             │ MGMT         │ ← Ethernet / IP
+             └──────────────┘
+
+        NORMAL NETWORK PORTS
+   ┌─────────────────────────────────┐
+   │ Gi1/0/1  Gi1/0/2 ... Gi1/0/x   │
+   └─────────────────────────────────┘</div>
+
+  <h3>Fråga</h3>
+  <p>Är CONSOLE och MGMT två namn på samma typ av anslutning?</p>
+
+  <button onclick="toggleReveal('r1')">REVEAL INTEL</button>
+  <div class="reveal" id="r1">
+    <strong>Nej.</strong><br><br>
+    CONSOLE är en lokal seriell managementväg och kräver ingen IP-adress.
+    MGMT är en Ethernet-managementport och använder IP-kommunikation.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level">BASIC // MISSION 02</span>
+  <h2>// CONSOLE FIRST CONTACT</h2>
+
+  <p>
+    Anslut Fortinet-consolekabeln mellan datorn och Catalyst-switchens
+    <strong>CONSOLE</strong>-port.
+  </p>
+
+  <div class="diagram">LAPTOP
+  │
+  │ Fortinet RJ45 console cable
+  │
+  ▼
+CONSOLE
+  │
+  ▼
+CATALYST 3650</div>
+
+  <h3>Tera Term</h3>
+
+  <div class="terminal">Connection: Serial
+COM port:   den port Windows tilldelat kabeln
+
+Speed:      9600 baud
+Data:       8 bit
+Parity:     none
+Stop:       1 bit
+Flow:       none</div>
+
+  <p>Tryck <strong>Enter</strong> ett par gånger.</p>
+
+  <div class="terminal"><span class="prompt">Switch&gt;</span></div>
+
+  <p>Gå till privileged EXEC mode:</p>
+
+  <div class="terminal"><span class="prompt">Switch&gt;</span> <span class="cmd">enable</span>
+<span class="prompt">Switch#</span></div>
+
+  <div class="info">
+    Lägg märke till att console fungerade utan att datorn behövde känna till
+    switchens management-IP.
+  </div>
+
+  <button onclick="toggleReveal('r2')">WHY DOES THIS MATTER?</button>
+  <div class="reveal" id="r2">
+    Om IP-konfigurationen är trasig kan console fortfarande ge administrativ
+    åtkomst. Därför är console viktig vid installation, felsökning och recovery.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level">BASIC // MISSION 03</span>
+  <h2>// CLI RECON</h2>
+
+  <p>Vi börjar read-only. Ta reda på vad switchen faktiskt är.</p>
+
+  <div class="terminal"><span class="prompt">Switch#</span> <span class="cmd">show version</span>
+
+<span class="prompt">Switch#</span> <span class="cmd">show switch</span>
+
+<span class="prompt">Switch#</span> <span class="cmd">show ip interface brief</span>
+
+<span class="prompt">Switch#</span> <span class="cmd">show interfaces status</span></div>
+
+  <div class="task">
+    Dokumentera:
+    <div class="checklist">
+      <label>□ Modell</label>
+      <label>□ IOS / IOS XE-version</label>
+      <label>□ Switch member number</label>
+      <label>□ Managementinterface</label>
+      <label>□ Management-IP</label>
+      <label>□ Minst en port som är up/down</label>
+    </div>
+  </div>
+
+  <h3>Förväntad managementinformation</h3>
+
+  <div class="terminal">Interface: GigabitEthernet0/0
+IP:        192.168.1.99
+Mask:      255.255.255.0</div>
+
+  <div class="info">
+    <strong>Gi0/0</strong> är managementinterfacet.
+    Det är inte samma sak som de vanliga switchportarna
+    <strong>Gi1/0/1, Gi1/0/2...</strong>
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level intermediate">INTERMEDIATE // MISSION 04</span>
+  <h2>// MGMT FIRST CONTACT</h2>
+
+  <p>
+    Låt console-kabeln sitta kvar. Anslut nu även en vanlig Ethernetkabel
+    mellan datorn och switchens <strong>MGMT</strong>-port.
+  </p>
+
+  <div class="diagram">                   LAPTOP
+                  /      \
+                 /        \
+        SERIAL  /          \  ETHERNET
+               /            \
+              ▼              ▼
+         CONSOLE            MGMT
+                             │
+                           Gi0/0
+                             │
+                       192.168.1.99
+
+                    CATALYST 3650</div>
+
+  <p>Konfigurera datorns Ethernetinterface manuellt, exempelvis:</p>
+
+  <div class="terminal">IP address:   192.168.1.10
+Subnet mask:  255.255.255.0
+Gateway:      lämnas tom i detta isolerade labb</div>
+
+  <p>Testa sedan:</p>
+
+  <div class="terminal">C:\&gt; <span class="cmd">ping 192.168.1.99</span></div>
+
+  <h3>Tänk innan du testar</h3>
+  <p>
+    Varför kan <code>192.168.1.10</code> kommunicera direkt med
+    <code>192.168.1.99</code> utan en router?
+  </p>
+
+  <button onclick="toggleReveal('r4')">REVEAL</button>
+  <div class="reveal" id="r4">
+    Med /24-mask ligger båda adresserna i nätverket
+    <strong>192.168.1.0/24</strong>. Kommunikation inom samma IP-nät
+    behöver inte gå via en router.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level intermediate">INTERMEDIATE // MISSION 05</span>
+  <h2>// HTTPS GUI FIRST CONTACT</h2>
+
+  <p>Öppna en webbläsare och gå till:</p>
+
+  <div class="terminal">https://192.168.1.99</div>
+
+  <div class="warning">
+    Switchens certifikat är lokalt/self-signed i labbmiljön.
+    Webbläsaren kan därför visa en certifikatvarning.
+  </div>
+
+  <p>
+    Logga in med <strong>samma credentials som för FortiSwitch</strong>.
+  </p>
+
+  <div class="task">
+    Navigera runt utan att ändra konfigurationen. Försök hitta:
+    <div class="checklist">
+      <label>□ Hostname</label>
+      <label>□ Modell</label>
+      <label>□ IOS XE-version</label>
+      <label>□ Managementinformation</label>
+      <label>□ Port/interface-status</label>
+      <label>□ MAC-relaterad information</label>
+    </div>
+  </div>
+
+  <div class="danger">
+    <strong>OBSERVE FIRST.</strong>
+    Klicka inte på Apply/Save/Configure bara för att se vad som händer.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section>
+<div class="panel">
+  <span class="level">KNOWLEDGE LINK</span>
+  <h2>// FORTINET ↔ CISCO</h2>
+
+  <p>
+    Du arbetar med samma grundläggande nätverksfunktioner.
+    Tillverkarnas namn och gränssnitt skiljer sig.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>FortiSwitch</th>
+        <th>Catalyst 3650</th>
+        <th>Grundidé</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>MGMT</td>
+        <td>MGMT / Gi0/0</td>
+        <td>Management via Ethernet/IP</td>
+      </tr>
+      <tr>
+        <td>Web GUI</td>
+        <td>Web GUI</td>
+        <td>Grafisk administration</td>
+      </tr>
+      <tr>
+        <td>Physical Ports</td>
+        <td>Interfaces / Ports</td>
+        <td>Fysiska nätverksportar</td>
+      </tr>
+      <tr>
+        <td>MAC Entries</td>
+        <td>MAC Address Table</td>
+        <td>MAC → switchport</td>
+      </tr>
+      <tr>
+        <td>Link / Speed / Duplex</td>
+        <td>Link / Speed / Duplex</td>
+        <td>Fysisk länkinformation</td>
+      </tr>
+      <tr>
+        <td>GUI</td>
+        <td>GUI + IOS CLI</td>
+        <td>Managementinterface</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level intermediate">INTERMEDIATE // MISSION 06</span>
+  <h2>// FIND YOUR PORT</h2>
+
+  <p>
+    Nu använder vi en <strong>vanlig switchport</strong>.
+    Anslut en enhet till en ledig frontport enligt lärarens instruktion.
+  </p>
+
+  <div class="task">
+    Innan du ansluter kabeln:
+    <br><br>
+    1. Identifiera porten i GUI.<br>
+    2. Notera Link-status.<br>
+    3. Anslut kabeln.<br>
+    4. Uppdatera/observera GUI.<br>
+    5. Notera vad som förändrades.
+  </div>
+
+  <table>
+    <tr>
+      <th></th>
+      <th>Före</th>
+      <th>Efter</th>
+    </tr>
+    <tr>
+      <td>Link</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+    <tr>
+      <td>Speed</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+    <tr>
+      <td>Duplex</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+  </table>
+
+  <div class="info">
+    En konfigurerad eller administrativt aktiverad port är inte automatiskt
+    samma sak som att porten har en fungerande fysisk länk.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level intermediate">INTERMEDIATE // MISSION 07</span>
+  <h2>// MAC HUNT</h2>
+
+  <p>Ta reda på datorns MAC-adress i Windows:</p>
+
+  <div class="terminal">C:\&gt; <span class="cmd">ipconfig /all</span>
+
+Ethernet adapter ...
+Physical Address . . . . . . : XX-XX-XX-XX-XX-XX</div>
+
+  <p>
+    Försök sedan hitta samma MAC-adress i Catalyst-switchens GUI.
+  </p>
+
+  <div class="task">
+    Bygg beviskedjan:
+  </div>
+
+  <div class="diagram">WINDOWS
+   │
+   │ Physical Address
+   ▼
+MAC ADDRESS
+   │
+   │ MAC address table
+   ▼
+SWITCHPORT
+   │
+   │ fysisk kabel
+   ▼
+DEVICE</div>
+
+  <h3>CLI-parallell</h3>
+
+  <p>Du kan även observera MAC-tabellen från console:</p>
+
+  <div class="terminal"><span class="prompt">Switch#</span> <span class="cmd">show mac address-table</span></div>
+
+  <p>
+    Kan du hitta samma information både i GUI och CLI?
+  </p>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level challenge">CHALLENGE // MISSION 08</span>
+  <h2>// CONTROLLED FAILURE</h2>
+
+  <p>
+    Nu ska vi bevisa varför det är värdefullt att ha både CONSOLE och MGMT.
+  </p>
+
+  <div class="diagram">LAPTOP
+ ├──────── CONSOLE ──────── CATALYST
+ │
+ └──────── MGMT ─────────── CATALYST
+
+START STATE:
+CONSOLE    [ UP ]
+MGMT       [ UP ]
+PING       [ OK ]
+HTTPS      [ OK ]</div>
+
+  <h3>Predict first</h3>
+
+  <p>
+    Vad tror du händer om du drar ur <strong>MGMT-kabeln</strong>
+    men lämnar console-kabeln ansluten?
+  </p>
+
+  <table>
+    <tr>
+      <th>Test</th>
+      <th>Din prediction</th>
+      <th>Resultat</th>
+    </tr>
+    <tr>
+      <td>Tera Term / Console</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+    <tr>
+      <td>ping 192.168.1.99</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+    <tr>
+      <td>HTTPS GUI</td>
+      <td>?</td>
+      <td>?</td>
+    </tr>
+  </table>
+
+  <p>Dra ur MGMT-kabeln och verifiera.</p>
+
+  <p>Från console:</p>
+
+  <div class="terminal"><span class="prompt">Switch#</span> <span class="cmd">show ip interface brief</span></div>
+
+  <p>Återanslut därefter MGMT-kabeln och verifiera att management återkommer.</p>
+
+  <button onclick="toggleReveal('r8')">EXPECTED REASONING</button>
+  <div class="reveal" id="r8">
+    Console är en separat seriell managementväg.
+    När MGMT-länken försvinner ska IP-baserad management påverkas,
+    medan den lokala console-sessionen fortfarande kan fungera.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level challenge">CHALLENGE // MISSION 09</span>
+  <h2>// PACKET TRACER MIRROR</h2>
+
+  <p>
+    Nu ska du koppla det du sett på riktig hårdvara till Cisco Packet Tracer.
+  </p>
+
+  <div class="warning">
+    Packet Tracer är en <strong>modell</strong> av Cisco-nätverk.
+    Den är inte en exakt emulator av just vår Catalyst 3650,
+    vår IOS XE-version eller vårt WebUI.
+  </div>
+
+  <h3>Del A — Console</h3>
+
+  <p>
+    Placera en PC/laptop och en lämplig Cisco-switch i Packet Tracer.
+    Anslut console-kabeln.
+  </p>
+
+  <div class="diagram">REAL LAB                         PACKET TRACER
+
+Fortinet console cable   →      Console cable
+Tera Term                →      Desktop → Terminal
+Physical CONSOLE port    →      Console port
+IOS CLI                  →      Simulated IOS CLI</div>
+
+  <p>
+    Öppna <strong>Desktop → Terminal</strong> på Packet Tracer-PC:n.
+  </p>
+
+  <div class="terminal">Switch&gt;
+Switch&gt; enable
+Switch# show ip interface brief</div>
+
+  <h3>Del B — Ethernet</h3>
+
+  <p>
+    Anslut även en Ethernetförbindelse och jämför den med den fysiska
+    managementanslutningen.
+  </p>
+
+  <div class="task">
+    Svara med egna ord:
+    <br><br>
+    <strong>1.</strong> Vad representerar Tera Term i Packet Tracer?<br>
+    <strong>2.</strong> Vad representerar Fortinet-consolekabeln?<br>
+    <strong>3.</strong> Varför behövs ingen IP-adress för console?<br>
+    <strong>4.</strong> Varför behövs IP för webbaserad management?
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">MARK COMPLETE</button>
+</div>
+</section>
+
+
+<section>
+<div class="panel">
+  <span class="level challenge">OPTIONAL INCIDENT</span>
+  <h2>// NETWORK WORKS — APPLICATION FAILS</h2>
+
+  <p>
+    Under installation av en nätverksenhet kan följande situation uppstå:
+  </p>
+
+  <div class="terminal">PING 192.168.1.99        [ OK ]
+
+HTTPS SERVER             [ ENABLED ]
+
+BROWSER HTTPS            [ FAIL ]</div>
+
+  <p>
+    Betyder det att nätverket är trasigt?
+  </p>
+
+  <button onclick="toggleReveal('tls')">ANALYZE INCIDENT</button>
+
+  <div class="reveal" id="tls">
+    Inte nödvändigtvis.
+    <br><br>
+    Om ping fungerar har vi redan bevis för IP-kommunikation.
+    HTTPS kan ändå misslyckas högre upp i kommunikationskedjan, exempelvis
+    på grund av TLS- eller certifikatproblem.
+    <br><br>
+    <strong>Viktig princip:</strong>
+    <div class="terminal">Layer 3 connectivity ≠ Application success</div>
+  </div>
+</div>
+</section>
+
+
+<section class="mission">
+<div class="panel">
+  <span class="level boss">BOSS // MISSION 10</span>
+  <h2>// UNKNOWN CATALYST RECON</h2>
+
+  <p>
+    Du får tillgång till en Catalyst-switch.
+    Ingen färdig checklista över svaren ges.
+  </p>
+
+  <p>
+    Använd fysisk observation, console, CLI och GUI för att skapa en
+    kort teknisk rapport.
+  </p>
+
+  <div class="task">
+    <strong>DIN RAPPORT SKA BEVISA:</strong>
+    <div class="checklist">
+      <label>□ Tillverkare</label>
+      <label>□ Modell</label>
+      <label>□ Hostname</label>
+      <label>□ IOS / IOS XE-version</label>
+      <label>□ Switch member number</label>
+      <label>□ Managementinterface</label>
+      <label>□ Management-IP</label>
+      <label>□ HTTPS fungerar</label>
+      <label>□ En fysisk ports Link-status</label>
+      <label>□ Speed</label>
+      <label>□ Duplex</label>
+      <label>□ En observerad MAC-adress</label>
+      <label>□ Vilken port MAC-adressen lärdes på</label>
+    </div>
+  </div>
+
+  <h3>BOSS QUESTION</h3>
+
+  <p>
+    Förklara skillnaden mellan följande två vägar:
+  </p>
+
+  <div class="diagram">PATH A
+
+Laptop
+  │
+  │ Serial
+  ▼
+CONSOLE
+  │
+  ▼
+IOS CLI
+
+
+PATH B
+
+Laptop
+  │
+  │ Ethernet / TCP-IP
+  ▼
+MGMT / Gi0/0
+  │
+  │ 192.168.1.99
+  ▼
+HTTPS GUI</div>
+
+  <div class="danger">
+    Du är inte klar förrän du kan förklara
+    <strong>varför console fortfarande kan fungera när IP-management är nere.</strong>
+  </div>
+
+  <button onclick="toggleReveal('bossHint')">REQUEST BOSS INTEL</button>
+  <div class="reveal" id="bossHint">
+    Följ varje managementväg från datorn till switchen.
+    Fråga dig vilka delar som kräver Ethernet, IP, TCP och HTTPS —
+    och vilka som inte gör det.
+  </div>
+
+  <button class="complete" onclick="completeMission(this)">BOSS COMPLETE</button>
+</div>
+</section>
+
+
+<section>
+<div class="panel">
+  <span class="level">DEBRIEF</span>
+  <h2>// WHAT YOU SHOULD NOW KNOW</h2>
+
+  <div class="grid">
+    <div class="card">
+      <strong>CONSOLE</strong><br>
+      Lokal seriell management utan krav på IP.
+    </div>
+
+    <div class="card">
+      <strong>MGMT</strong><br>
+      Dedikerad Ethernet/IP-management via Gi0/0.
+    </div>
+
+    <div class="card">
+      <strong>GUI</strong><br>
+      HTTPS-management på 192.168.1.99.
+    </div>
+
+    <div class="card">
+      <strong>CLI</strong><br>
+      IOS-kommandon kan verifiera vad GUI visar.
+    </div>
+
+    <div class="card">
+      <strong>MAC TABLE</strong><br>
+      Kopplar observerade MAC-adresser till switchportar.
+    </div>
+
+    <div class="card">
+      <strong>TROUBLESHOOTING</strong><br>
+      Connectivity och application success är inte samma sak.
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="terminal">BAALSTORM NETWORK OPERATIONS
+
+FIRST CONTACT ............. COMPLETE
+PHYSICAL RECON ............ COMPLETE
+CONSOLE MANAGEMENT ........ VERIFIED
+IP MANAGEMENT ............. VERIFIED
+HTTPS GUI ................. VERIFIED
+FAILURE TEST .............. VERIFIED
+PACKET TRACER LINK ........ ESTABLISHED
+
+NEXT:
+SWITCH CONFIGURATION
+→ VLAN
+→ ACCESS PORT
+→ TRUNK
+→ SEGMENTATION
+→ BAALSTORM INDUSTRIES</div>
+</div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    BAALSTORM // NETWORK TECHNOLOGY // CISCO CATALYST 3650 FIRST CONTACT
+    <br>
+    Authorized educational lab environment.
+  </div>
+</footer>
+
+
+<script>
+let completed = 0;
+const total = 10;
+
+function toggleReveal(id){
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "block" ? "none" : "block";
+}
+
+function completeMission(btn){
+  if(btn.classList.contains("done")){
+    btn.classList.remove("done");
+    btn.textContent = btn.dataset.original || "MARK COMPLETE";
+    completed--;
+  } else {
+    btn.dataset.original = btn.textContent;
+    btn.classList.add("done");
+    btn.textContent = "✓ COMPLETE";
+    completed++;
+  }
+
+  updateProgress();
+}
+
+function updateProgress(){
+  completed = Math.max(0, Math.min(completed,total));
+
+  document.getElementById("progressText").textContent =
+    completed + " / " + total;
+
+  document.getElementById("progressBar").style.width =
+    ((completed / total) * 100) + "%";
+}
+
+updateProgress();
+</script>
+
+</body>
+</html>
