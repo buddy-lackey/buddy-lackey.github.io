@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Baalstorm Industries // Case 01</title>
+<title>Baalstorm Industries // Case 01 // Guided</title>
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 
 <style>
@@ -103,6 +103,7 @@ h3{color:var(--green)}
 .green{color:var(--green)}
 .yellow{color:var(--yellow)}
 .red{color:var(--red)}
+.blue{color:var(--blue)}
 
 .tags{
  display:flex;
@@ -194,6 +195,61 @@ h3{color:var(--green)}
  margin-top:12px;
 }
 
+/* GUIDED MODE */
+
+.fieldguide{
+ border:1px solid var(--blue);
+ background:#071018;
+ padding:25px;
+ margin:45px 0;
+}
+
+.intel{
+ display:none;
+ margin:15px 0;
+ padding:18px;
+ background:#061008;
+ border-left:3px solid var(--green);
+}
+
+.intel.level2{
+ background:#071018;
+ border-left-color:var(--blue);
+}
+
+.intel.level3{
+ background:#171407;
+ border-left-color:var(--yellow);
+}
+
+.intel-title{
+ font-weight:bold;
+ letter-spacing:1px;
+ margin-bottom:10px;
+}
+
+.intel.level1 .intel-title{color:var(--green)}
+.intel.level2 .intel-title{color:var(--blue)}
+.intel.level3 .intel-title{color:var(--yellow)}
+
+.hintbar{
+ margin:20px 0;
+ padding-top:10px;
+ border-top:1px dashed var(--border);
+}
+
+.hintbar p{
+ color:var(--muted);
+ font-size:13px;
+}
+
+.stop{
+ border:1px solid var(--yellow);
+ background:#171407;
+ padding:22px;
+ margin:35px 0;
+}
+
 button{
  font:inherit;
  background:#07150d;
@@ -207,6 +263,26 @@ button{
 button:hover{
  background:var(--green);
  color:#021006;
+}
+
+button.hint2{
+ border-color:var(--blue);
+ color:var(--blue);
+}
+
+button.hint2:hover{
+ background:var(--blue);
+ color:#02080c;
+}
+
+button.hint3{
+ border-color:var(--yellow);
+ color:var(--yellow);
+}
+
+button.hint3:hover{
+ background:var(--yellow);
+ color:#0b0900;
 }
 
 button.done{
@@ -275,16 +351,20 @@ BAALSTORM INDUSTRIES // NETWORK OPS
 
 <main>
 
+<!-- ===================================================== -->
+<!-- HERO -->
+<!-- ===================================================== -->
+
 <section class="hero">
 
 <div class="prompt">
-student@baalstorm:~$ ./case --open NET-001
+student@baalstorm:~$ ./case --open NET-001 --guided
 </div>
 
 <h1>BUILD THE<br>COMPANY NETWORK</h1>
 
 <p class="muted">
-CASE 01 // Grundläggande nätverksdesign
+CASE 01 // Grundläggande nätverksdesign // GUIDED EDITION
 </p>
 
 <div class="tags">
@@ -305,10 +385,20 @@ CASE 01 // Grundläggande nätverksdesign
 
 YOUR ROLE:
 JUNIOR NETWORK ENGINEER
+
+GUIDED MODE:
+AVAILABLE
+
+IF YOU GET STUCK:
+REQUEST INTEL.
 </div>
 
 </section>
 
+
+<!-- ===================================================== -->
+<!-- CASE FILE -->
+<!-- ===================================================== -->
 
 <section class="casefile">
 
@@ -374,7 +464,126 @@ Använd endast de nätverksbegrepp du hittills har gått igenom.
 </section>
 
 
+<!-- ===================================================== -->
+<!-- FIELD GUIDE -->
+<!-- ===================================================== -->
+
+<section class="fieldguide">
+
+<div class="level">ARCHITECT SUPPORT // FIELD GUIDE</div>
+
+<h2>200 användare?! Var börjar man?</h2>
+
+<p>
+Försök inte designa hela företaget på en gång.
+</p>
+
+<p>
+En nätverksdesign blir mycket enklare om du bryter ner
+problemet i mindre delar.
+</p>
+
+<div class="diagram">NETWORK ARCHITECT METHOD
+
+
+01 // WHO?
+
+Vilka människor och enheter
+behöver nätverket?
+
+
+          ↓
+
+
+02 // CONNECT ONE DEVICE
+
+PC
+ │
+ ▼
+???
+
+
+          ↓
+
+
+03 // CONNECT MANY DEVICES
+
+PC   PC   PC
+ │    │    │
+ └────┼────┘
+      ▼
+      ?
+
+
+          ↓
+
+
+04 // CONNECT GROUPS
+
+HR        ECONOMY       PRODUCTION
+│            │              │
+▼            ▼              ▼
+?            ?              ?
+
+
+          ↓
+
+
+05 // SHARED SERVICES
+
+Var finns servrar,
+skrivare och Wi-Fi?
+
+
+          ↓
+
+
+06 // OTHER NETWORKS
+
+Hur når företaget Internet?
+
+
+          ↓
+
+
+07 // SECURITY
+
+Var finns viktiga gränser?</div>
+
+<div class="warning">
+<strong>BEST PRACTICE // START WITH REQUIREMENTS</strong>
+
+<br><br>
+
+Börja inte med:
+
+<br><br>
+
+"Vilken switchmodell ska jag köpa?"
+
+<br><br>
+
+Börja med:
+
+<br><br>
+
+WHO needs connectivity?<br>
+WHAT needs connectivity?<br>
+WHERE are the devices?<br>
+WHAT services are needed?<br>
+WHERE does the traffic need to go?
+</div>
+
+<p class="green">
+Designa från kanten av nätverket och arbeta dig inåt.
+</p>
+
+</section>
+
+
+<!-- ===================================================== -->
 <!-- MISSION 1 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -403,6 +612,23 @@ BAALSTORM INDUSTRIES
 Vilka av dessa är typiska <strong>slutenheter</strong>?
 </div>
 
+<div class="hintbar">
+<p>Fastnat? Ta så lite hjälp som möjligt.</p>
+
+<button onclick="reveal('m1h1')">
+[?] REQUEST INTEL
+</button>
+
+<div class="intel level1" id="m1h1">
+<div class="intel-title">INTEL 1 // THINK ABOUT THE ROLE</div>
+
+En slutenhet kan vara källa eller destination för data.
+
+Vilka av enheterna används för att faktiskt skicka,
+ta emot eller konsumera information?
+</div>
+</div>
+
 <button onclick="reveal('a1')">
 [+] VISA SVAR
 </button>
@@ -420,7 +646,9 @@ De kan vara källa eller destination för data.
 </section>
 
 
+<!-- ===================================================== -->
 <!-- MISSION 2 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -444,6 +672,22 @@ WIRELESS ACCESS POINT
 Varför räknas dessa som mellanliggande nätverksenheter?
 </div>
 
+<div class="hintbar">
+
+<button onclick="reveal('m2h1')">
+[?] REQUEST INTEL
+</button>
+
+<div class="intel level1" id="m2h1">
+<div class="intel-title">INTEL 1 // FOLLOW THE TRAFFIC</div>
+
+Tänk dig trafik mellan två datorer.
+
+Vilka enheter kan trafiken behöva passera på vägen?
+</div>
+
+</div>
+
 <button onclick="reveal('a2')">
 [+] ANALYSIS
 </button>
@@ -460,7 +704,9 @@ kommunikation mellan slutenheter och nätverk.
 </section>
 
 
+<!-- ===================================================== -->
 <!-- MISSION 3 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -482,6 +728,45 @@ PC ───┘
 
 <div class="question">
 Vilken fysisk topologi visas?
+</div>
+
+<div class="hintbar">
+
+<button onclick="reveal('m3h1')">
+[?] REQUEST INTEL 1
+</button>
+
+<div class="intel level1" id="m3h1">
+<div class="intel-title">INTEL 1 // LOOK AT THE SHAPE</div>
+
+Alla datorer ansluter till en gemensam central enhet.
+
+Vilken topologi har den egenskapen?
+</div>
+
+<button class="hint2" onclick="reveal('m3h2')">
+[?] REQUEST INTEL 2
+</button>
+
+<div class="intel level2" id="m3h2">
+<div class="intel-title">INTEL 2 // COMPARE</div>
+
+<pre>
+BUS
+────────────
+
+RING
+○────○
+│    │
+○────○
+
+STAR
+ \ | /
+  \|/
+   ●
+</pre>
+</div>
+
 </div>
 
 <button onclick="reveal('a3')">
@@ -506,7 +791,9 @@ switchen går sönder?
 </section>
 
 
+<!-- ===================================================== -->
 <!-- MISSION 4 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -538,6 +825,99 @@ Vilken av topologierna från lektionen börjar den här
 strukturen likna?
 </div>
 
+<div class="hintbar">
+
+<p>
+Det här är första gången designen börjar bli större.
+Ta hjälp om du behöver.
+</p>
+
+<button onclick="reveal('m4h1')">
+[?] REQUEST INTEL 1
+</button>
+
+<div class="intel level1" id="m4h1">
+<div class="intel-title">INTEL 1 // DON'T THINK 200 CABLES</div>
+
+Du behöver inte rita 200 datorer.
+
+Tänk istället i grupper:
+
+<pre>
+HR
+ │
+ ▼
+SWITCH
+
+
+ECONOMY
+ │
+ ▼
+SWITCH
+
+
+PRODUCTION
+ │
+ ▼
+SWITCH
+</pre>
+
+Vad händer när flera sådana grupper kopplas samman?
+</div>
+
+
+<button class="hint2" onclick="reveal('m4h2')">
+[?] REQUEST INTEL 2
+</button>
+
+<div class="intel level2" id="m4h2">
+<div class="intel-title">INTEL 2 // BUILD IN LAYERS</div>
+
+Du kan koppla switchar till andra switchar.
+
+<pre>
+CLIENTS
+   │
+   ▼
+ACCESS SWITCH
+   │
+   ▼
+CENTRAL SWITCH
+</pre>
+
+Nu har nätverket börjat få en hierarki.
+</div>
+
+
+<button class="hint3" onclick="reveal('m4h3')">
+[?] ARCHITECT SUPPORT
+</button>
+
+<div class="intel level3" id="m4h3">
+<div class="intel-title">ARCHITECT SUPPORT // PARTIAL DESIGN</div>
+
+<pre>
+HR USERS                PRODUCTION USERS
+   │                           │
+   ▼                           ▼
+SWITCH-HR                 SWITCH-PROD
+      \                     /
+       \                   /
+        \                 /
+          CENTRAL SWITCH
+               │
+               │
+              ???
+</pre>
+
+Detta är inte hela företagsnätet.
+
+Poängen är att bygga nätverket stegvis istället för att
+försöka lösa allt på en gång.
+</div>
+
+</div>
+
 <button onclick="reveal('a4')">
 [+] VISA SVAR
 </button>
@@ -555,7 +935,71 @@ flera stjärnor sammankopplas hierarkiskt.
 </section>
 
 
+<!-- ===================================================== -->
+<!-- DESIGN CHECKPOINT -->
+<!-- ===================================================== -->
+
+<section class="fieldguide">
+
+<div class="level">ARCHITECT CHECKPOINT</div>
+
+<h2>STOP // DON'T DESIGN EVERYTHING YET</h2>
+
+<p>
+Om nätverket fortfarande känns stort, använd denna metod:
+</p>
+
+<div class="diagram">ONE USER
+
+PC
+ │
+ ▼
+SWITCH
+
+
+        ↓ ADD MORE USERS
+
+
+PC   PC   PC
+ │    │    │
+ └────┼────┘
+    SWITCH
+
+
+        ↓ ADD ANOTHER GROUP
+
+
+USERS                 USERS
+  │                     │
+  ▼                     ▼
+SWITCH                 SWITCH
+    \                   /
+     \                 /
+      \               /
+         CENTRAL
+
+
+        ↓ ADD SERVICES
+
+
+        ↓ ADD INTERNET
+
+
+        ↓ THINK SECURITY
+</div>
+
+<p class="green">
+Don't design 200 users.
+
+Design one pattern — then repeat it.
+</p>
+
+</section>
+
+
+<!-- ===================================================== -->
 <!-- MISSION 5 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -589,6 +1033,91 @@ Var skulle du placera brandväggen?
 Motivera varför.
 </div>
 
+<div class="hintbar">
+
+<button onclick="reveal('m5h1')">
+[?] REQUEST INTEL 1
+</button>
+
+<div class="intel level1" id="m5h1">
+<div class="intel-title">INTEL 1 // FOLLOW ONE PACKET</div>
+
+Glöm hela företaget en stund.
+
+Följ istället trafik från EN dator:
+
+<pre>
+EMPLOYEE PC
+     │
+     ▼
+   SWITCH
+     │
+     ▼
+    ???
+     │
+     ▼
+ INTERNET
+</pre>
+
+Vilka funktioner behöver trafiken passera?
+</div>
+
+
+<button class="hint2" onclick="reveal('m5h2')">
+[?] REQUEST INTEL 2
+</button>
+
+<div class="intel level2" id="m5h2">
+<div class="intel-title">INTEL 2 // FIND THE BOUNDARY</div>
+
+Företagets interna LAN och Internet är två olika
+säkerhetsmiljöer.
+
+<pre>
+TRUSTED / INTERNAL
+        │
+        │
+     BOUNDARY
+        │
+        │
+UNTRUSTED / EXTERNAL
+</pre>
+
+Var skulle det vara logiskt att kunna kontrollera
+trafiken mellan dessa miljöer?
+</div>
+
+
+<button class="hint3" onclick="reveal('m5h3')">
+[?] ARCHITECT SUPPORT
+</button>
+
+<div class="intel level3" id="m5h3">
+<div class="intel-title">ARCHITECT SUPPORT // ONE POSSIBLE MODEL</div>
+
+<pre>
+INTERNET
+   │
+   ▼
+ROUTER
+   │
+   ▼
+FIREWALL
+   │
+   ▼
+INTERNAL NETWORK
+</pre>
+
+Detta är en förenklad modell.
+
+I verkliga nät kan exempelvis en brandvägg även utföra
+routing, så exakt fysisk implementation kan variera.
+
+Fokusera här på funktionerna och säkerhetsgränsen.
+</div>
+
+</div>
+
 <button onclick="reveal('a5')">
 [+] EXAMPLE
 </button>
@@ -620,7 +1149,9 @@ säkerhetsgränsen mellan företagets interna nät och externa nät.
 </section>
 
 
+<!-- ===================================================== -->
 <!-- MISSION 6 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -660,6 +1191,28 @@ Vilken enhet agerar server?
 Kan servern hantera flera klienter?
 </div>
 
+<div class="hintbar">
+
+<button onclick="reveal('m6h1')">
+[?] REQUEST INTEL
+</button>
+
+<div class="intel level1" id="m6h1">
+<div class="intel-title">INTEL 1 // THINK ROLES</div>
+
+Fråga inte först vilken dator som är störst eller viktigast.
+
+Fråga:
+
+<pre>
+WHO REQUESTS THE SERVICE?
+
+WHO PROVIDES THE SERVICE?
+</pre>
+</div>
+
+</div>
+
 <button onclick="reveal('a6')">
 [+] ANALYSIS
 </button>
@@ -680,7 +1233,9 @@ En server kan hantera flera klienter.
 </section>
 
 
+<!-- ===================================================== -->
 <!-- MISSION 7 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -719,6 +1274,31 @@ Vilket dokument beskriver främst fysisk topologi?
 Vilket beskriver främst logisk topologi?
 </div>
 
+<div class="hintbar">
+
+<button onclick="reveal('m7h1')">
+[?] REQUEST INTEL
+</button>
+
+<div class="intel level1" id="m7h1">
+<div class="intel-title">INTEL 1 // ASK TWO DIFFERENT QUESTIONS</div>
+
+<pre>
+PHYSICAL:
+
+"Vad sitter var
+och vad är kopplat till vad?"
+
+
+LOGICAL:
+
+"Hur är kommunikationen
+och nätverket organiserat?"
+</pre>
+</div>
+
+</div>
+
 <button onclick="reveal('a7')">
 [+] ANSWER
 </button>
@@ -736,7 +1316,9 @@ DOCUMENT B = logisk topologi.
 </section>
 
 
+<!-- ===================================================== -->
 <!-- MISSION 8 -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -783,6 +1365,78 @@ Just nu ska du bara resonera kring varför separation kan vara
 intressant ur drift- och säkerhetsperspektiv.
 </div>
 
+<div class="hintbar">
+
+<button onclick="reveal('m8h1')">
+[?] REQUEST INTEL 1
+</button>
+
+<div class="intel level1" id="m8h1">
+<div class="intel-title">INTEL 1 // THINK ABOUT DATA</div>
+
+Fundera på vilken information olika avdelningar hanterar.
+
+Behöver exempelvis en vanlig produktionsdator kunna
+kommunicera fritt med HR:s system?
+</div>
+
+
+<button class="hint2" onclick="reveal('m8h2')">
+[?] REQUEST INTEL 2
+</button>
+
+<div class="intel level2" id="m8h2">
+<div class="intel-title">INTEL 2 // THINK ABOUT IMPACT</div>
+
+Föreställ dig att en dator på en avdelning blir
+komprometterad.
+
+<pre>
+COMPROMISED PC
+      │
+      ▼
+CAN IT REACH EVERYTHING?
+</pre>
+
+Hur skulle separation kunna påverka konsekvensen?
+</div>
+
+
+<button class="hint3" onclick="reveal('m8h3')">
+[?] ARCHITECT SUPPORT
+</button>
+
+<div class="intel level3" id="m8h3">
+<div class="intel-title">ARCHITECT SUPPORT // THINK ZONES</div>
+
+Du behöver inte veta hur separationen implementeras ännu.
+
+Tänk bara konceptuellt:
+
+<pre>
+HR
+│
+├── sensitive employee data
+│
+ECONOMY
+│
+├── financial information
+│
+PRODUCTION
+│
+├── operational systems
+│
+IT
+│
+└── administrative access
+</pre>
+
+Olika funktioner kan ha olika behov och olika
+säkerhetskrav.
+</div>
+
+</div>
+
 <button onclick="reveal('a8')">
 [+] SECURITY HINT
 </button>
@@ -808,7 +1462,58 @@ Hur separationen faktiskt implementeras behandlas senare.
 </section>
 
 
+<!-- ===================================================== -->
+<!-- SCOPE CHECK -->
+<!-- ===================================================== -->
+
+<section class="stop">
+
+<div class="level yellow">SCOPE CHECK // READ BEFORE BOSS</div>
+
+<h2>STOP // Du förväntas inte kunna allt ännu.</h2>
+
+<p>
+BOSS-uppgiften handlar om att använda det du hittills har
+lärt dig — inte om att bygga ett färdigt enterprise-nätverk.
+</p>
+
+<div class="terminal">
+NOT REQUIRED:
+
+[ ] VLAN configuration
+[ ] Subnet calculations
+[ ] IP addressing plan
+[ ] Advanced routing
+[ ] STP design
+[ ] Firewall rules
+[ ] High availability
+[ ] Redundant architecture
+
+
+FOCUS ON:
+
+[+] End devices
+[+] Intermediary devices
+[+] Star / tree thinking
+[+] Client / server
+[+] Physical topology
+[+] Logical topology
+[+] Internet connectivity
+[+] Security boundaries
+</div>
+
+<p class="yellow">
+Det är helt okej att nätverket fortfarande har problem.
+
+Du har ännu inte fått verktygen för att lösa dem alla.
+</p>
+
+</section>
+
+
+<!-- ===================================================== -->
 <!-- BOSS -->
+<!-- ===================================================== -->
 
 <section class="mission boss">
 
@@ -844,6 +1549,74 @@ Submit:
 1 written explanation
 </div>
 
+
+<!-- BOSS GUIDE -->
+
+<div class="fieldguide">
+
+<div class="level">BOSS SUPPORT // HOW TO START</div>
+
+<h3>Don't start with the whole company.</h3>
+
+<p>
+Bygg skissen i steg.
+</p>
+
+<div class="diagram">STEP 1
+
+ONE USER
+
+PC
+ │
+ ▼
+?
+
+
+STEP 2
+
+ONE GROUP
+
+PC   PC   PC
+ │    │    │
+ └────┼────┘
+      ▼
+      ?
+
+
+STEP 3
+
+MULTIPLE GROUPS
+
+HR          ECONOMY        PRODUCTION
+│              │               │
+▼              ▼               ▼
+?              ?               ?
+
+
+STEP 4
+
+CONNECT THE GROUPS
+
+
+STEP 5
+
+ADD SERVERS + WIFI
+
+
+STEP 6
+
+ADD FIREWALL + INTERNET
+
+
+STEP 7
+
+ASK:
+
+WHAT HAPPENS IF SOMETHING FAILS?</div>
+
+</div>
+
+
 <h3>PART 1 // PHYSICAL</h3>
 
 <div class="task">
@@ -862,6 +1635,95 @@ Servers
 Clients
 Network media
 </pre>
+
+
+<div class="hintbar">
+
+<button onclick="reveal('bossh1')">
+[?] REQUEST INTEL 1
+</button>
+
+<div class="intel level1" id="bossh1">
+<div class="intel-title">INTEL 1 // START AT THE EDGE</div>
+
+Börja med en användare:
+
+<pre>
+PC
+ │
+ ▼
+SWITCH
+</pre>
+
+Lägg sedan till fler användare.
+
+Lägg därefter till fler switchar.
+
+Försök inte placera alla komponenter samtidigt.
+</div>
+
+
+<button class="hint2" onclick="reveal('bossh2')">
+[?] REQUEST INTEL 2
+</button>
+
+<div class="intel level2" id="bossh2">
+<div class="intel-title">INTEL 2 // ASK THESE QUESTIONS</div>
+
+<pre>
+WHO needs connectivity?
+
+WHAT devices need connectivity?
+
+WHERE are the users?
+
+WHAT shared services exist?
+
+HOW do users reach the Internet?
+
+WHERE should traffic be controlled?
+
+WHAT happens if a device fails?
+</pre>
+</div>
+
+
+<button class="hint3" onclick="reveal('bossh3')">
+[?] ARCHITECT SUPPORT
+</button>
+
+<div class="intel level3" id="bossh3">
+<div class="intel-title">ARCHITECT SUPPORT // PARTIAL DESIGN</div>
+
+Det här är medvetet INTE ett färdigt facit:
+
+<pre>
+                         INTERNET
+                            │
+                            ?
+                            │
+                            ?
+                            │
+                     CENTRAL NETWORK
+                    /       |        \
+                   /        |         \
+                  /         |          \
+              SWITCH     SWITCH      SWITCH
+               /|\         /|\         /|\
+              / | \       / | \       / | \
+           USERS ...   USERS ...   USERS ...
+
+
+                      INTERNAL SERVER
+                            │
+                            ?
+</pre>
+
+Din uppgift är att fylla i strukturen och kunna
+motivera dina val.
+</div>
+
+</div>
 
 
 <h3>PART 2 // LOGICAL</h3>
@@ -887,6 +1749,37 @@ SERVERS
 
 INTERNET
 </pre>
+
+<div class="hintbar">
+
+<button onclick="reveal('bosslogical')">
+[?] LOGICAL DESIGN HINT
+</button>
+
+<div class="intel level1" id="bosslogical">
+<div class="intel-title">INTEL // DON'T DRAW CABLES FIRST</div>
+
+I den logiska skissen är det viktigare att visa grupper och
+kommunikation än exakt vilken fysisk kabel som används.
+
+Exempel på frågor:
+
+<pre>
+Where are the users?
+
+Where are the servers?
+
+Which groups exist?
+
+Where is the Internet?
+
+Where is the security boundary?
+</pre>
+
+Du behöver ännu inte ange VLAN-ID eller subnät.
+</div>
+
+</div>
 
 
 <h3>PART 3 // EXPLAIN</h3>
@@ -940,12 +1833,50 @@ SWITCH
 PROTOCOL
 </pre>
 
+<div class="hintbar">
+
+<button onclick="reveal('bosstraffic')">
+[?] TRAFFIC HINT
+</button>
+
+<div class="intel level1" id="bosstraffic">
+<div class="intel-title">INTEL // FOLLOW ONE REQUEST</div>
+
+Följ EN request istället för att tänka på hela nätverket:
+
+<pre>
+USER
+ │
+ ▼
+CLIENT
+ │
+ │ request
+ ▼
+NETWORK
+ │
+ ▼
+SERVER
+ │
+ │ response
+ ▼
+CLIENT
+</pre>
+
+Försök sedan placera in switch och nätverksmedia i flödet.
+</div>
+
+</div>
+
 <button onclick="complete(this)">
 [ ] BOSS COMPLETE
 </button>
 
 </section>
 
+
+<!-- ===================================================== -->
+<!-- CASE STATUS -->
+<!-- ===================================================== -->
 
 <section class="mission">
 
@@ -991,7 +1922,7 @@ Baalstorm Industries kommer att behöva dig igen.
 
 <footer>
 BAALSTORM INDUSTRIES<br>
-NETWORK OPERATIONS // CASE NET-001
+NETWORK OPERATIONS // CASE NET-001 // GUIDED EDITION
 </footer>
 
 
@@ -1002,17 +1933,17 @@ const total = 9;
 
 function reveal(id){
 
- const e=document.getElementById(id);
+ const e = document.getElementById(id);
 
  e.style.display =
-   e.style.display==="block"
+   e.style.display === "block"
    ? "none"
    : "block";
 }
 
 function complete(button){
 
- const section=button.closest(".mission");
+ const section = button.closest(".mission");
 
  if(completed.has(section)){
 
@@ -1020,8 +1951,11 @@ function complete(button){
 
    button.classList.remove("done");
 
-   button.textContent=
-     "[ ] MISSION COMPLETE";
+   if(section.classList.contains("boss")){
+     button.textContent = "[ ] BOSS COMPLETE";
+   } else {
+     button.textContent = "[ ] MISSION COMPLETE";
+   }
 
  } else {
 
@@ -1029,8 +1963,10 @@ function complete(button){
 
    button.classList.add("done");
 
-   button.textContent=
-     "[✓] MISSION COMPLETE";
+   button.textContent =
+     section.classList.contains("boss")
+     ? "[✓] BOSS COMPLETE"
+     : "[✓] MISSION COMPLETE";
  }
 
  updateProgress();
@@ -1038,14 +1974,14 @@ function complete(button){
 
 function updateProgress(){
 
- const n=completed.size;
+ const n = completed.size;
 
  document.getElementById("progressText")
-   .textContent=n+" / "+total;
+   .textContent = n + " / " + total;
 
  document.getElementById("bar")
-   .style.width=
-   Math.min((n/total)*100,100)+"%";
+   .style.width =
+   Math.min((n / total) * 100,100) + "%";
 }
 
 </script>
