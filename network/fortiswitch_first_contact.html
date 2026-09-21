@@ -1,3 +1,362 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Baalstorm // FortiSwitch First Contact</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+  --bg:#050805;
+  --panel:#0a100b;
+  --panel2:#0d160f;
+  --green:#39ff88;
+  --green2:#18c768;
+  --text:#d5ffe4;
+  --muted:#7cab8b;
+  --yellow:#ffd166;
+  --red:#ff5d73;
+  --blue:#62b6ff;
+  --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 50% 0,#102117 0,#050805 43%);
+  color:var(--text);
+  font:16px/1.65 "Courier New",monospace;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#050805ee;
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(7px);
+}
+
+nav{
+  max-width:1100px;
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+
+.logo{
+  color:var(--green);
+  font-weight:bold;
+}
+
+.status{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.progress{
+  width:270px;
+  height:7px;
+  border:1px solid var(--border);
+  margin-top:4px;
+}
+
+.bar{
+  height:100%;
+  width:0;
+  background:var(--green);
+  transition:.3s;
+}
+
+main{
+  max-width:1050px;
+  margin:auto;
+  padding:50px 20px 100px;
+}
+
+.hero{
+  padding-bottom:45px;
+  border-bottom:1px solid var(--border);
+}
+
+.prompt{color:var(--green)}
+
+h1{
+  font-size:clamp(40px,7vw,76px);
+  line-height:.95;
+  color:white;
+  margin:15px 0;
+}
+
+h2{color:white}
+h3{color:var(--green)}
+
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+.blue{color:var(--blue)}
+.muted{color:var(--muted)}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:24px;
+}
+
+.tag{
+  border:1px solid var(--border);
+  color:var(--green);
+  padding:5px 9px;
+  font-size:12px;
+}
+
+.terminal,
+pre{
+  background:#020402;
+  border:1px solid var(--border);
+  padding:20px;
+  color:var(--green);
+  overflow:auto;
+  white-space:pre-wrap;
+}
+
+.mission{
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:25px;
+  margin:55px 0;
+}
+
+.level{
+  color:var(--green);
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.objective{
+  border-left:3px solid var(--green);
+  background:#071009;
+  padding:15px;
+  margin:18px 0;
+}
+
+.task{
+  border-left:3px solid var(--blue);
+  background:#071018;
+  padding:15px;
+  margin:13px 0;
+}
+
+.question{
+  border-left:3px solid var(--blue);
+  background:#071018;
+  padding:16px;
+  margin:18px 0;
+}
+
+.warning{
+  border:1px solid #725f22;
+  background:#171407;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.danger{
+  border:1px solid var(--red);
+  background:#17070a;
+  color:#ffd8df;
+  padding:18px;
+  margin:20px 0;
+}
+
+.info{
+  border:1px solid #255a75;
+  background:#07131a;
+  padding:18px;
+  margin:20px 0;
+}
+
+.diagram{
+  background:#020402;
+  border:1px dashed var(--border);
+  padding:22px;
+  color:var(--green);
+  white-space:pre;
+  overflow:auto;
+  margin:20px 0;
+}
+
+.answer{
+  display:none;
+  border-left:2px solid var(--green);
+  background:#061008;
+  padding:14px;
+  margin-top:12px;
+}
+
+button{
+  font:inherit;
+  background:#07150d;
+  border:1px solid var(--green2);
+  color:var(--green);
+  padding:9px 14px;
+  margin:4px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--green);
+  color:#021006;
+}
+
+button.done{
+  background:var(--green);
+  color:#021006;
+}
+
+input[type=text]{
+  width:100%;
+  background:#020402;
+  border:1px solid var(--border);
+  color:var(--green);
+  font:inherit;
+  padding:10px;
+  margin:6px 0 15px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  color:var(--green);
+  background:#071009;
+}
+
+.boss{
+  border:2px solid var(--red);
+}
+
+.big{
+  font-size:1.15em;
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  padding:35px;
+}
+
+@media(max-width:700px){
+  nav{display:block}
+  .progress{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+
+<div class="logo">
+BAALSTORM // HARDWARE OPS
+</div>
+
+<div>
+  <div class="status">
+    LAB PROGRESS:
+    <span id="progressText">0 / 7</span>
+  </div>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+</div>
+
+</nav>
+</header>
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="prompt">
+student@baalstorm:~$ ./first_contact --device fortiswitch
+</div>
+
+<h1>FORTISWITCH<br>FIRST CONTACT</h1>
+
+<p class="muted">
+Physical Hardware Lab // FortiSwitch 248D
+</p>
+
+<div class="tags">
+  <span class="tag">MANAGEMENT</span>
+  <span class="tag">PORTS</span>
+  <span class="tag">LINK</span>
+  <span class="tag">SPEED</span>
+  <span class="tag">DUPLEX</span>
+  <span class="tag">MAC</span>
+</div>
+
+<div class="terminal">
+[+] TARGET DETECTED
+
+DEVICE:
+FORTINET FORTISWITCH 248D
+
+MISSION TYPE:
+FIRST CONTACT
+
+MODE:
+OBSERVE
+IDENTIFY
+VERIFY
+
+CONFIGURATION CHANGES:
+NOT AUTHORIZED
+</div>
+
+<div class="danger">
+<strong>RULE OF ENGAGEMENT</strong><br><br>
+
+Den här laborationen är READ-ONLY.
+
+Du får undersöka switchen och ansluta/ta bort
+nätverkskablar enligt instruktionerna.
+
+Du ska INTE ändra switchens konfiguration.
+
+Klicka inte på EDIT och ändra inte VLAN,
+portinställningar, admininställningar eller andra
+konfigurationsvärden.
+</div>
+
+</section>
+
+
 <!-- MISSION 01 -->
 
 <section class="mission">
@@ -8,7 +367,8 @@
 
 <div class="objective">
 OBJECTIVE: Anslut din dator till switchens
-management-interface och öppna webbgränssnittet.
+management-interface och etablera åtkomst till
+managementgränssnittet.
 </div>
 
 <div class="diagram">┌──────────────┐
@@ -174,7 +534,7 @@ Webbläsaren kan visa en certifikatvarning eftersom detta
 
 Kontrollera att adressen är:
 
-https://192.168.1.99
+<strong>https://192.168.1.99</strong>
 </div>
 
 
@@ -186,7 +546,8 @@ Logga in i FortiSwitchens managementgränssnitt.
 Ändra ingenting ännu.
 </div>
 
-<div class="terminal">EXPECTED RESULT
+<div class="terminal">
+EXPECTED RESULT
 
 LAPTOP
    │
@@ -204,10 +565,11 @@ HTTPS
 FORTISWITCH WEB GUI
 
 STATUS:
-MANAGEMENT ACCESS ESTABLISHED</div>
+MANAGEMENT ACCESS ESTABLISHED
+</div>
 
 <div class="danger">
-FIRST CONTACT RULE
+<strong>FIRST CONTACT RULE</strong><br><br>
 
 Du ska endast verifiera att du kan logga in.
 
@@ -225,3 +587,717 @@ Nästa mission börjar med observation av switchen.
 <button onclick="complete(this)">[ ] MISSION COMPLETE</button>
 
 </section>
+
+
+<!-- MISSION 02 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 02</div>
+
+<h2>IDENTIFY THE DEVICE</h2>
+
+<div class="objective">
+OBJECTIVE: Ta reda på vilken utrustning du faktiskt
+arbetar med.
+</div>
+
+<p>Du ska nu undersöka FortiSwitchens webbgränssnitt.</p>
+
+<p>Gå till:</p>
+
+<pre>System → Dashboard</pre>
+
+<p>Undersök dashboarden utan att ändra något.</p>
+
+<label>MODEL</label>
+<input type="text" placeholder="____________________________">
+
+<label>SERIAL NUMBER</label>
+<input type="text" placeholder="____________________________">
+
+<label>FIRMWARE VERSION</label>
+<input type="text" placeholder="____________________________">
+
+<label>UPTIME</label>
+<input type="text" placeholder="____________________________">
+
+<label>OPERATION MODE</label>
+<input type="text" placeholder="____________________________">
+
+<div class="question">
+Hur många vanliga Ethernet-portar verkar switchen ha?
+</div>
+
+<input type="text" placeholder="Svar...">
+
+<div class="question">
+Finns det ytterligare portar utöver de vanliga
+Ethernet-portarna? Vad verkar de vara för typ?
+</div>
+
+<input type="text" placeholder="Svar...">
+
+<div class="question">
+Ser all information på Dashboard rimlig ut?
+
+Kontrollera exempelvis systemtid och uptime.
+</div>
+
+<button onclick="reveal('m2')">[+] FIELD NOTE</button>
+
+<div class="answer" id="m2">
+En dashboard kan ge mycket information om en nätverksenhet:
+modell, firmware, serienummer, drifttid, managementläge och
+portar.
+
+Men informationen behöver fortfarande granskas kritiskt.
+
+En felaktig systemtid kan exempelvis göra loggar betydligt
+svårare att analysera.
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- MISSION 03 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 03</div>
+
+<h2>PORT RECON</h2>
+
+<div class="objective">
+OBJECTIVE: Undersök switchens fysiska portar.
+</div>
+
+<p>Gå till:</p>
+
+<pre>Switch → Port → Physical</pre>
+
+<p>
+Du bör nu se tabellen <strong>Physical Switch Ports</strong>.
+</p>
+
+<div class="terminal">
+OBSERVE THESE FIELDS:
+
+Name
+Traffic (Last Day)
+Speed Setting
+Configuration
+
+Current Status:
+    Link
+    Speed
+    Duplex
+</div>
+
+<div class="task">
+Välj en fysisk port som för tillfället inte används.
+</div>
+
+<label>PORT</label>
+<input type="text" placeholder="Exempel: port10">
+
+<table>
+<tr>
+  <th>Field</th>
+  <th>Before connection</th>
+</tr>
+<tr>
+  <td>Link</td>
+  <td>________________</td>
+</tr>
+<tr>
+  <td>Speed</td>
+  <td>________________</td>
+</tr>
+<tr>
+  <td>Duplex</td>
+  <td>________________</td>
+</tr>
+<tr>
+  <td>Speed Setting</td>
+  <td>________________</td>
+</tr>
+</table>
+
+<div class="question">
+Vad tror du att Link-statusen betyder?
+</div>
+
+<div class="warning">
+OBSERVE ONLY.
+
+Markera inte porten och använd inte EDIT för att
+ändra portens konfiguration.
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- MISSION 04 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 04</div>
+
+<h2>CREATE A PHYSICAL EVENT</h2>
+
+<div class="objective">
+OBJECTIVE: Se hur en fysisk förändring i nätverket
+representeras i managementgränssnittet.
+</div>
+
+<p>
+Håll sidan <strong>Switch → Port → Physical</strong>
+öppen.
+</p>
+
+<div class="task">
+Anslut en laptop med nätverkskabel till porten du valde
+i föregående uppdrag.
+</div>
+
+<div class="diagram">BEFORE
+
+LAPTOP
+
+             PORT ?? [ DOWN ]
+                   │
+              FORTISWITCH
+
+
+AFTER
+
+LAPTOP ───────── PORT ?? [ ??? ]
+                      │
+                 FORTISWITCH</div>
+
+<p>Observera porten igen.</p>
+
+<table>
+<tr>
+  <th>Field</th>
+  <th>Before</th>
+  <th>After</th>
+</tr>
+<tr>
+  <td>Link</td>
+  <td>________</td>
+  <td>________</td>
+</tr>
+<tr>
+  <td>Speed</td>
+  <td>________</td>
+  <td>________</td>
+</tr>
+<tr>
+  <td>Duplex</td>
+  <td>________</td>
+  <td>________</td>
+</tr>
+</table>
+
+<div class="question">
+Vad förändrades när kabeln anslöts?
+</div>
+
+<div class="question">
+Vilken länkhastighet förhandlade enheterna fram?
+</div>
+
+<div class="question">
+Vilket duplexläge används?
+</div>
+
+<div class="question">
+Speed Setting kan visa <strong>Auto-Negotiation</strong>
+samtidigt som Current Status visar en faktisk hastighet.
+
+Varför är detta inte en motsägelse?
+</div>
+
+<button onclick="reveal('m4')">[+] ANALYSIS</button>
+
+<div class="answer" id="m4">
+Auto-Negotiation beskriver hur porten är inställd att
+förhandla länkparametrar.
+
+Current Status visar resultatet av den aktiva länken,
+exempelvis den hastighet och det duplexläge som faktiskt
+används.
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- MISSION 05 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 05</div>
+
+<h2>FIND YOURSELF</h2>
+
+<div class="objective">
+OBJECTIVE: Koppla ihop information om en fysisk enhet,
+dess MAC-adress och en switchport.
+</div>
+
+<p>
+Ta reda på Ethernet-interfacets MAC-adress på din dator.
+</p>
+
+<p>Windows:</p>
+
+<pre>ipconfig /all</pre>
+
+<p>
+Leta efter <strong>Physical Address</strong> för rätt
+Ethernet-interface.
+</p>
+
+<label>MY MAC ADDRESS</label>
+<input type="text" placeholder="AA-BB-CC-DD-EE-FF">
+
+<p>Gå sedan till:</p>
+
+<pre>Switch → MAC Entries</pre>
+
+<div class="task">
+Försök hitta samma MAC-adress i switchens MAC-information.
+</div>
+
+<label>SWITCH PORT</label>
+<input type="text" placeholder="port__">
+
+<div class="diagram">YOUR LAPTOP
+
+MAC ADDRESS
+AA:BB:CC:DD:EE:FF
+       │
+       │
+       ▼
+┌──────────────────────────┐
+│ FORTISWITCH              │
+│                          │
+│ MAC INFORMATION          │
+│                          │
+│ AA:BB:CC:DD:EE:FF        │
+│          ↓               │
+│        PORT ??           │
+└──────────────────────────┘</div>
+
+<div class="question">
+Stämmer porten i GUI:t med den fysiska port där kabeln
+sitter?
+</div>
+
+<div class="question">
+Vad har du nu lyckats koppla samman?
+</div>
+
+<button onclick="reveal('m5')">[+] REVEAL</button>
+
+<div class="answer" id="m5">
+Du har korrelerat flera typer av information:
+
+DEVICE
+  ↓
+MAC ADDRESS
+  ↓
+SWITCH INFORMATION
+  ↓
+SWITCH PORT
+  ↓
+PHYSICAL CABLE
+
+Detta är en grundläggande färdighet vid felsökning och
+kartläggning av nätverk.
+</div>
+
+<button onclick="complete(this)">[ ] MISSION COMPLETE</button>
+
+</section>
+
+
+<!-- MISSION 06 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 06</div>
+
+<h2>CONTROLLED FAILURE</h2>
+
+<div class="danger">
+INCIDENT SIMULATION ENABLED
+</div>
+
+<p>
+Du vet nu vilken switchport din dator använder.
+</p>
+
+<div class="task">
+Öppna Physical Switch Ports och lokalisera porten.
+</div>
+
+<div class="task">
+Dra ur nätverkskabeln från den vanliga switchport som
+undersöks.
+</div>
+
+<p>
+Observera vad som händer.
+</p>
+
+<table>
+<tr>
+  <th>Observation</th>
+  <th>Result</th>
+</tr>
+<tr>
+  <td>Link status</td>
+  <td>________________</td>
+</tr>
+<tr>
+  <td>Speed</td>
+  <td>________________</td>
+</tr>
+<tr>
+  <td>Duplex</td>
+  <td>________________</td>
+</tr>
+</table>
+
+<div class="question">
+Hur snabbt upptäcker switchen att den fysiska länken
+försvunnit?
+</div>
+
+<div class="question">
+Vad händer om du ansluter kabeln igen?
+</div>
+
+<div class="question">
+Finns MAC-informationen kvar direkt efter att kabeln
+kopplats bort?
+
+Observera vad som händer utan att ändra någon
+konfiguration.
+</div>
+
+<button onclick="reveal('m6')">[+] INCIDENT ANALYSIS</button>
+
+<div class="answer" id="m6">
+En fysisk länk och information som switchen tidigare har
+lärt sig är inte samma sak.
+
+Link-status beskriver den aktuella fysiska länken.
+
+Information som switchen har lärt sig kan ha en egen
+livscykel och behöver inte försvinna exakt samtidigt som
+kabeln kopplas bort.
+</div>
+
+<div class="task">
+Återanslut kabeln innan du fortsätter.
+</div>
+
+<button onclick="complete(this)">[ ] INCIDENT RESOLVED</button>
+
+</section>
+
+
+<!-- BOSS -->
+
+<section class="mission boss">
+
+<div class="level">BOSS // FINAL MISSION</div>
+
+<h2>UNKNOWN SWITCH RECON</h2>
+
+<div class="terminal">
+SCENARIO:
+
+You have physical access to a managed switch.
+
+Your task is to document the device WITHOUT
+changing its configuration.
+
+PROVE WHAT YOU FIND.
+</div>
+
+<h3>DEVICE INTELLIGENCE</h3>
+
+<label>MANUFACTURER</label>
+<input type="text">
+
+<label>MODEL</label>
+<input type="text">
+
+<label>HOSTNAME / DEVICE NAME</label>
+<input type="text">
+
+<label>MANAGEMENT IP</label>
+<input type="text">
+
+<label>FIRMWARE</label>
+<input type="text">
+
+<label>UPTIME</label>
+<input type="text">
+
+<label>OPERATION MODE</label>
+<input type="text">
+
+
+<h3>PORT INTELLIGENCE</h3>
+
+<label>PORT USED BY YOUR TEST DEVICE</label>
+<input type="text">
+
+<label>LINK SPEED</label>
+<input type="text">
+
+<label>DUPLEX</label>
+<input type="text">
+
+<label>MAC ADDRESS OF YOUR TEST DEVICE</label>
+<input type="text">
+
+
+<h3>ANALYSIS</h3>
+
+<div class="question">
+Hur bevisade du att MAC-adressen tillhör enheten på just
+den fysiska switchporten?
+</div>
+
+<input type="text" placeholder="Förklara...">
+
+<div class="question">
+Vilken information kunde du få från managementgränssnittet
+som du inte kunde få genom att bara titta på switchen och
+kablarna?
+</div>
+
+<input type="text" placeholder="Förklara...">
+
+<div class="question">
+Vad är skillnaden mellan en port som är administrativt
+konfigurerad/aktiverad och en port som faktiskt har
+fysisk Link Up?
+</div>
+
+<input type="text" placeholder="Förklara...">
+
+<div class="terminal big">
+FINAL TRACE
+
+PHYSICAL DEVICE
+       ↓
+ETHERNET INTERFACE
+       ↓
+MAC ADDRESS
+       ↓
+NETWORK CABLE
+       ↓
+PHYSICAL SWITCH PORT
+       ↓
+SWITCH MANAGEMENT GUI
+       ↓
+OBSERVABLE NETWORK STATE
+</div>
+
+<button onclick="reveal('boss')">[+] DECLASSIFY</button>
+
+<div class="answer" id="boss">
+<strong>FIRST CONTACT COMPLETE.</strong>
+
+Du har inte konfigurerat switchen.
+
+Du har istället använt managementgränssnittet för att
+observera sambandet mellan fysisk utrustning och
+information som switchen har om nätverket.
+
+Nästa steg är att förstå vad switchen faktiskt gör med
+Ethernet-trafiken och senare hur den kan konfigureras för
+segmentering.
+</div>
+
+<button onclick="complete(this)">[ ] BOSS COMPLETE</button>
+
+</section>
+
+
+<!-- RECON BONUS -->
+
+<section class="mission">
+
+<div class="level">OPTIONAL // RECON BONUS</div>
+
+<h2>WHAT ELSE CAN THIS THING DO?</h2>
+
+<p>
+Titta på menyerna under <strong>Switch</strong>.
+</p>
+
+<div class="terminal">
+Port
+Interface
+STP
+Flap Guard
+LLDP-MED
+sFlow
+Mirror
+VLAN
+Virtual Wires
+Storm Control
+MAC Entries
+QoS
+Monitor
+</div>
+
+<div class="task">
+Välj EN funktion du inte känner igen.
+</div>
+
+<label>FUNCTION</label>
+<input type="text" placeholder="Exempel: STP">
+
+<div class="question">
+Vad tror du att funktionen används till?
+</div>
+
+<input type="text" placeholder="Din hypotes...">
+
+<div class="warning">
+Ändra ingenting.
+
+Detta är RECON, inte CONFIGURATION.
+</div>
+
+</section>
+
+
+<!-- DEBRIEF -->
+
+<section class="mission">
+
+<div class="level">DEBRIEF // LAB COMPLETE</div>
+
+<h2>FIRST CONTACT COMPLETE</h2>
+
+<div class="terminal">
+FORTISWITCH // FIRST CONTACT
+
+[+] Management access established
+[+] Device identified
+[+] Physical ports inspected
+[+] Link state observed
+[+] Speed observed
+[+] Duplex observed
+[+] MAC address identified
+[+] MAC correlated to physical port
+[+] Link failure observed
+
+
+YOU NOW KNOW:
+
+A managed switch is not just a box
+with Ethernet ports.
+
+It can OBSERVE and REPORT information
+about the network connected to it.
+
+
+NEXT:
+
+HOW DOES A SWITCH ACTUALLY FORWARD TRAFFIC?
+</div>
+
+<p class="green">
+student@baalstorm:~$ _
+</p>
+
+</section>
+
+</main>
+
+
+<footer>
+BAALSTORM // COURSE 2<br>
+FORTISWITCH 248D // FIRST CONTACT
+</footer>
+
+
+<script>
+
+const completed = new Set();
+const total = 7;
+
+function reveal(id){
+  const element = document.getElementById(id);
+
+  element.style.display =
+    element.style.display === "block"
+      ? "none"
+      : "block";
+}
+
+function complete(button){
+
+  const section = button.closest(".mission");
+
+  if(completed.has(section)){
+
+    completed.delete(section);
+    button.classList.remove("done");
+
+    if(button.textContent.includes("BOSS")){
+      button.textContent="[ ] BOSS COMPLETE";
+    }
+    else if(button.textContent.includes("INCIDENT")){
+      button.textContent="[ ] INCIDENT RESOLVED";
+    }
+    else{
+      button.textContent="[ ] MISSION COMPLETE";
+    }
+
+  } else {
+
+    completed.add(section);
+    button.classList.add("done");
+    button.textContent="[✓] COMPLETE";
+  }
+
+  updateProgress();
+}
+
+function updateProgress(){
+
+  const number = completed.size;
+
+  document
+    .getElementById("progressText")
+    .textContent = number + " / " + total;
+
+  document
+    .getElementById("bar")
+    .style.width =
+      Math.min((number / total) * 100,100) + "%";
+}
+
+</script>
+
+</body>
+</html>
