@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Baalstorm // Packet Tracer Topology Lab</title>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+
+<style>
+:root{
+  --bg:#050805;
+  --panel:#0a100b;
+  --panel2:#0d160f;
+  --green:#39ff88;
+  --green2:#18c768;
+  --text:#d5ffe4;
+  --muted:#7cab8b;
+  --yellow:#ffd166;
+  --red:#ff5d73;
+  --blue:#62b6ff;
+  --border:#1d5d35;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 50% 0,#102117 0,#050805 42%);
+  color:var(--text);
+  font:16px/1.65 "Courier New",monospace;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#050805ee;
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(6px);
+}
+
+nav{
+  max-width:1100px;
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+
+.logo{
+  color:var(--green);
+  font-weight:bold;
+}
+
+.status{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.progress{
+  width:270px;
+  height:7px;
+  border:1px solid var(--border);
+  margin-top:4px;
+}
+
+.bar{
+  height:100%;
+  width:0;
+  background:var(--green);
+  transition:.3s;
+}
+
+main{
+  max-width:1050px;
+  margin:auto;
+  padding:50px 20px 100px;
+}
+
+.hero{
+  padding-bottom:45px;
+  border-bottom:1px solid var(--border);
+}
+
+.prompt{color:var(--green)}
+
+h1{
+  font-size:clamp(42px,7vw,76px);
+  line-height:.94;
+  color:white;
+  margin:15px 0;
+}
+
+h2{color:white}
+h3{color:var(--green)}
+
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+.blue{color:var(--blue)}
+.muted{color:var(--muted)}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:24px;
+}
+
+.tag{
+  border:1px solid var(--border);
+  color:var(--green);
+  padding:5px 9px;
+  font-size:12px;
+}
+
+.terminal,
+pre{
+  background:#020402;
+  border:1px solid var(--border);
+  padding:20px;
+  color:var(--green);
+  overflow:auto;
+  white-space:pre-wrap;
+}
+
+.mission{
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:25px;
+  margin:55px 0;
+}
+
+.level{
+  color:var(--green);
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.objective{
+  border-left:3px solid var(--green);
+  background:#071009;
+  padding:15px;
+  margin:18px 0;
+}
+
+.task{
+  border-left:3px solid var(--blue);
+  background:#071018;
+  padding:15px;
+  margin:13px 0;
+}
+
+.question{
+  border-left:3px solid var(--blue);
+  background:#071018;
+  padding:16px;
+  margin:18px 0;
+}
+
+.warning{
+  border:1px solid #725f22;
+  background:#171407;
+  color:var(--yellow);
+  padding:18px;
+  margin:20px 0;
+}
+
+.incident{
+  border:1px solid var(--red);
+  background:#17070a;
+  padding:20px;
+  margin:20px 0;
+}
+
+.diagram{
+  background:#020402;
+  border:1px dashed var(--border);
+  padding:22px;
+  color:var(--green);
+  white-space:pre;
+  overflow:auto;
+  margin:20px 0;
+}
+
+.answer{
+  display:none;
+  border-left:2px solid var(--green);
+  background:#061008;
+  padding:14px;
+  margin-top:12px;
+}
+
+button{
+  font:inherit;
+  background:#07150d;
+  border:1px solid var(--green2);
+  color:var(--green);
+  padding:9px 14px;
+  margin:4px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:var(--green);
+  color:#021006;
+}
+
+button.done{
+  background:var(--green);
+  color:#021006;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:12px;
+  text-align:left;
+}
+
+th{
+  color:var(--green);
+  background:#071009;
+}
+
+.boss{
+  border:2px solid var(--red);
+}
+
+.big{
+  font-size:1.15em;
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  padding:35px;
+}
+
+@media(max-width:700px){
+  nav{display:block}
+  .progress{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+
+<div class="logo">
+BAALSTORM // PACKET TRACER OPS
+</div>
+
+<div>
+  <div class="status">
+    LAB PROGRESS:
+    <span id="progressText">0 / 7</span>
+  </div>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+</div>
+
+</nav>
+</header>
+
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="prompt">
+student@baalstorm:~$ ./packet_tracer --lab topology
+</div>
+
+<h1>TOPOLOGY &<br>ARCHITECTURE LAB</h1>
+
+<p class="muted">
+Packet Tracer // Network Technology // Lesson 01
+</p>
+
+<div class="tags">
+  <span class="tag">P2P</span>
+  <span class="tag">CLIENT/SERVER</span>
+  <span class="tag">STAR</span>
+  <span class="tag">TREE</span>
+  <span class="tag">FAILURE</span>
+  <span class="tag">PING</span>
+</div>
+
+<div class="terminal">
+[+] PACKET TRACER LAB LOADED
+[+] DIFFICULTY: BASIC → BOSS
+[+] CONFIGURATION: MINIMAL
+[+] FOCUS: UNDERSTANDING NETWORK STRUCTURE
+
+MISSION:
+
+BUILD
+  ↓
+TEST
+  ↓
+BREAK
+  ↓
+OBSERVE
+  ↓
+EXPLAIN
+</div>
+
+<div class="warning">
+Den här laborationen handlar främst om topologi och
+arkitektur.
+
+Du behöver inte kunna routing, VLAN eller avancerad
+switchkonfiguration.
+</div>
+
+</section>
+
+
+<!-- 01 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 01</div>
+
+<h2>DIRECT CONNECTION</h2>
+
+<div class="objective">
+OBJECTIVE: Bygg det minsta nätverket i laborationen.
+</div>
+
+<p>Placera två datorer i Packet Tracer.</p>
+
+<div class="diagram">PC0 ───────────────── PC1</div>
+
+<p>Konfigurera:</p>
+
+<pre>
+PC0
+IP:   192.168.10.10
+MASK: 255.255.255.0
+
+
+PC1
+IP:   192.168.10.20
+MASK: 255.255.255.0
+</pre>
+
+<div class="task">
+TASK 01 // Koppla ihop datorerna.
+</div>
+
+<div class="task">
+TASK 02 // Konfigurera IP-adresserna.
+</div>
+
+<div class="task">
+TASK 03 // Öppna Command Prompt på PC0.
+</div>
+
+<p>Kör:</p>
+
+<pre>ping 192.168.10.20</pre>
+
+<div class="question">
+Kan PC0 kommunicera med PC1?
+</div>
+
+<div class="question">
+Vilka av enheterna är slutenheter?
+</div>
+
+<button onclick="reveal('m1')">
+[+] ANALYSIS
+</button>
+
+<div class="answer" id="m1">
+Båda datorerna är slutenheter.
+
+Det finns ingen switch eller router mellan dem i den här
+enkla konstruktionen.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- 02 -->
+
+<section class="mission">
+
+<div class="level">BASIC // MISSION 02</div>
+
+<h2>IS THIS P2P?</h2>
+
+<p>
+Du har byggt:
+</p>
+
+<div class="diagram">PC0 ⇄ PC1</div>
+
+<div class="question">
+Är nätverket automatiskt en
+<strong>Peer-to-Peer-arkitektur</strong>
+bara för att datorerna är direkt sammankopplade?
+</div>
+
+<button onclick="reveal('m2')">
+[+] REVEAL
+</button>
+
+<div class="answer" id="m2">
+Nej.
+
+Hur datorerna är fysiskt sammankopplade och hur
+applikationerna organiseras är två olika saker.
+
+I en P2P-arkitektur kan noder exempelvis både konsumera
+och erbjuda resurser/tjänster.
+
+En direkt kabel mellan två datorer demonstrerar därför
+inte automatiskt en fullständig P2P-applikationsarkitektur.
+</div>
+
+<div class="terminal">
+REMEMBER:
+
+PHYSICAL CONNECTION
+        ≠
+APPLICATION ARCHITECTURE
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- 03 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 03</div>
+
+<h2>CLIENT / SERVER</h2>
+
+<div class="objective">
+OBJECTIVE: Bygg ett nät där flera klienter använder en
+gemensam server.
+</div>
+
+<p>Skapa ett nytt nätverk:</p>
+
+<div class="diagram">PC0 ─────┐
+          │
+PC1 ─────┼──── SWITCH0 ───── SERVER0
+          │
+PC2 ─────┘</div>
+
+<p>Konfigurera:</p>
+
+<pre>
+SERVER0
+192.168.20.10 /24
+
+PC0
+192.168.20.101 /24
+
+PC1
+192.168.20.102 /24
+
+PC2
+192.168.20.103 /24
+</pre>
+
+<div class="task">
+TASK 01 // Kontrollera att klienterna kan pinga SERVER0.
+</div>
+
+<div class="task">
+TASK 02 // Öppna SERVER0.
+</div>
+
+<div class="task">
+TASK 03 // Undersök vilka tjänster servern kan erbjuda.
+</div>
+
+<div class="task">
+TASK 04 // Aktivera HTTP om det inte redan är aktivt.
+</div>
+
+<div class="task">
+TASK 05 // Öppna Web Browser på PC0 och anslut till:
+</div>
+
+<pre>http://192.168.20.10</pre>
+
+<div class="diagram">CLIENT                         SERVER
+
+PC0                             SERVER0
+ │                                 │
+ │────── request ─────────────────▶│
+ │                                 │
+ │◀───── response ─────────────────│
+ │                                 │</div>
+
+<div class="question">
+Vilken enhet agerar klient?
+</div>
+
+<div class="question">
+Vilken enhet agerar server?
+</div>
+
+<div class="question">
+Vilken tjänst använder klienten?
+</div>
+
+<div class="question">
+Kan PC1 och PC2 använda samma server?
+</div>
+
+<button onclick="reveal('m3')">
+[+] ANALYSIS
+</button>
+
+<div class="answer" id="m3">
+PC0 agerar klient när den begär webbtjänsten.
+
+SERVER0 agerar server och erbjuder HTTP-tjänsten.
+
+Flera klienter kan använda samma server.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- 04 -->
+
+<section class="mission">
+
+<div class="level">INTERMEDIATE // MISSION 04</div>
+
+<h2>BUILD A STAR</h2>
+
+<div class="objective">
+OBJECTIVE: Bygg och undersök en stjärntopologi.
+</div>
+
+<div class="diagram">              PC0
+               │
+               │
+PC1 ─────── SWITCH0 ─────── PC2
+               │
+               │
+              PC3</div>
+
+<p>Konfigurera:</p>
+
+<pre>
+PC0  192.168.30.10 /24
+PC1  192.168.30.11 /24
+PC2  192.168.30.12 /24
+PC3  192.168.30.13 /24
+</pre>
+
+<div class="task">
+Anslut samtliga datorer till SWITCH0.
+</div>
+
+<div class="task">
+Testa ping mellan flera olika datorer.
+</div>
+
+<div class="question">
+Vilken fysisk topologi har du byggt?
+</div>
+
+<button onclick="reveal('m4')">
+[+] REVEAL
+</button>
+
+<div class="answer" id="m4">
+Stjärntopologi.
+
+Alla slutenheter är anslutna till en central nod:
+SWITCH0.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- 05 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 05</div>
+
+<h2>BREAK THE STAR</h2>
+
+<div class="incident">
+INCIDENT SIMULATION ENABLED
+
+Du ska nu medvetet skapa fel i nätverket.
+</div>
+
+<h3>TEST A // CLIENT LINK FAILURE</h3>
+
+<p>
+Koppla bort anslutningen mellan PC0 och SWITCH0.
+</p>
+
+<div class="diagram">PC0 ─── X ─── SWITCH0
+
+PC1 ──────────┤
+PC2 ──────────┤
+PC3 ──────────┘</div>
+
+<div class="question">
+Vilka datorer påverkas?
+</div>
+
+<p>
+Återställ anslutningen.
+</p>
+
+
+<h3>TEST B // CENTRAL FAILURE</h3>
+
+<p>
+Stäng av SWITCH0 eller simulera att den centrala
+switchen inte fungerar.
+</p>
+
+<div class="diagram">              PC0
+               │
+               X
+PC1 ───── [ SWITCH0 ]
+               X
+PC2 ───────────┤
+               │
+              PC3
+
+        SWITCH FAILURE</div>
+
+<div class="question">
+Vad händer nu?
+</div>
+
+<div class="question">
+Varför blir konsekvensen större än när en enda
+PC-kabel kopplades bort?
+</div>
+
+<button onclick="reveal('m5')">
+[+] INCIDENT ANALYSIS
+</button>
+
+<div class="answer" id="m5">
+När en klientlänk går sönder påverkas främst den
+anslutna klienten.
+
+När den centrala switchen slutar fungera påverkas
+alla enheter som är beroende av den.
+
+Den centrala noden är därför en viktig felpunkt i
+den här enkla stjärntopologin.
+</div>
+
+<button onclick="complete(this)">
+[ ] INCIDENT RESOLVED
+</button>
+
+</section>
+
+
+<!-- 06 -->
+
+<section class="mission">
+
+<div class="level">CHALLENGE // MISSION 06</div>
+
+<h2>BUILD A TREE</h2>
+
+<div class="objective">
+OBJECTIVE: Skala upp nätverket genom att koppla samman
+flera stjärnor.
+</div>
+
+<div class="diagram">                    SW-CORE
+                   /       \
+                  /         \
+               SW-A         SW-B
+              / | \         / | \
+             /  |  \       /  |  \
+           PC0 PC1 PC2   PC3 PC4 PC5</div>
+
+<div class="task">
+Placera tre switchar.
+</div>
+
+<div class="task">
+Använd en switch som central switch: SW-CORE.
+</div>
+
+<div class="task">
+Anslut SW-A och SW-B till SW-CORE.
+</div>
+
+<div class="task">
+Anslut tre datorer till varje access-switch.
+</div>
+
+<p>
+Du kan exempelvis använda:
+</p>
+
+<pre>
+PC0  192.168.40.10 /24
+PC1  192.168.40.11 /24
+PC2  192.168.40.12 /24
+
+PC3  192.168.40.20 /24
+PC4  192.168.40.21 /24
+PC5  192.168.40.22 /24
+</pre>
+
+<div class="question">
+Vilken topologi börjar detta likna?
+</div>
+
+<button onclick="reveal('m6a')">
+[+] REVEAL
+</button>
+
+<div class="answer" id="m6a">
+En trädtopologi.
+
+Flera stjärnor har kopplats samman i en hierarkisk struktur.
+</div>
+
+
+<h3>FAILURE TEST</h3>
+
+<table>
+<tr>
+  <th>Test</th>
+  <th>Gör så här</th>
+</tr>
+
+<tr>
+  <td>A</td>
+  <td>Koppla bort PC0.</td>
+</tr>
+
+<tr>
+  <td>B</td>
+  <td>Koppla bort SW-A från SW-CORE.</td>
+</tr>
+
+<tr>
+  <td>C</td>
+  <td>Stäng av SW-CORE.</td>
+</tr>
+</table>
+
+<div class="question">
+Hur många enheter påverkas i respektive scenario?
+</div>
+
+<div class="question">
+Vilket fel får störst konsekvens?
+</div>
+
+<button onclick="reveal('m6b')">
+[+] FAILURE ANALYSIS
+</button>
+
+<div class="answer" id="m6b">
+Ett fel längre upp i hierarkin kan påverka fler enheter.
+
+PC0-fel:
+främst PC0.
+
+SW-A eller länken uppåt:
+hela grenen under SW-A kan påverkas.
+
+SW-CORE:
+kommunikation som är beroende av den centrala
+switchen påverkas.
+</div>
+
+<button onclick="complete(this)">
+[ ] MISSION COMPLETE
+</button>
+
+</section>
+
+
+<!-- SIDE QUEST -->
+
+<section class="mission">
+
+<div class="level">OPTIONAL // SIDE QUEST</div>
+
+<h2>WHAT ABOUT A RING?</h2>
+
+<p>
+I teorin har du även gått igenom ringtopologi.
+</p>
+
+<div class="diagram">NODE-A ───────── NODE-B
+  │                 │
+  │                 │
+  │                 │
+NODE-D ───────── NODE-C</div>
+
+<div class="warning">
+Bygg inte automatiskt en fysisk Ethernet-loop mellan flera
+switchar och anta att du därmed har återskapat klassisk
+Token Ring.
+
+Moderna switchade Ethernet-nät och klassiska ringnät är
+inte samma sak.
+</div>
+
+<p>
+Om läraren demonstrerar en fysisk loop mellan switchar:
+observera vad Packet Tracer gör.
+</p>
+
+<div class="question">
+Varför tror du att loopar kan vara problematiska i
+Ethernet-nät?
+</div>
+
+<div class="answer" id="ring">
+Detta leder vidare till tekniker som Spanning Tree Protocol.
+
+STP behandlas senare om det ingår i kursen.
+
+Poängen just nu är att en fysisk form som ser ut som en ring
+inte automatiskt betyder att nätverket fungerar som klassisk
+Token Ring.
+</div>
+
+<button onclick="reveal('ring')">
+[+] FUTURE KNOWLEDGE
+</button>
+
+</section>
+
+
+<!-- BOSS -->
+
+<section class="mission boss">
+
+<div class="level">BOSS // FINAL MISSION</div>
+
+<h2>TOPOLOGY ≠ ARCHITECTURE</h2>
+
+<div class="terminal">
+UNKNOWN NETWORK DETECTED
+
+MISSION:
+ANALYZE WITHOUT BUILD INSTRUCTIONS
+</div>
+
+<div class="diagram">                       INTERNET
+                           │
+                        ROUTER
+                           │
+                        SWITCH
+                     /     |     \
+                    /      |      \
+                 SW-A    SERVER   SW-B
+                / | \             / | \
+               /  |  \           /  |  \
+             PC0 PC1 PC2       PC3 PC4 PC5</div>
+
+<h3>PART 1 // IDENTIFY</h3>
+
+<div class="question">
+Vilka är slutenheterna?
+</div>
+
+<div class="question">
+Vilka är mellanliggande nätverksenheter?
+</div>
+
+<div class="question">
+Vilken fysisk topologi liknar nätverket?
+</div>
+
+<div class="question">
+Var ser du en klient/server-arkitektur?
+</div>
+
+
+<h3>PART 2 // FAILURE ANALYSIS</h3>
+
+<div class="incident">
+INCIDENT NET-017
+
+SW-A HAS FAILED.
+</div>
+
+<div class="question">
+Vilka enheter påverkas direkt?
+</div>
+
+<div class="incident">
+INCIDENT NET-018
+
+CENTRAL SWITCH HAS FAILED.
+</div>
+
+<div class="question">
+Vilket fel får störst påverkan?
+
+Förklara varför.
+</div>
+
+
+<h3>PART 3 // THE IMPORTANT QUESTION</h3>
+
+<div class="terminal big">
+CAN A NETWORK USE...
+
+STAR / TREE TOPOLOGY
+
+AND
+
+CLIENT / SERVER ARCHITECTURE
+
+AT THE SAME TIME?
+</div>
+
+<button onclick="reveal('bossAnswer')">
+[+] DECLASSIFY
+</button>
+
+<div class="answer" id="bossAnswer">
+
+<strong>JA.</strong>
+
+Topologi och arkitektur beskriver olika saker.
+
+<pre>
+TOPOLOGY
+────────────────────────────
+Hur nätverket är sammankopplat.
+
+Star
+Tree
+Ring
+Mesh
+...
+
+
+ARCHITECTURE
+────────────────────────────
+Hur system och tjänster organiseras.
+
+Client / Server
+Peer-to-Peer
+Hybrid
+</pre>
+
+Ett företagsnät kan alltså exempelvis använda fysisk
+stjärn-/trädtopologi samtidigt som applikationerna använder
+klient/server-arkitektur.
+</div>
+
+
+<h3>PART 4 // DRAW IT</h3>
+
+<div class="task">
+Rita nätverkets fysiska topologi.
+</div>
+
+<div class="task">
+Rita därefter en logisk skiss.
+</div>
+
+<div class="task">
+Markera klienter, server och mellanliggande enheter.
+</div>
+
+<div class="task">
+Beskriv hur trafik från PC0 kan färdas till SERVER.
+</div>
+
+
+<h3>BOSS QUESTION</h3>
+
+<div class="question">
+Förklara med egna ord skillnaden mellan:
+
+<strong>nätverkstopologi</strong>
+
+och
+
+<strong>nätverksarkitektur</strong>.
+</div>
+
+<button onclick="complete(this)">
+[ ] BOSS COMPLETE
+</button>
+
+</section>
+
+
+<!-- DEBRIEF -->
+
+<section class="mission">
+
+<div class="level">DEBRIEF // LAB COMPLETE</div>
+
+<h2>MISSION REPORT</h2>
+
+<div class="terminal">
+PACKET TRACER // TOPOLOGY LAB
+
+[+] Direct connection built
+[+] Connectivity tested
+[+] Client/server observed
+[+] Star topology built
+[+] Star failure tested
+[+] Tree topology built
+[+] Failure impact analyzed
+[+] Topology vs architecture understood
+
+
+CORE CONCEPT:
+
+TOPOLOGY ≠ ARCHITECTURE
+
+
+STATUS:
+READY FOR BAALSTORM INDUSTRIES
+</div>
+
+<h3>NEXT CASE</h3>
+
+<p>
+Du har hittills arbetat med små nätverk.
+</p>
+
+<p>
+Nästa uppdrag:
+</p>
+
+<pre>
+BAALSTORM INDUSTRIES
+
+EMPLOYEES: 200
+
+DEPARTMENTS:
+HR
+ECONOMY
+PRODUCTION
+IT
+
+MISSION:
+DESIGN THE NETWORK
+</pre>
+
+<p class="green">
+student@baalstorm:~$ _
+</p>
+
+</section>
+
+</main>
+
+
+<footer>
+BAALSTORM // COURSE 2<br>
+PACKET TRACER TOPOLOGY & ARCHITECTURE LAB
+</footer>
+
+
+<script>
+
+const completed = new Set();
+const total = 7;
+
+function reveal(id){
+
+  const element =
+    document.getElementById(id);
+
+  element.style.display =
+    element.style.display === "block"
+      ? "none"
+      : "block";
+}
+
+
+function complete(button){
+
+  const section =
+    button.closest(".mission");
+
+  if(completed.has(section)){
+
+    completed.delete(section);
+
+    button.classList.remove("done");
+
+    if(button.textContent.includes("BOSS")){
+      button.textContent="[ ] BOSS COMPLETE";
+    }
+    else if(button.textContent.includes("INCIDENT")){
+      button.textContent="[ ] INCIDENT RESOLVED";
+    }
+    else{
+      button.textContent="[ ] MISSION COMPLETE";
+    }
+
+  }
+  else{
+
+    completed.add(section);
+
+    button.classList.add("done");
+
+    button.textContent="[✓] COMPLETE";
+  }
+
+  updateProgress();
+}
+
+
+function updateProgress(){
+
+  const number =
+    completed.size;
+
+  document
+    .getElementById("progressText")
+    .textContent =
+      number + " / " + total;
+
+  document
+    .getElementById("bar")
+    .style.width =
+      Math.min(
+        (number / total) * 100,
+        100
+      ) + "%";
+}
+
+</script>
+
+</body>
+</html>
