@@ -2363,7 +2363,7 @@ verksamheten som ska skyddas.
 
 let controlsHTML="";
 
-if(c.status==="OPEN"\|\|c.status==="REOPENED"){
+if(c.status==="OPEN"||c.status==="REOPENED"){
 
 controlsHTML=`
 
@@ -2431,7 +2431,7 @@ let nextHTML="";
 if(
 index===state.currentIndex &&
 (
-c.status==="RESOLVED"\|\|
+c.status==="RESOLVED"||
 c.status==="ESCALATED"
 )
 ){
@@ -2560,7 +2560,7 @@ function contactPerson(index){
 const e=events[index];
 const c=state.cases[index];
 
-if(!e.contact\|\|c.contacted)return;
+if(!e.contact||c.contacted)return;
 
 c.contacted=true;
 state.waiting++;
@@ -2597,7 +2597,7 @@ const c=state.cases[index];
 if(c.status!=="OPEN"&&c.status!=="REOPENED")return;
 
 const investigated=
-c.context\|\|c.contactAnswered;
+c.context||c.contactAnswered;
 
 c.status="RESOLVED";
 
@@ -2695,7 +2695,7 @@ state.benignEscalations++;
 c.feedbackType="feedback-warn";
 
 c.businessImpact=
-e.businessImpact\|\|
+e.businessImpact||
 "Ytterligare personer behöver lägga tid på ärendet.";
 
 }else{
