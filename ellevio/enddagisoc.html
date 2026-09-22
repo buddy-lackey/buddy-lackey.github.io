@@ -1928,7 +1928,7 @@ https://endagisoc-api.<konto>.workers.dev
 
 Tom sträng = telemetri avstängd. Simuleringen fungerar ändå.
 */
-const TELEMETRY_API_URL = "";
+const TELEMETRY_API_URL = "https://endagisoc-api.christer-l-s-andersson.workers.dev";
 
 function telemetryUrl(path){
 if(!TELEMETRY_API_URL)return null;
@@ -1965,7 +1965,7 @@ if(
 !Number.isFinite(tier1) ||
 !Number.isFinite(tier2) ||
 !Number.isFinite(tier3) ||
-completed<5
+completed<1
 )return;
 
 document.getElementById("statsCompleted").textContent=completed;
