@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm Lab 02 — The Network Is Broken</title>
+<style>
+:root{
+  --bg:#070a0f; --panel:#0d131c; --panel2:#111a25; --text:#d7e2ee;
+  --muted:#8292a6; --line:#263547; --green:#65f58b; --cyan:#5bd9ff;
+  --amber:#ffcb6b; --red:#ff6b7a; --purple:#c792ea;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:radial-gradient(circle at top,#101b28 0,#070a0f 42%);
+  color:var(--text); font:16px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+header{max-width:1100px;margin:auto;padding:64px 24px 30px}
+.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}
+h1{font-size:clamp(2rem,6vw,4.8rem);line-height:.95;margin:.3rem 0 1rem;color:#fff}
+h1 span{color:var(--green)}
+.lead{max-width:850px;color:#aebdcd;font-family:system-ui,sans-serif;font-size:1.08rem}
+nav{max-width:1100px;margin:auto;padding:0 24px 28px;display:flex;flex-wrap:wrap;gap:8px}
+nav a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);padding:7px 10px;border-radius:6px;background:#0a1018}
+main{max-width:1100px;margin:auto;padding:0 24px 70px}
+.lab{margin:24px 0 42px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),#090e15);border-radius:12px;overflow:hidden}
+.labhead{padding:24px;border-bottom:1px solid var(--line)}
+.badge{display:inline-block;color:#07100a;background:var(--green);padding:3px 8px;border-radius:4px;font-weight:800;font-size:.75rem}
+.type{color:var(--amber);margin-left:8px;font-size:.8rem}
+h2{margin:.7rem 0 .25rem;color:#fff;font-size:1.7rem}
+h3{color:var(--cyan);margin-top:1.8rem}
+.content{padding:24px}
+p,li{max-width:900px}
+.goal{border-left:3px solid var(--green);padding:8px 14px;background:#0a1511;color:#cdebd5}
+pre{
+  background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;
+  overflow:auto;color:#cfe8d7;box-shadow:inset 0 0 25px #0006;
+}
+.prompt{color:var(--green)} .comment{color:#728297}
+.task{border:1px solid #25384d;background:var(--panel2);padding:15px 18px;border-radius:8px;margin:14px 0}
+.task strong{color:var(--amber)}
+details{margin:14px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}
+summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:700}
+details div{padding:0 15px 15px;color:#b9c7d5}
+.flag{color:var(--green);font-weight:800}
+table{border-collapse:collapse;width:100%;max-width:900px;margin:12px 0}
+th,td{border:1px solid var(--line);padding:9px;text-align:left}
+th{color:var(--cyan);background:#0b121b}
+footer{max-width:1100px;margin:auto;padding:0 24px 50px;color:var(--muted)}
+.small{color:var(--muted);font-size:.9rem}
+hr{border:0;border-top:1px solid var(--line);margin:25px 0}
+
+.single{max-width:1100px;margin:auto;padding:0 24px 70px}
+.topnav{max-width:1100px;margin:auto;padding:18px 24px 0;display:flex;gap:8px;flex-wrap:wrap}
+.topnav a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);padding:7px 10px;border-radius:6px;background:#0a1018}
+</style>
+</head>
+<body id="top">
+<div class="topnav"><a href="01_follow_the_packet.html">← Föregående</a> <a href="#top">↑ Toppen</a> <a href="03_arp_to_http_packet_tracer.html">Nästa →</a></div>
+<header>
+  <div class="kicker">BAALSTORM // NETWORK TECHNIQUES // LAB 02</div>
+  <h1>THE NETWORK IS BROKEN</h1>
+  <p class="lead">BAALSTORM</p>
+</header>
+<main class="single">
+<section class="lab">
+
+<div class="labhead"><span class="badge">CHALLENGE 02</span><span class="type">BAALSTORM</span>
+<h2>The Network Is Broken</h2></div>
+<div class="content">
+<p class="goal"><b>Mål:</b> Resonera om lokalt nät, ARP, default gateway och routing.</p>
+<pre>PC-ALPHA
+IP address:      192.168.10.25
+Subnet mask:     255.255.255.0
+Default gateway: 192.168.10.1
+DNS:             192.168.10.53
+
+C:\&gt; ping 192.168.10.40
+Reply from 192.168.10.40
+
+C:\&gt; ping 192.168.20.40
+Destination host unreachable.
+
+C:\&gt; arp -a
+192.168.10.1     00-aa-bb-cc-dd-01
+192.168.10.40    00-aa-bb-cc-dd-40</pre>
+<div class="task"><strong>ANALYSERA</strong>
+<ol>
+<li>Vilken destination är lokal för PC-ALPHA?</li>
+<li>Vilken destination kräver routing?</li>
+<li>Varför behöver PC:n inte känna till MAC-adressen för 192.168.20.40?</li>
+<li>Vilken MAC-adress behöver den istället?</li>
+</ol></div>
+<p>Du får sedan tillgång till routern:</p>
+<pre>Router G0/0
+IP address: 192.168.100.1/24</pre>
+<div class="task"><strong>HITTA FELET:</strong> Varför fungerar inte kommunikationen till andra nät?</div>
+<details><summary>REVEAL DISCUSSION</summary><div>
+<p>PC:n är konfigurerad med <code>192.168.10.1</code> som default gateway, men routerns interface är <code>192.168.100.1/24</code>. PC:n och dess gateway måste kunna kommunicera lokalt. Trafik till 192.168.20.40 skickas därför aldrig korrekt till en router.</p>
+<p class="flag">FLAG{DEFAULT_GATEWAY_MATTERS}</p>
+</div></details>
+</div>
+</section>
+</main>
+<footer>BAALSTORM LABS // Network Techniques // OSI · TCP/IP · ARP · Ethernet · Routing</footer>
+</body>
+</html>
