@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Baalstorm Labs — OSI, TCP/IP, Switching & Routing</title>
+<title>Baalstorm Lab 01 — Follow the Packet</title>
 <style>
 :root{
   --bg:#070a0f; --panel:#0d131c; --panel2:#111a25; --text:#d7e2ee;
@@ -50,25 +50,22 @@ th{color:var(--cyan);background:#0b121b}
 footer{max-width:1100px;margin:auto;padding:0 24px 50px;color:var(--muted)}
 .small{color:var(--muted);font-size:.9rem}
 hr{border:0;border-top:1px solid var(--line);margin:25px 0}
+
+.single{max-width:1100px;margin:auto;padding:0 24px 70px}
+.topnav{max-width:1100px;margin:auto;padding:18px 24px 0;display:flex;gap:8px;flex-wrap:wrap}
+.topnav a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);padding:7px 10px;border-radius:6px;background:#0a1018}
 </style>
 </head>
-<body>
+<body id="top">
+<div class="topnav"><a href="#top">↑ Toppen</a> <a href="02_the_network_is_broken.html">Nästa →</a></div>
 <header>
-  <div class="kicker">BAALSTORM // NETWORK TECHNIQUES // LECTURE 2</div>
-  <h1>FOLLOW THE <span>PACKET</span></h1>
-  <p class="lead">Sex övningar om OSI/TCP-IP, kapsling, ARP, switching och routing.
-  Börja i teorin, följ trafiken i Packet Tracer och avsluta på riktig Fortinet- och Cisco-utrustning.</p>
+  <div class="kicker">BAALSTORM // NETWORK TECHNIQUES // LAB 01</div>
+  <h1>FOLLOW THE PACKET</h1>
+  <p class="lead">BAALSTORM</p>
 </header>
+<main class="single">
+<section class="lab">
 
-<nav>
-<a href="#lab1">01 Follow the Packet</a><a href="#lab2">02 Broken Network</a>
-<a href="#lab3">03 ARP → HTTP</a><a href="#lab4">04 Across the Router</a>
-<a href="#lab5">05 FortiSwitch</a><a href="#lab6">06 Cisco Catalyst</a>
-</nav>
-
-<main>
-
-<section class="lab" id="lab1">
 <div class="labhead"><span class="badge">CHALLENGE 01</span><span class="type">BAALSTORM</span>
 <h2>Follow the Packet</h2></div>
 <div class="content">
@@ -119,180 +116,9 @@ C  MAC-adresser används hop-by-hop medan IP används för kommunikationen
 <p>Ordningen nedåt i stacken är: HTTP-data → TCP-segment → IP-paket → Ethernet-frame → bitar.</p>
 <p class="flag">FLAG{MAC_IP_PORTS_AND_LAYERS}</p>
 </div></details>
-</div></section>
-
-<section class="lab" id="lab2">
-<div class="labhead"><span class="badge">CHALLENGE 02</span><span class="type">BAALSTORM</span>
-<h2>The Network Is Broken</h2></div>
-<div class="content">
-<p class="goal"><b>Mål:</b> Resonera om lokalt nät, ARP, default gateway och routing.</p>
-<pre>PC-ALPHA
-IP address:      192.168.10.25
-Subnet mask:     255.255.255.0
-Default gateway: 192.168.10.1
-DNS:             192.168.10.53
-
-C:\&gt; ping 192.168.10.40
-Reply from 192.168.10.40
-
-C:\&gt; ping 192.168.20.40
-Destination host unreachable.
-
-C:\&gt; arp -a
-192.168.10.1     00-aa-bb-cc-dd-01
-192.168.10.40    00-aa-bb-cc-dd-40</pre>
-<div class="task"><strong>ANALYSERA</strong>
-<ol>
-<li>Vilken destination är lokal för PC-ALPHA?</li>
-<li>Vilken destination kräver routing?</li>
-<li>Varför behöver PC:n inte känna till MAC-adressen för 192.168.20.40?</li>
-<li>Vilken MAC-adress behöver den istället?</li>
-</ol></div>
-<p>Du får sedan tillgång till routern:</p>
-<pre>Router G0/0
-IP address: 192.168.100.1/24</pre>
-<div class="task"><strong>HITTA FELET:</strong> Varför fungerar inte kommunikationen till andra nät?</div>
-<details><summary>REVEAL DISCUSSION</summary><div>
-<p>PC:n är konfigurerad med <code>192.168.10.1</code> som default gateway, men routerns interface är <code>192.168.100.1/24</code>. PC:n och dess gateway måste kunna kommunicera lokalt. Trafik till 192.168.20.40 skickas därför aldrig korrekt till en router.</p>
-<p class="flag">FLAG{DEFAULT_GATEWAY_MATTERS}</p>
-</div></details>
-</div></section>
-
-<section class="lab" id="lab3">
-<div class="labhead"><span class="badge">LAB 03</span><span class="type">PACKET TRACER</span>
-<h2>Från ARP till HTTP</h2></div>
-<div class="content">
-<p class="goal"><b>Mål:</b> Se ARP, ICMP, Ethernet, IP, TCP och HTTP i Simulation Mode.</p>
-<pre>PC1 ─────┐
-         │
-       SW1 ───── Server
-         │
-PC2 ─────┘
-
-PC1     192.168.1.10/24
-PC2     192.168.1.20/24
-Server  192.168.1.100/24</pre>
-<div class="task"><strong>BYGG OCH TESTA</strong>
-<ol>
-<li>Skapa topologin och konfigurera adresserna.</li>
-<li>Aktivera HTTP på servern.</li>
-<li>Kontrollera PC1:s ARP-cache med <code>arp -a</code>.</li>
-<li>Gå till <b>Simulation Mode</b> och pinga PC2.</li>
-<li>Identifiera ARP Request, ARP Reply, ICMP Echo Request och ICMP Echo Reply.</li>
-<li>Kör <code>arp -a</code> igen. Vad har förändrats?</li>
-<li>Öppna <code>http://192.168.1.100</code> från PC1.</li>
-<li>Expandera informationen för Ethernet, IP, TCP och HTTP i simuleringen.</li>
-</ol></div>
-<table><tr><th>Fält</th><th>Source</th><th>Destination</th></tr>
-<tr><td>MAC</td><td></td><td></td></tr>
-<tr><td>IP</td><td></td><td></td></tr>
-<tr><td>TCP port</td><td></td><td></td></tr></table>
-<details><summary>REVEAL DISCUSSION</summary><div>
-<p>ARP översätter den lokalt relevanta IPv4-adressen till en MAC-adress. HTTP-trafiken kapslas i TCP, därefter IP och slutligen Ethernet innan den överförs.</p>
-<p class="flag">FLAG{ARP_BEFORE_THE_FRAME}</p>
-</div></details>
-</div></section>
-
-<section class="lab" id="lab4">
-<div class="labhead"><span class="badge">LAB 04</span><span class="type">PACKET TRACER</span>
-<h2>Across the Router</h2></div>
-<div class="content">
-<p class="goal"><b>Mål:</b> Upptäck vad som händer med L2- och L3-information när ett paket routas.</p>
-<pre>PC1 ─ SW1 ─ R1 ─ SW2 ─ PC2
-
-PC1       192.168.1.10/24   GW 192.168.1.1
-R1 G0/0   192.168.1.1/24
-R1 G0/1   192.168.2.1/24
-PC2       192.168.2.10/24   GW 192.168.2.1</pre>
-<div class="task"><strong>UPPGIFT</strong>
-<ol>
-<li>Konfigurera topologin. Glöm inte att routerinterfacen måste vara aktiva.</li>
-<li>Verifiera med <code>ping 192.168.2.10</code> från PC1.</li>
-<li>Byt till Simulation Mode och följ ett ICMP Echo Request.</li>
-<li>Inspektera L2- och L3-information före och efter R1.</li>
-</ol></div>
-<table><tr><th>Länk</th><th>Source MAC</th><th>Destination MAC</th><th>Source IP</th><th>Destination IP</th></tr>
-<tr><td>PC1 → R1</td><td></td><td></td><td></td><td></td></tr>
-<tr><td>R1 → PC2</td><td></td><td></td><td></td><td></td></tr></table>
-<div class="task"><strong>BREAK IT:</strong> Ta bort default gateway från PC1. Testa först en adress i 192.168.1.0/24 och därefter PC2. Förklara resultatet.</div>
-<details><summary>REVEAL DISCUSSION</summary><div>
-<p>IP-källan och IP-destinationen är normalt desamma genom denna enkla topologi. Ethernet-adresseringen gäller däremot den aktuella länken. Routern tar bort den inkommande L2-framen och kapslar IP-paketet i en ny frame för nästa länk.</p>
-<p class="flag">FLAG{ROUTERS_REWRITE_LAYER2}</p>
-</div></details>
-</div></section>
-
-<section class="lab" id="lab5">
-<div class="labhead"><span class="badge">LAB 05</span><span class="type">FORTINET / FORTISWITCH</span>
-<h2>Se Ethernet på riktigt</h2></div>
-<div class="content">
-<p class="goal"><b>Mål:</b> Jämför datorns ARP-cache med switchens MAC-tabell och verifiera trafiken i Wireshark.</p>
-<pre>PC1 ─ port 1 ┐
-             │
-         FortiSwitch
-             │
-PC2 ─ port 2 ┘
-
-PC1  192.168.10.10/24
-PC2  192.168.10.20/24</pre>
-<p class="small">Exakta CLI-kommandon kan skilja mellan FortiSwitch-modell, FortiSwitchOS-version och standalone/FortiLink-management. Använd GUI eller de kommandon som gäller för labbets switch.</p>
-<div class="task"><strong>UPPGIFT</strong>
-<ol>
-<li>Verifiera att båda switchportarna är uppe och ligger i samma VLAN.</li>
-<li>Hitta switchens MAC address table och notera vilken MAC som lärts på respektive port.</li>
-<li>Rensa eller kontrollera ARP-cachen på PC1.</li>
-<li>Starta Wireshark på PC1 och pinga PC2.</li>
-<li>Identifiera ARP Request/Reply och ICMP Echo Request/Reply.</li>
-<li>Jämför MAC-adresserna i Wireshark med switchens MAC-tabell.</li>
-<li>Flytta PC2 till en annan accessport, generera trafik igen och observera vad som händer i MAC-tabellen.</li>
-</ol></div>
-<h3>Förklara skillnaden</h3>
-<pre>PC ARP-cache:        IP address  ──&gt; MAC address
-Switch MAC-table:    MAC address ──&gt; switchport</pre>
-<details><summary>REVEAL DISCUSSION</summary><div>
-<p>ARP hjälper en IPv4-host att hitta rätt L2-adress. Switchen lär sig däremot var en MAC-adress finns genom source MAC i inkommande frames och använder sin MAC-tabell när den vidarebefordrar frames.</p>
-<p class="flag">FLAG{IP_TO_MAC_MAC_TO_PORT}</p>
-</div></details>
-</div></section>
-
-<section class="lab" id="lab6">
-<div class="labhead"><span class="badge">LAB 06</span><span class="type">CISCO CATALYST</span>
-<h2>Hur vet switchen vart framen ska?</h2></div>
-<div class="content">
-<p class="goal"><b>Mål:</b> Observera dynamisk MAC-inlärning direkt i en Catalyst-switch.</p>
-<pre>PC1 ─ Gi1/0/1 ┐
-              │
-          Catalyst
-              │
-PC2 ─ Gi1/0/2 ┘</pre>
-<div class="task"><strong>STEG 1 — STATUS</strong></div>
-<pre><span class="prompt">Switch#</span> show interfaces status
-<span class="prompt">Switch#</span> show mac address-table</pre>
-
-<div class="task"><strong>STEG 2 — GENERERA TRAFIK</strong>
-<p>Pinga mellan PC1 och PC2 och kontrollera sedan:</p></div>
-<pre><span class="prompt">Switch#</span> show mac address-table dynamic</pre>
-
-<p>Identifiera vilken MAC-adress som finns på respektive port.</p>
-
-<div class="task"><strong>CHALLENGE:</strong> Hur lärde sig switchen att PC1:s MAC-adress finns på Gi1/0/1? Vilket fält i Ethernet-framen använder den för inlärningen?</div>
-
-<div class="task"><strong>STEG 3 — GLÖM OCH LÄR OM</strong></div>
-<pre><span class="prompt">Switch#</span> clear mac address-table dynamic
-<span class="prompt">Switch#</span> show mac address-table dynamic
-
-<span class="comment"># Generera trafik mellan datorerna igen.</span>
-
-<span class="prompt">Switch#</span> show mac address-table dynamic</pre>
-
-<details><summary>REVEAL DISCUSSION</summary><div>
-<p>Switchen lär sig från <b>source MAC address</b> på frames som kommer in på en port. När destinationens MAC är känd kan framen skickas mot rätt port istället för att floodas till övriga relevanta portar.</p>
-<p class="flag">FLAG{SWITCHES_LEARN_FROM_SOURCE}</p>
-</div></details>
-</div></section>
-
+</div>
+</section>
 </main>
-<footer>
-BAALSTORM LABS // Network Techniques // OSI · TCP/IP · ARP · Ethernet · Routing
-</footer>
+<footer>BAALSTORM LABS // Network Techniques // OSI · TCP/IP · ARP · Ethernet · Routing</footer>
 </body>
 </html>
