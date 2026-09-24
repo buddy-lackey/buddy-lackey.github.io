@@ -1,51 +1,3 @@
-Yesterday 10:17 PM
-2_TCP_IP_och_OSI-modellen.pptx
-Presentation
-lecture two in network techniques cours, thoughts on the slides? 
-Edit
-denna vild är kodning? 
-
-
-men då är ju detta också signalering? kodningen är redan gjord?
-
-
-
-Ja. De fungerar som de är, eftersom management-IP:t inte används i själva dataplanet i övningarna.
-
-I FortiSwitch-övningen har klienterna 192.168.10.10/24 och 192.168.10.20/24. Management-IP 192.168.1.99 kan ligga separat och används bara när studenten administrerar switchen. Samma princip gäller Catalyst-övningen: klienttrafiken behöver inte ligga i samma subnet som switchens management-interface.
-
-Det finns dock en praktisk detalj: båda kan inte samtidigt ha 192.168.1.99 på samma managementnät. Om det är två separata labb där bara en switch används åt gången är det helt perfekt. Om FortiSwitch och Catalyst är inkopplade samtidigt i samma L2-managementnät får du en IP-konflikt.
-
-Jag skulle faktiskt lägga till högst upp i respektive HTML:
-
-Management
-Switch: 192.168.1.99
-
-Studentnät
-PC1: 192.168.10.10/24
-PC2: 192.168.10.20/24
-
-och en instruktion:
-
-Anslut till switchens management-interface på 192.168.1.99. Management-adressen tillhör inte studentnätet som används för själva Ethernet-övningen.
-
-Men: om studenterna ska administrera 192.168.1.99 från samma PC som samtidigt har 192.168.10.x, då behöver vi tänka ett varv till på hur labbmiljön faktiskt är kopplad. Då är frågan om de har separat managementanslutning/VLAN eller om du tänkt att de ska byta IP på datorn.
-
-dom är inte på samma nät
-
-Då är det inga problem. Båda kan ha management-IP 192.168.1.99, eftersom de finns på separata nät och därför inte kan få någon adresskonflikt.
-
-De två HTML-övningarna fungerar alltså i princip som de är. Jag skulle ändå lägga in Management IP: 192.168.1.99 i respektive övning så studenten direkt vet vilken adress de ska ansluta till.
-
-kan du skapa dessa två filer igen
-
-Klart. Jag har skapat om båda och lagt in management-IP 192.168.1.99 tydligt i instruktionerna.
-
-FortiSwitch – Ethernet/ARP/MAC
-Cisco Catalyst – MAC learning
-
-Studenttrafiken är fortfarande separat från managementnätet. 
-
 <!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CISCO CATALYST</title><style>
 :root{--bg:#070a0f;--panel:#0d131c;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea}
@@ -78,7 +30,3 @@ Catalyst management: 192.168.1.99</pre>
 <div class="task"><strong>RESONERA</strong><ol><li>Vad hände med MAC-tabellen när den rensades?</li><li>Vad hände när ny trafik genererades?</li><li>Vad gör switchen om destinationens MAC-adress ännu inte finns i tabellen?</li><li>Vad är skillnaden mellan MAC-inlärning och ARP?</li></ol></div>
 <details><summary>REVEAL DISCUSSION</summary><div><p>Switchen lär sig från <strong>source MAC address</strong> på inkommande frames. Om destinationens MAC är okänd floodas unknown unicast inom aktuellt VLAN till övriga relevanta portar.</p><p class="flag">FLAG{SWITCHES_LEARN_FROM_SOURCE}</p></div></details>
 </main><footer>BAALSTORM LABS // Ethernet · ARP · Switching</footer></body></html>
-05_fortiswitch_ethernet_v2.html
-HTML
-06_cisco_catalyst_mac_learning_v2.html
-HTML
