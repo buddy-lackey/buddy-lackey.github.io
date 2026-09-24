@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm Lab 04 — Across the Router</title>
+<style>
+:root{
+  --bg:#070a0f; --panel:#0d131c; --panel2:#111a25; --text:#d7e2ee;
+  --muted:#8292a6; --line:#263547; --green:#65f58b; --cyan:#5bd9ff;
+  --amber:#ffcb6b; --red:#ff6b7a; --purple:#c792ea;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:radial-gradient(circle at top,#101b28 0,#070a0f 42%);
+  color:var(--text); font:16px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+header{max-width:1100px;margin:auto;padding:64px 24px 30px}
+.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}
+h1{font-size:clamp(2rem,6vw,4.8rem);line-height:.95;margin:.3rem 0 1rem;color:#fff}
+h1 span{color:var(--green)}
+.lead{max-width:850px;color:#aebdcd;font-family:system-ui,sans-serif;font-size:1.08rem}
+nav{max-width:1100px;margin:auto;padding:0 24px 28px;display:flex;flex-wrap:wrap;gap:8px}
+nav a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);padding:7px 10px;border-radius:6px;background:#0a1018}
+main{max-width:1100px;margin:auto;padding:0 24px 70px}
+.lab{margin:24px 0 42px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),#090e15);border-radius:12px;overflow:hidden}
+.labhead{padding:24px;border-bottom:1px solid var(--line)}
+.badge{display:inline-block;color:#07100a;background:var(--green);padding:3px 8px;border-radius:4px;font-weight:800;font-size:.75rem}
+.type{color:var(--amber);margin-left:8px;font-size:.8rem}
+h2{margin:.7rem 0 .25rem;color:#fff;font-size:1.7rem}
+h3{color:var(--cyan);margin-top:1.8rem}
+.content{padding:24px}
+p,li{max-width:900px}
+.goal{border-left:3px solid var(--green);padding:8px 14px;background:#0a1511;color:#cdebd5}
+pre{
+  background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;
+  overflow:auto;color:#cfe8d7;box-shadow:inset 0 0 25px #0006;
+}
+.prompt{color:var(--green)} .comment{color:#728297}
+.task{border:1px solid #25384d;background:var(--panel2);padding:15px 18px;border-radius:8px;margin:14px 0}
+.task strong{color:var(--amber)}
+details{margin:14px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}
+summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:700}
+details div{padding:0 15px 15px;color:#b9c7d5}
+.flag{color:var(--green);font-weight:800}
+table{border-collapse:collapse;width:100%;max-width:900px;margin:12px 0}
+th,td{border:1px solid var(--line);padding:9px;text-align:left}
+th{color:var(--cyan);background:#0b121b}
+footer{max-width:1100px;margin:auto;padding:0 24px 50px;color:var(--muted)}
+.small{color:var(--muted);font-size:.9rem}
+hr{border:0;border-top:1px solid var(--line);margin:25px 0}
+
+.single{max-width:1100px;margin:auto;padding:0 24px 70px}
+.topnav{max-width:1100px;margin:auto;padding:18px 24px 0;display:flex;gap:8px;flex-wrap:wrap}
+.topnav a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);padding:7px 10px;border-radius:6px;background:#0a1018}
+</style>
+</head>
+<body id="top">
+<div class="topnav"><a href="03_arp_to_http_packet_tracer.html">← Föregående</a> <a href="#top">↑ Toppen</a> <a href="05_fortiswitch_ethernet.html">Nästa →</a></div>
+<header>
+  <div class="kicker">BAALSTORM // NETWORK TECHNIQUES // LAB 04</div>
+  <h1>ACROSS THE ROUTER</h1>
+  <p class="lead">PACKET TRACER</p>
+</header>
+<main class="single">
+<section class="lab">
+
+<div class="labhead"><span class="badge">LAB 04</span><span class="type">PACKET TRACER</span>
+<h2>Across the Router</h2></div>
+<div class="content">
+<p class="goal"><b>Mål:</b> Upptäck vad som händer med L2- och L3-information när ett paket routas.</p>
+<pre>PC1 ─ SW1 ─ R1 ─ SW2 ─ PC2
+
+PC1       192.168.1.10/24   GW 192.168.1.1
+R1 G0/0   192.168.1.1/24
+R1 G0/1   192.168.2.1/24
+PC2       192.168.2.10/24   GW 192.168.2.1</pre>
+<div class="task"><strong>UPPGIFT</strong>
+<ol>
+<li>Konfigurera topologin. Glöm inte att routerinterfacen måste vara aktiva.</li>
+<li>Verifiera med <code>ping 192.168.2.10</code> från PC1.</li>
+<li>Byt till Simulation Mode och följ ett ICMP Echo Request.</li>
+<li>Inspektera L2- och L3-information före och efter R1.</li>
+</ol></div>
+<table><tr><th>Länk</th><th>Source MAC</th><th>Destination MAC</th><th>Source IP</th><th>Destination IP</th></tr>
+<tr><td>PC1 → R1</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>R1 → PC2</td><td></td><td></td><td></td><td></td></tr></table>
+<div class="task"><strong>BREAK IT:</strong> Ta bort default gateway från PC1. Testa först en adress i 192.168.1.0/24 och därefter PC2. Förklara resultatet.</div>
+<details><summary>REVEAL DISCUSSION</summary><div>
+<p>IP-källan och IP-destinationen är normalt desamma genom denna enkla topologi. Ethernet-adresseringen gäller däremot den aktuella länken. Routern tar bort den inkommande L2-framen och kapslar IP-paketet i en ny frame för nästa länk.</p>
+<p class="flag">FLAG{ROUTERS_REWRITE_LAYER2}</p>
+</div></details>
+</div>
+</section>
+</main>
+<footer>BAALSTORM LABS // Network Techniques // OSI · TCP/IP · ARP · Ethernet · Routing</footer>
+</body>
+</html>
