@@ -1,0 +1,35 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FORTISWITCH</title><style>
+:root{--bg:#070a0f;--panel:#0d131c;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 42%);color:var(--text);font:16px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1050px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,4rem);margin:.3rem 0}h2{color:var(--cyan)}.lead{color:#aebdcd}
+.box,.task{border:1px solid var(--line);background:var(--panel);padding:16px 18px;border-radius:8px;margin:14px 0}.goal{border-left:3px solid var(--green)}
+pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}
+summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold}.prompt{color:var(--green)}.small{color:var(--muted)}
+</style></head><body><header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES</div><h1>FORTISWITCH</h1><p class="lead">Se Ethernet på riktigt — ARP, MAC-adresser och switchens MAC-tabell.</p></header><main>
+<div class="box goal"><strong>Management IP:</strong> 192.168.1.99<br>Använd management-adressen för att logga in på FortiSwitch. Managementnätet är separat från studentnätet.</div>
+<h2>Topologi</h2><pre>PC1 ─ port 1 ┐
+             │
+         FortiSwitch
+             │
+PC2 ─ port 2 ┘
+
+FortiSwitch management: 192.168.1.99
+
+Studentnät:
+PC1  192.168.10.10/24
+PC2  192.168.10.20/24</pre>
+<div class="task"><strong>UPPGIFT</strong><ol>
+<li>Logga in på FortiSwitch via <code>192.168.1.99</code>.</li>
+<li>Verifiera att båda switchportarna är uppe och ligger i samma VLAN.</li>
+<li>Hitta switchens MAC address table och notera vilken MAC-adress som har lärts på respektive port.</li>
+<li>Kontrollera eller rensa ARP-cachen på PC1.</li><li>Starta Wireshark på PC1 och pinga PC2.</li>
+<li>Identifiera ARP Request, ARP Reply, ICMP Echo Request och ICMP Echo Reply.</li>
+<li>Jämför MAC-adresserna i Wireshark med switchens MAC-tabell.</li>
+<li>Flytta PC2 till en annan accessport, generera trafik igen och observera MAC-tabellen.</li></ol></div>
+<h2>Förklara skillnaden</h2><pre>PC ARP-cache:      IP-adress  ──&gt; MAC-adress
+Switch MAC-table:  MAC-adress ──&gt; switchport</pre>
+<div class="task"><strong>CHALLENGE:</strong> Hur lär sig FortiSwitch vilken port en viss MAC-adress finns på? Tittar switchen på source MAC eller destination MAC när den lär sig?</div>
+<details><summary>REVEAL DISCUSSION</summary><div><p>ARP hjälper en IPv4-host att hitta en MAC-adress på det lokala nätet. Switchen lär sig var MAC-adresser finns genom <strong>source MAC</strong> i inkommande frames.</p><p class="flag">FLAG{IP_TO_MAC_MAC_TO_PORT}</p></div></details>
+<p class="small">Exakta GUI-vyer och CLI-kommandon kan skilja mellan FortiSwitch-modell, FortiSwitchOS-version och standalone/FortiLink-management.</p>
+</main><footer>BAALSTORM LABS // Ethernet · ARP · Switching</footer></body></html>
