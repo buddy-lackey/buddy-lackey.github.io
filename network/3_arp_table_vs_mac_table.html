@@ -1,0 +1,50 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baalstorm LAB 13 — TWO TABLES</title><style>
+:root{--bg:#070a0f;--panel:#0d131c;--panel2:#101925;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea;--red:#ff6b7a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,3.8rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.3rem}h3{color:var(--amber)}.lead{color:#aebdcd;max-width:900px}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold;font-size:1.05rem}.small{color:var(--muted)}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{color:var(--cyan);background:#0b121b}.tag{display:inline-block;border:1px solid var(--line);padding:2px 7px;border-radius:12px;color:var(--muted);font-size:.8rem}.rule{color:var(--green);font-weight:bold}</style></head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES // ETHERNET // LAB 13</div><h1>TWO TABLES</h1><p class="lead">Samma Ethernetkommunikation involverar två tabeller som studenter ofta blandar ihop. Nu separerar vi dem ordentligt.</p></header><main>
+<div class="box goal"><strong>MÅL</strong><br>Förstå ARP-cache som IP→MAC och switchens MAC-tabell som MAC→port, samt följa hur båda byggs under en kommunikation.</div>
+<div class="scenario"><pre>PC1 (Port 1)             PC2 (Port 7)
+IP  192.168.10.10        IP  192.168.10.20
+MAC AA:AA:AA:AA:AA:10    MAC BB:BB:BB:BB:BB:20
+          \               /
+             [ SWITCH ]
+
+PC1 ARP CACHE: EMPTY
+SWITCH MAC TABLE: EMPTY</pre></div>
+<h2>Step 1 — PC1 knows an IP, not a MAC</h2>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>PC1 ska skicka ett IPv4-paket till <code>192.168.10.20</code> på samma LAN. Vilken information saknas för att skapa Ethernet-framen?</p></div>
+<details><summary>REVEAL</summary><div><p>PC1 behöver veta vilken destination-MAC som hör till <code>192.168.10.20</code>.</p></div></details>
+<h2>Step 2 — ARP Request</h2>
+<pre>Who has 192.168.10.20?
+Tell 192.168.10.10
+
+Ethernet destination:
+FF:FF:FF:FF:FF:FF</pre>
+<div class="task challenge"><strong>CHALLENGE 2</strong><ol><li>Varför används broadcast?</li><li>Vad kan switchen lära sig redan från ARP Requestens source MAC?</li><li>Vilken port eller vilka portar får requesten?</li></ol></div>
+<details><summary>REVEAL</summary><div><p>PC1 känner ännu inte PC2:s MAC och frågar därför LAN:et. När framen kommer från P1 kan switchen lära <code>AA:AA:AA:AA:AA:10 → P1</code>. Broadcasten floodas ut på övriga relevanta portar.</p></div></details>
+<h2>Step 3 — ARP Reply</h2>
+<pre>192.168.10.20 is at BB:BB:BB:BB:BB:20</pre>
+<div class="task challenge"><strong>CHALLENGE 3</strong><p>Efter reply: skriv både PC1:s ARP-cache och switchens MAC-tabell.</p></div>
+<details><summary>REVEAL</summary><div><pre>PC1 ARP CACHE
+192.168.10.20 → BB:BB:BB:BB:BB:20
+
+SWITCH MAC TABLE
+AA:AA:AA:AA:AA:10 → P1
+BB:BB:BB:BB:BB:20 → P7</pre></div></details>
+<h2>Step 4 — actual IPv4 traffic</h2>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>PC1 har nu allt den behöver. Beskriv två separata beslut:</p><ol><li>Hur bestämmer PC1 destination-MAC?</li><li>Hur bestämmer switchen utgående port?</li></ol></div>
+<details><summary>REVEAL</summary><div><p>PC1 använder IP→MAC-informationen i ARP-cachen för att skapa framen. Switchen läser frame-destinationen och använder MAC→port-informationen i sin MAC-tabell.</p></div></details>
+<h2>Step 5 — trap question</h2>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Vilken tabell innehåller följande poster?</p><pre>192.168.10.20 → BB:BB:BB:BB:BB:20
+BB:BB:BB:BB:BB:20 → Port 7</pre></div>
+<details><summary>REVEAL</summary><div><pre>IP → MAC   = ARP-cache
+MAC → Port = switchens MAC-tabell</pre></div></details>
+<h2>Step 6 — clear ARP, keep MAC table</h2>
+<div class="scenario"><p>PC1:s ARP-cache rensas men switchens MAC-tabell ligger kvar.</p></div>
+<div class="task challenge"><strong>CHALLENGE 6</strong><p>Kan PC1 omedelbart skapa en unicast Ethernet-frame till PC2 bara för att switchen vet att PC2 finns på Port 7?</p></div>
+<details><summary>REVEAL</summary><div><p>Nej. Switchens interna MAC→port-kunskap ersätter inte PC1:s behov av att känna destination-MAC. PC1 behöver åter lösa IP→MAC, exempelvis med ARP.</p></div></details>
+<div class="box"><pre>HOST:   ARP     IP  → MAC
+SWITCH: MAC/FDB MAC → PORT</pre></div>
+<p class="flag">FLAG{TWO_TABLES_TWO_PROBLEMS}</p>
+</main><footer>BAALSTORM LABS // Ethernet · Frames · MAC · Switching</footer></body></html>
