@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm — FORTISWITCH LABS</title>
+<style>
+:root{--bg:#070a0f;--panel:#0d131c;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}
+h1{color:#fff;font-size:clamp(2rem,6vw,3.7rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.2rem}h3{color:var(--amber)}
+.lead{color:#aebdcd}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}
+.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}
+pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}
+details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}
+details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold}.small{color:var(--muted)}
+.lab{margin:42px 0 70px}.labhead{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}.labnum{color:var(--green);font-size:.85rem;letter-spacing:.12em}
+.toc a{color:var(--cyan);text-decoration:none}.toc li{margin:.45rem 0}.divider{height:1px;background:var(--line);margin:50px 0}
+</style>
+</head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES</div><h1>FORTISWITCH LABS</h1><p class="lead">Praktiska Baalstorm-övningar för FortiSwitch: MAC-learning, ARP, broadcast och Wireshark.</p>
+<div class="box toc"><strong>INNEHÅLL</strong><ol><li><a href="#lab-1">FORTISWITCH LAB 1: FORTISWITCH: WATCH IT LEARN</a></li><li><a href="#lab-2">FORTISWITCH LAB 2: FORTISWITCH: BROADCAST HUNT</a></li></ol></div></header>
+<main><section class="lab" id="lab-1"><div class="labhead"><div class="labnum">FORTISWITCH LAB 1</div><h2>FORTISWITCH: WATCH IT LEARN</h2></div>
+<div class="box goal"><strong>MÅL</strong><br/>Koppla minst två datorer till FortiSwitch, skapa trafik och verifiera sambandet <strong>source MAC → switchport</strong>. Jämför även hostens ARP-cache med switchens MAC-tabell.</div>
+<div class="scenario"><strong>LAB SETUP</strong><pre>PC1 ── port X ──┐
+                 │
+             FortiSwitch
+                 │
+PC2 ── port Y ──┘
+
+Management IP: 192.168.1.99</pre><p>Notera exakt vilka fysiska switchportar ni använder. Kommandon kan skilja mellan FortiSwitch-versioner och hur switchen hanteras; använd CLI/GUI som finns i kursmiljön för att visa MAC-adresstabellen.</p></div>
+<h2>1 — Establish identity</h2>
+<p>På båda datorerna: identifiera IPv4- och MAC-adress.</p><pre>Windows:
+ipconfig /all
+arp -a</pre>
+<div class="task challenge"><strong>CHALLENGE 1</strong><pre>PC1 IP:  __________________
+PC1 MAC: __________________
+PC1 port: ________________
+
+PC2 IP:  __________________
+PC2 MAC: __________________
+PC2 port: ________________</pre></div>
+<h2>2 — Before traffic</h2>
+<p>Öppna FortiSwitchens MAC-adresstabell innan ni medvetet genererar trafik mellan PC1 och PC2.</p>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>Finns båda klienternas MAC-adresser redan? Om ja: varför kan switchen redan ha lärt sig dem?</p></div>
+<details><summary>REVEAL DISCUSSION</summary><div><p>MAC-learning kräver inte ping specifikt. All trafik som kommer in med klientens source MAC kan göra att switchen lär adressen.</p></div></details>
+<h2>3 — Generate traffic</h2><pre>PC1&gt; ping &lt;PC2-IP&gt;</pre>
+<p>Kontrollera MAC-tabellen igen.</p>
+<div class="task challenge"><strong>CHALLENGE 3</strong><ol><li>Hitta PC1:s MAC. Vilken port pekar den på?</li><li>Hitta PC2:s MAC. Vilken port pekar den på?</li><li>Stämmer portarna med den fysiska inkopplingen?</li><li>Vilket fält i en Ethernet-frame gjorde learning möjlig?</li></ol></div>
+<details><summary>REVEAL</summary><div><p>Switchen lär från <strong>source MAC</strong> och ingressporten. Tabellen ska därför koppla respektive klient-MAC till porten där dess frames kom in.</p></div></details>
+<h2>4 — ARP table ≠ MAC table</h2>
+<pre>PC1&gt; arp -a</pre>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Jämför informationen på PC1 med FortiSwitch.</p><pre>ARP cache:  ______ → ______
+MAC table:  ______ → ______</pre></div>
+<details><summary>REVEAL</summary><div><pre>ARP cache: IP → MAC
+MAC table: MAC → switchport</pre></div></details>
+<h2>5 — Move a host</h2>
+<p>Flytta PC2 till en annan ledig port. Generera trafik från PC2 igen och kontrollera tabellen.</p>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Vad händer med associationen för PC2:s MAC? Hur kan switchen upptäcka att samma enhet nu finns på en annan port?</p></div>
+<details><summary>REVEAL</summary><div><p>När switchen ser samma source MAC komma in på den nya porten kan posten uppdateras så att adressen pekar på den aktuella ingressporten.</p></div></details>
+<h2>6 — Optional Wireshark proof</h2>
+<p>Fånga trafik på PC1 samtidigt som ni pingar PC2. Hitta Ethernet II och jämför source/destination MAC med adresserna i tabellerna.</p>
+<div class="task challenge"><strong>FINAL</strong><p>Förklara med en mening varifrån FortiSwitch lär sig MAC-adresser och med en mening hur den använder destination-MAC.</p></div>
+<details><summary>REVEAL FINAL</summary><div><p><strong>Learn from source; forward on destination.</strong></p><p class="flag">FLAG{FORTISWITCH_LEARNS_FROM_SOURCE}</p></div></details>
+</section><div class="divider"></div><section class="lab" id="lab-2"><div class="labhead"><div class="labnum">FORTISWITCH LAB 2</div><h2>FORTISWITCH: BROADCAST HUNT</h2></div>
+<div class="box goal"><strong>MÅL</strong><br/>Generera ARP/broadcast-trafik, observera den i Wireshark och jämföra ARP-cache med FortiSwitchens MAC-adresstabell.</div>
+<div class="scenario"><pre>PC1 ─┐
+PC2 ─┼── FortiSwitch
+PC3 ─┘
+
+Alla tre ligger i samma labb-LAN/VLAN.</pre></div>
+<h2>1 — Baseline</h2>
+<p>På PC1:</p><pre>arp -a</pre><p>Dokumentera befintliga poster och öppna samtidigt MAC-tabellen i FortiSwitch.</p>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>Vilken information finns i ARP-tabellen respektive switchens MAC-tabell innan ni börjar?</p></div>
+<h2>2 — Clear ARP</h2>
+<p>På Windows som lokal administratör:</p><pre>arp -d *
+arp -a</pre>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>Vad har ni rensat? Har ni samtidigt rensat FortiSwitchens MAC-tabell?</p></div>
+<details><summary>REVEAL</summary><div><p>Nej. Kommandot påverkar hostens ARP-cache, inte switchens MAC/FDB-tabell.</p></div></details>
+<h2>3 — Capture</h2>
+<p>Starta Wireshark på PC1. Generera trafik mot en lokal klient vars ARP-post saknas.</p><pre>ping &lt;PC2-IP&gt;</pre>
+<p>Använd displayfilter:</p><pre>arp
+eth.dst == ff:ff:ff:ff:ff:ff</pre>
+<div class="task challenge"><strong>CHALLENGE 3</strong><ol><li>Hitta ARP Request.</li><li>Vad är source MAC?</li><li>Vad är destination MAC?</li><li>Vilken IP frågar PC1 efter?</li><li>Hitta ARP Reply om möjligt.</li></ol></div>
+<h2>4 — Before and after</h2>
+<p>Kör:</p><pre>arp -a</pre><p>Kontrollera därefter FortiSwitchens MAC-tabell igen.</p>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Vilka nya samband kan ha uppstått?</p><pre>PC1 ARP: IP → __________
+Switch:   MAC → ________</pre></div>
+<h2>5 — Who sees broadcast?</h2>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Med tre datorer på samma VLAN: vilka switchportar ska en inkommande Ethernet-broadcast skickas ut på? Ska den skickas tillbaka ut samma port som den kom in på?</p></div>
+<details><summary>REVEAL</summary><div><p>Broadcast floodas inom broadcastdomänen/VLAN:et till övriga relevanta portar, inte tillbaka som samma frame på ingressporten.</p></div></details>
+<h2>6 — MAC learning still happens</h2>
+<div class="task challenge"><strong>FINAL</strong><p>Om destinationen är broadcast, kan switchen ändå lära något från framen? Vilket fält?</p></div>
+<details><summary>REVEAL FINAL</summary><div><p>Ja. Source learning sker fortfarande från frame:ns source MAC och ingressport.</p><p class="flag">FLAG{BROADCAST_STILL_HAS_A_SOURCE}</p></div></details>
+</section></main>
+<footer>BAALSTORM LABS // Network Techniques</footer></body></html>
