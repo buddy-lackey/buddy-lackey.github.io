@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm — CATALYST LABS</title>
+<style>
+:root{--bg:#070a0f;--panel:#0d131c;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}
+h1{color:#fff;font-size:clamp(2rem,6vw,3.7rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.2rem}h3{color:var(--amber)}
+.lead{color:#aebdcd}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}
+.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}
+pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}
+details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}
+details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold}.small{color:var(--muted)}
+.lab{margin:42px 0 70px}.labhead{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}.labnum{color:var(--green);font-size:.85rem;letter-spacing:.12em}
+.toc a{color:var(--cyan);text-decoration:none}.toc li{margin:.45rem 0}.divider{height:1px;background:var(--line);margin:50px 0}
+</style>
+</head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES</div><h1>CATALYST LABS</h1><p class="lead">Praktiska Baalstorm-övningar för Cisco Catalyst: CAM/MAC-tabell, learning och forwarding.</p>
+<div class="box toc"><strong>INNEHÅLL</strong><ol><li><a href="#lab-1">CATALYST LAB 1: CATALYST: CAM TABLE UNDER FIRE</a></li></ol></div></header>
+<main><section class="lab" id="lab-1"><div class="labhead"><div class="labnum">CATALYST LAB 1</div><h2>CATALYST: CAM TABLE UNDER FIRE</h2></div>
+<div class="box goal"><strong>MÅL</strong><br/>Arbeta direkt med en Catalyst-switch och koppla CLI-output till teorin om source learning och destination forwarding.</div>
+<div class="scenario"><pre>PC-A ── Gi/Fa port ? ─┐
+PC-B ── Gi/Fa port ? ─┼── Cisco Catalyst
+PC-C ── Gi/Fa port ? ─┘
+
+Management IP: 192.168.1.99</pre></div>
+<h2>1 — Find your ports</h2>
+<pre>Switch&gt; enable
+Switch# show interfaces status</pre>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>Identifiera de anslutna portarna och notera status. Vilka portar tror ni hör till PC-A, PC-B och PC-C?</p></div>
+<h2>2 — Inspect the table</h2>
+<pre>Switch# show mac address-table
+Switch# show mac address-table dynamic</pre>
+<div class="task challenge"><strong>CHALLENGE 2</strong><ol><li>Hur många dynamiska MAC-poster finns?</li><li>Vilka portar pekar de på?</li><li>Kan ni matcha klienternas MAC-adresser mot rätt port?</li></ol></div>
+<h2>3 — Clear and observe</h2>
+<p>Rensa de dynamiskt inlärda posterna i den kontrollerade labbmiljön:</p>
+<pre>Switch# clear mac address-table dynamic
+Switch# show mac address-table dynamic</pre>
+<div class="task challenge"><strong>CHALLENGE 3</strong><p>Vad försvann? Varför kan vissa typer av poster fortfarande finnas kvar?</p></div>
+<h2>4 — One host speaks</h2>
+<p>Generera trafik från endast PC-A och kör sedan:</p>
+<pre>Switch# show mac address-table dynamic</pre>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Vilken MAC borde dyka upp först? Vad bevisar detta om hur switchen lär?</p></div>
+<details><summary>REVEAL</summary><div><p>PC-A:s source MAC kan läras på dess ingressport. Learning baseras på source-fältet i inkommande Ethernet-frames.</p></div></details>
+<h2>5 — A talks to B</h2>
+<p>Låt PC-A pinga PC-B. Kontrollera tabellen efteråt.</p>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Förklara hur switchen går från en situation där B kan vara okänd till att senare kunna skicka known unicast endast mot B:s port.</p></div>
+<details><summary>REVEAL</summary><div><p>När B själv skickar en frame lär switchen B:s source MAC och ingressport. Därefter kan B användas som känd destination.</p></div></details>
+<h2>6 — Move B</h2>
+<p>Flytta PC-B till en annan accessport och generera ny trafik från B.</p>
+<pre>Switch# show mac address-table dynamic</pre>
+<div class="task challenge"><strong>CHALLENGE 6</strong><p>Vilken förändring letar ni efter? Relatera observationen till MAC-learning.</p></div>
+<h2>7 — Explain the CLI</h2>
+<div class="task challenge"><strong>FINAL</strong><p>En kurskamrat visar:</p><pre>Vlan    Mac Address       Type       Ports
+----    -----------       --------   -----
+  1     aaaa.bbbb.cccc    DYNAMIC    Gi0/3</pre><p>Förklara exakt vad raden betyder — och vad den <em>inte</em> säger om klientens IP-adress.</p></div>
+<details><summary>REVEAL FINAL</summary><div><p>Switchen har dynamiskt lärt att MAC <code>aaaa.bbbb.cccc</code> nås via Gi0/3 i det angivna VLAN:et. Raden är en lager-2 MAC→port-association och behöver inte innehålla någon IP-information.</p><p class="flag">FLAG{CATALYST_CAM_TABLE_MASTERED}</p></div></details>
+</section></main>
+<footer>BAALSTORM LABS // Network Techniques</footer></body></html>
