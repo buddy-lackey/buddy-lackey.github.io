@@ -1,0 +1,43 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baalstorm LAB 10 — MAC TRAFFIC DETECTIVE</title><style>
+:root{--bg:#070a0f;--panel:#0d131c;--panel2:#101925;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea;--red:#ff6b7a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,3.8rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.3rem}h3{color:var(--amber)}.lead{color:#aebdcd;max-width:900px}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold;font-size:1.05rem}.small{color:var(--muted)}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{color:var(--cyan);background:#0b121b}.tag{display:inline-block;border:1px solid var(--line);padding:2px 7px;border-radius:12px;color:var(--muted);font-size:.8rem}.rule{color:var(--green);font-weight:bold}</style></head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES // ETHERNET // LAB 10</div><h1>MAC TRAFFIC DETECTIVE</h1><p class="lead">Alla MAC-adresser är inte samma typ. Analysera destinationen och avgör vem som förväntas ta emot framen.</p></header><main>
+<div class="box goal"><strong>MÅL</strong><br>Identifiera unicast, multicast och broadcast på lager 2 och använda I/G-biten för att resonera om group/individual-adresser.</div>
+<div class="scenario"><strong>SCENARIO</strong><p>Du felsöker ett LAN där samma switchport ser flera sorters Ethernet-trafik. Någon hävdar att “allt som inte är FF:FF:FF:FF:FF:FF är unicast”. Bevisa eller motbevisa.</p></div>
+<h2>Round 1 — classify</h2>
+<pre>A  00:08:A2:BC:56:D3
+B  FF:FF:FF:FF:FF:FF
+C  01:00:5E:00:00:C8
+D  3C:52:82:11:22:33
+E  3D:52:82:11:22:33
+F  A4:5E:60:10:20:30</pre>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>Klassificera varje adress som individual/unicast, group/multicast eller Ethernet broadcast. För E: visa varför genom att undersöka första byten.</p></div>
+<details><summary>REVEAL</summary><div><pre>A → unicast
+B → broadcast
+C → multicast/group
+D → unicast
+E → multicast/group
+F → unicast</pre><p><code>3D = 0011 1101</code>. Den minst signifikanta biten i första byten, I/G-biten, är 1 → group address.</p></div></details>
+<h2>Round 2 — what does the NIC accept?</h2>
+<div class="scenario"><p>Din host använder MAC <code>3C:52:82:11:22:33</code>. Anta dessutom att den är medlem i multicastgruppen som motsvarar adress C.</p></div>
+<pre>FRAME 1  Dst 3C:52:82:11:22:33
+FRAME 2  Dst 00:08:A2:BC:56:D3
+FRAME 3  Dst FF:FF:FF:FF:FF:FF
+FRAME 4  Dst 01:00:5E:00:00:C8</pre>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>Vilka frames är relevanta för din host enligt scenariot? Förklara varför.</p></div>
+<details><summary>REVEAL</summary><div><p>1 är direkt adresserad till hosten. 3 är broadcast. 4 är multicast för en grupp hosten enligt scenariot är medlem i. Frame 2 är unicast till någon annan.</p></div></details>
+<h2>Round 3 — hexadecimal clue</h2>
+<div class="task challenge"><strong>CHALLENGE 3</strong><p>Utan att konvertera hela MAC-adressen till binärt: vilka av första bytes nedan har I/G=0 respektive I/G=1?</p><pre>00  01  08  09  3C  3D  A4  A5</pre></div>
+<details><summary>REVEAL</summary><div><pre>I/G=0: 00 08 3C A4
+I/G=1: 01 09 3D A5</pre><p>Genom att titta på lägsta biten i första byten ser vi individual/group. Ett praktiskt hex-mönster är att dessa exempel med jämnt första byte har I/G=0 och de udda I/G=1.</p></div></details>
+<h2>Round 4 — don't confuse layers</h2>
+<pre>Destination IP : 224.0.0.200
+Destination MAC: 01:00:5E:00:00:C8</pre>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Varför finns både en multicast-IP och en multicast-MAC i samma överföring?</p></div>
+<details><summary>REVEAL</summary><div><p>IP-adressen hör till lager 3. När IP-paketet transporteras över Ethernet kapslas det i en lager-2-frame, som också behöver en destination på lager 2.</p></div></details>
+<h2>Final verdict</h2>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Är påståendet korrekt?</p><pre>"Om destinationen inte är FF:FF:FF:FF:FF:FF
+måste framen vara unicast."</pre></div>
+<details><summary>REVEAL FINAL</summary><div><p>Nej. Ethernet har även group/multicast-adresser. Broadcast är ett särskilt gruppfall med alla bitar satta till 1.</p><p class="flag">FLAG{READ_THE_IG_BIT}</p></div></details>
+</main><footer>BAALSTORM LABS // Ethernet · Frames · MAC · Switching</footer></body></html>
