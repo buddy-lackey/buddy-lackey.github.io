@@ -1,0 +1,60 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baalstorm LAB 14 — WIRESHARK: ETHERNET HUNT</title><style>
+:root{--bg:#070a0f;--panel:#0d131c;--panel2:#101925;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea;--red:#ff6b7a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,3.8rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.3rem}h3{color:var(--amber)}.lead{color:#aebdcd;max-width:900px}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold;font-size:1.05rem}.small{color:var(--muted)}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{color:var(--cyan);background:#0b121b}.tag{display:inline-block;border:1px solid var(--line);padding:2px 7px;border-radius:12px;color:var(--muted);font-size:.8rem}.rule{color:var(--green);font-weight:bold}</style></head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES // ETHERNET // LAB 14</div><h1>WIRESHARK: ETHERNET HUNT</h1><p class="lead">Nu lämnar vi de fiktiva paketen. Starta Wireshark och verifiera Ethernet, ARP och MAC-adresser i trafik från din egen dator.</p></header><main>
+<div class="box goal"><strong>MÅL</strong><br>Göra en riktig capture, generera kontrollerad trafik och hitta Ethernet-header, ARP, source/destination MAC, broadcast och EtherType.</div>
+<div class="scenario"><strong>DU BEHÖVER</strong><p>Wireshark, ett aktivt nätverksinterface och en annan nåbar IPv4-adress på ditt lokala nät. Kör kommandon som kräver förhöjda rättigheter endast där kursmiljön tillåter det.</p></div>
+<h2>Phase 1 — establish identity</h2>
+<p>Innan capture: identifiera ditt interface.</p>
+<pre>Windows:
+ipconfig /all
+arp -a
+
+Linux:
+ip addr
+ip neigh</pre>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>Skriv ned:</p><pre>Din IPv4-adress: __________________
+Din MAC-adress:  __________________
+En lokal mål-IP: __________________</pre></div>
+<h2>Phase 2 — start capture</h2>
+<p>Starta Wireshark på rätt interface. Använd inget displayfilter ännu. Generera sedan lite lokal trafik genom att pinga den lokala mål-IP-adressen.</p>
+<pre>ping &lt;lokal-mål-IP&gt;</pre>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>Stoppa capture. Kan du hitta ICMP-trafiken? Klicka på en frame och expandera <strong>Ethernet II</strong>. Notera source och destination MAC.</p></div>
+<details><summary>REVEAL DISCUSSION</summary><div><p>Ethernet II visar lager-2-adresserna. IP-delen längre ned i packet details visar lager-3-adresserna. Båda finns i samma kapslade överföring.</p></div></details>
+<h2>Phase 3 — force an ARP observation</h2>
+<p>Om kursmiljön tillåter det kan du rensa relevant ARP-cache och sedan pinga en lokal host igen. På Windows kan administratörsrättigheter krävas.</p>
+<pre>Windows:
+arp -d *
+ping &lt;lokal-mål-IP&gt;
+
+Linux, exempel:
+ip neigh
+ping &lt;lokal-mål-IP&gt;</pre>
+<p class="small">På Linux behöver du inte rensa hela neighbor-tabellen om du inte vill; målet är att fånga en ARP-resolution som faktiskt sker.</p>
+<h2>Phase 4 — hunt ARP</h2>
+<pre>Wireshark display filter:
+arp</pre>
+<div class="task challenge"><strong>CHALLENGE 3</strong><ol><li>Hitta en ARP Request.</li><li>Vad är Ethernet source MAC?</li><li>Vad är Ethernet destination MAC?</li><li>Vad frågar ARP-paketet efter?</li><li>Hitta om möjligt motsvarande ARP Reply.</li></ol></div>
+<details><summary>REVEAL</summary><div><p>En typisk ARP Request använder destination <code>FF:FF:FF:FF:FF:FF</code> eftersom avsändaren ännu inte känner den sökta hostens MAC. Reply kan sedan skickas unicast tillbaka.</p></div></details>
+<h2>Phase 5 — hunt broadcast</h2>
+<pre>eth.dst == ff:ff:ff:ff:ff:ff</pre>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Hur många broadcast-frames hittar du? Vilka protokoll använder dem i just din capture? Välj en och dokumentera source MAC och protokoll.</p></div>
+<h2>Phase 6 — EtherType</h2>
+<p>Markera en IPv4-frame och en ARP-frame. Expandera Ethernet II och jämför Type-fältet.</p>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Verifiera om du hittar:</p><pre>IPv4 → 0x0800
+ARP  → 0x0806</pre><p>Om du har IPv6-trafik, kontrollera även dess EtherType.</p></div>
+<details><summary>REVEAL</summary><div><pre>IPv4 = 0x0800
+ARP  = 0x0806
+IPv6 = 0x86DD</pre></div></details>
+<h2>Phase 7 — compare layers</h2>
+<div class="task challenge"><strong>CHALLENGE 6</strong><p>Välj ett IPv4-paket och fyll i:</p><pre>Ethernet source MAC:      __________________
+Ethernet destination MAC: __________________
+IPv4 source:              __________________
+IPv4 destination:         __________________</pre><p>Förklara varför samma frame innehåller både MAC- och IP-adresser.</p></div>
+<h2>Phase 8 — investigation</h2>
+<div class="task challenge"><strong>CHALLENGE 7</strong><p>Använd minst två displayfilter från labben och hitta:</p><ol><li>en broadcast-frame,</li><li>en unicast-frame,</li><li>en ARP-frame,</li><li>en IPv4-frame.</li></ol><p>För varje vald frame: ange source MAC, destination MAC och vilket protokoll som ligger ovanpå Ethernet.</p></div>
+<h2>Final questions</h2>
+<div class="task challenge"><strong>FINAL</strong><ol><li>Vilket fält i Ethernet-headern berättar vad payload innehåller?</li><li>Varför syns en ARP Request ofta som broadcast?</li><li>Vad är skillnaden mellan MAC-adresserna och IP-adresserna du såg?</li><li>Vad kan du nu verifiera i Wireshark som tidigare bara var teori?</li></ol></div>
+<details><summary>REVEAL FINAL DISCUSSION</summary><div><p>EtherType identifierar payload-protokollet. ARP Request kan använda broadcast när avsändaren söker en okänd MAC på LAN:et. MAC hör till Ethernet/L2 medan IP hör till L3. Capture visar kapslingen konkret.</p><p class="flag">FLAG{CAPTURE_PROVES_THE_THEORY}</p></div></details>
+</main><footer>BAALSTORM LABS // Ethernet · Frames · MAC · Switching</footer></body></html>
