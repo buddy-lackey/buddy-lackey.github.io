@@ -1,0 +1,90 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baalstorm Lab 08 — Hexadecimal: Speak MAC</title>
+<style>:root{--bg:#070a0f;--panel:#0d131c;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea;--red:#ff6b7a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 42%);color:var(--text);font:16px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}header,main,footer{max-width:1050px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,4rem);line-height:1;margin:.3rem 0}h2{color:var(--cyan);margin-top:2rem}.lead{color:#aebdcd}.box,.task{border:1px solid var(--line);background:var(--panel);padding:16px 18px;border-radius:8px;margin:14px 0}.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.warning{border-left:3px solid var(--amber)}pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold}.small{color:var(--muted)}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{color:var(--cyan);background:#0b121b}</style></head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES // LAB 08</div><h1>HEXADECIMAL:<br>SPEAK MAC</h1><p class="lead">Lär dig precis så mycket hexadecimal representation och binärt som behövs för att kunna läsa och förstå MAC-adresser.</p></header><main>
+<div class="box goal"><strong>MÅL</strong><br>Efter övningen ska du kunna läsa hexadecimala värden, förstå hur de representerar bitar och bytes samt använda detta för att resonera om MAC-adresser.</div>
+<h2>1. Varför hexadecimal?</h2><p>Fyra bitar kan representeras med exakt en hexadecimal siffra.</p>
+<pre>BINÄRT  HEX  DECIMAL
+0000     0      0
+0001     1      1
+0010     2      2
+0011     3      3
+0100     4      4
+0101     5      5
+0110     6      6
+0111     7      7
+1000     8      8
+1001     9      9
+1010     A     10
+1011     B     11
+1100     C     12
+1101     D     13
+1110     E     14
+1111     F     15
+
+1111 1111 = FF hex = 255 decimal</pre>
+<h2>2. Räkna lite hex</h2><pre>2A hex = 2 × 16 + 10 = 42 decimal</pre>
+<div class="task challenge"><strong>CHALLENGE 1 — HEX → DECIMAL</strong><pre>0A = ?
+10 = ?
+2A = ?
+FF = ?</pre></div>
+<details><summary>REVEAL ANSWER</summary><div><pre>0A = 10
+10 = 16
+2A = 42
+FF = 255</pre></div></details>
+<h2>3. Från hex till MAC</h2><pre>00 : 08 : A2 : BC : 56 : D3
+──   ──   ──   ──   ──   ──
+1B   1B   1B   1B   1B   1B
+
+6 bytes × 8 bitar = 48 bitar
+12 hexsiffror</pre>
+<div class="task challenge"><strong>CHALLENGE 2 — DISSECT THE MAC</strong><p>Utgå från <code>00:08:A2:BC:56:D3</code>.</p><ol><li>Hur många bytes?</li><li>Hur många bitar?</li><li>Hur många hexsiffror?</li><li>Vad är 00 i decimal?</li><li>Vad är D3 i decimal?</li></ol></div>
+<details><summary>REVEAL ANSWER</summary><div><pre>6 bytes
+48 bitar
+12 hexsiffror
+00 = 0
+D3 = 13 × 16 + 3 = 211</pre></div></details>
+<h2>4. Hitta I/G-biten</h2><pre>Första byte
+    ↓
+    00
+    ↓
+0000 0000
+       ↑
+       I/G-bit
+
+I/G = 0 → Individual → Unicast
+I/G = 1 → Group      → Multicast</pre>
+<table><tr><th>Första byte</th><th>Binärt</th><th>I/G</th><th>Typ</th></tr><tr><td>00</td><td>0000 0000</td><td>0</td><td>Individual / Unicast</td></tr><tr><td>01</td><td>0000 0001</td><td>1</td><td>Group / Multicast</td></tr><tr><td>08</td><td>0000 1000</td><td>0</td><td>Individual / Unicast</td></tr><tr><td>3C</td><td>0011 1100</td><td>0</td><td>Individual / Unicast</td></tr><tr><td>3D</td><td>0011 1101</td><td>1</td><td>Group / Multicast</td></tr></table>
+<div class="box warning"><strong>GENVÄG:</strong> Jämnt värde i första byten → I/G=0. Udda värde → I/G=1. En unicast-MAC behöver alltså inte börja med 00.</div>
+<h2>5. Unicast eller multicast?</h2><div class="task challenge"><strong>CHALLENGE 3 — FIND THE BIT</strong><pre>00 = ?
+01 = ?
+08 = ?
+3C = ?
+3D = ?
+A4 = ?
+A5 = ?</pre><p>Förklara svaret med I/G-biten.</p></div>
+<details><summary>REVEAL ANSWER</summary><div><pre>00 → I/G 0 → Individual / Unicast
+01 → I/G 1 → Group / Multicast
+08 → I/G 0 → Individual / Unicast
+3C → I/G 0 → Individual / Unicast
+3D → I/G 1 → Group / Multicast
+A4 → I/G 0 → Individual / Unicast
+A5 → I/G 1 → Group / Multicast</pre></div></details>
+<h2>6. Final challenge — MAC detective</h2><div class="task challenge"><strong>CHALLENGE 4</strong><pre>A) 00:08:A2:BC:56:D3
+B) 01:00:5E:00:00:C8
+C) 3C:52:82:11:22:33
+D) 3D:52:82:11:22:33
+E) FF:FF:FF:FF:FF:FF</pre><ol><li>Vilka är Individual/Unicast?</li><li>Vilka är Group/Multicast?</li><li>Vilken är Ethernet broadcast?</li><li>Vilken bit behöver du undersöka?</li></ol></div>
+<details><summary>REVEAL FINAL ANSWER</summary><div><pre>A → Individual / Unicast
+B → Group / Multicast
+C → Individual / Unicast
+D → Group / Multicast
+E → Ethernet broadcast</pre><p>Undersök I/G-biten, den minst signifikanta biten i första byten.</p><p class="flag">FLAG{HEX_REVEALS_THE_BITS}</p></div></details>
+<h2>7. Ta med dig detta</h2><pre>1 hexsiffra = 4 bitar
+2 hexsiffror = 1 byte
+MAC = 6 bytes = 48 bitar = 12 hexsiffror
+
+I/G = 0 → Individual / Unicast
+I/G = 1 → Group / Multicast
+
+FF:FF:FF:FF:FF:FF → Ethernet Broadcast</pre>
+<p class="small">Nästa steg: använd samma kunskap när du analyserar riktiga Ethernet-frames och switchens MAC-adresstabell.</p></main><footer>BAALSTORM LABS // Hexadecimal · Binary · MAC Addresses · Ethernet</footer></body></html>
