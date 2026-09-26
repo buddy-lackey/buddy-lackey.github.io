@@ -1,0 +1,57 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baalstorm LAB 11 — LEARN & FORWARD</title><style>
+:root{--bg:#070a0f;--panel:#0d131c;--panel2:#101925;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea;--red:#ff6b7a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,3.8rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.3rem}h3{color:var(--amber)}.lead{color:#aebdcd;max-width:900px}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold;font-size:1.05rem}.small{color:var(--muted)}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{color:var(--cyan);background:#0b121b}.tag{display:inline-block;border:1px solid var(--line);padding:2px 7px;border-radius:12px;color:var(--muted);font-size:.8rem}.rule{color:var(--green);font-weight:bold}</style></head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES // ETHERNET // LAB 11</div><h1>LEARN & FORWARD</h1><p class="lead">Du är switchen. För varje frame måste du först lära från source och därefter fatta forwardingbeslut från destination.</p></header><main>
+<div class="box goal"><strong>MÅL</strong><br>Bygg en MAC-tabell steg för steg och förutsäg forwarding, flooding och förändringar när en host flyttar.</div>
+<div class="scenario"><strong>TOPOLOGI</strong><pre>PC-A -- P1 ┐
+PC-B -- P2 ├── [ SW1 ]
+PC-C -- P3 ┤
+PC-D -- P4 ┘
+
+A = 00:08:A2:AA:AA:01
+B = 3C:52:82:BB:BB:02
+C = 70:3A:CB:CC:CC:03
+D = A4:5E:60:DD:DD:04
+
+MAC TABLE: EMPTY</pre></div>
+<div class="box"><span class="rule">RULE: LEARN FROM SOURCE → FORWARD ON DESTINATION</span></div>
+<h2>Frame 1 — A → B</h2>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>A skickar till B. Tabellen är tom.</p><ol><li>Vilken post lär SW1?</li><li>Är B known eller unknown?</li><li>Vilka portar får framen?</li></ol></div>
+<details><summary>REVEAL</summary><div><pre>Learn: A → P1
+B: unknown
+Forward: flood → P2, P3, P4</pre><p>Den inkommande porten P1 används inte för att skicka tillbaka samma floodade frame.</p></div></details>
+<h2>Frame 2 — B → A</h2>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>B svarar från P2. Skriv hela tabellen efter learning-steget och välj sedan utgående port.</p></div>
+<details><summary>REVEAL</summary><div><pre>MAC TABLE
+A → P1
+B → P2
+
+Destination A is known → forward only P1</pre></div></details>
+<h2>Frame 3 — C → A</h2>
+<div class="task challenge"><strong>CHALLENGE 3</strong><p>C skickar till A. Flood eller filtrerad unicast? Hur ser tabellen ut efteråt?</p></div>
+<details><summary>REVEAL</summary><div><pre>A → P1
+B → P2
+C → P3
+
+A known → only P1</pre></div></details>
+<h2>Frame 4 — D → C</h2>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>D skickar till C. Beskriv learning och forwarding separat.</p></div>
+<details><summary>REVEAL</summary><div><p>Först lär switchen <code>D → P4</code> från source. Därefter slår den upp destination C, som redan finns på P3, och skickar framen endast dit.</p></div></details>
+<h2>Frame 5 — broadcast</h2>
+<pre>Source:      A4:5E:60:DD:DD:04
+Destination: FF:FF:FF:FF:FF:FF
+Incoming:    P4</pre>
+<div class="task challenge"><strong>CHALLENGE 5</strong><ol><li>Lär switchen fortfarande från source?</li><li>Vilka portar får broadcasten?</li><li>Lägger switchen in <code>FF:FF:FF:FF:FF:FF</code> som en vanlig destination i den dynamiska MAC-tabellen?</li></ol></div>
+<details><summary>REVEAL</summary><div><p>Source learning gäller fortfarande: D hör till P4. Broadcast floodas ut på P1, P2 och P3. Broadcastadressen behandlas inte som en vanlig dynamiskt inlärd hostdestination.</p></div></details>
+<h2>Frame 6 — host moved</h2>
+<div class="scenario"><p>PC-C kopplas ur P3 och ansluts till P5. C skickar därefter en frame.</p></div>
+<div class="task challenge"><strong>CHALLENGE 6</strong><p>Vad bör hända med posten för C?</p></div>
+<details><summary>REVEAL</summary><div><p>När samma source MAC observeras på P5 uppdateras associationen så att C pekar på den aktuella porten.</p><pre>C → P5</pre></div></details>
+<h2>Final table</h2>
+<div class="task challenge"><strong>FINAL</strong><p>Återskapa tabellen efter hela sekvensen utan att öppna tidigare svar.</p></div>
+<details><summary>REVEAL FINAL</summary><div><pre>A → P1
+B → P2
+C → P5
+D → P4</pre><p class="flag">FLAG{LEARN_SOURCE_FORWARD_DESTINATION}</p></div></details>
+</main><footer>BAALSTORM LABS // Ethernet · Frames · MAC · Switching</footer></body></html>
