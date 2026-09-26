@@ -1,0 +1,49 @@
+<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baalstorm LAB 09 — ETHERNET FRAME AUTOPSY</title><style>
+:root{--bg:#070a0f;--panel:#0d131c;--panel2:#101925;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea;--red:#ff6b7a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}h1{color:#fff;font-size:clamp(2rem,6vw,3.8rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.3rem}h3{color:var(--amber)}.lead{color:#aebdcd;max-width:900px}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold;font-size:1.05rem}.small{color:var(--muted)}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{color:var(--cyan);background:#0b121b}.tag{display:inline-block;border:1px solid var(--line);padding:2px 7px;border-radius:12px;color:var(--muted);font-size:.8rem}.rule{color:var(--green);font-weight:bold}</style></head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES // ETHERNET // LAB 09</div><h1>ETHERNET FRAME AUTOPSY</h1><p class="lead">Du har fångat trafik från ett LAN. Din uppgift är att dissekera Ethernet-frames och förstå vad lager 2 faktiskt berättar.</p></header><main>
+<div class="box goal"><strong>MÅL</strong><br>Identifiera source/destination MAC, EtherType och payload, skilj lager 2 från lager 3 och koppla observationerna till kapsling.</div>
+<div class="scenario"><strong>SCENARIO</strong><p>En användare säger: “Jag ser IP-adressen i paketet, så MAC-adresserna är väl överflödiga?” Du har tre fångade Ethernet II-frames och ska visa varför resonemanget är fel.</p></div>
+<h2>Evidence #1</h2>
+<pre>FRAME 17
+Destination : 3C:52:82:11:22:33
+Source      : 00:08:A2:BC:56:D3
+Type        : 0x0800
+Payload     : 45 00 00 54 ...
+Frame bytes : 98</pre>
+<div class="task challenge"><strong>CHALLENGE 1 — READ THE HEADER</strong><ol><li>Vilken enhet är L2-avsändare?</li><li>Vilken är L2-mottagare?</li><li>Vad betyder <code>0x0800</code>?</li><li>Vilket lager hör Ethernet-headern till?</li><li>Vad är sannolikt inkapslat i payload?</li></ol></div>
+<details><summary>REVEAL DISCUSSION</summary><div><p>Source är <code>00:08:A2:BC:56:D3</code>, destination är <code>3C:52:82:11:22:33</code>. EtherType <code>0x0800</code> anger IPv4. Ethernet är lager 2 och payload innehåller här ett IPv4-paket.</p></div></details>
+<h2>Evidence #2 — tre olika payloads</h2>
+<pre>FRAME 21  Type: 0x0806
+FRAME 22  Type: 0x86DD
+FRAME 23  Type: 0x0800</pre>
+<div class="task challenge"><strong>CHALLENGE 2 — ETHERTYPE</strong><p>Matcha varje frame mot ARP, IPv4 eller IPv6. Förklara vad EtherType-fältets funktion är.</p></div>
+<details><summary>REVEAL</summary><div><pre>0x0806 → ARP
+0x86DD → IPv6
+0x0800 → IPv4</pre><p>EtherType berättar för mottagaren vilket protokoll som ligger inkapslat efter Ethernet-headern och därmed hur payload ska tolkas vidare.</p></div></details>
+<h2>Evidence #3 — encapsulation</h2>
+<pre>Ethernet
+┌────────────────────────────────────────────┐
+│ Dst MAC │ Src MAC │ Type │     Payload    │
+│                         ┌────────────────┐ │
+│                         │ IPv4 packet    │ │
+│                         │ ┌────────────┐ │ │
+│                         │ │ TCP ...    │ │ │
+│                         │ └────────────┘ │ │
+│                         └────────────────┘ │
+└────────────────────────────────────────────┘</pre>
+<div class="task challenge"><strong>CHALLENGE 3 — WHICH LAYER?</strong><p>En kollega säger:</p><pre>"Destination MAC och destination IP är samma sorts adress.
+De pekar ju båda på mottagaren."</pre><p>Förklara varför detta är fel med hjälp av lagren och kapslingen.</p></div>
+<details><summary>REVEAL DISCUSSION</summary><div><p>MAC-adressen används för leverans av Ethernet-framen på den lokala länken. IP-adressen är den logiska lager-3-adressen i det inkapslade IP-paketet. De finns samtidigt eftersom olika lager löser olika problem.</p></div></details>
+<h2>Evidence #4 — frame size</h2>
+<p>I kursmaterialet arbetar vi med vanlig Ethernet där en frame normalt beskrivs som 64–1518 bytes. I en capture kan det du ser skilja sig beroende på vad nätverkskort/drivrutin lämnar till Wireshark.</p>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Varför är det en dålig idé att bara titta på antalet bytes och dra slutsatsen att en capture måste innehålla hela den fysiskt överförda Ethernet-framen?</p></div>
+<details><summary>REVEAL</summary><div><p>Alla delar som finns “på tråden” behöver inte exponeras till capture-programmet. Exempelvis kan FCS saknas i en vanlig capture. Därför bör du läsa fälten Wireshark faktiskt visar och förstå var i stacken capture sker.</p></div></details>
+<h2>Final challenge</h2>
+<pre>Dst: FF:FF:FF:FF:FF:FF
+Src: 70:3A:CB:11:22:33
+Type: 0x0806</pre>
+<div class="task challenge"><strong>CHALLENGE 5</strong><ol><li>Vilken trafiktyp är destinationen på L2?</li><li>Vilket protokoll ligger i payload?</li><li>Ge ett rimligt exempel på vad framen kan vara.</li></ol></div>
+<details><summary>REVEAL FINAL</summary><div><p>Destinationen är Ethernet broadcast och EtherType visar ARP. Ett typiskt exempel är en ARP Request.</p><p class="flag">FLAG{FRAME_HEADER_TELLS_THE_STORY}</p></div></details>
+</main><footer>BAALSTORM LABS // Ethernet · Frames · MAC · Switching</footer></body></html>
