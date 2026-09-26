@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm — PACKET TRACER LABS</title>
+<style>
+:root{--bg:#070a0f;--panel:#0d131c;--text:#d7e2ee;--muted:#8292a6;--line:#263547;--green:#65f58b;--cyan:#5bd9ff;--amber:#ffcb6b;--purple:#c792ea}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,#101b28 0,#070a0f 40%);color:var(--text);font:16px/1.58 ui-monospace,SFMono-Regular,Consolas,monospace}
+header,main,footer{max-width:1080px;margin:auto;padding:38px 24px}.kicker{color:var(--green);letter-spacing:.12em;font-size:.82rem}
+h1{color:#fff;font-size:clamp(2rem,6vw,3.7rem);line-height:1;margin:.35rem 0}h2{color:var(--cyan);margin-top:2.2rem}h3{color:var(--amber)}
+.lead{color:#aebdcd}.box,.task,.scenario{border:1px solid var(--line);background:var(--panel);padding:17px 19px;border-radius:8px;margin:15px 0}
+.goal{border-left:3px solid var(--green)}.challenge{border-left:3px solid var(--purple)}.scenario{border-left:3px solid var(--cyan)}.warning{border-left:3px solid var(--amber)}
+pre{background:#05080c;border:1px solid #1c2938;border-radius:8px;padding:16px;overflow:auto;color:#cfe8d7}code{color:#cfe8d7}strong{color:var(--amber)}
+details{margin:15px 0;border:1px solid #314158;border-radius:8px;background:#0a1017}summary{cursor:pointer;padding:13px 15px;color:var(--purple);font-weight:bold}
+details>div{padding:0 15px 15px}.flag{color:var(--green);font-weight:bold}.small{color:var(--muted)}
+.lab{margin:42px 0 70px}.labhead{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}.labnum{color:var(--green);font-size:.85rem;letter-spacing:.12em}
+.toc a{color:var(--cyan);text-decoration:none}.toc li{margin:.45rem 0}.divider{height:1px;background:var(--line);margin:50px 0}
+</style>
+</head><body>
+<header><div class="kicker">BAALSTORM // NETWORK TECHNIQUES</div><h1>PACKET TRACER LABS</h1><p class="lead">Packet Tracer-övningar från lektionsmaterialet: switch learning, enkel routing och same-net → routed.</p>
+<div class="box toc"><strong>INNEHÅLL</strong><ol><li><a href="#lab-1">PACKET TRACER LAB 1: PACKET TRACER: SWITCH LEARNING</a></li><li><a href="#lab-2">PACKET TRACER LAB 2: PACKET TRACER: ACROSS THE ROUTER</a></li><li><a href="#lab-3">PACKET TRACER LAB 3: PACKET TRACER: SAME NET → ROUTED</a></li></ol></div></header>
+<main><section class="lab" id="lab-1"><div class="labhead"><div class="labnum">PACKET TRACER LAB 1</div><h2>PACKET TRACER: SWITCH LEARNING</h2></div>
+<div class="box goal"><strong>MÅL</strong><br/>Bygg ett enkelt Ethernet-LAN, använd Simulation Mode och verifiera hur en switch lär source MAC och floodar en okänd destination.</div>
+<div class="scenario"><strong>BUILD THIS</strong><pre>PC0 ─────┐
+PC1 ─────┼── 2960 Switch
+PC2 ─────┘
+
+Exempel:
+PC0 192.168.1.10/24
+PC1 192.168.1.20/24
+PC2 192.168.1.30/24</pre><p>Ingen router behövs: alla hosts ligger på samma nät.</p></div>
+<h2>1 — Build and verify</h2><p>Koppla datorerna till switchen och konfigurera IPv4-adresserna. Vänta tills länkarna är uppe.</p>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>Notera varje PCs MAC-adress och switchport. Kontrollera switchens MAC-tabell via CLI.</p><pre>Switch&gt; enable
+Switch# show mac address-table</pre></div>
+<h2>2 — Simulation Mode</h2>
+<p>Byt till <strong>Simulation</strong>. Filtrera gärna till ARP och ICMP. Från PC0:</p><pre>ping 192.168.1.20</pre>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>Stega händelserna. Vilket protokoll behöver normalt komma före den första ICMP Echo Request om PC0 ännu inte känner PC1:s MAC?</p></div>
+<details><summary>REVEAL</summary><div><p>ARP behövs för att lösa den lokala IPv4-adressen till en destination-MAC innan Ethernet-framen kan skapas.</p></div></details>
+<h2>3 — Watch the switch</h2>
+<div class="task challenge"><strong>CHALLENGE 3</strong><p>När första framen från PC0 når switchen: vilken MAC kan switchen lära och från vilket fält? Vad händer om destinationen ännu inte finns i MAC-tabellen?</p></div>
+<details><summary>REVEAL</summary><div><p>Source MAC lärs på ingressporten. En okänd unicastdestination floodas; broadcast floodas också till övriga portar.</p></div></details>
+<h2>4 — Table after communication</h2>
+<pre>Switch# show mac address-table dynamic</pre>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Kan ni nu hitta både PC0 och PC1? Matcha MAC → port.</p></div>
+<h2>5 — Known unicast</h2>
+<p>Skicka ytterligare trafik mellan PC0 och PC1 efter att tabellen byggts upp.</p>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Vad är annorlunda när destination-MAC redan finns i tabellen? Behöver switchen skicka unicastframen till PC2:s port?</p></div>
+<details><summary>REVEAL</summary><div><p>Known unicast kan filtreras till den kända destinationens port. PC2 behöver inte få den framen.</p></div></details>
+<h2>6 — Clear and repeat</h2>
+<pre>Switch# clear mac address-table dynamic</pre>
+<p>Upprepa kommunikationen och observera hur tabellen byggs igen.</p>
+<div class="task challenge"><strong>FINAL</strong><p>Skriv två regler som sammanfattar hela labben.</p></div>
+<details><summary>REVEAL FINAL</summary><div><pre>LEARN   FROM SOURCE
+FORWARD ON DESTINATION</pre><p class="flag">FLAG{PACKET_TRACER_SHOWS_THE_SWITCH}</p></div></details>
+</section><div class="divider"></div><section class="lab" id="lab-2"><div class="labhead"><div class="labnum">PACKET TRACER LAB 2</div><h2>PACKET TRACER: ACROSS THE ROUTER</h2></div>
+<div class="box goal"><strong>MÅL</strong><br/>Verifiera att IP-adresser används end-to-end medan Ethernet/MAC gäller per länk, och analysera vad routern gör med lager-2-headern.</div>
+<div class="scenario"><strong>BUILD THIS</strong><pre>PC1 ── Switch1 ── Router ── Switch2 ── PC2
+
+LAN 1: 192.168.10.0/24
+PC1:   192.168.10.10
+R1:    192.168.10.1
+
+LAN 2: 192.168.20.0/24
+R2:    192.168.20.1
+PC2:   192.168.20.20</pre><p>Konfigurera PC1 gateway till <code>192.168.10.1</code> och PC2 gateway till <code>192.168.20.1</code>.</p></div>
+<h2>1 — Prove the route</h2><pre>PC1&gt; ping 192.168.20.20</pre>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>Få kommunikationen att fungera. Vilken enhet måste PC1 skicka den lokala Ethernet-framen till när destination-IP ligger på ett annat nät?</p></div>
+<details><summary>REVEAL</summary><div><p>PC1 skickar framen mot sin default gateway, alltså routerns MAC på LAN 1.</p></div></details>
+<h2>2 — Simulation Mode</h2>
+<p>Byt till Simulation Mode och följ ett ICMP Echo Request från PC1 till PC2.</p>
+<div class="task challenge"><strong>CHALLENGE 2 — BEFORE ROUTER</strong><p>Precis innan framen går in i routern från LAN 1, identifiera:</p><pre>Source IP:      ?
+Destination IP: ?
+Source MAC:     ?
+Destination MAC:?</pre></div>
+<details><summary>REVEAL DISCUSSION</summary><div><p>IP-källan är PC1 och IP-destinationen PC2. På LAN 1 är source MAC PC1:s MAC och destination MAC routerns LAN-1-interface.</p></div></details>
+<h2>3 — After router</h2>
+<div class="task challenge"><strong>CHALLENGE 3 — AFTER ROUTER</strong><p>Inspektera samma IP-paket när det skickas ut på LAN 2. Vilka adresser är oförändrade? Vilka lager-2-adresser är nya?</p></div>
+<details><summary>REVEAL</summary><div><p>Source/destination IP fortsätter representera PC1→PC2. Routern skickar däremot paketet i en ny Ethernet-frame på LAN 2: source MAC blir routerns LAN-2-MAC och destination MAC blir PC2:s MAC.</p></div></details>
+<h2>4 — The ICMP trap</h2>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Lektionsmaterialet frågar: “Vilket portnummer använder Ping (ICMP)?” Vad är svaret?</p></div>
+<details><summary>REVEAL</summary><div><p>ICMP använder inte TCP- eller UDP-portnummer. Det är alltså en avsiktlig fälla om man försöker applicera transportlagrets portbegrepp på ICMP.</p></div></details>
+<h2>5 — ARP on both LANs</h2>
+<div class="task challenge"><strong>CHALLENGE 5</strong><p>Varför kan ARP behövas på båda sidor om routern trots att det är samma ping som färdas från PC1 till PC2?</p></div>
+<details><summary>REVEAL</summary><div><p>Varje Ethernetlänk behöver rätt lokal destination-MAC. PC1 kan behöva lösa gatewayens MAC på LAN 1, och routern kan behöva lösa PC2:s MAC på LAN 2.</p></div></details>
+<h2>6 — Final trace</h2>
+<div class="task challenge"><strong>FINAL</strong><p>Fyll i utan att öppna tidigare svar:</p><pre>LAN 1:
+Ethernet: PC1 MAC → __________ MAC
+IP:       PC1 IP  → PC2 IP
+
+LAN 2:
+Ethernet: __________ MAC → PC2 MAC
+IP:       PC1 IP        → PC2 IP</pre></div>
+<details><summary>REVEAL FINAL</summary><div><pre>LAN 1:
+Ethernet: PC1 MAC → Router LAN1 MAC
+IP:       PC1 IP  → PC2 IP
+
+LAN 2:
+Ethernet: Router LAN2 MAC → PC2 MAC
+IP:       PC1 IP          → PC2 IP</pre><p class="flag">FLAG{ROUTERS_REWRITE_LAYER2}</p></div></details>
+</section><div class="divider"></div><section class="lab" id="lab-3"><div class="labhead"><div class="labnum">PACKET TRACER LAB 3</div><h2>PACKET TRACER: SAME NET → ROUTED</h2></div>
+<div class="box goal"><strong>MÅL</strong><br/>Se skillnaden mellan lokal Ethernetkommunikation och kommunikation som kräver routing.</div>
+<div class="scenario"><strong>TOPOLOGI</strong><pre>PC1 ── Switch1 ── Router ── Switch2 ── PC2</pre><p>I Packet Tracer använder ni en router som motsvarighet till routingfunktionen i lektionsmaterialets FortiGate-exempel.</p></div>
+<h2>Part A — same network</h2>
+<p>Börja med PC1 och PC2 i samma IPv4-nät enligt lärarens adressering. Verifiera att de kan kommunicera.</p>
+<div class="task challenge"><strong>CHALLENGE 1</strong><p>När två hosts bedömer att de ligger på samma nät: vilken MAC försöker avsändaren få fram med ARP — mottagarens eller routerns?</p></div>
+<details><summary>REVEAL</summary><div><p>Mottagarens MAC, eftersom leveransen kan ske direkt på det lokala nätet.</p></div></details>
+<h2>Part B — split the networks</h2>
+<p>Ändra adresseringen så att PC1 och PC2 ligger på olika subnät. Konfigurera routerinterfaces och default gateway på klienterna.</p>
+<div class="task challenge"><strong>CHALLENGE 2</strong><p>Innan ni testar: förutsäg vilken destination-MAC PC1 använder i sin första Ethernet-frame när den skickar ett paket till PC2.</p></div>
+<details><summary>REVEAL</summary><div><p>PC1 skickar Ethernet-framen till default gatewayens MAC, inte direkt till PC2:s MAC.</p></div></details>
+<h2>Part C — simulation proof</h2>
+<p>Skicka ping och följ det i Simulation Mode.</p>
+<div class="task challenge"><strong>CHALLENGE 3</strong><p>Dokumentera source/destination MAC före och efter routern. Dokumentera även source/destination IP. Vad förändras?</p></div>
+<h2>Part D — break it deliberately</h2>
+<p>Ta bort eller konfigurera fel default gateway på PC1.</p>
+<div class="task challenge"><strong>CHALLENGE 4</strong><p>Vad fungerar fortfarande lokalt? Varför misslyckas trafik till det andra subnätet?</p></div>
+<details><summary>REVEAL</summary><div><p>PC1 kan fortfarande kommunicera inom sitt lokala nät om övrig konfiguration är korrekt, men saknar korrekt nästa hopp för destinationer utanför nätet.</p></div></details>
+<h2>Final explanation</h2>
+<div class="task challenge"><strong>FINAL</strong><p>Förklara skillnaden mellan de två fallen med orden <strong>ARP</strong>, <strong>destination MAC</strong>, <strong>default gateway</strong> och <strong>routing</strong>.</p></div>
+<details><summary>REVEAL FINAL</summary><div><p>På samma nät kan ARP lösa mottagarens IP direkt till mottagarens MAC. På olika nät skickar hosten Ethernet-framen till default gatewayens MAC; routern vidarebefordrar IP-paketet mot det andra nätet och skapar lämplig L2-frame på nästa länk.</p><p class="flag">FLAG{LOCAL_OR_ROUTED_YOU_DECIDE}</p></div></details>
+</section></main>
+<footer>BAALSTORM LABS // Network Techniques</footer></body></html>
