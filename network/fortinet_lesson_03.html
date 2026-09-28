@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ALEF-93 // Routing Lab</title>
+
+<style>
+
+/*
+    ALEF-93 NETWORK LAB
+
+    Nothing interesting here.
+    Definitely don't inspect the source.
+
+    FLAG{comments_are_not_access_control}
+*/
+
+:root {
+    --bg: #05070a;
+    --panel: #080d0c;
+    --panel2: #0b1411;
+    --green: #00e89d;
+    --soft-green: #7dffcf;
+    --text: #d8eee7;
+    --muted: #77968b;
+    --border: #163c31;
+    --warning: #e8c96a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Consolas, "Courier New", monospace;
+    line-height: 1.65;
+}
+
+main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 50px 24px 90px;
+}
+
+a {
+    color: var(--green);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.back {
+    display: inline-block;
+    margin-bottom: 50px;
+    color: var(--muted);
+}
+
+.lecture {
+    color: var(--green);
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.status {
+    margin-top: 18px;
+    color: var(--soft-green);
+}
+
+.intro {
+    margin-top: 35px;
+    max-width: 760px;
+    color: var(--muted);
+}
+
+section {
+    margin-top: 65px;
+}
+
+.section-title {
+    color: var(--green);
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.challenge {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 25px;
+    margin: 22px 0;
+}
+
+.challenge-number {
+    color: var(--green);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+}
+
+.challenge h3 {
+    margin: 5px 0 18px;
+    color: var(--text);
+}
+
+.challenge p:last-child {
+    margin-bottom: 0;
+}
+
+.topology {
+    background: #020403;
+    border: 1px solid var(--border);
+    padding: 25px;
+    margin: 25px 0;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--soft-green);
+    text-align: center;
+}
+
+pre {
+    background: #020403;
+    border: 1px solid var(--border);
+    padding: 16px;
+    overflow-x: auto;
+    color: var(--soft-green);
+}
+
+code {
+    color: var(--soft-green);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+}
+
+th,
+td {
+    border: 1px solid var(--border);
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    color: var(--green);
+    background: var(--panel2);
+}
+
+details {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+summary {
+    color: var(--green);
+    cursor: pointer;
+}
+
+details p {
+    color: var(--muted);
+}
+
+.question {
+    color: var(--text);
+    margin-top: 20px;
+}
+
+.note {
+    color: var(--muted);
+    border-left: 2px solid var(--border);
+    padding-left: 15px;
+}
+
+.warning {
+    color: var(--warning);
+}
+
+.packet {
+    background: #020403;
+    border: 1px solid var(--border);
+    padding: 18px;
+    margin: 18px 0;
+}
+
+.footer {
+    margin-top: 80px;
+    padding-top: 25px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.blink {
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<main>
+
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="lecture">NETWORK LAB</div>
+
+<h1>ROUTING BETWEEN NETWORKS</h1>
+
+<div class="status">
+    ● NETWORK ONLINE<span class="blink">_</span>
+</div>
+
+<p class="intro">
+Två datorer befinner sig i olika IP-nät.
+Din uppgift är att konfigurera nätverket så att de kan kommunicera
+med varandra via en FortiGate 40F.
+</p>
+
+<p class="intro">
+Målet är inte bara att få ett fungerande ping.
+Du ska kunna förklara <strong>varför</strong> paketet tar den väg det gör.
+</p>
+
+
+<section>
+
+<div class="section-title">// NETWORK TOPOLOGY</div>
+
+<div class="topology">
+PC1                 FortiGate 40F                 PC2
+
+192.168.1.10        [ ROUTER ]               192.168.2.10
+     |                  |   |                      |
+     |                  |   |                      |
+ Switch1 ---------------+   +--------------- Switch2
+
+192.168.1.0/24                         192.168.2.0/24
+</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 01</div>
+<h3>Two networks</h3>
+
+<p>
+Studera topologin.
+</p>
+
+<p>
+PC1 har adressen:
+</p>
+
+<pre>192.168.1.10/24</pre>
+
+<p>
+PC2 har adressen:
+</p>
+
+<pre>192.168.2.10/24</pre>
+
+<p class="question">
+Är PC1 och PC2 i samma IP-nät?
+</p>
+
+<p class="question">
+Kan PC1 skicka en Ethernet-frame direkt till PC2?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+Nej. Med nätmask /24 tillhör PC1 nätet 192.168.1.0/24
+och PC2 nätet 192.168.2.0/24.
+</p>
+
+<p>
+PC1 behöver därför skicka paketet till en router som kan
+vidarebefordra det till det andra nätverket.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// CONFIGURATION</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 02</div>
+<h3>Configure the router</h3>
+
+<p>
+FortiGate 40F ska agera router mellan de två näten.
+</p>
+
+<p>
+Konfigurera ett FortiGate-interface i varje nät.
+</p>
+
+<table>
+
+<tr>
+<th>Device</th>
+<th>Interface</th>
+<th>IP address</th>
+</tr>
+
+<tr>
+<td>PC1</td>
+<td>Ethernet</td>
+<td>192.168.1.10/24</td>
+</tr>
+
+<tr>
+<td>FortiGate</td>
+<td>Network 1</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>FortiGate</td>
+<td>Network 2</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>PC2</td>
+<td>Ethernet</td>
+<td>192.168.2.10/24</td>
+</tr>
+
+</table>
+
+<p class="question">
+Vilka IP-adresser väljer du till FortiGate?
+</p>
+
+<p class="note">
+Hint: varje routerinterface måste ha en adress som tillhör
+det nätverk interfacet är anslutet till.
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+Ett enkelt val är:
+</p>
+
+<pre>
+FortiGate Network 1: 192.168.1.1/24
+FortiGate Network 2: 192.168.2.1/24
+</pre>
+
+<p>
+Det finns flera möjliga adresser, men interfacen måste ligga
+i respektive subnät och får inte använda en adress som redan används.
+</p>
+
+</details>
+
+</div>
+
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 03</div>
+<h3>Test the local network</h3>
+
+<p>
+Innan du försöker nå det andra nätverket:
+testa först den lokala kommunikationen.
+</p>
+
+<p>Från PC1:</p>
+
+<pre>ping 192.168.1.1</pre>
+
+<p>Från PC2:</p>
+
+<pre>ping 192.168.2.1</pre>
+
+<p class="question">
+Varför behöver PC1 ingen router för att nå 192.168.1.1?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+PC1 och FortiGate-interfacet 192.168.1.1 ligger i samma
+192.168.1.0/24-nät.
+</p>
+
+<p>
+Destinationen betraktas därför som direkt ansluten
+(on-link). PC1 kan använda ARP för att hitta MAC-adressen
+till FortiGate-interfacet och skicka Ethernet-ramen direkt dit.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// DEFAULT GATEWAY</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 04</div>
+<h3>Leave the local network</h3>
+
+<p>
+PC1 försöker nu nå:
+</p>
+
+<pre>192.168.2.10</pre>
+
+<p>
+PC1 ser att destinationen inte ligger i det lokala
+192.168.1.0/24-nätet.
+</p>
+
+<p class="question">
+Vart ska PC1 skicka paketet?
+</p>
+
+<p>
+Konfigurera rätt <strong>default gateway</strong> på PC1 och PC2.
+</p>
+
+<table>
+
+<tr>
+<th>Device</th>
+<th>Default gateway</th>
+</tr>
+
+<tr>
+<td>PC1</td>
+<td>?</td>
+</tr>
+
+<tr>
+<td>PC2</td>
+<td>?</td>
+</tr>
+
+</table>
+
+<p>Testa därefter:</p>
+
+<pre>ping 192.168.2.10</pre>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+PC1 använder FortiGate-interfacet i sitt eget nät som gateway:
+192.168.1.1.
+</p>
+
+<p>
+PC2 använder på motsvarande sätt 192.168.2.1.
+</p>
+
+<p>
+Default gateway används när datorn behöver nå ett nätverk
+som inte kan nås via en mer specifik route.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// ROUTING TABLE</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 05</div>
+<h3>Ask the operating system</h3>
+
+<p>
+Kör följande på PC1:
+</p>
+
+<pre>route print</pre>
+
+<p>
+Hitta routen för:
+</p>
+
+<pre>192.168.1.0/24</pre>
+
+<p class="question">
+Vad betyder <code>On-link</code>?
+</p>
+
+<p class="question">
+Kan du hitta default route?
+</p>
+
+<p>
+Den visas normalt som:
+</p>
+
+<pre>
+Network Destination    Netmask
+0.0.0.0                0.0.0.0
+</pre>
+
+<p class="question">
+Vilken route används när destinationen är 192.168.2.10?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+192.168.1.0/24 är direkt anslutet och visas därför som on-link.
+</p>
+
+<p>
+192.168.2.10 matchar inte det lokala nätet.
+Om ingen mer specifik route finns används default route,
+vilket skickar trafiken till PC1:s default gateway.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// ARP</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 06</div>
+<h3>Who gets the Ethernet frame?</h3>
+
+<p>
+Rensa eller studera ARP-tabellen och pinga sedan PC2.
+</p>
+
+<pre>
+arp -a
+
+ping 192.168.2.10
+
+arp -a
+</pre>
+
+<p class="question">
+Vilken MAC-adress behöver PC1 för att skicka paketet?
+</p>
+
+<p class="question">
+Behöver PC1 känna till PC2:s MAC-adress?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+PC1 behöver MAC-adressen till nästa hop:
+FortiGate-interfacet 192.168.1.1.
+</p>
+
+<p>
+PC2 befinner sig på ett annat Layer 2-nät.
+PC1 skickar därför inte Ethernet-ramen direkt till PC2.
+</p>
+
+<p>
+PC1 känner till destinationens IP-adress, men Ethernet-ramens
+destination är FortiGatens MAC-adress.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// FOLLOW THE PACKET</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 07</div>
+<h3>IP packet vs Ethernet frame</h3>
+
+<p>
+PC1 skickar ett ICMP Echo Request till PC2.
+</p>
+
+<div class="packet">
+IP SOURCE:      192.168.1.10<br>
+IP DESTINATION: 192.168.2.10<br><br>
+
+MAC SOURCE:      ?<br>
+MAC DESTINATION: ?
+</div>
+
+<p class="question">
+Vilka MAC-adresser används när ramen går från PC1 till FortiGate?
+</p>
+
+<p>
+FortiGate routar sedan paketet vidare på nät 2.
+</p>
+
+<div class="packet">
+IP SOURCE:      192.168.1.10<br>
+IP DESTINATION: 192.168.2.10<br><br>
+
+MAC SOURCE:      ?<br>
+MAC DESTINATION: ?
+</div>
+
+<p class="question">
+Vad händer med IP-adresserna?
+</p>
+
+<p class="question">
+Vad händer med MAC-adresserna?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+IP-adresserna identifierar ändpunkterna och är i detta
+enkla routingexempel oförändrade.
+</p>
+
+<p>
+Ethernet-ramen gäller däremot bara för den aktuella länken.
+När FortiGate vidarebefordrar paketet skapas därför en ny
+Ethernet-frame.
+</p>
+
+<p>
+På nät 1 är destinationens MAC-adress FortiGatens MAC.
+På nät 2 är destinationens MAC-adress PC2:s MAC.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// BREAK IT</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 08</div>
+<h3>Remove the gateway</h3>
+
+<p class="warning">
+Ta bort default gateway från PC1.
+</p>
+
+<p>Testa:</p>
+
+<pre>
+ping 192.168.1.1
+ping 192.168.2.10
+</pre>
+
+<p class="question">
+Vilken ping fungerar?
+</p>
+
+<p class="question">
+Förklara resultatet med hjälp av routingtabellen.
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+PC1 kan fortfarande nå 192.168.1.1 eftersom destinationen
+ligger i det direkt anslutna nätverket.
+</p>
+
+<p>
+Men utan default gateway finns ingen route som talar om
+hur PC1 ska nå 192.168.2.0/24.
+</p>
+
+</details>
+
+</div>
+
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 09</div>
+<h3>Wrong gateway</h3>
+
+<p>
+Konfigurera istället:
+</p>
+
+<pre>Default gateway: 192.168.1.254</pre>
+
+<p>
+Anta att ingen sådan router finns.
+</p>
+
+<p>
+Felsök problemet med:
+</p>
+
+<pre>
+ipconfig
+route print
+arp -a
+ping
+tracert
+</pre>
+
+<p class="question">
+Kan du avgöra var kommunikationen bryts?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+Routingtabellen säger åt PC1 att använda 192.168.1.254
+som nästa hop.
+</p>
+
+<p>
+Eftersom gatewayen ligger i det lokala nätverket försöker
+PC1 först hitta dess MAC-adress med ARP.
+</p>
+
+<p>
+Om ingen enhet har adressen 192.168.1.254 får PC1 inget
+användbart ARP-svar och kan därför inte ens leverera
+Ethernet-ramen till sin tänkta router.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="section-title">// FINAL CHALLENGE</div>
+
+<div class="challenge">
+
+<div class="challenge-number">CHALLENGE 10</div>
+<h3>Explain the journey</h3>
+
+<p>
+PC1 skickar:
+</p>
+
+<pre>ping 192.168.2.10</pre>
+
+<p>
+Förklara hela paketets väg från PC1 till PC2.
+</p>
+
+<p>Använd minst följande begrepp:</p>
+
+<pre>
+subnet
+routing table
+default gateway
+ARP
+MAC address
+Ethernet frame
+IP packet
+router
+</pre>
+
+<p class="question">
+Var fattas routingbeslutet?
+</p>
+
+<p class="question">
+När används ARP?
+</p>
+
+<p class="question">
+Vilka adresser ändras när paketet passerar routern?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+
+<p>
+PC1 använder nätmasken för att avgöra att 192.168.2.10
+inte ligger i det lokala nätverket.
+</p>
+
+<p>
+Routingtabellen väljer därför default route och nästa hop
+blir FortiGate.
+</p>
+
+<p>
+PC1 använder ARP för att hitta FortiGatens MAC-adress och
+placerar IP-paketet i en Ethernet-frame adresserad till routern.
+</p>
+
+<p>
+FortiGate tar emot ramen, tar bort Layer 2-inkapslingen,
+undersöker destinationens IP-adress och gör ett nytt routingbeslut.
+</p>
+
+<p>
+Eftersom 192.168.2.0/24 är direkt anslutet kan FortiGate
+använda ARP för att hitta PC2:s MAC-adress.
+</p>
+
+<p>
+IP-paketet kapslas sedan in i en ny Ethernet-frame och
+skickas till PC2.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<div class="footer">
+
+ALEF-93 // NETWORK LAB<br>
+Observe. Reason. Verify.
+
+</div>
+
+
+<!--
+    The destination IP survives the router.
+    The Ethernet frame does not.
+
+    FLAG{frames_are_local_packets_travel}
+-->
+
+
+<script>
+
+/*
+    Curious?
+
+    Good.
+
+    Security engineers inspect systems instead of
+    assuming that the visible interface tells the whole story.
+*/
+
+console.log("%cALEF-93 NETWORK LAB", "color:#00e89d");
+console.log("You inspected the console.");
+console.log("FLAG{inspect_more_than_the_interface}");
+
+const nextHop = "gateway";
+const lesson = "MAC addresses are local to the link";
+
+</script>
+
+</main>
+
+</body>
+</html>
