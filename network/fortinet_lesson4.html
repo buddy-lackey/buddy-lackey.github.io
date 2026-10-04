@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm | Två nät genom FortiGate</title>
+<style>
+:root {
+  --bg:#050b08;
+  --panel:#0a1510;
+  --green:#6cff9a;
+  --yellow:#ffd166;
+  --text:#d7e5dc;
+  --muted:#8ca197;
+  --line:#1f3b2b;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:
+    radial-gradient(circle at 85% 5%,#12332166,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font:16px/1.65 "Courier New",monospace;
+}
+header {
+  border-bottom:1px solid var(--line);
+  padding:15px 24px;
+  color:var(--green);
+  letter-spacing:.1em;
+}
+main {
+  max-width:1080px;
+  margin:auto;
+  padding:32px 24px 65px;
+}
+h1 {
+  font-size:clamp(2rem,5vw,3.5rem);
+  line-height:1.12;
+  color:#f1fff5;
+}
+h2 {
+  color:var(--green);
+  font-size:1.35rem;
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;
+  margin-top:38px;
+}
+h3 { color:var(--yellow); font-size:1.05rem; }
+a { color:var(--green); }
+.muted { color:var(--muted); }
+.panel {
+  padding:18px 20px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-left:4px solid var(--green);
+  margin:20px 0;
+}
+.warn { border-left-color:var(--yellow); }
+pre {
+  background:#020604;
+  border:1px solid var(--line);
+  padding:16px;
+  overflow:auto;
+  color:var(--green);
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+code { color:var(--yellow); }
+.table { overflow-x:auto; }
+table {
+  border-collapse:collapse;
+  width:100%;
+  margin:18px 0;
+}
+td,th {
+  padding:10px;
+  border:1px solid var(--line);
+  text-align:left;
+  vertical-align:top;
+}
+th { color:var(--green); }
+input,textarea {
+  font:inherit;
+  color:var(--text);
+  background:#07120b;
+  border:1px solid #365442;
+  padding:9px;
+  max-width:100%;
+}
+input[type=checkbox] { accent-color:var(--green); }
+textarea { width:100%; min-height:95px; }
+label { display:block; margin:12px 0; }
+.fields {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+button {
+  font:inherit;
+  border:1px solid var(--green);
+  background:#102319;
+  color:var(--green);
+  padding:9px 13px;
+  cursor:pointer;
+}
+button:hover { background:#1c3c29; }
+details {
+  border:1px solid var(--line);
+  padding:14px;
+  margin:12px 0;
+}
+summary { cursor:pointer; color:var(--yellow); }
+nav { display:flex; flex-wrap:wrap; gap:14px; }
+li { margin:7px 0; }
+.topology {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  border:1px solid var(--line);
+  padding:24px 10px;
+  background:#020604;
+}
+.node { text-align:center; padding:8px; }
+.node strong { display:block; color:var(--green); }
+.link { color:var(--muted); }
+.checks label { margin:8px 0; }
+footer {
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  margin-top:40px;
+  padding-top:20px;
+}
+.pill {
+  color:var(--green);
+  border:1px solid var(--line);
+  display:inline-block;
+  padding:3px 9px;
+  font-size:.85rem;
+  margin:4px 4px 4px 0;
+}
+@media(max-width:650px) {
+  main { padding:24px 14px; }
+  .fields { grid-template-columns:1fr; }
+  table { font-size:.85rem; }
+  .topology { gap:3px; }
+  .node { font-size:.85rem; padding:4px; }
+  .link { font-size:.8rem; }
+}
+@media print {
+  body { background:white; color:black; font-size:11pt; }
+  header,h1,h2,h3,a,.muted,.node strong,.link { color:black; }
+  main { max-width:none; padding:0; }
+  .panel,pre,.topology,input,textarea,details {
+    background:white;
+    color:black;
+    border-color:#aaa;
+  }
+  code,th { color:black; }
+  button,nav { display:none; }
+  details { break-inside:avoid; }
+  h2,h3 { break-after:avoid; }
+  pre,tr { break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+<header>BAALSTORM // NETWORK LAB</header>
+<main>
+<p style="color:var(--green)">$ ./fortigate-routing-lab</p>
+<h1>ETT NÄT.<br>SEDAN TVÅ.</h1>
+<p class="muted">
+Undersök vad som ändras när två datorer går från samma lokala nät
+till kommunikation genom en router och brandvägg.
+</p>
+
+<span class="pill">NÄTVERKSTEKNIK</span>
+<span class="pill">60–90 MINUTER</span>
+<span class="pill">2–4 STUDENTER</span>
+
+<nav aria-label="Labbens steg">
+  <a href="#start">Förbered</a>
+  <a href="#steg1">Samma nät</a>
+  <a href="#steg2">Två nät</a>
+  <a href="#policy">Brandvägg</a>
+  <a href="#felsok">Felsök</a>
+  <a href="#redovisa">Redovisa</a>
+</nav>
+
+<div class="panel">
+<strong>Mål:</strong> konfigurera IP-adress, subnätmask och default gateway;
+skilja switching från routing; läsa direkt anslutna routes;
+skapa en brandväggspolicy och felsöka i rätt ordning.
+</div>
+
+<h2 id="start">01 // Utrustning och koppling</h2>
+<ul>
+  <li>
+    Två datorer med kabelanslutning, två switchar och en
+    FortiGate 40F i lärarens labbmiljö.
+  </li>
+  <li>
+    Switcharna fungerar som vanliga lager 2-switchar i detta moment.
+    Datorn och FortiGate-porten på respektive sida ligger i samma
+    otaggade VLAN.
+  </li>
+  <li>
+    FortiGate kör i vanligt NAT/route-läge.
+    Ingen internetanslutning eller DNS behövs för pingtesterna.
+  </li>
+</ul>
+
+<div class="topology" role="img"
+aria-label="PC1 ansluter via Switch1 till FortiGate port A.
+FortiGate port B ansluter via Switch2 till PC2.">
+  <div class="node"><strong>PC1</strong>Vänster sida</div>
+  <span class="link">──</span>
+  <div class="node"><strong>Switch1</strong>Lager 2</div>
+  <span class="link">──</span>
+  <div class="node"><strong>FortiGate 40F</strong>PORT A / PORT B</div>
+  <span class="link">──</span>
+  <div class="node"><strong>Switch2</strong>Lager 2</div>
+  <span class="link">──</span>
+  <div class="node"><strong>PC2</strong>Höger sida</div>
+</div>
+
+<p>
+<strong>PORT A och PORT B är våra namn i instruktionen.</strong>
+På enheten kan gränssnitten ha andra namn.
+Kontrollera dem i <strong>Network → Interfaces</strong>
+eller med <code>show system interface</code>.
+Skriv ned de faktiska namnen och vilka kablar som sitter där.
+</p>
+
+<div class="fields">
+  <label>
+    PORT A – faktiskt gränssnittsnamn<br>
+    <input placeholder="Namnet som visas på er FortiGate">
+  </label>
+  <label>
+    PORT B – faktiskt gränssnittsnamn<br>
+    <input placeholder="Namnet som visas på er FortiGate">
+  </label>
+</div>
+
+<div class="panel warn">
+<strong>Behåll administrationsanslutningen.</strong>
+Läraren använder konsol eller en separat administrationsport som
+inte ingår i PORT A/PORT B. Spara en konfigurationsbackup innan
+portarnas medlemskap ändras. Radera inte hela LAN-, FortiLink-
+eller policykonfigurationen för att frigöra en port.
+Menynamn kan skilja mellan FortiOS-versioner.
+</div>
+
+<details>
+<summary>Lärarens förberedelser</summary>
+<ul>
+  <li>
+    Välj två lämpliga labbportar och en separat väg för administration.
+    Kontrollera fysiska portnamn.
+  </li>
+  <li>
+    För steg 1 ska PORT A och PORT B ingå i samma hardware switch
+    med normal kommunikation mellan medlemmarna.
+    Switchen behöver ingen IP-adress för datorernas kommunikation.
+    Använd en dedikerad labbgrupp där det är möjligt.
+  </li>
+  <li>
+    Kontrollera inför steg 2 att inget annat FortiGate-gränssnitt
+    använder eller överlappar <code>192.168.1.0/24</code>
+    eller <code>192.168.2.0/24</code>.
+    Om den ursprungliga hardware switchen har en sådan adress
+    måste den ändras eller tas bort via den separata administrationsvägen.
+  </li>
+  <li>
+    FortiSwitcharna används här för vanlig Ethernet-switching.
+    Förtesta upplägget om de är FortiLink-hanterade;
+    flytta inte deras management- eller FortiLink-anslutningar
+    som en del av övningen.
+  </li>
+  <li>
+    Stäng av Wi-Fi och VPN på övningsdatorerna om de ger alternativa routes.
+    Tillåt inkommande ICMP Echo från labbnäten i datorernas brandväggar.
+    Behåll övriga skydd aktiva.
+  </li>
+  <li>
+    Kontrollera att inga befintliga breda policies redan tillåter
+    trafiken i steg 2. Labben förutsätter vanliga IPv4-policies
+    och att NAT kan avaktiveras i respektive policy.
+  </li>
+</ul>
+<p>
+Förslag på tid: förberedelser 10 minuter, samma nät 15 minuter,
+två nät och policies 30–40 minuter, felsökning och redovisning
+15–25 minuter. Instruktionen är en mall; förtesta på skolans enheter.
+</p>
+</details>
+
+<h2 id="steg1">02 // Först: samma nät</h2>
+<p>
+I detta steg kopplar FortiGates hardware switch samman
+PORT A och PORT B på lager 2. Datorerna ligger i samma subnät.
+</p>
+
+<div class="table">
+<table>
+<thead>
+<tr>
+  <th>Enhet</th><th>IPv4-adress</th>
+  <th>Subnätmask</th><th>Default gateway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>PC1</td><td>192.168.1.10</td>
+  <td>255.255.255.0 (/24)</td><td>Lämnas tom</td>
+</tr>
+<tr>
+  <td>PC2</td><td>192.168.1.20</td>
+  <td>255.255.255.0 (/24)</td><td>Lämnas tom</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<ol>
+  <li>
+    Koppla enligt topologin.
+    Kontrollera länklampor och att portarna är uppe.
+  </li>
+  <li>
+    Kontrollera med läraren att PORT A och PORT B är medlemmar
+    i <strong>samma hardware switch</strong>.
+  </li>
+  <li>Ge datorerna adresserna i tabellen. DNS lämnas tomt.</li>
+  <li>
+    Kontrollera adresserna med <code>ipconfig</code> i Windows
+    eller <code>ip -br addr</code> i Linux.
+  </li>
+  <li>Pinga PC2 från PC1, sedan PC1 från PC2.</li>
+</ol>
+
+<h3>På PC1</h3>
+<pre>ping 192.168.1.20</pre>
+<h3>På PC2</h3>
+<pre>ping 192.168.1.10</pre>
+
+<p>
+Kontrollera ARP-tabellen efter testet:
+<code>arp -a</code> i Windows eller <code>ip neigh</code> i Linux.
+Leta efter den andra datorns IP- och MAC-adress.
+</p>
+
+<div class="panel">
+<strong>Kontrollpunkt A:</strong>
+Ping fungerar i båda riktningarna trots att datorerna saknar default gateway.
+PC1 söker PC2:s MAC-adress via ARP och skickar Ethernet-ramen till PC2.
+Kommunikationen går genom switcharna och FortiGates hardware switch
+utan routing mellan IP-nät.
+</div>
+
+<label>
+Förklara varför ingen gateway behövs i steg 1.
+<textarea></textarea>
+</label>
+
+<h2 id="steg2">03 // Därefter: separata nät</h2>
+<p>
+Nu får PC2 ett annat subnät. PORT A och PORT B ska fungera som
+<strong>separata routade gränssnitt</strong>.
+</p>
+
+<div class="table">
+<table>
+<thead>
+<tr>
+  <th>Enhet / gränssnitt</th><th>IPv4-adress</th>
+  <th>Subnätmask</th><th>Default gateway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>PC1</td><td>192.168.1.10</td>
+  <td>255.255.255.0</td><td>192.168.1.1</td>
+</tr>
+<tr>
+  <td>FortiGate PORT A</td><td>192.168.1.1</td>
+  <td>255.255.255.0</td><td>Ingen behövs för labbnäten</td>
+</tr>
+<tr>
+  <td>FortiGate PORT B</td><td>192.168.2.1</td>
+  <td>255.255.255.0</td><td>Ingen behövs för labbnäten</td>
+</tr>
+<tr>
+  <td>PC2</td><td>192.168.2.10</td>
+  <td>255.255.255.0</td><td>192.168.2.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<ol>
+  <li>
+    I <strong>Network → Interfaces</strong>:
+    redigera hardware switchen och ta bort PORT A och PORT B som medlemmar.
+    Behåll andra portar som läraren behöver.
+    Om det inte går att frigöra en port, kontrollera beroenden
+    tillsammans med läraren.
+  </li>
+  <li>
+    Kontrollera att labbnäten inte överlappar något kvarvarande
+    switch- eller managementgränssnitt.
+  </li>
+  <li>
+    Redigera PORT A separat. Välj manuell adress och ange
+    <code>192.168.1.1/24</code>.
+  </li>
+  <li>
+    Redigera PORT B separat och ange <code>192.168.2.1/24</code>.
+  </li>
+  <li>
+    Aktivera <strong>PING</strong> under Administrative Access
+    på båda portarna.
+    Behåll administrationen på den separata anslutningen.
+  </li>
+  <li>
+    Ändra PC2 till <code>192.168.2.10/24</code>.
+    Ange respektive default gateway på båda datorerna enligt tabellen.
+  </li>
+</ol>
+
+<h3>Testa den lokala gatewayen först</h3>
+<pre>På PC1: ping 192.168.1.1
+På PC2: ping 192.168.2.1</pre>
+
+<div class="panel">
+<strong>Kontrollpunkt B:</strong>
+Båda datorerna når sin egen gateway.
+Detta testar den lokala länken och FortiGates svar på ping.
+Det bevisar ännu inte att brandväggen tillåter trafik mellan datorerna.
+</div>
+
+<h3>Kontrollera routes på FortiGate</h3>
+<pre>get router info routing-table all</pre>
+<p>
+Identifiera två direkt anslutna nät, markerade med <code>C</code>.
+Gränssnittsnamnen nedan är exempelplatshållare:
+</p>
+<pre>C  192.168.1.0/24 is directly connected, PORT_A
+C  192.168.2.0/24 is directly connected, PORT_B</pre>
+
+<p>
+FortiGate lägger normalt in dessa routes när gränssnitten har
+rätt IP-adresser och är uppe. Ni behöver
+<strong>inga statiska routes eller någon default route</strong>
+för att nå just dessa två direkt anslutna nät.
+</p>
+
+<h3>Test före policy</h3>
+<p>
+Från PC1: <code>ping 192.168.2.10</code>.
+Om det saknas en matchande tillåtande policy ska testet misslyckas.
+Om det fungerar redan nu, undersök vilken befintlig policy
+som tillåter trafiken innan ni fortsätter.
+</p>
+
+<h2 id="policy">04 // Tillåt trafik genom brandväggen</h2>
+<p>
+Routes talar om vilken väg paketet ska ta.
+En firewall policy avgör om FortiGate tillåter att paketet passerar.
+</p>
+
+<h3>Skapa adressobjekt</h3>
+<p>
+I <strong>Policy &amp; Objects → Addresses</strong>,
+skapa två objekt av typen Subnet:
+</p>
+<div class="table">
+<table>
+<thead><tr><th>Namn</th><th>Subnet / IP-mask</th></tr></thead>
+<tbody>
+<tr><td>LAB_NET_A</td><td>192.168.1.0/24</td></tr>
+<tr><td>LAB_NET_B</td><td>192.168.2.0/24</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Skapa först en policy från A till B</h3>
+<p>
+I <strong>Policy &amp; Objects → Firewall Policy</strong>,
+välj Create New:
+</p>
+<div class="table">
+<table>
+<thead><tr><th>Fält</th><th>Värde</th></tr></thead>
+<tbody>
+<tr><td>Name</td><td>LAB_A_TO_B_PING</td></tr>
+<tr>
+  <td>Incoming interface</td>
+  <td>Det faktiska gränssnittsnamnet för PORT A</td>
+</tr>
+<tr>
+  <td>Outgoing interface</td>
+  <td>Det faktiska gränssnittsnamnet för PORT B</td>
+</tr>
+<tr><td>Source</td><td>LAB_NET_A</td></tr>
+<tr><td>Destination</td><td>LAB_NET_B</td></tr>
+<tr><td>Schedule</td><td>always</td></tr>
+<tr><td>Service</td><td>PING</td></tr>
+<tr><td>Action</td><td>ACCEPT</td></tr>
+<tr><td>NAT</td><td>Av</td></tr>
+<tr>
+  <td>Log Allowed Traffic</td>
+  <td>All Sessions, om tillgängligt</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>
+Placera policyn före eventuella tidigare regler som annars
+matchar och nekar samma trafik.
+Kontrollera att policyn är aktiverad.
+Behåll övriga policies enligt lärarens instruktion.
+</p>
+
+<ol>
+  <li>
+    Från PC1: <code>ping 192.168.2.10</code>.
+    Det ska nu fungera.
+  </li>
+  <li>
+    Stoppa pingtestet och starta ett nytt från PC2:
+    <code>ping 192.168.1.10</code>.
+    Det ska fortfarande misslyckas om ingen policy medger
+    nya sessioner från B till A.
+  </li>
+  <li>
+    Kontrollera policyträffar eller trafikloggar.
+    Leta efter source <code>192.168.1.10</code>
+    och destination <code>192.168.2.10</code>.
+    Observera att loggen ibland visas först när sessionen avslutats.
+  </li>
+</ol>
+
+<div class="panel">
+<strong>Varför fungerar svaret?</strong>
+FortiGate håller reda på sessionen som PC1 initierar
+och tillåter det matchande svaret från PC2.
+En ny ping som PC2 initierar är en annan session
+och behöver en policy i den riktningen.
+</div>
+
+<h3>Tillåt även PC2 att initiera</h3>
+<p>
+Skapa en andra policy med namnet <code>LAB_B_TO_A_PING</code>.
+Byt plats på gränssnitten och adressobjekten:
+incoming PORT B, outgoing PORT A,
+source LAB_NET_B och destination LAB_NET_A.
+Service är PING och NAT är av.
+</p>
+
+<div class="panel">
+<strong>Kontrollpunkt C:</strong>
+Nya pingtester fungerar från båda datorerna.
+Två policies behövs här eftersom båda sidor ska få initiera trafik.
+En enda policy räcker för en tillåten session och dess returtrafik.
+</div>
+
+<p>
+<strong>Varför NAT av?</strong>
+Vi vill behålla datorernas ursprungliga adresser
+när de kommunicerar mellan labbnäten.
+NAT behövs inte för detta upplägg.
+</p>
+
+<h2>05 // Följ IP-paketet och Ethernet-ramen</h2>
+<p>
+Kör <code>arp -a</code> eller <code>ip neigh</code> igen.
+Leta efter gatewayen.
+Gamla ARP-poster från steg 1 kan ligga kvar ett tag,
+så bedöm vilken nästa hop det aktuella paketet använder.
+</p>
+
+<div class="table">
+<table>
+<thead>
+<tr>
+  <th>PC1 skickar till…</th>
+  <th>Destinations-IP</th>
+  <th>Destinations-MAC på PC1:s länk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>PC2 i steg 1</td>
+  <td>192.168.1.20</td>
+  <td>PC2:s MAC-adress</td>
+</tr>
+<tr>
+  <td>PC2 i steg 2</td>
+  <td>192.168.2.10</td>
+  <td>FortiGates MAC-adress för PORT A</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>
+FortiGate tar emot ramen, fattar routing- och policybeslut
+och skickar vidare paketet i en <strong>ny Ethernet-ram</strong>
+på PORT B. Där är destinationen PC2:s MAC-adress.
+IP-destinationen är fortfarande <code>192.168.2.10</code>.
+Routern minskar också paketets TTL.
+</p>
+
+<details>
+<summary>Extra: observera med Wireshark</summary>
+<ol>
+  <li>Starta fångst på PC1:s kabelanslutna nätverkskort.</li>
+  <li>Använd visningsfiltret <code>arp || icmp</code>.</li>
+  <li>
+    Starta ping till PC2.
+    Öppna Ethernet II och IPv4 i ett Echo Request.
+  </li>
+  <li>
+    Anteckna destinations-MAC och destinations-IP.
+    Jämför MAC-adressen med gatewayens post i ARP-tabellen.
+  </li>
+  <li>
+    Om ni behöver se en ny ARP-förfrågan, be läraren hjälpa till
+    att rensa just gatewayens ARP-post.
+    En cacheträff behöver ingen ny ARP-förfrågan.
+  </li>
+</ol>
+</details>
+
+<h2 id="felsok">06 // Felsök i rätt ordning</h2>
+<div class="table">
+<table>
+<thead>
+<tr><th>Symtom</th><th>Kontrollera först</th><th>Nästa kontroll</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Ingen fysisk länk</td>
+  <td>Kabel, rätt port, nätverkskort och portens status.</td>
+  <td>Att båda sidor av länken är aktiva.</td>
+</tr>
+<tr>
+  <td>Ping misslyckas i steg 1</td>
+  <td>
+    PC-adresserna och /24-masken, samma hardware switch,
+    samma VLAN på respektive switch.
+  </td>
+  <td>
+    Inkommande ICMP på mottagardatorn och
+    eventuella portisoleringsinställningar.
+  </td>
+</tr>
+<tr>
+  <td>Den egna gatewayen svarar inte</td>
+  <td>
+    IP/mask, kabel, rätt FortiGate-port och gränssnittets adress.
+  </td>
+  <td>
+    PING under Administrative Access,
+    eventuell local-in-policy samt portstatus.
+  </td>
+</tr>
+<tr>
+  <td>Gateway fungerar men PC2 svarar inte</td>
+  <td>
+    PC1:s gateway, de direkt anslutna routes och A→B-policyn.
+  </td>
+  <td>
+    PC2:s adress/gateway, ICMP-regel i PC2:s brandvägg
+    och eventuell tidigare deny-policy.
+  </td>
+</tr>
+<tr>
+  <td>PC1 kan pinga PC2 men inte omvänt</td>
+  <td>Att B→A-policyn finns och matchar.</td>
+  <td>
+    PC1:s lokala ICMP-regel.
+    Skilj ny session från svar i en befintlig session.
+  </td>
+</tr>
+<tr>
+  <td>Fel source-IP i loggarna</td>
+  <td>NAT-inställningen i matchande policy.</td>
+  <td>
+    Alternativ trafikväg via Wi-Fi/VPN och korrekt kabelinterface.
+  </td>
+</tr>
+<tr>
+  <td>Ingen route för ett labbnät</td>
+  <td>Att gränssnittet har rätt IP/mask och är uppe.</td>
+  <td>
+    Att porten är ett självständigt gränssnitt
+    och inte kvar i hardware switchen.
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h3>Kommandon att använda på FortiGate</h3>
+<pre>show system interface
+get router info routing-table all
+show firewall policy</pre>
+
+<details>
+<summary>Extra: se om ping når och lämnar FortiGate</summary>
+<p>
+Starta en kort fångst på FortiGate, kör ping från PC1
+och stoppa fångsten med Ctrl+C:
+</p>
+<pre>diagnose sniffer packet any 'icmp and host 192.168.1.10 and host 192.168.2.10' 4 20 l</pre>
+<p>
+Nivå 4 visar gränssnitt och riktning.
+Förväntat: Echo Request kommer in på PORT A och går ut på PORT B;
+svaret kommer in på PORT B och går ut på PORT A.
+Fångsten avslutas efter 20 matchande paket eller med Ctrl+C.
+Hårdvaruavlastning kan göra att alla paket inte syns i en CPU-fångst;
+frånvaro i fångsten är därför inte ensam ett bevis på tappad trafik.
+</p>
+</details>
+
+<h2>07 // Gör ett fel och förklara det</h2>
+<p>
+Välj ett alternativ.
+Ändra en sak åt gången och återställ efter försöket.
+</p>
+<ol>
+  <li>
+    <strong>Ta bort PC1:s gateway.</strong>
+    Testa lokal gateway-IP och PC2.
+    Varför kan ett lokalt mål fungera medan det externa subnätet inte nås?
+  </li>
+  <li>
+    <strong>Inaktivera A→B-policyn.</strong>
+    Stoppa föregående ping, vänta tills sessionen gått ut
+    och prova en ny session.
+    Vad fungerar fortfarande?
+    En redan etablerad session kan ge ett annat resultat än en ny.
+  </li>
+  <li>
+    <strong>Stäng av PING på PORT A under Administrative Access.</strong>
+    Kan PC1 fortfarande pinga PC2 genom FortiGate?
+    Varför skiljer sig ping till brandväggen från ping genom brandväggen?
+  </li>
+</ol>
+<label>
+Vilket fel skapade ni, vad observerade ni och hur återställde ni?
+<textarea></textarea>
+</label>
+
+<h2 id="redovisa">08 // Redovisning</h2>
+<div class="checks">
+  <label>
+    <input type="checkbox">
+    Steg 1: ping fungerar utan default gateway.
+  </label>
+  <label>
+    <input type="checkbox">
+    Steg 2: båda datorerna når sin egen gateway.
+  </label>
+  <label>
+    <input type="checkbox">
+    Två direkt anslutna routes är identifierade.
+  </label>
+  <label>
+    <input type="checkbox">
+    A→B fungerar med en policy och dess returtrafik.
+  </label>
+  <label>
+    <input type="checkbox">
+    B→A fungerar när den andra policyn skapats.
+  </label>
+  <label>
+    <input type="checkbox">
+    NAT är av och minst ett felsökningsförsök är dokumenterat.
+  </label>
+</div>
+
+<label>
+1. Visa adressplanen och resultatet av era pingtester.
+Bifoga skärmbilder i er inlämning.
+<textarea></textarea>
+</label>
+<label>
+2. Vad skiljer hardware switch i steg 1 från routing i steg 2?
+<textarea></textarea>
+</label>
+<label>
+3. Vilken IP-adress och vilken MAC-adress är destination
+när PC1 skickar till PC2 i steg 2?
+<textarea></textarea>
+</label>
+<label>
+4. Varför behöver FortiGate inga statiska routes mellan dessa två nät?
+<textarea></textarea>
+</label>
+<label>
+5. Varför räcker A→B-policyn för svaret,
+men inte för en ny anslutning från PC2?
+<textarea></textarea>
+</label>
+<label>
+6. Vad är skillnaden mellan Administrative Access PING
+och service PING i en firewall policy?
+<textarea></textarea>
+</label>
+
+<p class="muted">
+Anteckningar sparas inte automatiskt.
+Kopiera svaren till inlämningen eller skriv ut till PDF innan sidan stängs.
+</p>
+<button type="button" onclick="window.print()">Skriv ut / spara PDF</button>
+
+<details>
+<summary>Facit och resonemang – öppna efter labben</summary>
+<p>
+<strong>Steg 1:</strong>
+båda datorerna är i samma /24-nät.
+PC1 använder ARP för PC2:s MAC och ingen router behövs.
+</p>
+<p>
+<strong>Steg 2:</strong>
+PC1 jämför destinations-IP med sin egen adress och mask,
+ser att PC2 ligger utanför det lokala subnätet
+och skickar ramen till sin default gateway.
+IP-destinationen är PC2, MAC-destinationen är PORT A på FortiGate.
+</p>
+<p>
+<strong>Routing:</strong>
+FortiGate känner båda näten genom sina direkt anslutna gränssnitt.
+Routingtabellen väljer utgående gränssnitt.
+Policyn avgör om trafiken får passera.
+</p>
+<p>
+<strong>Sessioner:</strong>
+matchande svar tillåts inom sessionen.
+För nya sessioner i motsatt riktning behövs en separat policy.
+</p>
+<p>
+<strong>Ping:</strong>
+Administrative Access styr svar på ping till FortiGate självt,
+med förbehåll för local-in-regler.
+PING i en firewall policy tillåter matchande trafik
+som passerar genom brandväggen.
+</p>
+</details>
+
+<h2>09 // Återställ</h2>
+<ul>
+  <li>Återställ felet från steg 7 och kontrollera slutresultatet.</li>
+  <li>
+    Spara redovisningen och anteckna vilka portar och policies ni använde.
+  </li>
+  <li>
+    Återställ datorernas IP-/DHCP-inställningar och återaktivera
+    eventuellt Wi-Fi/VPN enligt lärarens instruktion.
+  </li>
+  <li>
+    Läraren avgör om FortiGate ska behålla routingskonfigurationen
+    till nästa labb eller återställas från backup.
+    Ta endast bort labbens egna policies och objekt
+    om det ingår i återställningen.
+  </li>
+</ul>
+
+<footer>
+BAALSTORM // NÄTVERKSTEKNIK<br>
+Underlag: lektionens slide 14–17.
+Adressplanen är samordnad till 192.168.1.0/24 och 192.168.2.0/24.<br>
+Referenser:
+<a href="https://docs.fortinet.com/document/fortigate/7.4.2/administration-guide/100999/hardware-switch">
+Fortinet: Hardware switch</a> ·
+<a href="https://docs.fortinet.com/document/fortigate/7.4.4/administration-guide/574723/interface-settings">
+Fortinet: Interface settings</a><br>
+Labbmall · 2026-10-04
+</footer>
+</main>
+</body>
+</html>
