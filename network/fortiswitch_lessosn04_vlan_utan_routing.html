@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm | Två FortiSwitchar – VLAN utan routing</title>
+
+<style>
+:root {
+  --bg: #050b08;
+  --panel: #0a1510;
+  --green: #6cff9a;
+  --text: #d7e5dc;
+  --muted: #8ca197;
+  --line: #244331;
+  --yellow: #ffd166;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 "Courier New", monospace;
+}
+
+header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--green);
+}
+
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 28px 22px 60px;
+}
+
+h1 {
+  color: #f1fff5;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.15;
+}
+
+h2 {
+  color: var(--green);
+  font-size: 1.3rem;
+  margin-top: 36px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+
+h3, code { color: var(--yellow); }
+.muted, footer { color: var(--muted); }
+
+.panel {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--green);
+  margin: 20px 0;
+}
+
+.warn { border-left-color: var(--yellow); }
+.table { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+}
+
+th, td {
+  border: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th { color: var(--green); }
+
+pre {
+  background: #020604;
+  color: var(--green);
+  border: 1px solid var(--line);
+  padding: 16px;
+  overflow: auto;
+}
+
+li { margin: 8px 0; }
+
+textarea {
+  width: 100%;
+  min-height: 85px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 10px;
+  font: inherit;
+}
+
+label {
+  display: block;
+  margin: 18px 0;
+}
+
+button {
+  font: inherit;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--green);
+  border: 1px solid var(--green);
+  cursor: pointer;
+}
+
+details {
+  border: 1px solid var(--line);
+  padding: 15px;
+  margin: 20px 0;
+}
+
+summary {
+  color: var(--yellow);
+  cursor: pointer;
+}
+
+footer {
+  margin-top: 35px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.topology {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  border: 1px solid var(--line);
+}
+
+.node { text-align: center; }
+
+.node strong {
+  display: block;
+  color: var(--green);
+}
+
+a { color: var(--green); }
+
+@media print {
+  body { background: white; color: black; }
+  main { max-width: none; padding: 0; }
+
+  header, h1, h2, h3, code, th,
+  .muted, footer, .node strong, a {
+    color: black;
+  }
+
+  .panel, pre, textarea {
+    background: white;
+    color: black;
+    border-color: #999;
+  }
+
+  th, td, .topology, details { border-color: #999; }
+  button { display: none; }
+  pre, tr { break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+<header>BAALSTORM // NÄTVERKSTEKNIK</header>
+
+<main>
+<p class="muted">
+  FYSISKA FORTISWITCHAR · 60–90 MIN · ARBETE I GRUPP
+</p>
+
+<h1>TVÅ SWITCHAR.<br>TRE VLAN. INGEN ROUTING.</h1>
+
+<p>
+  Bygg tre separata lager 2-nät på två FortiSwitchar.
+  Testa hur otaggad datortrafik placeras i rätt VLAN och
+  hur VLAN:en transporteras taggade mellan switcharna.
+</p>
+
+<div class="panel">
+  <strong>Mål:</strong>
+  skapa VLAN, konfigurera Native VLAN och Allowed VLANs,
+  verifiera kommunikation inom VLAN och förklara varför
+  olika VLAN inte kommunicerar utan routing.
+</div>
+
+<h2>01 // Förbered utrustningen</h2>
+
+<ul>
+  <li>
+    Två fysiska FortiSwitchar, sex datorer och Ethernet-kablar.
+  </li>
+  <li>
+    Administration via konsol eller ett separat,
+    av läraren förberett managementnät.
+  </li>
+  <li>
+    Tre datorer på varje switch: en i varje VLAN.
+    Med fyra datorer gör ni samma tester i två VLAN åt gången
+    och byter sedan till det tredje.
+  </li>
+</ul>
+
+<div class="panel warn">
+  <strong>Lärarens startläge:</strong>
+  båda switcharna ska vara förberedda i
+  <strong>standalone-läge</strong>.
+  En FortiLink-hanterad switch konfigureras via FortiGate
+  och följer inte denna instruktion.
+  Byt inte driftläge under labben.
+  Använd endast tilldelade labbportar och en enda länk
+  mellan switcharna. Managementanslutningen får inte skapa
+  en extra väg för labbtrafiken.
+</div>
+
+<p>
+  Anteckna modell, programversion och befintlig konfiguration.
+  Ta backup enligt lärarens instruktion.
+  Ändra inte managementport, management-VLAN eller switcharnas
+  managementadresser.
+  Kontrollera modellen med <code>get system status</code>.
+</p>
+
+<p>
+  Exemplen använder <strong>port1–port3</strong> för datorer
+  och <strong>port8</strong> mellan switcharna.
+  Byt namnen om era tilldelade portar är andra.
+  Kontrollera att port8 faktiskt finns och är ledig.
+</p>
+
+<h2>02 // Koppla och sätt IP-adresser</h2>
+
+<div class="topology">
+  <div class="node">
+    <strong>PC10-A · PC20-A · PC30-A</strong>
+    FortiSwitch A
+  </div>
+  <div class="node">
+    <strong>A port8 ↔ B port8</strong>
+    En kabel · flera VLAN
+  </div>
+  <div class="node">
+    <strong>PC10-B · PC20-B · PC30-B</strong>
+    FortiSwitch B
+  </div>
+</div>
+
+<div class="table">
+<table>
+  <tr>
+    <th>VLAN</th>
+    <th>Port på båda switcharna</th>
+    <th>Dator på A</th>
+    <th>Dator på B</th>
+  </tr>
+  <tr>
+    <td>10 – PERSONAL</td>
+    <td>port1</td>
+    <td>PC10-A: 172.17.10.11</td>
+    <td>PC10-B: 172.17.10.12</td>
+  </tr>
+  <tr>
+    <td>20 – STUDENTER</td>
+    <td>port2</td>
+    <td>PC20-A: 172.17.20.11</td>
+    <td>PC20-B: 172.17.20.12</td>
+  </tr>
+  <tr>
+    <td>30 – GASTER</td>
+    <td>port3</td>
+    <td>PC30-A: 172.17.30.11</td>
+    <td>PC30-B: 172.17.30.12</td>
+  </tr>
+</table>
+</div>
+
+<p>
+  Alla datorer använder masken <strong>255.255.255.0</strong>.
+  Lämna gateway och DNS tomma.
+  Stäng av Wi-Fi och VPN under testet.
+  Tillåt inkommande ICMP Echo från labbnäten på datorerna.
+  Ingen router och inga routade VLAN-gränssnitt ska finnas i labben.
+</p>
+
+<h2>03 // Förstå FortiSwitchs portinställningar</h2>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Inställning</th>
+    <th>Funktion i denna labb</th>
+  </tr>
+  <tr>
+    <td>Native VLAN</td>
+    <td>
+      Inkommande otaggad trafik placeras i detta VLAN.
+      Trafik i VLAN:et skickas normalt otaggad ut från porten.
+    </td>
+  </tr>
+  <tr>
+    <td>Allowed VLANs</td>
+    <td>
+      Ytterligare VLAN som får passera porten.
+      I labben skickas de taggade.
+      Native VLAN är implicit tillåtet.
+    </td>
+  </tr>
+  <tr>
+    <td>Untagged VLANs</td>
+    <td>
+      Kan ange ytterligare VLAN som skickas otaggade ut.
+      Lämna listan utan extra VLAN i denna labb.
+    </td>
+  </tr>
+</table>
+</div>
+
+<p>
+  En datorport med Native VLAN 10 och inga ytterligare tillåtna
+  VLAN fyller samma funktion som en Cisco-accessport i VLAN 10.
+  Länkporten med Native VLAN 99 och Allowed VLANs 10, 20, 30
+  fyller samma funktion som en Cisco-trunk med dessa taggade VLAN.
+</p>
+
+<div class="panel">
+  <strong>Ett native VLAN per port.</strong>
+  Vi använder VLAN 99 som native på switchlänken, så att
+  labbens VLAN 10, 20 och 30 transporteras taggade.
+  VLAN 99 får inga datorer eller IP-adresser.
+</div>
+
+<h2>04 // Konfigurera båda switcharna</h2>
+
+<p>
+  Gör samma inställningar på A och B.
+  I standalone-webbgränssnittet finns VLAN och portinställningar
+  vanligtvis under <strong>Switch → VLAN</strong> och
+  <strong>Switch → Interfaces</strong>.
+  Menynamn varierar mellan versioner.
+</p>
+
+<ol>
+  <li>
+    Skapa VLAN <strong>10, 20, 30 och 99</strong>.
+    Namnge dem gärna PERSONAL, STUDENTER, GASTER och NATIVE.
+  </li>
+  <li>
+    Konfigurera datorportarna och länkporten enligt tabellen.
+  </li>
+  <li>
+    Ta bort tidigare extra VLAN från Allowed VLANs och
+    Untagged VLANs på just dessa labbportar.
+  </li>
+  <li>
+    Spara ändringarna och kontrollera att alla anslutna portar har länk.
+  </li>
+</ol>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Port</th>
+    <th>Native VLAN</th>
+    <th>Allowed VLANs utöver native</th>
+    <th>Extra Untagged VLANs</th>
+  </tr>
+  <tr>
+    <td>port1 – PC10</td>
+    <td>10</td>
+    <td>Inga</td>
+    <td>Inga</td>
+  </tr>
+  <tr>
+    <td>port2 – PC20</td>
+    <td>20</td>
+    <td>Inga</td>
+    <td>Inga</td>
+  </tr>
+  <tr>
+    <td>port3 – PC30</td>
+    <td>30</td>
+    <td>Inga</td>
+    <td>Inga</td>
+  </tr>
+  <tr>
+    <td>port8 – switchlänk</td>
+    <td>99</td>
+    <td>10, 20, 30</td>
+    <td>Inga</td>
+  </tr>
+</table>
+</div>
+
+<details>
+  <summary>CLI-alternativ i standalone-läge</summary>
+
+  <p>
+    Byt först till era faktiska portnamn.
+    Kör på båda switcharna.
+    Använd GUI om er version har annan syntax.
+  </p>
+
+<pre>config switch vlan
+    edit 10
+        set description "PERSONAL"
+    next
+    edit 20
+        set description "STUDENTER"
+    next
+    edit 30
+        set description "GASTER"
+    next
+    edit 99
+        set description "NATIVE"
+    next
+end
+
+config switch interface
+    edit "port1"
+        set native-vlan 10
+        unset allowed-vlans
+        unset untagged-vlans
+    next
+    edit "port2"
+        set native-vlan 20
+        unset allowed-vlans
+        unset untagged-vlans
+    next
+    edit "port3"
+        set native-vlan 30
+        unset allowed-vlans
+        unset untagged-vlans
+    next
+    edit "port8"
+        set native-vlan 99
+        set allowed-vlans 10 20 30
+        unset untagged-vlans
+    next
+end</pre>
+</details>
+
+<p>
+  Skapa ingen länkaggregation.
+  FortiSwitchs CLI-sektion <code>config switch trunk</code>
+  används för trunkgrupper/länkaggregation och behövs inte
+  för denna enda länk som bär flera VLAN.
+</p>
+
+<h2>05 // Verifiera och testa</h2>
+
+<p>Kontrollera inställningarna i GUI och med:</p>
+
+<pre>show switch vlan
+show full-configuration switch interface</pre>
+
+<p>
+  Leta efter rätt <code>native-vlan</code>,
+  <code>allowed-vlans</code> och <code>untagged-vlans</code>
+  i varje labbports block.
+  Kontrollera även länkstatus i GUI.
+  Defaultvärden kan utelämnas av vanligt <code>show</code>.
+</p>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Från</th>
+    <th>Ping till</th>
+    <th>Förväntat</th>
+  </tr>
+  <tr>
+    <td>PC10-A</td>
+    <td>172.17.10.12</td>
+    <td>Fungerar över länken i VLAN 10</td>
+  </tr>
+  <tr>
+    <td>PC20-A</td>
+    <td>172.17.20.12</td>
+    <td>Fungerar över länken i VLAN 20</td>
+  </tr>
+  <tr>
+    <td>PC30-A</td>
+    <td>172.17.30.12</td>
+    <td>Fungerar över länken i VLAN 30</td>
+  </tr>
+  <tr>
+    <td>PC10-A</td>
+    <td>172.17.20.12</td>
+    <td>Misslyckas: annat subnät och ingen gateway</td>
+  </tr>
+</table>
+</div>
+
+<p>
+  Det sista testet bevisar inte ensamt VLAN-separationen,
+  eftersom datorn också saknar en route till det andra subnätet.
+  Gör nästa test för att skilja IP-adressering från VLAN-tillhörighet.
+</p>
+
+<label>
+  Dokumentera resultaten för de tre fungerande förbindelserna.
+  <textarea></textarea>
+</label>
+
+<h2>06 // Samma IP-subnät, olika VLAN</h2>
+
+<ol>
+  <li>
+    Ändra tillfälligt <strong>PC20-B</strong> till
+    <strong>172.17.10.22/24</strong>.
+    Lämna gateway tom och behåll port2 i VLAN 20.
+  </li>
+  <li>
+    Från PC10-A: pinga <code>172.17.10.22</code>.
+    Det ska misslyckas trots att adresserna nu ligger
+    i samma IP-subnät.
+  </li>
+  <li>
+    Starta Wireshark på PC10-A:s kabelanslutning och använd
+    visningsfiltret <code>arp</code>.
+    Pinga igen. Om ingen ARP-förfrågan visas, töm ARP-cachen
+    för testadressen med operativsystemets verktyg.
+  </li>
+  <li>
+    Leta efter frågan om vem som har 172.17.10.22.
+    Den skickas som broadcast i VLAN 10 och når inte
+    PC20-B i VLAN 20.
+  </li>
+  <li>
+    Återställ PC20-B till <strong>172.17.20.12/24</strong>
+    och kontrollera att PC20-A åter kan pinga den.
+  </li>
+</ol>
+
+<label>
+  Varför når ARP-förfrågan inte PC20-B trots att datorerna
+  har adresser i samma IP-subnät?
+  <textarea></textarea>
+</label>
+
+<h2>07 // Följ taggad och otaggad trafik</h2>
+
+<p>
+  Datorerna skickar otaggade ramar.
+  Datorportarnas Native VLAN avgör VLAN-tillhörigheten.
+  På länken mellan switcharna skickas VLAN 10, 20 och 30
+  med 802.1Q-taggar, eftersom länkens Native VLAN är 99.
+  Mottagande switch använder VLAN-ID i taggen och skickar
+  trafiken otaggad till rätt datorport.
+</p>
+
+<div class="panel">
+  <strong>Wireshark på datorporten:</strong>
+  där ser ni normalt inte switchlänkens taggar.
+  För att observera dem behövs en av läraren förberedd
+  portspegling som bevarar taggar eller en nätverkstapp.
+  Nätverkskort och drivrutiner kan dessutom ta bort taggar
+  före fångsten.
+</div>
+
+<label>
+  Beskriv vägen för en ram från PC10-A till PC10-B.
+  Var är den otaggad, var är den taggad och vilket VLAN-ID används?
+  <textarea></textarea>
+</label>
+
+<h2>08 // Felsök ett avsiktligt fel</h2>
+
+<ol>
+  <li>
+    På <strong>switch A:s länkport</strong>:
+    ändra Allowed VLANs från <strong>10, 20, 30</strong>
+    till <strong>10, 30</strong>.
+    Behåll Native VLAN 99.
+  </li>
+  <li>
+    Testa alla tre A-till-B-förbindelser.
+    Bara VLAN 20 ska sluta fungera.
+  </li>
+  <li>
+    Jämför inställningarna på båda ändar av länken
+    och identifiera skillnaden.
+  </li>
+  <li>
+    Återställ Allowed VLANs till <strong>10, 20, 30</strong>
+    och verifiera att alla tre VLAN fungerar.
+  </li>
+</ol>
+
+<p>
+  Om ett test inte ger väntat resultat:
+  kontrollera kabel och länkstatus, datorns IP/mask,
+  lokal brandvägg, datorportens Native VLAN och
+  länkportarnas Allowed VLANs.
+  Kontrollera även att ingen extra otaggad VLAN-lista eller
+  alternativ nätverksanslutning påverkar testet.
+</p>
+
+<label>
+  Vilka tester påverkades och vilken portinställning förklarade felet?
+  <textarea></textarea>
+</label>
+
+<h2>09 // Redovisa och återställ</h2>
+
+<ul>
+  <li>
+    Bifoga topologi och portinställningar från båda switcharna.
+  </li>
+  <li>
+    Visa lyckade ping inom alla tre VLAN och det misslyckade
+    testet med samma IP-subnät men olika VLAN.
+  </li>
+  <li>
+    Förklara Native VLAN, Allowed VLANs och skillnaden mot
+    Ciscos access- och trunkinställningar.
+  </li>
+  <li>
+    Förklara vad som skulle behövas för kommunikation mellan VLAN.
+  </li>
+  <li>
+    Återställ datorernas adresser.
+    Läraren avgör om switcharna ska behålla labbkonfigurationen
+    eller återställas från backup.
+    Gör ingen fabriksåterställning.
+  </li>
+</ul>
+
+<p class="muted">
+  Svaren sparas inte automatiskt.
+  Kopiera dem till inlämningen eller skriv ut till PDF.
+</p>
+
+<button onclick="window.print()">Skriv ut / spara PDF</button>
+
+<details>
+  <summary>Kontrollera resonemanget efter labben</summary>
+  <p>
+    Varje VLAN är en egen broadcastdomän på lager 2.
+    Native VLAN placerar inkommande otaggad trafik i ett VLAN
+    och skickar det VLAN:ets trafik otaggad ut.
+    Allowed VLANs tillåter labbens övriga VLAN över länken,
+    där de går taggade.
+    En gemensam IP-adressplan slår inte samman olika VLAN.
+    För trafik mellan VLAN behövs routing på lager 3,
+    till exempel i en router, en lager 3-switch eller en brandvägg.
+  </p>
+</details>
+
+<footer>
+  BAALSTORM // FORTISWITCH – VLAN UTAN ROUTING<br>
+  Standalone-labb. Förtesta portnamn, menyer och kommandon
+  på tilldelade modeller och versioner.
+</footer>
+
+</main>
+</body>
+</html>
