@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | Cisco och FortiSwitch – VLAN</title>
+<style>
+:root {
+  --bg: #050b08;
+  --panel: #0a1510;
+  --green: #6cff9a;
+  --yellow: #ffd166;
+  --text: #d7e5dc;
+  --muted: #8ca197;
+  --line: #1f3b2b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 85% 5%, #12332166, transparent 35%),
+    var(--bg);
+  color: var(--text);
+  font: 16px/1.65 "Courier New", monospace;
+}
+
+header {
+  border-bottom: 1px solid var(--line);
+  padding: 15px 24px;
+  color: var(--green);
+  letter-spacing: .1em;
+}
+
+main {
+  max-width: 1080px;
+  margin: auto;
+  padding: 32px 24px 65px;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.12;
+  color: #f1fff5;
+}
+
+h2 {
+  color: var(--green);
+  font-size: 1.35rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+  margin-top: 38px;
+}
+
+h3 {
+  color: var(--yellow);
+  font-size: 1.05rem;
+}
+
+a { color: var(--green); }
+.muted { color: var(--muted); }
+
+.panel {
+  padding: 18px 20px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--green);
+  margin: 20px 0;
+}
+
+.warn { border-left-color: var(--yellow); }
+
+pre {
+  background: #020604;
+  border: 1px solid var(--line);
+  padding: 16px;
+  overflow: auto;
+  color: var(--green);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+code { color: var(--yellow); }
+.table { overflow-x: auto; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 18px 0;
+}
+
+td, th {
+  padding: 10px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th { color: var(--green); }
+
+input, textarea {
+  font: inherit;
+  color: var(--text);
+  background: #07120b;
+  border: 1px solid #365442;
+  padding: 9px;
+  max-width: 100%;
+}
+
+textarea {
+  width: 100%;
+  min-height: 95px;
+}
+
+label {
+  display: block;
+  margin: 12px 0;
+}
+
+button {
+  font: inherit;
+  border: 1px solid var(--green);
+  background: #102319;
+  color: var(--green);
+  padding: 9px 13px;
+  cursor: pointer;
+}
+
+button:hover { background: #1c3c29; }
+
+details {
+  border: 1px solid var(--line);
+  padding: 14px;
+  margin: 12px 0;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--yellow);
+}
+
+li { margin: 7px 0; }
+
+.topology {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+  padding: 24px 10px;
+  background: #020604;
+}
+
+.node {
+  text-align: center;
+  padding: 8px;
+}
+
+.node strong {
+  display: block;
+  color: var(--green);
+}
+
+.link { color: var(--muted); }
+
+footer {
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+  padding-top: 20px;
+}
+
+.pill {
+  color: var(--green);
+  border: 1px solid var(--line);
+  display: inline-block;
+  padding: 3px 9px;
+  font-size: .85rem;
+  margin: 4px 4px 4px 0;
+}
+
+@media (max-width: 650px) {
+  main { padding: 24px 14px; }
+  table { font-size: .85rem; }
+  .topology { gap: 3px; }
+  .node { font-size: .85rem; padding: 4px; }
+  .link { font-size: .8rem; }
+}
+
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 11pt;
+  }
+
+  header, h1, h2, h3, a, .muted, .node strong, .link {
+    color: black;
+  }
+
+  main { max-width: none; padding: 0; }
+
+  .panel, pre, .topology, input, textarea, details {
+    background: white;
+    color: black;
+    border-color: #aaa;
+  }
+
+  code, th { color: black; }
+  button { display: none; }
+  details { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  pre, tr { break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+<header>BAALSTORM // NETWORK LAB</header>
+
+<main>
+<p style="color:var(--green)">$ ./vlan-cisco-fortiswitch</p>
+
+<h1>SAMMA VLAN.<br>OLIKA INSTÄLLNINGAR.</h1>
+
+<p class="muted">
+  Jämför en fysisk Cisco Catalyst och en FortiSwitch.
+  Följ otaggad trafik från datorn och taggad trafik mellan switcharna.
+</p>
+
+<span class="pill">60–90 MIN</span>
+<span class="pill">FYSISKA SWITCHAR</span>
+<span class="pill">2–4 STUDENTER</span>
+
+<div class="panel">
+  <strong>Mål:</strong>
+  förklara hur Ciscos access VLAN och native VLAN motsvaras av
+  FortiSwitchs native VLAN; konfigurera en länk mellan tillverkarna;
+  verifiera att samma VLAN fungerar över länken och att olika VLAN
+  är separerade.
+</div>
+
+<h2>01 // Förbered och identifiera</h2>
+
+<p>
+  Ni behöver en Catalyst, en FortiSwitch, fyra datorer och Ethernet-kablar.
+  Två datorer per switch ger en tydlig jämförelse. Med två datorer gör ni
+  testerna först i VLAN 10 och sedan i VLAN 20, och avslutar med olika VLAN.
+</p>
+
+<div class="panel warn">
+  <strong>Lärarens startläge:</strong>
+  använd tilldelade labbportar och behåll administration via konsol eller
+  en separat port. FortiSwitch ska vara förberedd i
+  <strong>standalone-läge</strong>. Konvertera inte en FortiLink-hanterad
+  switch under övningen. Inga routeranslutningar, routade VLAN-gränssnitt
+  eller extra kablar får koppla ihop labb-VLAN:en.
+  Använd en enda kabel mellan switcharna.
+</div>
+
+<p>
+  Anteckna modeller, versioner, portnamn och befintliga inställningar
+  innan ni ändrar något. Ta konfigurationsbackup enligt lärarens instruktion.
+  På Catalyst: <code>show version</code> och
+  <code>show interfaces status</code>.
+  På FortiSwitch: <code>get system status</code> samt portöversikten
+  i webbgränssnittet.
+</p>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Roll</th>
+    <th>Catalyst: faktiskt portnamn</th>
+    <th>FortiSwitch: faktiskt portnamn</th>
+  </tr>
+  <tr>
+    <td>Dator i VLAN 10</td>
+    <td><input placeholder="Exempel: Gi1/0/1"></td>
+    <td><input placeholder="Exempel: port1"></td>
+  </tr>
+  <tr>
+    <td>Dator i VLAN 20</td>
+    <td><input placeholder="Exempel: Gi1/0/2"></td>
+    <td><input placeholder="Exempel: port2"></td>
+  </tr>
+  <tr>
+    <td>Länk mellan switcharna</td>
+    <td><input placeholder="Exempel: Gi1/0/24"></td>
+    <td><input placeholder="Exempel: port24"></td>
+  </tr>
+</table>
+</div>
+
+<p>
+  Portnamnen i kommandoexemplen måste bytas till era faktiska portnamn.
+  Port 24 är ett exempel och finns inte på alla modeller.
+</p>
+
+<h2>02 // Jämför begreppen</h2>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Vad vill vi uppnå?</th>
+    <th>Cisco Catalyst</th>
+    <th>FortiSwitch</th>
+  </tr>
+  <tr>
+    <td>Otaggad datortrafik tillhör VLAN 10</td>
+    <td>Access-läge, access VLAN 10</td>
+    <td>Native VLAN 10, inga ytterligare taggade VLAN på datorporten</td>
+  </tr>
+  <tr>
+    <td>Otaggad trafik på länken mellan switcharna tillhör VLAN 99</td>
+    <td>Trunk-läge, native VLAN 99</td>
+    <td>Native VLAN 99 på länkporten</td>
+  </tr>
+  <tr>
+    <td>VLAN 10 och 20 ska passera länken taggade</td>
+    <td>Allowed VLAN-lista innehåller 10 och 20</td>
+    <td>Allowed VLANs innehåller 10 och 20</td>
+  </tr>
+  <tr>
+    <td>Portens ursprungliga VLAN-inställning</td>
+    <td>Access VLAN och trunkens native VLAN är normalt 1 från början</td>
+    <td>Native VLAN är normalt 1 från början</td>
+  </tr>
+</table>
+</div>
+
+<div class="panel">
+  <strong>Ett native VLAN per port.</strong>
+  FortiSwitch använder native VLAN både på datorportar och på länkar
+  som bär flera VLAN. Inkommande otaggade ramar placeras i portens
+  native VLAN. Utgående trafik i det VLAN:et skickas otaggad.
+  Ciscos motsvarande inställning heter access VLAN på en accessport
+  och native VLAN på en trunk.
+</div>
+
+<p>
+  Ciscos <strong>default VLAN 1</strong> beskriver det förinställda VLAN:et.
+  Det är ingen automatisk styrning av alla portar efter att ni gjort egna
+  portinställningar. VLAN 1 finns kvar även när datorportarna tillhör
+  VLAN 10 eller 20 och trunken har native VLAN 99.
+</p>
+
+<label>
+  Undersök en oanvänd labbport på varje switch. Vad är dess aktuella
+  inställningar? Är den verkligen kvar i standardläget?
+  <textarea></textarea>
+</label>
+
+<h2>03 // Koppla och sätt adresser</h2>
+
+<div class="topology" role="img"
+     aria-label="Två datorer på Catalyst och två datorer på FortiSwitch.
+     En enda länk mellan switcharna bär VLAN 10 och VLAN 20.">
+  <div class="node">
+    <strong>PC C10 + PC C20</strong>Datorportar
+  </div>
+  <span class="link">↔</span>
+  <div class="node">
+    <strong>Catalyst</strong>Access + trunk
+  </div>
+  <span class="link">↔</span>
+  <div class="node">
+    <strong>FortiSwitch</strong>Native + allowed
+  </div>
+  <span class="link">↔</span>
+  <div class="node">
+    <strong>PC F10 + PC F20</strong>Datorportar
+  </div>
+</div>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Dator</th>
+    <th>Switch</th>
+    <th>VLAN</th>
+    <th>IPv4-adress</th>
+    <th>Mask</th>
+  </tr>
+  <tr>
+    <td>PC C10</td>
+    <td>Catalyst</td>
+    <td>10</td>
+    <td>192.168.10.11</td>
+    <td>255.255.255.0</td>
+  </tr>
+  <tr>
+    <td>PC F10</td>
+    <td>FortiSwitch</td>
+    <td>10</td>
+    <td>192.168.10.12</td>
+    <td>255.255.255.0</td>
+  </tr>
+  <tr>
+    <td>PC C20</td>
+    <td>Catalyst</td>
+    <td>20</td>
+    <td>192.168.20.11</td>
+    <td>255.255.255.0</td>
+  </tr>
+  <tr>
+    <td>PC F20</td>
+    <td>FortiSwitch</td>
+    <td>20</td>
+    <td>192.168.20.12</td>
+    <td>255.255.255.0</td>
+  </tr>
+</table>
+</div>
+
+<p>
+  Lämna default gateway och DNS tomma. Använd kabelanslutningen och
+  stäng av alternativa trafikvägar som Wi-Fi/VPN för testet.
+  Tillåt inkommande ICMP Echo från labbnäten på datorerna.
+  VLAN 99 används som native VLAN på länken och behöver inga
+  datorer eller IP-adresser.
+</p>
+
+<h2>04 // Konfigurera Catalyst</h2>
+
+<p>
+  Exemplen förutsätter vanliga Catalyst-switchportar.
+  Börja med att skapa VLAN:
+</p>
+
+<pre>configure terminal
+vlan 10
+ name OFFICE
+exit
+vlan 20
+ name PRODUKTION
+exit
+vlan 99
+ name NATIVE_LABB
+exit</pre>
+
+<p>Konfigurera datorportarna. Byt portnamnen före körning:</p>
+
+<pre>interface GigabitEthernet1/0/1
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+exit
+interface GigabitEthernet1/0/2
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit</pre>
+
+<p>Konfigurera länken till FortiSwitch:</p>
+
+<pre>interface GigabitEthernet1/0/24
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,99
+ switchport nonegotiate
+ no shutdown
+exit
+end</pre>
+
+<p>
+  <code>switchport nonegotiate</code> stänger av DTP-förhandling när
+  modellen stöder kommandot. FortiSwitch-länken konfigureras manuellt.
+  På äldre Catalyst-modeller som kan välja mellan ISL och 802.1Q kan
+  <code>switchport trunk encapsulation dot1q</code> behövas före trunk-läget.
+  Använd det bara på modeller där kommandot finns.
+  En modell som enbart stöder 802.1Q behöver inget sådant val.
+</p>
+
+<h2>05 // Konfigurera FortiSwitch</h2>
+
+<p>
+  I standalone-webbgränssnittet finns VLAN och portinställningar under
+  <strong>Switch</strong>, exempelvis <strong>VLAN</strong> och
+  <strong>Interfaces</strong>. Menynamn kan skilja mellan versioner.
+</p>
+
+<ol>
+  <li>
+    Skapa VLAN 10, 20 och 99. Ge dem gärna beskrivningarna OFFICE,
+    PRODUKTION och NATIVE_LABB.
+  </li>
+  <li>
+    Öppna datorporten för PC F10 och ställ <strong>Native VLAN = 10</strong>.
+  </li>
+  <li>
+    Öppna datorporten för PC F20 och ställ <strong>Native VLAN = 20</strong>.
+  </li>
+  <li>
+    På datorportarna: ta bort andra VLAN från <strong>Allowed VLANs</strong>.
+    Native VLAN är implicit tillåtet. Kontrollera att ingen extra lista
+    för <strong>Untagged VLANs</strong> innehåller andra VLAN.
+  </li>
+  <li>
+    Öppna porten som går till Catalyst.
+    Ställ <strong>Native VLAN = 99</strong> och
+    <strong>Allowed VLANs = 10, 20</strong>.
+    Native VLAN 99 är implicit tillåtet.
+  </li>
+  <li>
+    På länkporten ska VLAN 10 och 20 inte finnas i
+    <strong>Untagged VLANs</strong>. De ska skickas med taggar.
+  </li>
+  <li>Spara ändringarna och kontrollera att länken är uppe.</li>
+</ol>
+
+<div class="panel">
+  <strong>FortiSwitchs lista Untagged VLANs:</strong>
+  om den finns i ert gränssnitt styr den vilka ytterligare VLAN som
+  skickas utan tagg ut från porten. Den ersätter inte native VLAN
+  för klassificering av inkommande otaggad trafik.
+  Lämna den utan extra VLAN i denna labb.
+</div>
+
+<p>Exempel på länkportens CLI-inställningar i standalone-läge:</p>
+
+<pre>config switch interface
+    edit "port24"
+        set native-vlan 99
+        set allowed-vlans 10 20
+        unset untagged-vlans
+    next
+end</pre>
+
+<p>
+  Använd det faktiska portnamnet. Skapa ingen länkaggregation för denna
+  övning. FortiSwitchs CLI-sektion <code>config switch trunk</code>
+  används för trunkgrupper/länkaggregation och behövs inte för en ensam
+  port som bär flera VLAN.
+</p>
+
+<h2>06 // Läs och jämför resultatet</h2>
+
+<h3>På Catalyst</h3>
+
+<pre>show vlan brief
+show interfaces trunk
+show interfaces GigabitEthernet1/0/1 switchport
+show interfaces GigabitEthernet1/0/24 switchport</pre>
+
+<p>
+  Leta efter <strong>Access Mode VLAN</strong> på datorporten och
+  <strong>Trunking Native Mode VLAN</strong> på trunken.
+  Kontrollera både administrativt och operativt portläge.
+  I <code>show interfaces trunk</code>: identifiera tillåtna VLAN,
+  aktiva VLAN och VLAN som får vidarebefordras.
+  En trunkport behöver inte visas i portlistan för access-VLAN i
+  <code>show vlan brief</code>.
+</p>
+
+<h3>På FortiSwitch</h3>
+
+<pre>show switch vlan
+show full-configuration switch interface</pre>
+
+<p>
+  Leta i respektive ports block efter <code>native-vlan</code>,
+  <code>allowed-vlans</code> och <code>untagged-vlans</code>.
+  Vanligt <code>show switch interface</code> kan utelämna standardvärden;
+  full-configuration hjälper när ni jämför det ursprungliga läget.
+  Komplettera med webbgränssnittets länkstatus.
+</p>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Observation</th>
+    <th>Catalyst</th>
+    <th>FortiSwitch</th>
+  </tr>
+  <tr>
+    <td>Datorport för VLAN 10</td>
+    <td><input placeholder="Inställning och värde"></td>
+    <td><input placeholder="Inställning och värde"></td>
+  </tr>
+  <tr>
+    <td>Datorport för VLAN 20</td>
+    <td><input placeholder="Inställning och värde"></td>
+    <td><input placeholder="Inställning och värde"></td>
+  </tr>
+  <tr>
+    <td>Länkens otaggade VLAN</td>
+    <td><input placeholder="Inställning och värde"></td>
+    <td><input placeholder="Inställning och värde"></td>
+  </tr>
+  <tr>
+    <td>Länkens taggade VLAN</td>
+    <td><input placeholder="Inställning och värde"></td>
+    <td><input placeholder="Inställning och värde"></td>
+  </tr>
+</table>
+</div>
+
+<h2>07 // Testa funktionen</h2>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Test</th>
+    <th>Förväntat</th>
+    <th>Ert resultat</th>
+  </tr>
+  <tr>
+    <td>PC C10 pingar 192.168.10.12</td>
+    <td>Fungerar över länken i VLAN 10</td>
+    <td><input></td>
+  </tr>
+  <tr>
+    <td>PC C20 pingar 192.168.20.12</td>
+    <td>Fungerar över länken i VLAN 20</td>
+    <td><input></td>
+  </tr>
+  <tr>
+    <td>PC C10 pingar 192.168.20.12</td>
+    <td>Misslyckas: annat subnät och ingen router/gateway</td>
+    <td><input></td>
+  </tr>
+</table>
+</div>
+
+<p>
+  <strong>Viktigt:</strong>
+  det sista testet visar inte ensamt att VLAN-separationen fungerar,
+  eftersom datorn även saknar en route till det andra subnätet.
+  Gör därför nästa test.
+</p>
+
+<h3>Skilj VLAN från IP-subnät</h3>
+
+<ol>
+  <li>
+    Behåll PC F20:s port i VLAN 20, men ändra tillfälligt datorns
+    IP-adress till <code>192.168.10.22/24</code>. Lämna gateway tom.
+  </li>
+  <li>
+    Från PC C10, pinga <code>192.168.10.22</code>.
+    Det ska misslyckas trots att datorerna nu har adresser
+    i samma IP-subnät.
+  </li>
+  <li>
+    Förklara varför PC C10:s ARP-förfrågan i VLAN 10 inte når
+    datorn i VLAN 20.
+  </li>
+  <li>
+    Återställ PC F20 till <code>192.168.20.12/24</code> och
+    verifiera VLAN 20-testet igen.
+  </li>
+</ol>
+
+<label>
+  Vad bevisar skillnaden mellan de två misslyckade testerna?
+  <textarea></textarea>
+</label>
+
+<h2>08 // Undersök taggad och otaggad trafik</h2>
+
+<p>
+  I grundkonfigurationen skickar datorerna otaggade ramar.
+  Mellan switcharna går VLAN 10 och 20 taggade, eftersom
+  länkens native VLAN är 99.
+</p>
+
+<h3>Flytta native VLAN på länken</h3>
+
+<ol>
+  <li>Anteckna den fungerande grundkonfigurationen.</li>
+  <li>
+    Ändra <strong>native VLAN på båda ändar av switchlänken till 20</strong>.
+    Behåll VLAN 10 tillåtet som taggat VLAN och VLAN 20 tillåtet på
+    Cisco-trunken. Ändra inga datorportar.
+  </li>
+  <li>Testa VLAN 10 och VLAN 20 igen. Båda ska fortfarande fungera.</li>
+  <li>
+    Förutsäg vilka ramar som nu går taggade respektive otaggade
+    mellan switcharna.
+  </li>
+  <li>
+    Återställ native VLAN till 99 på båda ändarna och kör testerna igen.
+  </li>
+</ol>
+
+<div class="panel">
+  <strong>Förväntat:</strong>
+  när båda länkportarna använder native VLAN 20 skickas VLAN 20
+  otaggat över länken och placeras i VLAN 20 på mottagarsidan.
+  VLAN 10 går fortfarande taggat. Detta förutsätter normal
+  konfiguration utan global taggning av native VLAN.
+</div>
+
+<details>
+  <summary>Extra: verifiera taggar med Wireshark</summary>
+  <p>
+    En fångst på en vanlig datorport visar normalt inte trunkens
+    VLAN-taggar. För att se dem behövs en av läraren förberedd
+    spegling av switchlänken som bevarar taggar, eller en nätverkstapp.
+    Nätverkskort och drivrutiner kan också ta bort taggar före fångsten.
+    Använd visningsfiltret <code>vlan</code> och undersök
+    <code>vlan.id</code>. Frånvaro av synliga taggar i fångsten är
+    därför inte ensam ett bevis på att länken är otaggad.
+  </p>
+</details>
+
+<h2>09 // Felsök ett avsiktligt fel</h2>
+
+<p>
+  Ta tillfälligt bort VLAN 20 från FortiSwitch-länkens Allowed VLANs
+  medan native VLAN är 99. Testa båda VLAN. VLAN 10 ska fungera och
+  VLAN 20 ska misslyckas. Återställ sedan VLAN 20.
+</p>
+
+<ul>
+  <li>
+    Ingen länk: kontrollera kabel, portnamn och portstatus.
+  </li>
+  <li>
+    Båda VLAN misslyckas: kontrollera Cisco-portens operativa
+    trunk-läge, skapade VLAN och datorernas brandväggar.
+  </li>
+  <li>
+    Ett VLAN misslyckas: jämför datorportens access/native VLAN
+    och båda länkportarnas tillåtna VLAN.
+  </li>
+  <li>
+    Oväntad VLAN-tillhörighet: kontrollera native VLAN i båda ändar
+    och eventuell extra Untagged VLANs-lista.
+  </li>
+  <li>
+    Allt ser rätt ut: kontrollera IP/mask och att ni pingar rätt
+    dator via rätt nätverkskort.
+  </li>
+</ul>
+
+<label>
+  Dokumentera felet, vilka tester som påverkades och hur ni hittade orsaken.
+  <textarea></textarea>
+</label>
+
+<h2>10 // Redovisa och återställ</h2>
+
+<label>
+  1. Visa portinställningar för en datorport och switchlänken på båda
+  tillverkarna. Bifoga skärmbilder eller CLI-utdata i inlämningen.
+  <textarea></textarea>
+</label>
+
+<label>
+  2. Varför motsvarar FortiSwitchs native VLAN både Ciscos access VLAN
+  och Ciscos native VLAN, beroende på portens användning?
+  <textarea></textarea>
+</label>
+
+<label>
+  3. Vad betyder default VLAN på Cisco, och hur skiljer det sig
+  från trunkens native VLAN?
+  <textarea></textarea>
+</label>
+
+<label>
+  4. Hur kan samma IP-subnät finnas på två datorer som ändå inte
+  når varandra på grund av VLAN?
+  <textarea></textarea>
+</label>
+
+<label>
+  5. Vilken trafik går taggad på länken när native VLAN är 99
+  respektive 20?
+  <textarea></textarea>
+</label>
+
+<p class="muted">
+  Svaren sparas inte automatiskt. Kopiera till inlämningen eller
+  skriv ut till PDF innan sidan stängs.
+</p>
+
+<button onclick="window.print()">Skriv ut / spara PDF</button>
+
+<details>
+  <summary>Resonemang att jämföra med efter labben</summary>
+
+  <p>
+    Native VLAN på FortiSwitch klassificerar inkommande otaggade
+    ramar och skickar det VLAN:ets ramar otaggade ut.
+    På en Cisco-datorport fyller access VLAN motsvarande funktion.
+    På Cisco-trunken är native VLAN den jämförbara inställningen.
+    Default VLAN 1 är den förinställda VLAN-tillhörigheten och är
+    inte samma begrepp som en manuellt vald portinställning.
+  </p>
+
+  <p>
+    Med native 99 går labbens VLAN 10 och 20 taggade på switchlänken.
+    Med native 20 i båda ändar går VLAN 20 otaggat.
+    Broadcast och ARP stannar inom respektive VLAN, så en gemensam
+    IP-adressplan skapar inte i sig en gemensam lager 2-domän.
+  </p>
+</details>
+
+<p>
+  Återställ native VLAN 99 och Allowed VLANs enligt grundkonfigurationen.
+  Återställ datorernas adresser. Läraren bestämmer om switcharna ska
+  behålla labbkonfigurationen eller återgå till den sparade ursprungliga
+  konfigurationen. Spara Catalyst-konfigurationen med
+  <code>copy running-config startup-config</code> endast om
+  labbkonfigurationen ska behållas.
+</p>
+
+<footer>
+  BAALSTORM // FYSISKA NÄTVERKSLABBAR<br>
+  Referenser:
+  <a href="https://docs.fortinet.com/document/fortiswitch/7.4.7/fortiswitchos-administration-guide/146338/native-vlan">
+    Fortinet: Native VLAN
+  </a>
+  ·
+  <a href="https://docs.fortinet.com/document/fortiswitch/7.2.8/administration-guide/146339/frame-processing">
+    Fortinet: Frame processing
+  </a>
+  ·
+  <a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/vlan/vlan-configuration-guide/configure-vlan-trunks.html">
+    Cisco: VLAN trunks
+  </a>
+  <br>
+  Labbmall · 2026-10-04 · Förtesta på tilldelade modeller och programversioner.
+</footer>
+
+</main>
+</body>
+</html>
