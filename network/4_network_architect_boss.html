@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm // Network Boss – Lektion 4</title>
+
+<style>
+:root {
+  --bg: #050b08;
+  --panel: #0a1510;
+  --green: #6cff9a;
+  --yellow: #ffd166;
+  --text: #d7e5dc;
+  --muted: #8ca197;
+  --line: #244331;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 "Courier New", monospace;
+}
+
+header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--green);
+}
+
+main {
+  max-width: 1050px;
+  margin: auto;
+  padding: 28px 22px 60px;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  line-height: 1.05;
+  color: #f1fff5;
+}
+
+h2 {
+  color: var(--green);
+  font-size: 1.35rem;
+}
+
+h3, code, summary { color: var(--yellow); }
+.muted, footer { color: var(--muted); }
+
+.level, .panel {
+  background: var(--panel);
+  padding: 20px;
+  border: 1px solid var(--line);
+  margin: 24px 0;
+}
+
+.panel { border-left: 4px solid var(--green); }
+
+.badge {
+  color: var(--green);
+  font-size: .85rem;
+  letter-spacing: .06em;
+}
+
+.table { overflow-x: auto; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 18px 0;
+}
+
+td, th {
+  padding: 9px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th { color: var(--green); }
+
+pre {
+  padding: 15px;
+  background: #020604;
+  color: var(--green);
+  overflow: auto;
+  border: 1px solid var(--line);
+}
+
+textarea {
+  width: 100%;
+  min-height: 95px;
+  padding: 10px;
+  color: var(--text);
+  background: var(--bg);
+  font: inherit;
+  border: 1px solid var(--line);
+}
+
+label {
+  display: block;
+  margin: 12px 0;
+}
+
+input { accent-color: var(--green); }
+li { margin: 8px 0; }
+
+details {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+summary { cursor: pointer; }
+
+button {
+  font: inherit;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--green);
+  border: 1px solid var(--green);
+  cursor: pointer;
+}
+
+.topology {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 20px;
+  border: 1px solid var(--line);
+}
+
+.topology strong {
+  display: block;
+  color: var(--green);
+}
+
+footer {
+  margin-top: 35px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+a { color: var(--green); }
+
+@media print {
+  body { background: white; color: black; }
+  main { max-width: none; padding: 0; }
+
+  header, h1, h2, h3, code, summary, th,
+  .badge, .muted, footer, .topology strong, a {
+    color: black;
+  }
+
+  .level, .panel, textarea, pre {
+    background: white;
+    color: black;
+    border-color: #999;
+  }
+
+  td, th, .topology, details { border-color: #999; }
+  button { display: none; }
+  h2, h3 { break-after: avoid; }
+  pre, tr { break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+<header>BAALSTORM // NETWORK ARCHITECT</header>
+
+<main>
+<p class="badge">
+  $ ./network_architect --case BAAL-200 --lesson 4
+</p>
+
+<h1>NETWORK BOSS<br>BYGG AVDELNINGSNÄTET</h1>
+
+<p class="muted">
+  LEKTION 4 · PACKET TRACER · LAGER 1 OCH 2 · 60–90 MIN
+</p>
+
+<div class="panel">
+  <strong>CASE FILE: BAAL-200</strong>
+
+  <p>
+    I lektion 1 ritade du ett nät för ett företag med 200 anställda:
+    HR, ekonomi, produktion och IT.
+    Nu ska du bygga den del av lösningen som hanterar kablar,
+    switchning och VLAN.
+    Företaget behöver senare Internet, Wi-Fi och interna tjänster.
+    Dessa krav finns kvar, men dagens uppdrag är ett fungerande
+    och segmenterat lager 2-nät.
+  </p>
+
+  <p>
+    <strong>YOUR ROLE:</strong> Network Architect.
+    Leverera ett Packet Tracer-projekt och bevis på att nätet
+    fungerar som avsett.
+  </p>
+</div>
+
+<p>
+  Arbeta i par. En person konfigurerar och den andra granskar.
+  Byt roller efter uppdrag 3.
+  De åtta datorerna representerar grupper av användare;
+  du behöver inte lägga in 200 klienter.
+</p>
+
+<section class="level">
+  <p class="badge">BASIC // DESIGN 01</p>
+  <h2>FRÅN SKISS TILL KABLAR</h2>
+
+  <ol>
+    <li>
+      Öppna din fysiska och logiska skiss från lektion 1.
+      Om skisserna saknas, gör en enkel skiss utifrån
+      företagets fyra avdelningar.
+    </li>
+    <li>
+      Skapa ett nytt Packet Tracer-projekt med
+      <strong>två 2960-switchar och åtta PC</strong>.
+      Döp switcharna till S1 och S2.
+    </li>
+    <li>
+      Koppla fyra datorer till varje switch enligt tabellen nedan.
+      Använd datorns FastEthernet0 och Copper Straight-Through.
+    </li>
+    <li>
+      Koppla <strong>S1 Fa0/1 till S2 Fa0/1</strong>
+      med Copper Cross-Over eller automatiskt kabelval.
+      Använd en enda länk mellan switcharna.
+    </li>
+  </ol>
+
+  <div class="topology">
+    <div>
+      <strong>HR-A · EKO-A · PROD-A · IT-A</strong>
+      Accessportar på S1
+    </div>
+    <div>
+      <strong>S1 ↔ S2</strong>
+      Fa0/1 i båda ändar
+    </div>
+    <div>
+      <strong>HR-B · EKO-B · PROD-B · IT-B</strong>
+      Accessportar på S2
+    </div>
+  </div>
+
+  <label>
+    Vilken del av din ursprungliga design har du byggt?
+    Vad återstår för att möta alla företagets krav?
+    <textarea></textarea>
+  </label>
+
+  <p class="muted">
+    CHECKPOINT: rätt namn och portar, en switchlänk och gröna
+    länkar efter portarnas startförlopp.
+  </p>
+</section>
+
+<section class="level">
+  <p class="badge">INTERMEDIATE // DESIGN 02</p>
+  <h2>EN AVDELNING, ETT VLAN</h2>
+
+  <p>
+    Företaget vill hålla avdelningarnas lager 2-trafik åtskild.
+    Använd denna adressplan som testverktyg.
+    Alla datorer har mask <strong>255.255.255.0</strong>;
+    lämna gateway och DNS tomma.
+  </p>
+
+  <div class="table">
+    <table>
+      <tr>
+        <th>Avdelning</th>
+        <th>VLAN</th>
+        <th>Port på S1 och S2</th>
+        <th>Dator på S1</th>
+        <th>Dator på S2</th>
+      </tr>
+      <tr>
+        <td>HR</td>
+        <td>10</td>
+        <td>Fa0/2</td>
+        <td>HR-A: 172.17.10.11</td>
+        <td>HR-B: 172.17.10.12</td>
+      </tr>
+      <tr>
+        <td>Ekonomi</td>
+        <td>20</td>
+        <td>Fa0/3</td>
+        <td>EKO-A: 172.17.20.11</td>
+        <td>EKO-B: 172.17.20.12</td>
+      </tr>
+      <tr>
+        <td>Produktion</td>
+        <td>30</td>
+        <td>Fa0/4</td>
+        <td>PROD-A: 172.17.30.11</td>
+        <td>PROD-B: 172.17.30.12</td>
+      </tr>
+      <tr>
+        <td>IT</td>
+        <td>40</td>
+        <td>Fa0/5</td>
+        <td>IT-A: 172.17.40.11</td>
+        <td>IT-B: 172.17.40.12</td>
+      </tr>
+    </table>
+  </div>
+
+  <ol>
+    <li>
+      På båda switcharna: skapa VLAN 10, 20, 30 och 40
+      med namnen HR, EKONOMI, PRODUKTION och IT.
+    </li>
+    <li>Konfigurera datorportarna som accessportar i rätt VLAN.</li>
+    <li>
+      På varje dator: ange adressen via Desktop → IP Configuration.
+    </li>
+    <li>
+      Verifiera portarnas VLAN med <code>show vlan brief</code>.
+    </li>
+  </ol>
+
+  <details>
+    <summary>Ledtråd: CLI för ett VLAN och en datorport</summary>
+    <p>
+      Exempel för HR på S1.
+      Upprepa med rätt värden för övriga avdelningar och på S2.
+    </p>
+
+<pre>enable
+configure terminal
+hostname S1
+vlan 10
+ name HR
+exit
+interface fastEthernet0/2
+ switchport mode access
+ switchport access vlan 10
+exit
+end
+show vlan brief</pre>
+  </details>
+
+  <label>
+    Varför ändrar du switchportens VLAN när datorns IP-adress
+    redan visar vilken avdelning den tillhör?
+    <textarea></textarea>
+  </label>
+</section>
+
+<section class="level">
+  <p class="badge">INTERMEDIATE // DESIGN 03</p>
+  <h2>FYRA VLAN ÖVER EN KABEL</h2>
+
+  <p>
+    HR på S1 ska nå HR på S2. Detsamma gäller övriga avdelningar.
+    Länken måste bära alla fyra VLAN utan att blanda dem.
+  </p>
+
+  <ol>
+    <li>
+      Skapa VLAN <strong>99</strong> med namnet NATIVE
+      på båda switcharna.
+      Det ska inte ha några datorer eller IP-adresser.
+    </li>
+    <li>Konfigurera Fa0/1 som trunk på båda switcharna.</li>
+    <li>
+      Använd Native VLAN 99 och tillåt VLAN
+      <strong>10, 20, 30, 40 och 99</strong>.
+    </li>
+    <li>
+      Kontrollera länken med <code>show interfaces trunk</code>
+      och <code>show interfaces fastEthernet0/1 switchport</code>.
+    </li>
+  </ol>
+
+  <details>
+    <summary>Ledtråd: trunk på båda ändar</summary>
+
+<pre>configure terminal
+vlan 99
+ name NATIVE
+exit
+interface fastEthernet0/1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,99
+ no shutdown
+exit
+end
+show interfaces trunk</pre>
+
+    <p>
+      2960 använder 802.1Q.
+      Du behöver inte välja encapsulation med ett separat kommando.
+    </p>
+  </details>
+
+  <label>
+    Var går HR-trafiken taggad respektive otaggad?
+    Vilket VLAN-ID används på switchlänken?
+    Varför ska native VLAN matcha i båda ändar?
+    <textarea></textarea>
+  </label>
+
+  <p class="muted">
+    CHECKPOINT: trunken är operativt uppe och avdelningarnas VLAN
+    är tillåtna och aktiva på båda switcharna.
+  </p>
+</section>
+
+<section class="level">
+  <p class="badge">CHALLENGE // DESIGN 04</p>
+  <h2>BEVISA ATT NÄTET FUNGERAR</h2>
+
+  <p>
+    Öppna Desktop → Command Prompt på A-datorerna.
+    Testa följande. Upprepa ping efter att ARP och portarnas
+    startförlopp hunnit bli klara.
+  </p>
+
+  <div class="table">
+    <table>
+      <tr>
+        <th>Från</th>
+        <th>Ping till</th>
+        <th>Förväntat</th>
+      </tr>
+      <tr>
+        <td>HR-A</td>
+        <td>172.17.10.12</td>
+        <td>Fungerar</td>
+      </tr>
+      <tr>
+        <td>EKO-A</td>
+        <td>172.17.20.12</td>
+        <td>Fungerar</td>
+      </tr>
+      <tr>
+        <td>PROD-A</td>
+        <td>172.17.30.12</td>
+        <td>Fungerar</td>
+      </tr>
+      <tr>
+        <td>IT-A</td>
+        <td>172.17.40.12</td>
+        <td>Fungerar</td>
+      </tr>
+      <tr>
+        <td>HR-A</td>
+        <td>172.17.20.12</td>
+        <td>Misslyckas: annat subnät, ingen gateway</td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    Det sista testet bevisar inte ensamt VLAN-separation.
+    Datorn saknar också en route till det andra subnätet.
+    Gör därför ett starkare test:
+  </p>
+
+  <ol>
+    <li>
+      Ändra tillfälligt EKO-B:s IP till
+      <strong>172.17.10.22/24</strong>.
+      Behåll porten i VLAN 20 och gateway tom.
+    </li>
+    <li>
+      Pinga 172.17.10.22 från HR-A.
+      Det ska misslyckas trots samma IP-subnät.
+    </li>
+    <li>
+      Återställ EKO-B till <strong>172.17.20.12/24</strong>.
+      Verifiera ekonomins kommunikation igen.
+    </li>
+  </ol>
+
+  <label>
+    Dokumentera resultaten.
+    Vad visar testet med samma IP-subnät men olika VLAN?
+    <textarea></textarea>
+  </label>
+</section>
+
+<section class="level">
+  <p class="badge">CHALLENGE // DESIGN 05</p>
+  <h2>FÖLJ BROADCASTEN</h2>
+
+  <ol>
+    <li>
+      Byt till Simulation och välj ARP och ICMP i Edit Filters.
+    </li>
+    <li>
+      Töm HR-A:s ARP-cache med <code>arp -d</code>
+      i datorns Command Prompt och pinga HR-B.
+      Om versionen inte stöder kommandot, starta om den
+      simulerade datorn och kontrollera IP-inställningen före testet.
+    </li>
+    <li>
+      Använd Capture/Forward.
+      Följ ARP-förfrågan över S1 och S2 och se vilka datorer som får den.
+    </li>
+    <li>
+      Undersök destinations-MAC i ARP-förfrågan och jämför
+      med ICMP-trafiken efter ARP-svaret.
+    </li>
+    <li>
+      På switcharna: undersök <code>show mac address-table</code>
+      efter testerna.
+    </li>
+  </ol>
+
+  <label>
+    Varför når ARP-förfrågan HR-B men inte EKO-B?
+    Vad kopplar MAC-tabellen samman, och hur skiljer den sig
+    från datorns ARP-tabell?
+    <textarea></textarea>
+  </label>
+</section>
+
+<section class="level">
+  <p class="badge">CHALLENGE+ // DESIGN 06</p>
+  <h2>INCIDENT: PRODUKTIONEN ÄR BORTA</h2>
+
+  <p>
+    En ändring har gjort att produktionsdatorerna inte längre
+    når varandra. Övriga avdelningar fungerar.
+  </p>
+
+  <ol>
+    <li>
+      Skapa felet på S1 genom att ändra trunkens tillåtna lista
+      till <strong>10,20,40,99</strong>.
+    </li>
+    <li>
+      Byt roller. Den som inte gjorde ändringen felsöker med ping,
+      portarnas VLAN och trunkens inställningar.
+    </li>
+    <li>
+      Förklara varför länken kan vara grön trots att
+      produktionens trafik inte passerar.
+    </li>
+    <li>
+      Återställ till <strong>10,20,30,40,99</strong>
+      och testa alla fyra avdelningar igen.
+    </li>
+  </ol>
+
+  <details>
+    <summary>Ledtråd: ändra och återställ</summary>
+
+<pre>configure terminal
+interface fastEthernet0/1
+ switchport trunk allowed vlan 10,20,40,99
+end
+show interfaces trunk
+
+! Återställ efter felsökningen
+configure terminal
+interface fastEthernet0/1
+ switchport trunk allowed vlan 10,20,30,40,99
+end</pre>
+  </details>
+
+  <label>
+    Vilka användare påverkades?
+    Vilken observation skiljde VLAN-felet från ett kabelbrott?
+    <textarea></textarea>
+  </label>
+</section>
+
+<section class="level">
+  <p class="badge">BOSS // FINAL DESIGN</p>
+  <h2>LEVERERA BAAL-200, ETAPP 2</h2>
+
+  <p>
+    Uppdatera din fysiska och logiska skiss från lektion 1.
+    Den fysiska visar utrustning, portar och kablar.
+    Den logiska visar avdelningarnas VLAN, adressområden och separation.
+  </p>
+
+  <h3>Krav för leveransen</h3>
+
+  <label>
+    <input type="checkbox">
+    Två 2960-switchar och åtta namngivna datorer.
+  </label>
+  <label>
+    <input type="checkbox">
+    Fyra avdelnings-VLAN finns på båda switcharna.
+  </label>
+  <label>
+    <input type="checkbox">
+    Datorportar har rätt access VLAN.
+  </label>
+  <label>
+    <input type="checkbox">
+    En trunk bär alla fyra avdelnings-VLAN; native VLAN är 99.
+  </label>
+  <label>
+    <input type="checkbox">
+    Alla fyra A-till-B-tester fungerar.
+  </label>
+  <label>
+    <input type="checkbox">
+    Separationen är testad med samma IP-subnät men olika VLAN.
+  </label>
+  <label>
+    <input type="checkbox">
+    Driftfelet är förklarat och åtgärdat.
+  </label>
+  <label>
+    <input type="checkbox">
+    Fysisk och logisk skiss är uppdaterade.
+  </label>
+
+  <p>
+    Spara som <strong>BAAL-200_Lektion4_DittNamn.pkt</strong>.
+    Bifoga skisser, testresultat och <code>show vlan brief</code>
+    samt <code>show interfaces trunk</code> från båda switcharna.
+  </p>
+
+  <h3>BOSS QUESTION // Vad händer när länken går ner?</h3>
+
+  <p>
+    Förutsäg resultatet om kabeln mellan S1 och S2 tas bort.
+    Testa sedan och återanslut kabeln.
+    Skilj mellan att en dator har fysisk länk till sin switch
+    och att den kan nå sin avdelningskollega på den andra switchen.
+  </p>
+
+  <label>
+    Vilka förbindelser försvinner?
+    Kan datorer i samma VLAN på samma switch fortfarande
+    kommunicera om det finns flera sådana datorer?
+    Vad skulle behövas för att minska beroendet av en enda länk?
+    <textarea></textarea>
+  </label>
+
+  <p class="muted">
+    Redundans diskuteras på skissen.
+    Lägg inte till extra switchlänkar i denna labb;
+    hantering av lager 2-loopar behöver behandlas först.
+  </p>
+
+  <h3>NEXT MISSION // Server och Internet</h3>
+
+  <p>
+    Ledningen frågar: ”Alla avdelningar behöver en gemensam server
+    och Internet. Varför fungerar inte det ännu?”
+    Markera i den logiska skissen var en framtida lager 3-funktion
+    och säkerhetskontroll skulle kunna placeras.
+    Konfigurera dem inte nu.
+  </p>
+
+  <label>
+    Vilka krav från lektion 1 är uppfyllda, vilka återstår
+    och vilket nytt koncept behöver vi för kommunikation
+    mellan avdelningarnas VLAN?
+    <textarea></textarea>
+  </label>
+</section>
+
+<details class="panel">
+  <summary>Efter genomförandet: jämför ditt resonemang</summary>
+
+  <p>
+    Avdelningarna är separata broadcastdomäner.
+    Accessportarna placerar otaggad datortrafik i ett VLAN.
+    Trunken transporterar avdelningarnas trafik taggad,
+    med respektive VLAN-ID.
+    Native VLAN 99 är normalt otaggat och används inte av datorerna här.
+  </p>
+
+  <p>
+    ARP i HR:s VLAN når HR på båda switcharna men inte ekonomins portar.
+    MAC-tabellen kopplar MAC-adresser och VLAN till portar;
+    ARP-tabellen kopplar lokala IPv4-adresser till MAC-adresser.
+    En fungerande trunk ger ingen routing mellan VLAN.
+  </p>
+
+  <p>
+    En grön fysisk länk bevisar inte att alla VLAN får passera.
+    Om switchlänken bryts försvinner kommunikationen mellan switcharna,
+    men respektive switch kan fortfarande vidarebefordra inom
+    sina lokala VLAN.
+    För kommunikation mellan olika VLAN behövs routing på lager 3.
+    Brandvägg eller andra regler kan sedan styra vilken trafik
+    som tillåts. VLAN-separation i sig ersätter inte sådana regler.
+  </p>
+</details>
+
+<p class="muted">
+  Svaren och kryssrutorna sparas inte automatiskt.
+  Kopiera till inlämningen eller skriv ut till PDF.
+  Packet Tracer-projektet sparas separat.
+</p>
+
+<button onclick="window.print()">Skriv ut / spara PDF</button>
+
+<footer>
+  BAALSTORM // BAAL-200 · LEKTION 4<br>
+  Fortsättning på
+  <a href="https://baalstorm.se/network/1_network_architect_boss.html">
+    Network Architect – Lektion 1
+  </a>.
+  Behåll projektet till kommande lektioner om lager 3.
+</footer>
+
+</main>
+</body>
+</html>
