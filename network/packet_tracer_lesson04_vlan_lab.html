@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm | Packet Tracer – VLAN utan routing</title>
+
+<style>
+:root {
+  --bg: #050b08;
+  --panel: #0a1510;
+  --green: #6cff9a;
+  --text: #d7e5dc;
+  --muted: #8ca197;
+  --line: #244331;
+  --yellow: #ffd166;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 "Courier New", monospace;
+}
+
+header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--green);
+}
+
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 28px 22px 60px;
+}
+
+h1 {
+  color: #f1fff5;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.15;
+}
+
+h2 {
+  color: var(--green);
+  font-size: 1.3rem;
+  margin-top: 36px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+
+h3, code { color: var(--yellow); }
+.muted, footer { color: var(--muted); }
+
+.panel {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--green);
+  margin: 20px 0;
+}
+
+.table { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+}
+
+th, td {
+  border: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+}
+
+th { color: var(--green); }
+
+pre {
+  background: #020604;
+  color: var(--green);
+  border: 1px solid var(--line);
+  padding: 16px;
+  overflow: auto;
+}
+
+li { margin: 8px 0; }
+
+textarea {
+  width: 100%;
+  min-height: 85px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 10px;
+  font: inherit;
+}
+
+label {
+  display: block;
+  margin: 18px 0;
+}
+
+button {
+  font: inherit;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--green);
+  border: 1px solid var(--green);
+  cursor: pointer;
+}
+
+details {
+  border: 1px solid var(--line);
+  padding: 15px;
+  margin: 20px 0;
+}
+
+summary {
+  color: var(--yellow);
+  cursor: pointer;
+}
+
+footer {
+  margin-top: 35px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.topology {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  border: 1px solid var(--line);
+}
+
+.node { text-align: center; }
+
+.node strong {
+  display: block;
+  color: var(--green);
+}
+
+@media print {
+  body { background: white; color: black; }
+  main { max-width: none; padding: 0; }
+
+  header, h1, h2, h3, code, th,
+  .muted, footer, .node strong {
+    color: black;
+  }
+
+  .panel, pre, textarea {
+    background: white;
+    color: black;
+    border-color: #999;
+  }
+
+  th, td, .topology, details { border-color: #999; }
+  button { display: none; }
+  pre, tr { break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+<header>BAALSTORM // NÄTVERKSTEKNIK</header>
+
+<main>
+<p class="muted">
+  PACKET TRACER · 45–60 MIN · ENSKILT ELLER I PAR
+</p>
+
+<h1>VLAN UTAN ROUTING</h1>
+
+<p>
+  Skapa tre separata nät på samma switch. Utöka sedan nätet med
+  en andra switch och låt samma VLAN fortsätta över en trunk.
+</p>
+
+<div class="panel">
+  <strong>Mål:</strong>
+  skapa VLAN, tilldela accessportar, konfigurera en trunk och
+  förklara varför ARP och annan broadcast stannar inom ett VLAN.
+  Ingen router eller lager 3-routing används.
+</div>
+
+<h2>01 // Bygg ett nät med en switch</h2>
+
+<ol>
+  <li>Starta ett nytt projekt i Packet Tracer.</li>
+  <li>
+    Lägg in en <strong>2960-switch</strong> och sex PC.
+    Döp switchen till S1 och datorerna till PC10-A, PC10-B,
+    PC20-A, PC20-B, PC30-A och PC30-B.
+  </li>
+  <li>
+    Koppla datorernas FastEthernet0 till switchportarna enligt
+    tabellen. Använd Copper Straight-Through.
+  </li>
+  <li>
+    På varje PC: öppna <strong>Desktop → IP Configuration</strong>
+    och välj Static. Alla får masken
+    <strong>255.255.255.0</strong>.
+    Lämna gateway och DNS tomma.
+  </li>
+</ol>
+
+<div class="table">
+<table>
+  <tr>
+    <th>PC</th>
+    <th>Port på S1</th>
+    <th>Planerat VLAN</th>
+    <th>IP-adress /24</th>
+  </tr>
+  <tr>
+    <td>PC10-A</td>
+    <td>Fa0/2</td>
+    <td>10 – Personal</td>
+    <td>172.17.10.11</td>
+  </tr>
+  <tr>
+    <td>PC10-B</td>
+    <td>Fa0/3</td>
+    <td>10 – Personal</td>
+    <td>172.17.10.12</td>
+  </tr>
+  <tr>
+    <td>PC20-A</td>
+    <td>Fa0/4</td>
+    <td>20 – Studenter</td>
+    <td>172.17.20.11</td>
+  </tr>
+  <tr>
+    <td>PC20-B</td>
+    <td>Fa0/5</td>
+    <td>20 – Studenter</td>
+    <td>172.17.20.12</td>
+  </tr>
+  <tr>
+    <td>PC30-A</td>
+    <td>Fa0/6</td>
+    <td>30 – Gäster</td>
+    <td>172.17.30.11</td>
+  </tr>
+  <tr>
+    <td>PC30-B</td>
+    <td>Fa0/7</td>
+    <td>30 – Gäster</td>
+    <td>172.17.30.12</td>
+  </tr>
+</table>
+</div>
+
+<p>
+  Vänta tills länkarna blivit gröna.
+  Öppna <strong>Desktop → Command Prompt</strong> på PC10-A
+  och kör <code>ping 172.17.10.12</code>.
+  Upprepa om första försöket misslyckas medan ARP eller
+  portens startläge hanteras.
+</p>
+
+<label>
+  Innan ni skapat VLAN: fungerar ping mellan A och B i respektive
+  adressområde? Vilket VLAN tillhör portarna just nu?
+  <textarea></textarea>
+</label>
+
+<h2>02 // Skapa tre VLAN och tilldela portar</h2>
+
+<p>
+  Öppna S1 → CLI. Tryck Enter vid behov.
+  Svara <code>no</code> om en initial konfigurationsdialog visas.
+  Kör:
+</p>
+
+<pre>enable
+configure terminal
+hostname S1
+vlan 10
+ name PERSONAL
+exit
+vlan 20
+ name STUDENTER
+exit
+vlan 30
+ name GASTER
+exit
+interface range fastEthernet0/2 - 3
+ switchport mode access
+ switchport access vlan 10
+exit
+interface range fastEthernet0/4 - 5
+ switchport mode access
+ switchport access vlan 20
+exit
+interface range fastEthernet0/6 - 7
+ switchport mode access
+ switchport access vlan 30
+exit
+end
+show vlan brief</pre>
+
+<p>
+  Kontrollera att rätt portar finns under VLAN 10, 20 och 30.
+  Datorerna skickar vanliga otaggade Ethernetramar.
+  Accessportens inställning avgör vilket VLAN trafiken tillhör.
+</p>
+
+<h2>03 // Testa separationen</h2>
+
+<div class="table">
+<table>
+  <tr>
+    <th>Från</th>
+    <th>Ping till</th>
+    <th>Förväntat</th>
+  </tr>
+  <tr>
+    <td>PC10-A</td>
+    <td>172.17.10.12</td>
+    <td>Fungerar – samma VLAN och subnät</td>
+  </tr>
+  <tr>
+    <td>PC20-A</td>
+    <td>172.17.20.12</td>
+    <td>Fungerar – samma VLAN och subnät</td>
+  </tr>
+  <tr>
+    <td>PC30-A</td>
+    <td>172.17.30.12</td>
+    <td>Fungerar – samma VLAN och subnät</td>
+  </tr>
+  <tr>
+    <td>PC10-A</td>
+    <td>172.17.20.12</td>
+    <td>Misslyckas – annat subnät och ingen gateway</td>
+  </tr>
+</table>
+</div>
+
+<div class="panel">
+  <strong>Skilj på VLAN och IP-subnät:</strong>
+  det sista testet bevisar inte ensamt VLAN-separation.
+  Datorn saknar också en route till det andra subnätet.
+  Gör därför testet nedan.
+</div>
+
+<ol>
+  <li>
+    Ändra tillfälligt PC20-B:s IP-adress till
+    <strong>172.17.10.22/24</strong>.
+    Behåll dess switchport i VLAN 20.
+  </li>
+  <li>
+    Från PC10-A: kör <code>ping 172.17.10.22</code>.
+    Det ska misslyckas trots att adresserna nu ligger
+    i samma IP-subnät.
+  </li>
+  <li>
+    Återställ PC20-B till <strong>172.17.20.12/24</strong>.
+    Kontrollera att PC20-A åter kan pinga den.
+  </li>
+</ol>
+
+<label>
+  Varför räcker det inte att ge datorerna adresser i samma
+  IP-subnät när deras portar tillhör olika VLAN?
+  <textarea></textarea>
+</label>
+
+<h2>04 // Följ ARP i Simulation Mode</h2>
+
+<ol>
+  <li>
+    Behåll den ordinarie adressplanen.
+    Byt från Realtime till <strong>Simulation</strong>.
+  </li>
+  <li>
+    I <strong>Edit Filters</strong>: välj ARP och ICMP.
+    Avmarkera övriga protokoll för att göra händelselistan tydligare.
+  </li>
+  <li>
+    På PC10-A, kör <code>arp -d</code> för att tömma ARP-cachen
+    och sedan <code>ping 172.17.10.12</code>.
+    Om versionen inte stöder cachekommandot, starta om den
+    simulerade datorn och kontrollera adressen före ping.
+  </li>
+  <li>
+    Använd <strong>Capture/Forward</strong>
+    för att följa händelserna stegvis.
+  </li>
+  <li>
+    Öppna ARP-förfrågan och undersök mottagarens MAC-adress.
+    Vilka datorportar skickar S1 förfrågan vidare till?
+  </li>
+</ol>
+
+<p>
+  ARP-förfrågan använder broadcastadressen
+  <strong>FF:FF:FF:FF:FF:FF</strong>.
+  Den skickas inom VLAN 10, men inte till datorportarna i VLAN 20
+  eller 30. Efter ARP-svaret kan ICMP-trafiken skickas som unicast.
+</p>
+
+<label>
+  Beskriv ARP-förfrågans väg.
+  Varför får inte alla sex datorer den?
+  <textarea></textarea>
+</label>
+
+<h2>05 // Utöka med en andra switch</h2>
+
+<p>
+  Lägg in en andra 2960 och döp den till S2.
+  Flytta B-datorernas kablar till S2 enligt tabellen.
+  Behåll deras IP-adresser.
+  Koppla sedan <strong>S1 Fa0/1 till S2 Fa0/1</strong>
+  med Copper Cross-Over eller automatiskt kabelval.
+</p>
+
+<div class="topology">
+  <div class="node">
+    <strong>PC10-A · PC20-A · PC30-A</strong>
+    S1: accessportar
+  </div>
+  <div class="node">
+    <strong>S1 ↔ S2</strong>
+    Fa0/1: trunk
+  </div>
+  <div class="node">
+    <strong>PC10-B · PC20-B · PC30-B</strong>
+    S2: accessportar
+  </div>
+</div>
+
+<div class="table">
+<table>
+  <tr>
+    <th>VLAN</th>
+    <th>A-dator på S1</th>
+    <th>B-dator på S2</th>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>Fa0/2</td>
+    <td>Fa0/2</td>
+  </tr>
+  <tr>
+    <td>20</td>
+    <td>Fa0/4</td>
+    <td>Fa0/4</td>
+  </tr>
+  <tr>
+    <td>30</td>
+    <td>Fa0/6</td>
+    <td>Fa0/6</td>
+  </tr>
+</table>
+</div>
+
+<p>På S2: skapa samma VLAN och tilldela datorportarna:</p>
+
+<pre>enable
+configure terminal
+hostname S2
+vlan 10
+ name PERSONAL
+exit
+vlan 20
+ name STUDENTER
+exit
+vlan 30
+ name GASTER
+exit
+interface fastEthernet0/2
+ switchport mode access
+ switchport access vlan 10
+exit
+interface fastEthernet0/4
+ switchport mode access
+ switchport access vlan 20
+exit
+interface fastEthernet0/6
+ switchport mode access
+ switchport access vlan 30
+exit
+end</pre>
+
+<p>
+  Kör följande på <strong>både S1 och S2</strong>.
+  VLAN 99 används som native VLAN och får inga datorer
+  eller IP-adresser i denna labb.
+</p>
+
+<pre>configure terminal
+vlan 99
+ name NATIVE
+exit
+interface fastEthernet0/1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ no shutdown
+exit
+end
+show interfaces trunk
+show interfaces fastEthernet0/1 switchport</pre>
+
+<p>
+  Kontrollera att länken är operativt i trunk-läge,
+  att native VLAN är 99 i båda ändar och att VLAN 10, 20 och 30
+  är tillåtna och aktiva. På 2960 behövs inget kommando
+  för att välja trunk-encapsulation.
+</p>
+
+<p>
+  Upprepa alla tre A-till-B-tester.
+  De ska fungera över switchlänken.
+  Trafiken i VLAN 10, 20 och 30 går nu
+  <strong>taggad på trunken</strong> och
+  <strong>otaggad på datorportarna</strong>.
+  Trunken sammanför inte VLAN:en och ger ingen routing mellan dem.
+</p>
+
+<h2>06 // Skapa och hitta ett fel</h2>
+
+<p>
+  På S1: ta tillfälligt bort VLAN 20 från trunkens tillåtna lista:
+</p>
+
+<pre>configure terminal
+interface fastEthernet0/1
+ switchport trunk allowed vlan 10,30,99
+end</pre>
+
+<p>
+  Testa alla tre A-till-B-förbindelser.
+  VLAN 20 ska sluta fungera medan VLAN 10 och 30 fungerar.
+  Undersök <code>show interfaces trunk</code> på båda switcharna
+  och återställ:
+</p>
+
+<pre>configure terminal
+interface fastEthernet0/1
+ switchport trunk allowed vlan 10,20,30,99
+end</pre>
+
+<label>
+  Vilka tester påverkades?
+  Vilken uppgift i kommandoutdata avslöjade felet?
+  <textarea></textarea>
+</label>
+
+<h2>07 // Redovisa</h2>
+
+<ul>
+  <li>
+    Spara projektet som <strong>vlan_utan_routing.pkt</strong>.
+  </li>
+  <li>
+    Bifoga en bild av topologin samt
+    <code>show vlan brief</code> och
+    <code>show interfaces trunk</code> från båda switcharna.
+  </li>
+  <li>
+    Redovisa lyckade ping inom alla tre VLAN och det misslyckade
+    testet med samma IP-subnät men olika VLAN.
+  </li>
+  <li>
+    Förklara skillnaden mellan en accessport och en trunk samt
+    vad som skulle behövas för kommunikation mellan VLAN.
+  </li>
+</ul>
+
+<p class="muted">
+  Svaren på sidan sparas inte automatiskt.
+  Kopiera dem till inlämningen eller skriv ut till PDF.
+</p>
+
+<button onclick="window.print()">Skriv ut / spara PDF</button>
+
+<details>
+  <summary>Kontrollera resonemanget efter labben</summary>
+  <p>
+    Varje VLAN är en egen broadcastdomän på lager 2.
+    Accessportar placerar otaggad datortrafik i ett bestämt VLAN.
+    Trunken bär flera VLAN med 802.1Q-taggar;
+    native VLAN 99 är normalt otaggat.
+    Ett VLAN kan därför sträcka sig över flera switchar
+    utan att blandas med andra VLAN.
+    För kommunikation mellan VLAN behövs en lager 3-enhet
+    med rätt gränssnitt, adresser, routing och eventuella
+    tillåtande regler.
+  </p>
+</details>
+
+<footer>
+  BAALSTORM // VLAN UTAN ROUTING<br>
+  Baserad på övningen i VLAN-materialet, med fortsättning om trunkar.
+  Adressplan: VLAN 10 Personal, VLAN 20 Studenter och VLAN 30 Gäster.
+</footer>
+
+</main>
+</body>
+</html>
