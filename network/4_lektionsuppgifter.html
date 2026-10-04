@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baalstorm | Lektionsuppgifter – Ethernet och VLAN</title>
+
+<style>
+:root {
+  --bg: #050b08;
+  --panel: #0a1510;
+  --green: #6cff9a;
+  --text: #d7e5dc;
+  --muted: #8ca197;
+  --line: #244331;
+  --yellow: #ffd166;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 "Courier New", monospace;
+}
+
+header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--green);
+}
+
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 28px 22px 60px;
+}
+
+h1 {
+  color: #f1fff5;
+  font-size: clamp(2rem, 5vw, 3.3rem);
+  line-height: 1.15;
+}
+
+h2 {
+  color: var(--green);
+  font-size: 1.3rem;
+  margin-top: 36px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+
+h3, code { color: var(--yellow); }
+.muted, footer { color: var(--muted); }
+
+.panel, .task {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  margin: 20px 0;
+}
+
+.panel { border-left: 4px solid var(--green); }
+.table { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+th, td {
+  border: 1px solid var(--line);
+  padding: 9px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th { color: var(--green); }
+
+pre {
+  background: #020604;
+  color: var(--green);
+  border: 1px solid var(--line);
+  padding: 14px;
+  overflow: auto;
+}
+
+li { margin: 8px 0; }
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  background: #050b08;
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 10px;
+  font: inherit;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+}
+
+button {
+  font: inherit;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--green);
+  border: 1px solid var(--green);
+  cursor: pointer;
+}
+
+details {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: 15px;
+}
+
+summary {
+  color: var(--yellow);
+  cursor: pointer;
+}
+
+footer {
+  margin-top: 35px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.checks label { margin: 8px 0; }
+input { accent-color: var(--green); }
+
+@media print {
+  body { background: white; color: black; }
+  main { max-width: none; padding: 0; }
+
+  header, h1, h2, h3, code, th,
+  .muted, footer, summary {
+    color: black;
+  }
+
+  .panel, .task, pre, textarea {
+    background: white;
+    color: black;
+    border-color: #999;
+  }
+
+  th, td, details { border-color: #999; }
+  button { display: none; }
+  h2, h3 { break-after: avoid; }
+  pre, tr { break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+<header>BAALSTORM // NÄTVERKSTEKNIK</header>
+
+<main>
+<p class="muted">
+  LEKTIONSUPPGIFTER · ETHERNET · SWITCHNING · VLAN
+</p>
+
+<h1>FÖLJ RAMEN.<br>FÖRKLARA NÄTET.</h1>
+
+<p>
+  Arbeta först själv och jämför sedan med en kamrat.
+  Beskriv varför något fungerar eller misslyckas.
+  Använd gärna era switchlabbar och Wireshark som stöd.
+</p>
+
+<div class="panel">
+  <strong>Upplägg:</strong>
+  uppgift 1–8 är basdelen, cirka 40–50 minuter.
+  Uppgift 9–12 är tillämpning och fördjupning.
+  Öppna svarsförslagen efter att ni har diskuterat egna svar.
+  Praktiska moment görs i tilldelad labbmiljö.
+</div>
+
+<h2>01 // Ethernet och adresser</h2>
+
+<section class="task">
+  <h3>1. Vad ligger inuti vad?</h3>
+
+  <p>En dator skickar ett IPv4-paket med TCP-data över Ethernet.</p>
+
+  <ol>
+    <li>
+      Placera följande från ytterst till innerst:
+      applikationsdata, Ethernetram, TCP-segment, IPv4-paket.
+    </li>
+    <li>
+      Vilka adresser finns i Ethernetramen respektive IPv4-paketet?
+    </li>
+    <li>
+      Vilken del använder en vanlig lager 2-switch
+      för att välja utgående port?
+    </li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Ethernetram → IPv4-paket → TCP-segment → applikationsdata.
+      Ethernet har källans och destinationens MAC-adresser.
+      IPv4 har källans och destinationens IP-adresser.
+      En vanlig lager 2-switch använder destinations-MAC och
+      VLAN-tillhörighet vid vidarebefordring.
+      Den lär sig från källans MAC-adress.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>2. Byte, bit och hexadecimal notation</h3>
+
+  <p>Utgå från MAC-adressen <code>4C:7C:5F:0B:54:05</code>.</p>
+
+  <ol>
+    <li>Hur många byte och bitar innehåller adressen?</li>
+    <li>Varför representerar två hexadecimala siffror en byte?</li>
+    <li>
+      Omvandla <code>4C</code>, <code>0B</code> och
+      <code>FF</code> till decimalt.
+    </li>
+    <li>
+      Är MAC-adressen unicast eller multicast?
+      Undersök den minst signifikanta biten i första byten.
+    </li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      6 byte = 48 bitar.
+      En hexadecimal siffra motsvarar 4 bitar,
+      två motsvarar 8 bitar.
+      4C = 4 × 16 + 12 = 76. 0B = 11. FF = 255.
+      4C är binärt 01001100; sista biten är 0 och adressen
+      är därför en individuell adress, normalt kallad unicast.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>3. Unicast, multicast och broadcast</h3>
+
+  <p>Förklara skillnaden och klassificera adresserna:</p>
+
+  <ul>
+    <li><code>4C:7C:5F:0B:54:05</code></li>
+    <li><code>01:00:5E:00:00:67</code></li>
+    <li><code>FF:FF:FF:FF:FF:FF</code></li>
+  </ul>
+
+  <p>
+    Vilken används som destinations-MAC för en vanlig ARP-förfrågan?
+    Når den automatiskt alla datorer i alla VLAN?
+  </p>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Adresserna är unicast, multicast respektive broadcast.
+      Unicast riktas till en mottagare, multicast till en grupp
+      och broadcast till alla i samma broadcastdomän.
+      En vanlig ARP-förfrågan använder FF:FF:FF:FF:FF:FF.
+      Broadcasten hålls inom sitt VLAN och routas inte vidare
+      som vanlig lager 2-broadcast.
+    </p>
+  </details>
+</section>
+
+<h2>02 // Switchning och ARP</h2>
+
+<section class="task">
+  <h3>4. Lär från källan, vidarebefordra efter destinationen</h3>
+
+  <p>
+    Alla portar i exemplet tillhör VLAN 10.
+    Switchen har följande MAC-tabell:
+  </p>
+
+  <div class="table">
+    <table>
+      <tr><th>MAC-adress</th><th>Port</th></tr>
+      <tr><td>AA:AA:AA:AA:AA:02</td><td>port2</td></tr>
+      <tr><td>AA:AA:AA:AA:AA:03</td><td>port3</td></tr>
+    </table>
+  </div>
+
+  <p>
+    En ram kommer in på port1 med källa
+    <code>AA:AA:AA:AA:AA:01</code> och destination
+    <code>AA:AA:AA:AA:AA:03</code>.
+  </p>
+
+  <ol>
+    <li>Vad lär sig switchen?</li>
+    <li>Vilken port skickas ramen ut på?</li>
+    <li>Vad händer om destinationen saknas i MAC-tabellen?</li>
+    <li>Vad händer om destinationen är broadcast?</li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Switchen lär sig att källans MAC finns på port1 i VLAN 10.
+      Den skickar ramen till port3.
+      En okänd unicastdestination floodas till övriga portar som
+      får vidarebefordra i samma VLAN.
+      Broadcast floodas också inom VLAN:et.
+      Inkommande port undantas; switchen skickar inte automatiskt
+      trafiken till andra VLAN.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>5. MAC-tabell eller ARP-tabell?</h3>
+
+  <p>
+    Förklara vad tabellerna kopplar samman och var ni hittar dem.
+    Vad är skillnaden mellan <code>show mac address-table</code>
+    på en Catalyst och <code>arp -a</code> på en dator?
+  </p>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Switchens MAC-tabell kopplar MAC-adresser och VLAN
+      till switchportar.
+      En IPv4-ARP-tabell kopplar IP-adresser till MAC-adresser
+      på en lokal länk.
+      Datorns arp -a visar dess ARP-cache, inte switchens porttabell.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>6. Vilken MAC-adress letar datorn efter?</h3>
+
+  <p>
+    PC A har <code>192.168.10.11/24</code> och gateway
+    <code>192.168.10.1</code>. ARP-cachen är tom.
+  </p>
+
+  <ol>
+    <li>
+      A ska skicka till 192.168.10.12.
+      Vilken IP-adress söker den med ARP?
+    </li>
+    <li>
+      A ska skicka till 192.168.20.12 via sin default gateway.
+      Vilken IP-adress söker den nu med ARP?
+    </li>
+    <li>
+      Är det den slutliga mottagarens MAC-adress som används
+      i Ethernetramen när paketet skickas till gatewayen?
+    </li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      För den lokala mottagaren söker A efter MAC-adressen
+      för 192.168.10.12.
+      För det andra subnätet söker A efter gatewayens MAC,
+      192.168.10.1.
+      Ethernetramens destination är då gatewayens MAC,
+      medan IPv4-paketets destination fortfarande är 192.168.20.12.
+      Detta förutsätter att ingen mer specifik route finns.
+    </p>
+  </details>
+</section>
+
+<h2>03 // VLAN och trunkar</h2>
+
+<section class="task">
+  <h3>7. Samma switch betyder inte samma nät</h3>
+
+  <p>
+    A och B har adresserna <code>172.17.10.11/24</code> och
+    <code>172.17.10.12/24</code>.
+    A:s port tillhör VLAN 10, B:s port VLAN 20.
+    Ingen routing finns.
+  </p>
+
+  <ol>
+    <li>Kan de pinga varandra? Förklara vad som händer med ARP.</li>
+    <li>Vad händer om B:s port flyttas till VLAN 10?</li>
+    <li>
+      Varför är ett misslyckat ping mellan två olika IP-subnät
+      utan gateway ett svagare test av VLAN-separation?
+    </li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      De når inte varandra: A:s ARP-broadcast i VLAN 10
+      når inte B i VLAN 20.
+      Om B flyttas till VLAN 10 kan de kommunicera,
+      förutsatt fungerande portar och att datorernas brandväggar
+      tillåter testet.
+      Med olika IP-subnät och ingen gateway kan ping misslyckas
+      redan på grund av avsaknad av route, oavsett VLAN.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>8. Läs portinställningarna</h3>
+
+  <p>
+    Två switchar har en länk mellan sig.
+    Native VLAN är 99 på båda ändar.
+    VLAN 10 och 20 tillåts taggade över länken.
+  </p>
+
+  <ol>
+    <li>
+      Beskriv ramen från en dator i VLAN 10 på switch A
+      till en dator i VLAN 10 på switch B.
+      Var är den taggad respektive otaggad?
+    </li>
+    <li>
+      Vad händer med VLAN 20 om det tas bort från länkens
+      Allowed VLANs på ena switchen?
+    </li>
+    <li>Ger länken automatiskt routing mellan VLAN 10 och 20?</li>
+    <li>Kan olika portar på samma switch ha olika native VLAN?</li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      På vanliga datorportar går trafiken otaggad.
+      Mellan switcharna går den taggad med VID 10.
+      VLAN 20 slutar passera länken om det inte tillåts på ena sidan,
+      medan VLAN 10 kan fortsätta fungera.
+      En trunk ger ingen inter-VLAN-routing.
+      Native VLAN är en inställning per port:
+      olika portar kan ha olika native VLAN,
+      men båda ändar av en och samma trunk ska matcha.
+    </p>
+  </details>
+</section>
+
+<h2>04 // Tillämpa och felsök</h2>
+
+<section class="task">
+  <h3>9. Översätt Cisco till FortiSwitch</h3>
+
+  <p>
+    Beskriv motsvarande FortiSwitch-inställningar
+    för följande Cisco-portar:
+  </p>
+
+<pre>! Datorport
+switchport mode access
+switchport access vlan 20
+
+! Länk mellan switchar
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 10,20,30,99</pre>
+
+  <p>
+    Förklara också skillnaden mellan default VLAN,
+    native VLAN och management-VLAN.
+  </p>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Datorport: Native VLAN 20, inga ytterligare Allowed VLANs
+      och inga extra Untagged VLANs.
+      Länkport: Native VLAN 99, Allowed VLANs 10, 20, 30
+      och inga extra Untagged VLANs.
+      Native VLAN är implicit tillåtet på FortiSwitch.
+      Default VLAN beskriver standardinställningen, ofta VLAN 1.
+      Native VLAN tar emot otaggad trafik och skickas normalt otaggat.
+      Management-VLAN används för administration;
+      det avgörs av konfigurationen och behöver inte vara VLAN 1
+      eller native VLAN.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>10. Vad står i 802.1Q-taggen?</h3>
+
+  <p>
+    Förklara fälten <strong>TPID, PCP, DEI och VID</strong>.
+    Hur stor är hela taggen? Vad betyder VID 20?
+    Varför är 4096 möjliga bitkombinationer inte samma sak
+    som 4096 vanliga VLAN-ID?
+  </p>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      TPID: 16 bitar, normalt 0x8100 för denna typ av tagg.
+      PCP: 3 bitar för prioritet 0–7.
+      DEI: 1 bit som markerar drop eligibility vid överbelastning.
+      VID: 12 bitar för VLAN-ID.
+      Totalt 32 bitar = 4 byte.
+      VID 20 anger VLAN 20.
+      Vanliga VLAN-ID är 1–4094;
+      0 används för prioritetstaggning utan VLAN-ID
+      och 4095 är reserverat.
+      Taggen läggs mellan källans MAC-adress och det ursprungliga
+      Type/Length-fältet.
+      FCS räknas om när ramen ändras.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>11. Vad visar Wireshark egentligen?</h3>
+
+  <p>
+    Wireshark på en datorport visar ARP och IPv4 men inga VLAN-taggar.
+    En Ethernetram visas som 60 byte.
+  </p>
+
+  <ol>
+    <li>
+      Bevisar avsaknaden av taggar att switchlänken inte är en trunk?
+    </li>
+    <li>
+      Hur skulle ni fånga trafik för att undersöka trunkens taggar?
+    </li>
+    <li>
+      Måste en visad längd under 64 byte betyda en trasig Ethernetram?
+    </li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Nej. En accessport skickar normalt otaggad trafik till datorn
+      även om switchlänken är taggad.
+      Använd en förberedd portspegling som bevarar taggar eller en tapp;
+      även nätverkskortets hantering av taggar påverkar fångsten.
+      FCS på 4 byte saknas ofta i fångsten,
+      så 60 visade byte kan motsvara en 64-byte-ram på länken.
+      Preamble och SFD visas normalt inte heller.
+    </p>
+  </details>
+</section>
+
+<section class="task">
+  <h3>12. Routing och en plan för felsökning</h3>
+
+  <p>
+    VLAN 10 och 20 ska nu kunna kommunicera,
+    men bara med tillåten trafik.
+  </p>
+
+  <ol>
+    <li>
+      Ge tre exempel på utrustning/upplägg
+      som kan göra inter-VLAN-routing.
+    </li>
+    <li>Vad ska datorernas default gateway peka på?</li>
+    <li>
+      En FortiGate har båda näten direkt anslutna.
+      Behövs normalt statiska routes till just dessa nät?
+      Vad mer kan krävas för att tillåta trafik?
+    </li>
+    <li>
+      Två datorer i samma VLAN på olika switchar kan inte
+      pinga varandra. Skriv en felsökningsordning som skiljer
+      portfel, VLAN-fel, IP-fel och lokal brandvägg åt.
+    </li>
+  </ol>
+
+  <label>Ert svar<textarea></textarea></label>
+
+  <details>
+    <summary>Svarsförslag</summary>
+    <p>
+      Router-on-a-stick med undergränssnitt,
+      lager 3-switch med SVI, eller brandvägg med VLAN-gränssnitt.
+      Gatewayen är lager 3-gränssnittets adress i datorns eget subnät.
+      FortiGate får normalt connected routes när gränssnitten
+      är korrekt konfigurerade och uppe;
+      separata statiska routes till dessa nät behövs inte.
+      Tillåtande brandväggspolicy krävs för trafiken,
+      och NAT behövs normalt inte mellan interna labbnät.
+    </p>
+    <p>
+      Kontrollera fysisk länk och rätt portar, IP/mask,
+      datorportarnas VLAN, skapade VLAN och trunkens tillåtna VLAN
+      på båda sidor.
+      Kontrollera MAC-inlärning och ARP för att lokalisera
+      var kommunikationen stannar.
+      Undersök sedan om den lokala brandväggen blockerar ICMP.
+      Gör en ändring i taget och testa igen.
+    </p>
+  </details>
+</section>
+
+<h2>05 // Det här ska du kunna förklara</h2>
+
+<div class="checks">
+  <label>
+    <input type="checkbox">
+    Skillnaden mellan IP-adress och MAC-adress.
+  </label>
+  <label>
+    <input type="checkbox">
+    Hur en switch lär sig MAC-adresser och väljer utgående port.
+  </label>
+  <label>
+    <input type="checkbox">
+    Skillnaden mellan MAC-tabell och ARP-tabell.
+  </label>
+  <label>
+    <input type="checkbox">
+    När ARP söker mottagarens respektive gatewayens MAC-adress.
+  </label>
+  <label>
+    <input type="checkbox">
+    Varför VLAN skapar separata broadcastdomäner.
+  </label>
+  <label>
+    <input type="checkbox">
+    Accessport, trunk, native VLAN och allowed VLANs.
+  </label>
+  <label>
+    <input type="checkbox">
+    Motsvarande portinställningar i Cisco och FortiSwitch.
+  </label>
+  <label>
+    <input type="checkbox">
+    Vad 802.1Q-taggen innehåller och var den används.
+  </label>
+  <label>
+    <input type="checkbox">
+    Varför ett pingresultat måste tolkas tillsammans
+    med IP- och VLAN-konfiguration.
+  </label>
+  <label>
+    <input type="checkbox">
+    Vad som behövs för routing och tillåten trafik mellan VLAN.
+  </label>
+</div>
+
+<label>
+  Exit ticket: skriv en sak du kan förklara nu
+  och en sak du vill gå igenom igen.
+  <textarea></textarea>
+</label>
+
+<p class="muted">
+  Svaren sparas inte automatiskt.
+  Kopiera till inlämningen eller skriv ut till PDF.
+  Öppna endast de facitavsnitt som du vill ha med i utskriften.
+</p>
+
+<button onclick="window.print()">Skriv ut / spara PDF</button>
+
+<footer>
+  BAALSTORM // LEKTIONSUPPGIFTER<br>
+  Baserat på materialet om Ethernet, switchar och VLAN.
+</footer>
+
+</main>
+</body>
+</html>
