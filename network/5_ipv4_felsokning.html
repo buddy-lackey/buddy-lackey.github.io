@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | IP-detektiven</title>
+<style>
+body{margin:0;background:#05070a;color:#d8eee7;font:16px/1.65 Consolas,"Courier New",monospace}
+header,main{max-width:1050px;margin:auto;padding:20px}
+h1{font-size:2.2rem}
+h2,a,.status{color:#00e89d}
+h2{border-bottom:1px solid #163c31;margin-top:35px}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{font-size:14px}
+nav a[aria-current]{color:#ffd166}
+.muted,footer{color:#77968b}
+code,summary{color:#ffd166}
+pre,details{background:#080d0c;border:1px solid #163c31;padding:15px;overflow:auto}
+summary{cursor:pointer}
+.table{overflow:auto}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #163c31;padding:10px;text-align:left}
+li{margin:8px 0}
+.cursor{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">&lt; RETURN TO HOME</a> · BAALSTORM / ALEF-93
+</header>
+<main>
+<nav aria-label="Lektionens uppgifter">
+  <a href="5_ipv4_bitar.html">1. IPv4</a>
+  <a href="5_ipv4_subnat.html">2. Subnät</a>
+  <a href="5_ipv4_felsokning.html" aria-current="page">3. IP-detektiven</a>
+  <a href="5_packet_tracer_subnatmask.html">4. Packet Tracer</a>
+  <a href="5_wireshark_ip_mysteriet.html">5. Wireshark</a>
+</nav>
+
+<p class="muted">LECTURE 05 // IPv4</p>
+<h1>IP-detektiven: samma nät eller gateway?</h1>
+<p class="status">● NETWORK ONLINE<span class="cursor" aria-hidden="true">_</span></p>
+<p class="muted">Cirka 25–35 minuter · Arbeta ensam eller i par</p>
+
+<p>Anta samma VLAN, en vanlig lager 2-switch, inga extra routes
+och inga blockerande brandväggsregler.
+Gateway saknas om inget annat anges.</p>
+
+<section>
+<h2>// CHALLENGE 01 — Vem kan prata direkt?</h2>
+<div class="table">
+<table>
+<thead><tr><th>Dator</th><th>IPv4-adress</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>192.168.10.10/26</td></tr>
+<tr><td>B</td><td>192.168.10.62/26</td></tr>
+<tr><td>C</td><td>192.168.10.65/26</td></tr>
+<tr><td>D</td><td>192.168.10.100/26</td></tr>
+</tbody>
+</table>
+</div>
+<ol>
+  <li>Vilka par kan normalt pinga varandra direkt?</li>
+  <li>Vilken nätadress och broadcastadress hör till varje dator?</li>
+  <li>Vad gör A när du försöker pinga C utan gateway?</li>
+  <li>Varför löser inte switchens MAC-tabell problemet?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>A och B tillhör 192.168.10.0/26, med broadcast 192.168.10.63.
+C och D tillhör 192.168.10.64/26, med broadcast 192.168.10.127.
+A–B och C–D kan kommunicera direkt.</p>
+<p>A saknar route till C:s nät och skickar normalt inget direkt
+ARP-anrop efter C. Switchen kan vidarebefordra ramar,
+men datorns routingbeslut avgör nästa hopp.</p>
+<p>Olika IP-subnät på samma VLAN är ingen säkerhetsisolering.
+Särskilda routes kan ändra datorernas beteende.</p>
+</details>
+</section>
+
+<section>
+<h2>// CHALLENGE 02 — Den luriga nätmasken</h2>
+<pre>Dator A: 192.168.1.10/24
+Dator B: 192.168.1.200/25
+
+Samma switch och samma VLAN.
+Ingen gateway på någon dator.</pre>
+<ol>
+  <li>Vilket nät anser A att den tillhör? Och B?</li>
+  <li>Anser A att B är lokal? Anser B att A är lokal?</li>
+  <li>Kan ett komplett pingutbyte normalt lyckas?
+      Förklara båda riktningarna.</li>
+  <li>Ge en korrigering som låter dem kommunicera direkt.</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>A tillhör 192.168.1.0/24 och ser B som lokal.</p>
+<p>B tillhör 192.168.1.128/25 och ser A som extern.</p>
+<p>A kan normalt skicka förfrågan direkt, men B saknar route
+för svaret. Pingutbytet misslyckas.</p>
+<p>Ge båda /24 om det är det avsedda gemensamma subnätet.
+Med B:s /25-mask hamnar .10 och .200 på olika sidor av gränsen.</p>
+</details>
+</section>
+
+<section>
+<h2>// CHALLENGE 03 — Vem får ramen?</h2>
+<pre>Dator A
+IP:  192.168.10.10/26
+MAC: 02:00:00:00:00:10
+
+Dator B
+IP:  192.168.10.20/26
+MAC: 02:00:00:00:00:20
+
+Default gateway
+IP:  192.168.10.1
+MAC: 02:00:00:00:00:01</pre>
+<ol>
+  <li>A pingar B. Ange destination-IP och destination-MAC
+      i Echo Request-ramen efter ARP.</li>
+  <li>A pingar 8.8.8.8. Ange samma fält på länken
+      från A till gatewayen.</li>
+  <li>Vems MAC-adress efterfrågar A med ARP i respektive fall?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>Till B:</p>
+<pre>Destination-IP:  192.168.10.20
+Destination-MAC: 02:00:00:00:00:20</pre>
+<p>Till Internet, på den lokala länken:</p>
+<pre>Destination-IP:  8.8.8.8
+Destination-MAC: 02:00:00:00:00:01</pre>
+<p>ARP används för att hitta B:s respektive gatewayens MAC-adress.
+Datorn behöver inte känna till internetserverns MAC-adress.</p>
+<p>Uppgiften gäller unicast-ramarna efter ARP,
+inte själva ARP-broadcasten.</p>
+</details>
+</section>
+
+<h2>// REDOVISA</h2>
+<p>Skriv en kort förklaring av varför nätmasken påverkar
+vilken MAC-adress datorn väljer.</p>
+<footer>Baalstorm · IPv4, nätmask och routing</footer>
+<span hidden data-note="FLAG{subnets_are_not_vlan_isolation}"></span>
+</main>
+<script>
+console.info("FLAG{next_hop_decides_the_mac}");
+</script>
+</body>
+</html>
