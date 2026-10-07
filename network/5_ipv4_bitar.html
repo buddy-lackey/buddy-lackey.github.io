@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | IPv4: bitar, mask och OCH</title>
+<style>
+body{margin:0;background:#05070a;color:#d8eee7;font:16px/1.65 Consolas,"Courier New",monospace}
+header,main{max-width:1050px;margin:auto;padding:20px}
+h1{font-size:2.2rem}
+h2,a,.status{color:#00e89d}
+h2{border-bottom:1px solid #163c31;margin-top:35px}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{font-size:14px}
+nav a[aria-current]{color:#ffd166}
+.muted,footer{color:#77968b}
+code,summary{color:#ffd166}
+pre,details{background:#080d0c;border:1px solid #163c31;padding:15px;overflow:auto}
+summary{cursor:pointer}
+li{margin:8px 0}
+.cursor{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">&lt; RETURN TO HOME</a> · BAALSTORM / ALEF-93
+</header>
+<main>
+<nav aria-label="Lektionens uppgifter">
+  <a href="5_ipv4_bitar.html" aria-current="page">1. IPv4</a>
+  <a href="5_ipv4_subnat.html">2. Subnät</a>
+  <a href="5_ipv4_felsokning.html">3. IP-detektiven</a>
+  <a href="5_packet_tracer_subnatmask.html">4. Packet Tracer</a>
+  <a href="5_wireshark_ip_mysteriet.html">5. Wireshark</a>
+</nav>
+
+<p class="muted">LECTURE 05 // IPv4</p>
+<h1>IPv4: bitar, mask och OCH</h1>
+<p class="status">● NETWORK ONLINE<span class="cursor" aria-hidden="true">_</span></p>
+<p class="muted">Cirka 25–35 minuter · Arbeta ensam eller i par</p>
+
+<p>Du ska kunna läsa en IPv4-adress binärt, översätta nätmask
+till prefixlängd och använda bitvis OCH.</p>
+
+<section>
+<h2>// CHALLENGE 01 — Åtta lådor</h2>
+<p>Positionsvärdena för en oktett är:</p>
+<pre>128  64  32  16  8  4  2  1</pre>
+<p>Skriv alltid åtta bitar, även när talet börjar med nollor.</p>
+<ol>
+  <li>Översätt 192, 168, 99 och 240 till binärt.</li>
+  <li>Översätt 00001010, 10010110 och 00110111 till decimalt.</li>
+  <li>Skriv hela 10.150.55.12 i binär form.</li>
+  <li>En kollega skriver 111111111 som en IPv4-oktett.
+      Vad är fel?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<pre>192 = 11000000
+168 = 10101000
+ 99 = 01100011
+240 = 11110000
+
+00001010 = 10
+10010110 = 150
+00110111 = 55
+
+10.150.55.12 =
+00001010.10010110.00110111.00001100</pre>
+<p>111111111 innehåller nio bitar och har värdet 511.
+En IPv4-oktett har åtta bitar och kan som mest ha värdet 255.</p>
+</details>
+</section>
+
+<section>
+<h2>// CHALLENGE 02 — Masken bestämmer gränsen</h2>
+<ol>
+  <li>Översätt 255.255.255.0, 255.255.255.192 och
+      255.255.255.248 till prefixlängd.</li>
+  <li>Skriv nätmasken för /16, /25 och /27.</li>
+  <li>Hur många nätverksbitar och hostbitar finns i /26?</li>
+  <li>Är 255.255.0.255 en giltig sammanhängande nätmask?
+      Motivera med hjälp av bitarna.</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<pre>255.255.255.0   = /24
+255.255.255.192 = /26
+255.255.255.248 = /29
+
+/16 = 255.255.0.0
+/25 = 255.255.255.128
+/27 = 255.255.255.224</pre>
+<p>/26 har 26 nätverksbitar och 6 hostbitar.</p>
+<p>255.255.0.255 är inte en giltig sammanhängande nätmask.
+Den blir:</p>
+<pre>11111111.11111111.00000000.11111111</pre>
+<p>Ettorna måste ligga sammanhängande från vänster,
+följda av nollorna.</p>
+</details>
+</section>
+
+<section>
+<h2>// CHALLENGE 03 — Bitvis OCH (&amp;)</h2>
+<p>Resultatet blir 1 endast om båda bitarna är 1.
+Maskbit 1 behåller IP-bitens värde. Maskbit 0 ger resultatet 0.</p>
+<ol>
+  <li>Beräkna nätadressen för 192.168.1.99/24.
+      Visa binär uträkning.</li>
+  <li>Byt mask till /26. Beräkna nätadressen igen.</li>
+  <li>Vilka två bitar i sista oktetten har nu blivit
+      nätverksbitar?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>De första tre oktetterna behålls i båda fallen.
+I sista oktetten får vi:</p>
+<pre>/24:
+01100011 &amp; 00000000 = 00000000 = 0
+
+/26:
+01100011 &amp; 11000000 = 01000000 = 64</pre>
+<p>Nätadresserna blir 192.168.1.0 respektive 192.168.1.64.</p>
+<p>De två vänstra bitarna i sista oktetten, med positionsvärdena
+128 och 64, ingår i nätverksdelen för /26.</p>
+</details>
+</section>
+
+<h2>// REDOVISA</h2>
+<p>Lämna dina uträkningar och förklara med egna ord varför
+samma IP-adress kan tillhöra olika stora nät beroende på masken.</p>
+
+<footer>Baalstorm · IPv4, nätmask och routing</footer>
+<!-- FLAG{eight_bits_one_octet} -->
+</main>
+<script>
+console.info("FLAG{mask_ones_keep_the_bits}");
+</script>
+</body>
+</html>
