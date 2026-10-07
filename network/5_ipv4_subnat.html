@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | Subnät: hitta gränserna</title>
+<style>
+body{margin:0;background:#05070a;color:#d8eee7;font:16px/1.65 Consolas,"Courier New",monospace}
+header,main{max-width:1050px;margin:auto;padding:20px}
+h1{font-size:2.2rem}
+h2,a,.status{color:#00e89d}
+h2{border-bottom:1px solid #163c31;margin-top:35px}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{font-size:14px}
+nav a[aria-current]{color:#ffd166}
+.muted,footer{color:#77968b}
+code,summary{color:#ffd166}
+pre,details{background:#080d0c;border:1px solid #163c31;padding:15px;overflow:auto}
+summary{cursor:pointer}
+.table{overflow:auto}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #163c31;padding:10px;text-align:left}
+li{margin:8px 0}
+.cursor{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+/* FLAG{prefix_length_sets_the_boundary} */
+/* FLAG{broadcast_is_not_always_dot_255} */
+</style>
+</head>
+<body>
+<header>
+  <a href="/">&lt; RETURN TO HOME</a> · BAALSTORM / ALEF-93
+</header>
+<main>
+<nav aria-label="Lektionens uppgifter">
+  <a href="5_ipv4_bitar.html">1. IPv4</a>
+  <a href="5_ipv4_subnat.html" aria-current="page">2. Subnät</a>
+  <a href="5_ipv4_felsokning.html">3. IP-detektiven</a>
+  <a href="5_packet_tracer_subnatmask.html">4. Packet Tracer</a>
+  <a href="5_wireshark_ip_mysteriet.html">5. Wireshark</a>
+</nav>
+
+<p class="muted">LECTURE 05 // IPv4</p>
+<h1>Subnät: hitta gränserna</h1>
+<p class="status">● NETWORK ONLINE<span class="cursor" aria-hidden="true">_</span></p>
+<p class="muted">Cirka 30–40 minuter · Arbeta ensam eller i par</p>
+
+<p>Du ska kunna hitta nätadress, broadcast och användbara
+hostadresser. Räkna först för hand. Kontrollera därefter
+med valfri subnätskalkylator.</p>
+
+<section>
+<h2>// CHALLENGE 01 — Hitta adressintervallet</h2>
+<p>För varje adress: ange nätmask, nätadress, broadcast,
+första och sista hostadress samt antal användbara hostadresser.
+Skriv svaren i dina anteckningar.</p>
+<div class="table">
+<table>
+<thead>
+<tr>
+  <th>IP-adress/prefix</th>
+  <th>Nätmask</th>
+  <th>Nätadress</th>
+  <th>Broadcast</th>
+  <th>Hostintervall</th>
+  <th>Antal hostar</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>192.168.1.99/24</td><td colspan="5">Räkna själv</td></tr>
+<tr><td>192.168.1.99/26</td><td colspan="5">Räkna själv</td></tr>
+<tr><td>192.168.1.150/27</td><td colspan="5">Räkna själv</td></tr>
+<tr><td>10.20.30.45/20</td><td colspan="5">Räkna själv</td></tr>
+<tr><td>172.16.5.14/30</td><td colspan="5">Räkna själv</td></tr>
+</tbody>
+</table>
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<ul>
+  <li><strong>192.168.1.99/24:</strong>
+      mask 255.255.255.0; nät 192.168.1.0;
+      broadcast 192.168.1.255; hostar 192.168.1.1–192.168.1.254;
+      254 hostar.</li>
+  <li><strong>192.168.1.99/26:</strong>
+      mask 255.255.255.192; nät 192.168.1.64;
+      broadcast 192.168.1.127; hostar 192.168.1.65–192.168.1.126;
+      62 hostar.</li>
+  <li><strong>192.168.1.150/27:</strong>
+      mask 255.255.255.224; nät 192.168.1.128;
+      broadcast 192.168.1.159; hostar 192.168.1.129–192.168.1.158;
+      30 hostar.</li>
+  <li><strong>10.20.30.45/20:</strong>
+      mask 255.255.240.0; nät 10.20.16.0;
+      broadcast 10.20.31.255; hostar 10.20.16.1–10.20.31.254;
+      4094 hostar.</li>
+  <li><strong>172.16.5.14/30:</strong>
+      mask 255.255.255.252; nät 172.16.5.12;
+      broadcast 172.16.5.15; hostar 172.16.5.13–172.16.5.14;
+      2 hostar.</li>
+</ul>
+<p>För /20 ligger gränsen mitt i tredje oktetten.
+Blockstorleken där är 16. Värdet 30 ligger i blocket 16–31.</p>
+</details>
+</section>
+
+<section>
+<h2>// CHALLENGE 02 — Fyra mindre nät</h2>
+<p>Dela 192.168.50.0/24 i fyra lika stora subnät.
+Ange prefixlängd, nätmask, nätadresser, hostintervall
+och broadcast för samtliga.</p>
+<ol>
+  <li>Vilket subnät innehåller 192.168.50.190?</li>
+  <li>Kan 192.168.50.128 användas som hostadress
+      med den nya masken?</li>
+  <li>Varför börjar det andra subnätet vid .64 och inte .63?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>Alla får /26 och masken 255.255.255.192.
+Varje subnät innehåller 64 adresser.</p>
+<ul>
+  <li>Nät .0; hostar .1–.62; broadcast .63.</li>
+  <li>Nät .64; hostar .65–.126; broadcast .127.</li>
+  <li>Nät .128; hostar .129–.190; broadcast .191.</li>
+  <li>Nät .192; hostar .193–.254; broadcast .255.</li>
+</ul>
+<p>.190 ligger i 192.168.50.128/26.
+.128 är nätadressen och kan inte användas som vanlig hostadress där.</p>
+<p>.63 är sista adressen i första blocket och används för broadcast.
+Nästa block börjar vid .64.</p>
+</details>
+</section>
+
+<section>
+<h2>// CHALLENGE 03 — Precis lagom stort</h2>
+<p>Välj det minsta vanliga subnät som rymmer alla klienter
+och en gatewayadress:</p>
+<ul>
+  <li>12 klienter.</li>
+  <li>28 klienter.</li>
+  <li>60 klienter.</li>
+</ul>
+<p>Ange prefixlängd och antal användbara adresser.
+Visa varför närmast mindre subnät inte räcker.</p>
+<details>
+<summary>Reveal discussion</summary>
+<ul>
+  <li>13 adresser behövs: /28 ger 14. /29 ger bara 6.</li>
+  <li>29 adresser behövs: /27 ger 30. /28 ger bara 14.</li>
+  <li>61 adresser behövs: /26 ger 62. /27 ger bara 30.</li>
+</ul>
+<p>För dessa vanliga subnät gäller:
+2 upphöjt till antalet hostbitar, minus två.
+Nätadress och broadcast räknas bort.</p>
+<p>/31 på punkt-till-punkt-länkar och /32 för en enda adress
+hanteras särskilt.</p>
+</details>
+</section>
+
+<h2>// REDOVISA</h2>
+<p>Lämna tabellen och visa hur du räknade på /26 samt /20.</p>
+<footer>Baalstorm · IPv4, nätmask och routing</footer>
+<!-- Inspect the stylesheet for a subnet clue. -->
+</main>
+</body>
+</html>
