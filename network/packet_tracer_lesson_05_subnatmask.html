@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | Packet Tracer: subnätmask</title>
+<style>
+body{margin:0;background:#05070a;color:#d8eee7;font:16px/1.65 Consolas,"Courier New",monospace}
+header,main{max-width:1050px;margin:auto;padding:20px}
+h1{font-size:2.2rem}
+h2,a,.status{color:#00e89d}
+h2{border-bottom:1px solid #163c31;margin-top:35px}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{font-size:14px}
+nav a[aria-current]{color:#ffd166}
+.muted,footer{color:#77968b}
+code,summary{color:#ffd166}
+pre,details{background:#080d0c;border:1px solid #163c31;padding:15px;overflow:auto}
+summary{cursor:pointer}
+.table{overflow:auto}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #163c31;padding:10px;text-align:left}
+li{margin:8px 0}
+.cursor{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">&lt; RETURN TO HOME</a> · BAALSTORM / ALEF-93
+</header>
+<main>
+<nav aria-label="Lektionens uppgifter">
+  <a href="5_ipv4_bitar.html">1. IPv4</a>
+  <a href="5_ipv4_subnat.html">2. Subnät</a>
+  <a href="5_ipv4_felsokning.html">3. IP-detektiven</a>
+  <a href="5_packet_tracer_subnatmask.html" aria-current="page">4. Packet Tracer</a>
+  <a href="5_wireshark_ip_mysteriet.html">5. Wireshark</a>
+</nav>
+
+<p class="muted">LECTURE 05 // IPv4</p>
+<h1>Packet Tracer: subnätmask</h1>
+<p class="status">● NETWORK ONLINE<span class="cursor" aria-hidden="true">_</span></p>
+<p class="muted">Cirka 35–50 minuter · Arbeta ensam eller i par</p>
+
+<p>Du ska visa vad som händer när ett /24 delas i två /25-nät
+utan att IP-adresser eller kablar ändras.</p>
+
+<h2>// STEP 01 — Bygg startmiljön</h2>
+<p>Placera en lager 2-switch, exempelvis 2960, och fyra PC.
+Anslut varje PC till en egen switchport med Copper Straight-Through.
+Behåll alla portar i samma VLAN. Lägg inte till någon router.</p>
+
+<div class="table">
+<table>
+<thead>
+<tr><th>PC</th><th>IP-adress</th><th>Nätmask</th><th>Gateway</th></tr>
+</thead>
+<tbody>
+<tr><td>PC1</td><td>192.168.1.10</td><td>255.255.255.0</td><td>Tom</td></tr>
+<tr><td>PC2</td><td>192.168.1.11</td><td>255.255.255.0</td><td>Tom</td></tr>
+<tr><td>PC3</td><td>192.168.1.240</td><td>255.255.255.0</td><td>Tom</td></tr>
+<tr><td>PC4</td><td>192.168.1.241</td><td>255.255.255.0</td><td>Tom</td></tr>
+</tbody>
+</table>
+</div>
+<p>Ange adresserna under Desktop → IP Configuration.
+Vänta tills länkarna är gröna.</p>
+
+<h2>// STEP 02 — Kontrollera startläget</h2>
+<p>Öppna Desktop → Command Prompt. Testa alla sex par:</p>
+<ul>
+  <li>PC1–PC2</li>
+  <li>PC1–PC3</li>
+  <li>PC1–PC4</li>
+  <li>PC2–PC3</li>
+  <li>PC2–PC4</li>
+  <li>PC3–PC4</li>
+</ul>
+<p>Kör exempelvis från PC1:</p>
+<pre>ping 192.168.1.240</pre>
+<p>Anteckna resultaten. Om första försöket tappar paket
+när ARP eller länken etableras, kör igen.</p>
+
+<h2>// STEP 03 — Dela nätet</h2>
+<p>Dela 192.168.1.0/24 i två lika stora nät.
+Behåll samtliga PC-adresser.</p>
+<ol>
+  <li>Räkna ut den nya masken själv.</li>
+  <li>Ange nätadress, hostintervall och broadcast
+      för båda subnäten.</li>
+  <li>Förutsäg vilka pingtester som lyckas efter ändringen.</li>
+  <li>Ändra endast nätmasken på alla fyra PC.
+      Lämna gateway tom.</li>
+  <li>Gör om alla sex tester och jämför med din förutsägelse.</li>
+</ol>
+
+<h2>// STEP 04 — Följ ett misslyckat försök</h2>
+<p>Byt till Simulation. Visa bara ARP och ICMP med Edit Filters.
+Starta ett ping från PC1 till PC3 och stega med Capture/Forward.
+Jämför med ett ping från PC1 till PC2.</p>
+<ol>
+  <li>Vad visar simulatorn när PC1 försöker nå det andra subnätet?</li>
+  <li>Skickas någon ram till PC3?
+      Dokumentera vad just din version visar.</li>
+  <li>Varför kan switchen inte ensam få kommunikationen att fungera?</li>
+  <li>Vad skulle behövas för att alla fyra ska kommunicera med /25?</li>
+  <li>Har ni skapat två VLAN eller två broadcast-domäner
+      genom att ändra masken?</li>
+</ol>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>Ny mask: 255.255.255.128, alltså /25.</p>
+<ul>
+  <li>Första nätet: 192.168.1.0/25.
+      Hostar .1–.126. Broadcast .127.</li>
+  <li>Andra nätet: 192.168.1.128/25.
+      Hostar .129–.254. Broadcast .255.</li>
+</ul>
+<p>Med /24 lyckas alla par.
+Med /25 lyckas normalt PC1–PC2 och PC3–PC4.
+Övriga par behöver routing, som saknas.</p>
+<p>För att behålla /25 och nå mellan näten behövs
+en router eller annan lager 3-enhet med anslutning till båda
+näten och rätt routes/gatewayinställningar.</p>
+<p>Ett vanligt produktionsupplägg är ett VLAN per subnät
+och routing mellan dem.</p>
+<p>Maskbytet ändrar datorernas IP-bedömning.
+Alla portar ligger fortfarande i samma VLAN och samma
+lager 2-broadcast-domän.</p>
+</details>
+
+<h2>// REDOVISA</h2>
+<p>Spara .pkt-filen i slutläget.
+Lämna före/efter-resultat för de sex paren,
+subnätsberäkningarna och en kort förklaring.
+Routing behöver inte byggas i denna uppgift.</p>
+
+<footer>Baalstorm · IPv4, nätmask och routing</footer>
+<!-- FLAG{same_switch_different_subnets} -->
+</main>
+<script>
+console.info("FLAG{a_mask_does_not_create_a_vlan}");
+</script>
+</body>
+</html>
