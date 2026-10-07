@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | Wireshark: IP-mysteriet</title>
+<style>
+body{margin:0;background:#05070a;color:#d8eee7;font:16px/1.65 Consolas,"Courier New",monospace}
+header,main{max-width:1050px;margin:auto;padding:20px}
+h1{font-size:2.2rem}
+h2,a,.status{color:#00e89d}
+h2{border-bottom:1px solid #163c31;margin-top:35px}
+nav{display:flex;gap:15px;flex-wrap:wrap}
+nav a{font-size:14px}
+nav a[aria-current]{color:#ffd166}
+.muted,footer{color:#77968b}
+code,summary{color:#ffd166}
+pre,details{background:#080d0c;border:1px solid #163c31;padding:15px;overflow:auto}
+summary{cursor:pointer}
+.table{overflow:auto}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #163c31;padding:10px;text-align:left}
+li{margin:8px 0}
+.cursor{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cursor{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">&lt; RETURN TO HOME</a> · BAALSTORM / ALEF-93
+</header>
+<main>
+<nav aria-label="Lektionens uppgifter">
+  <a href="5_ipv4_bitar.html">1. IPv4</a>
+  <a href="5_ipv4_subnat.html">2. Subnät</a>
+  <a href="5_ipv4_felsokning.html">3. IP-detektiven</a>
+  <a href="5_packet_tracer_subnatmask.html">4. Packet Tracer</a>
+  <a href="5_wireshark_ip_mysteriet.html" aria-current="page">5. Wireshark</a>
+</nav>
+
+<p class="muted">LECTURE 05 // IPv4</p>
+<h1>Wireshark: fallet med den försvunna MAC-adressen</h1>
+<p class="status">● NETWORK ONLINE<span class="cursor" aria-hidden="true">_</span></p>
+<p class="muted">Cirka 35–50 minuter · Arbeta ensam eller i par</p>
+
+<p>Tre olika IP-mottagare dyker upp i spårningen.
+Men flera paket får samma destination-MAC.
+Har de skickats till fel dator?</p>
+<p>Du undersöker din egen IPv4-trafik med Wireshark och
+Windows-kommandon. Använd skolans vanliga nätverksanslutning.
+Om skolans miljö tillåter det, koppla från eventuell VPN
+för ett tydligare resultat.</p>
+
+<h2>// STEP 01 — Samla ledtrådar</h2>
+<pre>ipconfig /all</pre>
+<p>Anteckna IPv4-adress, nätmask, fysisk adress och default
+gateway för den aktiva anslutningen.
+Beräkna din nätadress.</p>
+<p>Om flera adaptrar visas, välj den som faktiskt används.</p>
+<p><strong>Skriv en hypotes:</strong>
+Vilken destination-MAC kommer en ping till 1.1.1.1 att ha?</p>
+
+<h2>// STEP 02 — Fånga tre pingtester</h2>
+<ol>
+  <li>Starta inspelning på den aktiva Ethernet- eller
+      Wi-Fi-adaptern. Använd inget capture filter.</li>
+  <li>Pinga din gateway: ersätt GATEWAY_IP med adressen
+      från ipconfig.</li>
+  <li>Pinga två externa adresser och stoppa sedan inspelningen.</li>
+</ol>
+<pre>ping -4 -n 1 GATEWAY_IP
+ping -4 -n 1 1.1.1.1
+ping -4 -n 1 8.8.8.8</pre>
+
+<p>Använd följande display filter:</p>
+<pre>icmp.type == 8</pre>
+<p>Välj de utgående Echo Request-paketen från din egen dator.
+Expandera Ethernet II och Internet Protocol Version 4.</p>
+<p>Fyll i tabellen i dina anteckningar.
+Du kan undersöka de utgående paketen även om ping inte får svar.</p>
+
+<div class="table">
+<table>
+<thead>
+<tr>
+  <th>Test</th>
+  <th>Source IP</th>
+  <th>Destination IP</th>
+  <th>Source MAC</th>
+  <th>Destination MAC</th>
+  <th>TTL</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Gateway</td><td colspan="5">Fyll i från fångsten</td></tr>
+<tr><td>1.1.1.1</td><td colspan="5">Fyll i från fångsten</td></tr>
+<tr><td>8.8.8.8</td><td colspan="5">Fyll i från fångsten</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Vanlig Wi-Fi-inspelning i Windows visar ofta Ethernet II.
+Om fångsten visar råa 802.11-ramar finns fler MAC-fält.
+Be läraren hjälpa till med tolkningen eller använd Ethernet
+för denna del.</p>
+
+<details>
+<summary>Ledtråd</summary>
+<p>Destination-IP anger den slutliga IP-mottagaren.
+Destination-MAC anger mottagaren på den lokala länken.</p>
+</details>
+
+<h2>// CHALLENGE — Lös fallet</h2>
+<ol>
+  <li>Hur många olika destination-IP ser du?
+      Hur många olika destination-MAC?</li>
+  <li>Varför behöver datorn normalt inte känna till
+      MAC-adressen för 8.8.8.8?</li>
+  <li>Kontrollera gatewayens MAC med kommandot nedan.
+      Stämmer den med fångsten?</li>
+  <li>Visar fångsten den publika IP-adressen för din
+      internetanslutning? Förklara var en vanlig NAT-router
+      ändrar käll-IP.</li>
+</ol>
+<pre>arp -a</pre>
+
+<p>Filtrera även på <code>arp</code>.
+Om inga ARP-paket syns kan gatewayens MAC redan vara cachad.
+Det är ett fynd, inte ett fel.</p>
+
+<details>
+<summary>Valfritt: fånga ett nytt ARP-utbyte</summary>
+<p>På en lärargodkänd labbdator kan du i en
+administratörsterminal radera endast gatewayposten:</p>
+<pre>arp -d GATEWAY_IP</pre>
+<p>Ersätt GATEWAY_IP med den riktiga adressen.
+Starta inspelningen före nästa ping.
+Datorn kan då behöva fråga efter gatewayens MAC igen.</p>
+<p>Du behöver inte radera posten för att slutföra labben.</p>
+</details>
+
+<h2>// BONUS — Ett paket som aldrig kommer fram</h2>
+<p>Starta en ny inspelning.
+Skicka ett enda Echo Request med TTL 1:</p>
+<pre>ping -4 -n 1 -i 1 1.1.1.1</pre>
+<p>Stoppa inspelningen och filtrera på <code>icmp</code>.</p>
+<ol>
+  <li>Vilken TTL har den utgående IPv4-headern?</li>
+  <li>Får du ICMP Time Exceeded, typ 11? Vem skickar det?</li>
+  <li>Expandera svaret. Hittar du en inbäddad kopia av
+      det ursprungliga paketets IP-header?</li>
+  <li>Varför kan samma paketdetaljer visa två IP-headers
+      med olika adresser?</li>
+  <li>Vilket verktyg upprepar principen med successivt
+      högre TTL?</li>
+</ol>
+<p>Om inget svar kommer: dokumentera det.
+Routrar och brandväggar kan begränsa ICMP-svar.
+Uteblivet svar bevisar inte att paketet nådde slutmålet.</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>I en vanlig miljö med en default gateway går alla tre
+tester till gatewayens MAC på den lokala länken.
+IP-mottagarna skiljer sig.</p>
+<p>Datorn ARP:ar efter gatewayen, inte efter internetservern.
+Specialroutes eller VPN kan ge andra resultat.</p>
+<p>En fångst på datorns LAN-adapter visar normalt dess
+lokala käll-IP. NAT sker senare vid routern.</p>
+<p>Echo Request är ICMP, även när mottagaren råkar vara
+en DNS-server.</p>
+<p>TTL 1 gör att den första vidarebefordrande routern
+normalt kastar paketet och kan skicka ICMP typ 11, kod 0.</p>
+<p>Svaret innehåller en yttre IP-header för felmeddelandet
+tillbaka till dig. Inuti ICMP-meddelandet finns information
+från paketet som orsakade felet, inklusive dess IP-header.</p>
+<p>Traceroute/tracert använder principen.
+Svarets egen TTL är inte samma sak som TTL
+i det citerade paketet.</p>
+</details>
+
+<h2>// REDOVISA</h2>
+<p>Lämna tabellen, två skärmbilder med relevanta fält
+och en förklaring på 5–8 meningar.
+Lägg till ditt resultat från TTL-bonusen om du gjorde den.</p>
+
+<p class="muted">
+Referenser:
+<a href="https://www.wireshark.org/docs/wsug_html/">Wireshark User’s Guide</a>
+och
+<a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ping">Windows ping</a>.
+</p>
+
+<footer>Baalstorm · IPv4, nätmask och routing</footer>
+<span hidden data-note="FLAG{remote_ip_local_next_hop}"></span>
+</main>
+<script>
+console.info("FLAG{ttl_one_reveals_the_first_hop}");
+</script>
+</body>
+</html>
