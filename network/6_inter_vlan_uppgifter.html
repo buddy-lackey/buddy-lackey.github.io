@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALEF-93 | IPv4 & Inter-VLAN Exercises</title>
+<style>
+:root {
+  --bg:#05070a;--panel:#080d0c;--panel2:#0b1411;
+  --green:#00e89d;--soft:#7dffcf;--text:#d8eee7;
+  --muted:#77968b;--border:#163c31;--amber:#d7ac70;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Consolas,"Courier New",monospace;line-height:1.7}
+main{max-width:900px;margin:auto;padding:35px 22px 90px}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+.back,.eyebrow,.tag{font-size:12px;letter-spacing:1.5px;color:var(--green)}
+.eyebrow{margin-top:48px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.2;margin:12px 0}
+h2{font-size:21px;margin:8px 0 18px;color:var(--soft)}
+h3{font-size:15px;color:var(--green)}
+.muted{color:var(--muted)}
+.status{color:var(--green);font-size:13px;margin:26px 0 42px}
+.cursor{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.section{font-size:13px;letter-spacing:2px;color:var(--green);
+margin:43px 0 15px}
+.card{border:1px solid var(--border);background:var(--panel);
+border-left:3px solid var(--green);padding:25px;
+margin:18px 0;border-radius:4px}
+.intro{border-left-color:var(--muted)}
+.boss{border-left-color:var(--amber)}
+.boss .tag{color:var(--amber)}
+pre{background:#030605;border:1px solid var(--border);
+border-radius:4px;padding:17px;overflow:auto;
+color:var(--soft);font-size:13px;line-height:1.6}
+code{color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:10px;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--green)}
+details{border-top:1px solid var(--border);margin-top:23px;padding-top:15px}
+summary{color:var(--green);cursor:pointer}
+textarea{width:100%;min-height:85px;resize:vertical;
+background:#030605;color:var(--text);border:1px solid var(--border);
+padding:12px;font:inherit;border-radius:4px}
+textarea:focus{outline:1px solid var(--green)}
+label{display:block;margin:10px 0;color:var(--muted);font-size:13px}
+input[type=checkbox]{accent-color:var(--green)}
+button{background:transparent;border:1px solid var(--green);
+color:var(--green);font:inherit;padding:10px 15px;
+border-radius:4px;cursor:pointer}
+button:hover{background:var(--panel2)}
+footer{border-top:1px solid var(--border);margin-top:60px;
+padding-top:25px;color:var(--muted);font-size:12px}
+@media(max-width:600px){.card{padding:18px}table{font-size:12px}}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="eyebrow">NETWORK TRAINING // EXERCISES</div>
+<h1>IPv4 & INTER-VLAN<br>ROUTING</h1>
+<p class="muted">Think. Calculate. Inspect. Troubleshoot.</p>
+<div class="status">● NETWORK SYSTEM ONLINE<span class="cursor">_</span></div>
+
+<section class="card intro">
+<h2>// MISSION BRIEFING</h2>
+<p>Du har repeterat IPv4, subnät, default gateway och
+olika metoder för inter-VLAN-routing.</p>
+<p>Nu ska du använda kunskaperna för att analysera
+nätverk och förstå varför kommunikation fungerar
+– eller inte fungerar.</p>
+<p>Försök lösa varje uppgift innan du öppnar
+<strong>Reveal discussion</strong>.</p>
+</section>
+
+<div class="section">// IPv4 & SUBNETTING</div>
+
+<article class="card">
+<div class="tag">CHALLENGE 01 // NETWORK ID</div>
+<h2>Same subnet?</h2>
+<p>Tre datorer har följande IP-konfiguration:</p>
+<table>
+<tr><th>Host</th><th>IP-adress</th><th>Nätmask</th></tr>
+<tr><td>PC-A</td><td>192.168.1.10</td><td>255.255.255.128</td></tr>
+<tr><td>PC-B</td><td>192.168.1.100</td><td>255.255.255.128</td></tr>
+<tr><td>PC-C</td><td>192.168.1.200</td><td>255.255.255.128</td></tr>
+</table>
+<p>Vilka datorer tillhör samma IP-subnät?
+Vad är nätadressen för respektive dator?</p>
+<textarea placeholder="Ditt resonemang..."></textarea>
+<details><summary>Reveal discussion</summary>
+<p>Masken motsvarar /25. Den delar ett /24-nät i två delar:</p>
+<pre>192.168.1.0/25
+192.168.1.128/25</pre>
+<p>PC-A och PC-B tillhör det första subnätet.
+PC-C tillhör det andra.</p>
+<p>PC-C behöver routing för att kommunicera med
+PC-A eller PC-B på IP-nivå.</p>
+</details>
+</article>
+
+<article class="card">
+<div class="tag">CHALLENGE 02 // BITWISE AND</div>
+<h2>Find the network</h2>
+<p>En dator har följande adress:</p>
+<pre>IP:      172.16.35.77
+Mask:    255.255.252.0</pre>
+<p>Ta reda på:</p>
+<ol>
+<li>Vilken CIDR-prefixlängd motsvarar masken?</li>
+<li>Vilken är nätadressen?</li>
+<li>Vilken är broadcastadressen?</li>
+</ol>
+<textarea placeholder="Visa gärna din beräkning..."></textarea>
+<details><summary>Reveal discussion</summary>
+<pre>255.255.252.0 = /22
+
+Nätadress:
+172.16.32.0/22
+
+Broadcast:
+172.16.35.255</pre>
+<p>Den tredje oktetten har blockstorleken 4.
+Subnäten börjar därför vid 0, 4, 8 ... 32, 36 och så vidare.</p>
+<p>Adressen 172.16.35.77 tillhör intervallet
+172.16.32.0–172.16.35.255.</p>
+</details>
+</article>
+
+<div class="section">// LAYER 2 VS LAYER 3</div>
+
+<article class="card">
+<div class="tag">CHALLENGE 03 // VLAN ISOLATION</div>
+<h2>Same switch. No communication.</h2>
+<p>Två datorer är anslutna till samma fysiska switch.</p>
+<pre>PC-A                    PC-B
+192.168.10.10           192.168.20.10
+VLAN 10                 VLAN 20
+      \                 /
+       [ Layer 2 Switch ]</pre>
+<p>PC-A försöker pinga PC-B men får inget svar.</p>
+<p>Varför kan inte switchen skicka trafiken direkt
+mellan datorerna?</p>
+<textarea placeholder="Vad skiljer VLAN från varandra?"></textarea>
+<details><summary>Reveal discussion</summary>
+<p>Varje VLAN är en separat broadcastdomän på Layer 2.
+En vanlig Layer 2-switch vidarebefordrar inte
+Ethernet-frames mellan olika VLAN.</p>
+<p>Eftersom datorerna dessutom ligger i olika IP-subnät
+behövs en Layer 3-enhet som kan routa trafiken.</p>
+</details>
+</article>
+
+<article class="card">
+<div class="tag">CHALLENGE 04 // DEFAULT GATEWAY</div>
+<h2>Which MAC address?</h2>
+<p>PC-A vill skicka ett ICMP Echo Request till PC-B.</p>
+<pre>PC-A
+IP:       192.168.10.10/24
+Gateway:  192.168.10.1
+
+PC-B
+IP:       192.168.20.10/24</pre>
+<p>Vilken destinations-IP finns i IP-paketet?</p>
+<p>Vilken destinations-MAC används i Ethernet-framen
+när PC-A skickar paketet?</p>
+<p>Vilket protokoll kan PC-A använda för att hitta den MAC-adressen?</p>
+<textarea placeholder="IP, MAC och protokoll..."></textarea>
+<details><summary>Reveal discussion</summary>
+<p>Destinations-IP är <code>192.168.20.10</code>.</p>
+<p>Destinations-MAC är MAC-adressen för nästa hopp,
+alltså PC-A:s default gateway.</p>
+<p>PC-A använder ARP för att ta reda på gatewayens MAC-adress,
+om den inte redan finns i ARP-tabellen.</p>
+<p>IP-destinationen förblir PC-B även om Ethernet-framen
+först skickas till routern.</p>
+</details>
+</article>
+
+<div class="section">// INTER-VLAN ARCHITECTURES</div>
+
+<article class="card">
+<div class="tag">CHALLENGE 05 // ROUTER-ON-A-STICK</div>
+<h2>Something is missing</h2>
+<p>En tekniker har konfigurerat följande på en router:</p>
+<pre>interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0</pre>
+<p>Datorerna kan fortfarande inte kommunicera
+mellan VLAN 10 och VLAN 20.</p>
+<p>Nämn minst tre saker du skulle kontrollera
+innan du ändrar routerkonfigurationen.</p>
+<textarea placeholder="Din felsökningsplan..."></textarea>
+<details><summary>Reveal discussion</summary>
+<ul>
+<li>Är switchporten mot routern konfigurerad som trunk?</li>
+<li>Är VLAN 10 och VLAN 20 tillåtna på trunken?</li>
+<li>Är det fysiska routerinterfacet aktiverat?</li>
+<li>Är datorernas IP-adresser och gateway korrekta?</li>
+<li>Är datorernas switchportar i rätt access-VLAN?</li>
+</ul>
+<p>En korrekt subinterface-konfiguration räcker inte
+om resten av trafikvägen är felkonfigurerad.</p>
+</details>
+</article>
+
+<article class="card">
+<div class="tag">CHALLENGE 06 // SVI</div>
+<h2>The missing command</h2>
+<p>En Layer 3-switch har följande konfiguration:</p>
+<pre>vlan 10
+vlan 20
+
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown</pre>
+<p>SVI-interfacen är up/up och datorerna har rätt gateway.
+Men switchen routar inte mellan VLAN.</p>
+<p>Vilket centralt kommando saknas?</p>
+<textarea placeholder="Cisco IOS-kommando..."></textarea>
+<details><summary>Reveal discussion</summary>
+<pre>ip routing</pre>
+<p>Kommandot aktiverar IPv4-routing på en
+Layer 3-switch som stöder funktionen.</p>
+<p>Ett SVI är ett virtuellt Layer 3-interface
+kopplat till ett VLAN. Det kan fungera som
+default gateway för VLAN:ets datorer.</p>
+</details>
+</article>
+
+<article class="card">
+<div class="tag">CHALLENGE 07 // DESIGN DECISION</div>
+<h2>Choose the architecture</h2>
+<p>Du ska föreslå en lösning för tre olika miljöer.</p>
+<table>
+<tr><th>Miljö</th><th>Förutsättningar</th></tr>
+<tr><td>A</td><td>Stort campusnät med mycket intern trafik mellan VLAN</td></tr>
+<tr><td>B</td><td>Mindre kontor där trafik mellan avdelningar ska filtreras</td></tr>
+<tr><td>C</td><td>En enkel utbildningslabb med en router och en Layer 2-switch</td></tr>
+</table>
+<p>Välj en lämplig metod för varje miljö och motivera.</p>
+<textarea placeholder="A, B och C..."></textarea>
+<details><summary>Reveal discussion</summary>
+<p><strong>A:</strong> Layer 3-switch med SVI är ett rimligt val
+för högpresterande intern routing.</p>
+<p><strong>B:</strong> Brandvägg med VLAN-interface kan vara lämplig
+när trafiken mellan VLAN behöver kontrolleras.</p>
+<p><strong>C:</strong> Router-on-a-stick är en enkel metod som
+demonstrerar trunking, subinterface och routing.</p>
+<p>Det finns inte alltid ett enda rätt svar.
+Krav på kapacitet, säkerhet, kostnad och drift påverkar valet.</p>
+</details>
+</article>
+
+<div class="section">// FINAL CHALLENGE</div>
+
+<article class="card boss">
+<div class="tag">BOSS // FIREWALL ROUTING</div>
+<h2>Route exists. Ping fails.</h2>
+<p>En brandvägg har två VLAN-interface:</p>
+<pre>VLAN 10: 192.168.10.1/24
+VLAN 20: 192.168.20.1/24
+
+PC-A: 192.168.10.10/24
+PC-B: 192.168.20.10/24</pre>
+<p>Båda datorerna har korrekt default gateway.
+Brandväggen känner till båda direktanslutna subnäten.</p>
+<p>Ändå misslyckas kommunikationen mellan datorerna.</p>
+<p><strong>Uppdrag:</strong> Förklara varför fungerande routing
+inte automatiskt innebär att trafiken tillåts.</p>
+<p>Vilka kontroller skulle du göra på brandväggen?</p>
+<textarea placeholder="Resonera kring routing och säkerhetspolicyer..."></textarea>
+<details><summary>Reveal discussion</summary>
+<p>Routingtabellen avgör vart trafiken ska skickas.
+Brandväggens säkerhetspolicyer avgör om trafiken
+får passera.</p>
+<p>Kontrollera bland annat:</p>
+<ul>
+<li>Att rätt interface och subnät används.</li>
+<li>Att en policy tillåter önskad trafik.</li>
+<li>Att policyn gäller rätt käll- och destinationszon.</li>
+<li>Att ICMP tillåts om ping används som test.</li>
+<li>Att datorernas egna brandväggar inte blockerar ICMP.</li>
+</ul>
+<p>En viktig slutsats: <strong>Routbar betyder inte tillåten.</strong></p>
+</details>
+</article>
+
+<div class="section">// FINAL CHECK</div>
+<section class="card intro">
+<h2>Mission debrief</h2>
+<p>Innan du går vidare till Packet Tracer, kontrollera
+att du kan förklara följande med egna ord:</p>
+<label><input type="checkbox"> Skillnaden mellan VLAN och IP-subnät</label>
+<label><input type="checkbox"> När en dator använder default gateway</label>
+<label><input type="checkbox"> Varför router-on-a-stick använder 802.1Q</label>
+<label><input type="checkbox"> Vad ett SVI är</label>
+<label><input type="checkbox"> Skillnaden mellan routing och brandväggspolicy</label>
+<p class="muted" id="progress">0 / 5 concepts reviewed</p>
+</section>
+
+<!-- FLAG{different_vlan_requires_layer3} -->
+
+<footer>
+ALEF-93 // NETWORK TRAINING<br>
+Understand the packet. Follow the path. Verify the result.
+</footer>
+</main>
+
+<script>
+const checks=[...document.querySelectorAll('input[type=checkbox]')];
+const progress=document.getElementById('progress');
+function update(){
+ const n=checks.filter(c=>c.checked).length;
+ progress.textContent=n+' / '+checks.length+' concepts reviewed';
+}
+checks.forEach(c=>c.addEventListener('change',update));
+update();
+
+// Diagnostic hint for curious students:
+// FLAG{routing_does_not_mean_permission}
+console.log('NETWORK DIAGNOSTICS READY');
+console.log('Hint: inspect what the browser received.');
+</script>
+</body>
+</html>
