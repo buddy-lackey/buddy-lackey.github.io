@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | FortiGate Inter-VLAN Lab</title>
+<style>
+:root {
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --green:#00e89d;
+  --soft:#7dffcf;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+  --amber:#d9ac68;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Consolas,"Courier New",monospace;
+  line-height:1.7
+}
+main{max-width:960px;margin:auto;padding:35px 22px 90px}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+.back,.eyebrow,.tag{
+  font-size:12px;letter-spacing:1.5px;color:var(--green)
+}
+.eyebrow{margin-top:48px}
+h1{
+  font-size:clamp(30px,5vw,49px);
+  line-height:1.18;margin:12px 0
+}
+h2{font-size:22px;color:var(--soft);margin:8px 0 18px}
+h3{font-size:15px;color:var(--green);margin-top:24px}
+.muted{color:var(--muted)}
+.status{color:var(--green);font-size:13px;margin:26px 0 42px}
+.cursor{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.section{
+  color:var(--green);font-size:13px;
+  letter-spacing:2px;margin:44px 0 16px
+}
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  border-left:3px solid var(--green);
+  padding:26px;margin:20px 0;border-radius:4px
+}
+.intro{border-left-color:var(--muted)}
+.boss{border-left-color:var(--amber)}
+.boss .tag{color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{
+  padding:11px;text-align:left;
+  border-bottom:1px solid var(--border)
+}
+th{color:var(--green)}
+pre{
+  overflow-x:auto;background:#030605;
+  border:1px solid var(--border);border-radius:4px;
+  padding:17px;color:var(--soft);font-size:13px;
+  line-height:1.6
+}
+code{color:var(--soft)}
+ol,ul{padding-left:24px}
+li{margin:9px 0}
+.checklist{list-style:none;padding:0}
+.checklist label{cursor:pointer}
+.checklist input{accent-color:var(--green);margin-right:10px}
+details{
+  border-top:1px solid var(--border);
+  margin-top:24px;padding-top:15px
+}
+summary{color:var(--green);cursor:pointer}
+.note{
+  color:var(--muted);font-size:13px;
+  border-left:2px solid var(--border);
+  padding-left:13px;margin-top:20px
+}
+button{
+  background:transparent;border:1px solid var(--green);
+  color:var(--green);font:inherit;padding:10px 15px;
+  cursor:pointer;border-radius:4px
+}
+button:hover{background:var(--panel2)}
+footer{
+  margin-top:65px;border-top:1px solid var(--border);
+  padding-top:25px;color:var(--muted);font-size:12px
+}
+@media(max-width:600px){
+  .card{padding:18px}
+  table{font-size:12px}
+  th,td{padding:8px}
+}
+</style>
+</head>
+<body>
+<main>
+
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="eyebrow">PHYSICAL NETWORK LAB // FORTINET</div>
+<h1>FORTIGATE<br>INTER-VLAN ROUTING</h1>
+<p class="muted">
+FortiGate 40D + FortiSwitch · Three challenges · One network
+</p>
+<div class="status">
+● NETWORK LAB ONLINE<span class="cursor">_</span>
+</div>
+
+<section class="card intro">
+<h2>// MISSION BRIEFING</h2>
+<p>
+Ett företag har två avdelningar som ligger i separata VLAN.
+En vanlig Layer 2-switch kan inte routa trafik mellan dem.
+</p>
+<p>
+Din uppgift är att använda en FortiGate-brandvägg för att
+möjliggöra kommunikation mellan VLAN 10 och VLAN 20.
+</p>
+<p>
+Du ska först använda separata fysiska interface,
+sedan VLAN-interface över en gemensam trunk.
+Slutligen ska du undersöka hur brandväggspolicyer
+påverkar kommunikationen.
+</p>
+</section>
+
+<div class="section">// EQUIPMENT</div>
+
+<section class="card">
+<h2>Lab environment</h2>
+<ul>
+<li>1 × FortiGate 40D</li>
+<li>1 × FortiSwitch</li>
+<li>2 × datorer</li>
+<li>Ethernetkablar</li>
+<li>Administrativ åtkomst till båda enheterna</li>
+</ul>
+
+<h3>IP addressing plan</h3>
+<table>
+<tr>
+<th>Enhet</th><th>IP-adress</th><th>Gateway</th>
+</tr>
+<tr>
+<td>PC-A / VLAN 10</td>
+<td>192.168.10.10/24</td>
+<td>192.168.10.1</td>
+</tr>
+<tr>
+<td>PC-B / VLAN 20</td>
+<td>192.168.20.10/24</td>
+<td>192.168.20.1</td>
+</tr>
+<tr>
+<td>FortiGate VLAN 10</td>
+<td>192.168.10.1/24</td>
+<td>—</td>
+</tr>
+<tr>
+<td>FortiGate VLAN 20</td>
+<td>192.168.20.1/24</td>
+<td>—</td>
+</tr>
+</table>
+
+<p class="note">
+Läraren anger vilka fysiska portar som ska användas.
+Kontrollera att FortiGate-portarna är fristående interface
+och inte ingår i ett gemensamt switchinterface.
+FortiSwitch förutsätts vara i standalone-läge eller
+ha motsvarande förberedd portkonfiguration.
+</p>
+</section>
+
+<div class="section">// LEVEL 01</div>
+
+<article class="card">
+<div class="tag">CHALLENGE 01 // LEGACY ROUTING</div>
+<h2>One physical interface per VLAN</h2>
+
+<p>
+I den första lösningen använder du två separata
+fysiska interface på FortiGate.
+Varje interface fungerar som gateway för ett VLAN.
+</p>
+
+<pre>
+PC-A                       PC-B
+VLAN 10                    VLAN 20
+   |                          |
+   +------ FortiSwitch -------+
+           |          |
+        Access 10  Access 20
+           |          |
+        FortiGate 40D
+        LAN2       LAN3
+</pre>
+
+<h3>Your mission</h3>
+<ol>
+<li>Skapa VLAN 10 och VLAN 20 på FortiSwitch.</li>
+<li>Konfigurera en accessport för PC-A i VLAN 10.</li>
+<li>Konfigurera en accessport för PC-B i VLAN 20.</li>
+<li>Anslut VLAN 10 via en separat accessport till
+FortiGate LAN2.</li>
+<li>Anslut VLAN 20 via en separat accessport till
+FortiGate LAN3.</li>
+<li>Konfigurera IP-adresserna 192.168.10.1/24 och
+192.168.20.1/24 på respektive FortiGate-interface.</li>
+<li>Konfigurera datorernas IP-adresser och gateways.</li>
+<li>Skapa brandväggspolicyer som tillåter ICMP mellan näten.</li>
+<li>Verifiera kommunikationen med ping.</li>
+</ol>
+
+<h3>Verification</h3>
+<pre>
+PC-A > ping 192.168.10.1
+PC-A > ping 192.168.20.1
+PC-A > ping 192.168.20.10
+
+PC-B > ping 192.168.10.10
+</pre>
+
+<ul class="checklist">
+<li><label><input type="checkbox"> VLAN skapade</label></li>
+<li><label><input type="checkbox"> Accessportar konfigurerade</label></li>
+<li><label><input type="checkbox"> Två fysiska FortiGate-interface</label></li>
+<li><label><input type="checkbox"> IP-adresser och gateways korrekta</label></li>
+<li><label><input type="checkbox"> Brandväggspolicyer skapade</label></li>
+<li><label><input type="checkbox"> Ping mellan VLAN fungerar</label></li>
+</ul>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Varje VLAN har en egen fysisk anslutning till FortiGate.
+Brandväggen har ett direktanslutet IP-subnät per interface
+och kan routa trafik mellan dessa nät.
+</p>
+<p>
+Lösningen fungerar men skalar dåligt eftersom
+varje nytt VLAN kräver ytterligare ett fysiskt interface.
+</p>
+</details>
+</article>
+
+<div class="section">// LEVEL 02</div>
+
+<article class="card">
+<div class="tag">CHALLENGE 02 // VLAN INTERFACES</div>
+<h2>One trunk. Multiple VLANs.</h2>
+
+<p>
+Nu ska du bygga om samma nätverk så att
+FortiGate bara behöver en fysisk anslutning
+till FortiSwitch.
+</p>
+
+<pre>
+PC-A                       PC-B
+VLAN 10                    VLAN 20
+   |                          |
+   +------ FortiSwitch -------+
+               |
+          802.1Q trunk
+          VLAN 10 + 20
+               |
+          FortiGate 40D
+          Physical port
+             /    \
+         VLAN10  VLAN20
+</pre>
+
+<h3>Your mission</h3>
+<ol>
+<li>Behåll VLAN 10 och VLAN 20 samt datorernas IP-adresser.</li>
+<li>Ta bort eller avaktivera de gamla IP-adresserna
+på FortiGate:s fysiska interface.</li>
+<li>Välj ett fristående fysiskt interface på FortiGate.</li>
+<li>Skapa två VLAN-interface på samma fysiska interface.</li>
+<li>Tilldela VLAN-ID 10 respektive VLAN-ID 20.</li>
+<li>Konfigurera gateway-adresserna på VLAN-interfacen.</li>
+<li>Konfigurera FortiSwitch-porten mot FortiGate
+för taggad trafik i VLAN 10 och VLAN 20.</li>
+<li>Behåll datorportarna som otaggade accessportar.</li>
+<li>Uppdatera brandväggspolicyerna så att de använder
+de nya VLAN-interfacen.</li>
+<li>Verifiera kommunikationen mellan datorerna.</li>
+</ol>
+
+<h3>Expected configuration</h3>
+<table>
+<tr><th>Interface</th><th>VLAN-ID</th><th>IP</th></tr>
+<tr>
+<td>VLAN10</td><td>10</td><td>192.168.10.1/24</td>
+</tr>
+<tr>
+<td>VLAN20</td><td>20</td><td>192.168.20.1/24</td>
+</tr>
+</table>
+
+<h3>Verification</h3>
+<pre>
+PC-A > ping 192.168.10.1
+PC-A > ping 192.168.20.1
+PC-A > ping 192.168.20.10
+
+PC-B > ping 192.168.10.10
+</pre>
+
+<ul class="checklist">
+<li><label><input type="checkbox"> Gamla interfacekonfigurationen borttagen</label></li>
+<li><label><input type="checkbox"> Två VLAN-interface skapade</label></li>
+<li><label><input type="checkbox"> VLAN-ID 10 och 20 konfigurerade</label></li>
+<li><label><input type="checkbox"> Trunk konfigurerad</label></li>
+<li><label><input type="checkbox"> Brandväggspolicyer uppdaterade</label></li>
+<li><label><input type="checkbox"> Ping mellan VLAN fungerar</label></li>
+</ul>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+VLAN-interfacen är logiska gränssnitt kopplade till
+samma fysiska FortiGate-port.
+802.1Q-taggar identifierar vilket VLAN varje frame tillhör.
+</p>
+<p>
+Arkitekturen liknar router-on-a-stick.
+Skillnaden är att en brandvägg även kan kontrollera
+kommunikationen med säkerhetspolicyer.
+</p>
+<p>
+Båda VLAN delar samma fysiska länk,
+vilket kan innebära en kapacitetsbegränsning.
+</p>
+</details>
+</article>
+
+<div class="section">// FINAL LEVEL</div>
+
+<article class="card boss">
+<div class="tag">BOSS CHALLENGE // FIREWALL POLICIES</div>
+<h2>Routing does not mean permission</h2>
+
+<p>
+Du har nu fungerande inter-VLAN-routing.
+Men brandväggen ska också kunna begränsa
+kommunikationen mellan avdelningarna.
+</p>
+
+<h3>Your mission</h3>
+<ol>
+<li>Verifiera att PC-A kan pinga PC-B.</li>
+<li>Inaktivera policyn som tillåter trafik
+från VLAN 10 till VLAN 20.</li>
+<li>Avsluta eventuella befintliga testsessioner
+och prova kommunikationen igen.</li>
+<li>Notera resultatet.</li>
+<li>Aktivera policyn igen.</li>
+<li>Verifiera att kommunikationen fungerar.</li>
+<li>Undersök brandväggens trafikloggar om
+loggning är aktiverad.</li>
+</ol>
+
+<h3>Investigation</h3>
+<p>
+Besvara följande:
+</p>
+<ul>
+<li>Finns båda subnäten fortfarande i routingtabellen?</li>
+<li>Vad händer med trafiken när policyn inaktiveras?</li>
+<li>Varför innebär fungerande routing inte automatiskt
+att trafik tillåts?</li>
+<li>Hur skulle du tillåta trafik från VLAN 10 till VLAN 20
+men blockera nya anslutningar i motsatt riktning?</li>
+</ul>
+
+<ul class="checklist">
+<li><label><input type="checkbox"> Trafik verifierad före policyändring</label></li>
+<li><label><input type="checkbox"> Policy inaktiverad</label></li>
+<li><label><input type="checkbox"> Trafik testad på nytt</label></li>
+<li><label><input type="checkbox"> Policy återaktiverad</label></li>
+<li><label><input type="checkbox"> Resultatet förklarat</label></li>
+</ul>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Routingtabellen bestämmer vart trafik ska skickas.
+Brandväggspolicyerna bestämmer vilken trafik
+som får passera mellan interface.
+</p>
+<p>
+FortiGate är en stateful brandvägg.
+En tillåten anslutnings svarstrafik kan normalt passera
+utan en separat policy för returtrafiken.
+</p>
+<p>
+En fungerande route innebär alltså inte
+automatiskt att kommunikationen är tillåten.
+</p>
+</details>
+</article>
+
+<div class="section">// TROUBLESHOOTING</div>
+
+<section class="card">
+<h2>Something doesn't work?</h2>
+
+<p>Felsök i följande ordning:</p>
+<ol>
+<li>Kontrollera fysisk länk och portstatus.</li>
+<li>Kontrollera VLAN-medlemskap på FortiSwitch.</li>
+<li>Kontrollera att VLAN 10 och 20 är taggade på trunken
+i labb 2.</li>
+<li>Kontrollera IP-adresser och nätmasker.</li>
+<li>Kontrollera datorernas default gateway.</li>
+<li>Kontrollera att FortiGate har rätt interface och routes.</li>
+<li>Kontrollera brandväggspolicyer.</li>
+<li>Kontrollera om datorernas lokala brandvägg blockerar ICMP.</li>
+</ol>
+
+<details>
+<summary>Reveal diagnostic hint</summary>
+<p>
+Testa först att pinga den egna gatewayen.
+Om det misslyckas bör du börja med
+Layer 1, Layer 2 och den lokala IP-konfigurationen.
+</p>
+<p>
+Om gatewayen svarar men den andra datorn inte gör det,
+undersök routing, brandväggspolicyer och ICMP.
+</p>
+</details>
+</section>
+
+<div class="section">// FINAL DEBRIEF</div>
+
+<section class="card">
+<h2>Compare the solutions</h2>
+<ol>
+<li>Vilken metod kräver flest fysiska interface?</li>
+<li>Vilken metod använder 802.1Q?</li>
+<li>Vilken metod är enklast att bygga ut med fler VLAN?</li>
+<li>Vilken metod liknar router-on-a-stick?</li>
+<li>Varför kan brandväggen blockera trafik trots korrekt routing?</li>
+</ol>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Legacy-metoden kräver ett fysiskt interface per VLAN.
+VLAN-interface över trunk använder 802.1Q
+och kan hantera flera VLAN över samma anslutning.
+</p>
+<p>
+Den trunkbaserade lösningen är ofta enklare
+att bygga ut, men den gemensamma länken kan
+bli en flaskhals.
+</p>
+<p>
+Brandväggspolicyer avgör vilken trafik som
+får passera, oavsett att nätverken är routbara.
+</p>
+</details>
+</section>
+
+<div class="section">// SUBMISSION</div>
+
+<section class="card">
+<h2>Mission complete?</h2>
+<p>Lämna in:</p>
+<ul>
+<li>Skärmbild på konfigurationen i labb 1.</li>
+<li>Skärmbild på VLAN-interfacen i labb 2.</li>
+<li>Skärmbild på lyckade pingtester.</li>
+<li>Kort förklaring av skillnaden mellan de två metoderna.</li>
+<li>Förklaring av vad som hände i Boss-utmaningen.</li>
+</ul>
+
+<p class="muted" id="progress">0 checkpoints completed</p>
+<button onclick="resetProgress()">Reset checkpoints</button>
+</section>
+
+<!-- FLAG{vlan_interfaces_share_a_physical_link} -->
+
+<footer>
+BAALSTORM // NETWORK TRAINING LAB<br>
+Configure. Verify. Break. Fix. Explain.
+</footer>
+
+</main>
+
+<script>
+const boxes=[...document.querySelectorAll('input[type=checkbox]')];
+const progress=document.getElementById('progress');
+
+function updateProgress(){
+  const done=boxes.filter(b=>b.checked).length;
+  progress.textContent=done+' / '+boxes.length+
+    ' checkpoints completed';
+}
+
+boxes.forEach(b=>b.addEventListener('change',updateProgress));
+
+function resetProgress(){
+  boxes.forEach(b=>b.checked=false);
+  updateProgress();
+}
+
+updateProgress();
+
+// FLAG{routing_is_not_permission}
+console.log('FORTIGATE LAB DIAGNOSTICS ONLINE');
+console.log('Hint: A valid route does not guarantee allowed traffic.');
+</script>
+</body>
+</html>
