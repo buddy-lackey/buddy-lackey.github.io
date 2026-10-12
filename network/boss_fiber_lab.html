@@ -1,0 +1,111 @@
+
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAALSTORM | Fiber mellan två FortiSwitchar</title>
+<style>
+:root{--bg:#05070a;--panel:#080d0c;--panel2:#0b1411;--accent:#00e89d;--soft:#7dffcf;--text:#d8eee7;--muted:#77968b;--border:#163c31}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 Consolas,"Courier New",monospace}
+main{max-width:900px;margin:auto;padding:35px 22px 80px}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.eyebrow{font-size:12px;letter-spacing:.15em;color:var(--accent);margin-top:35px}.back{font-size:12px}h1{font-size:clamp(27px,5vw,43px);line-height:1.15;margin:12px 0}h2{font-size:19px;color:var(--soft);margin:0 0 13px}p{margin:10px 0 16px}.muted{color:var(--muted)}
+.status{font-size:12px;color:var(--accent);margin:18px 0 30px}.cursor{display:inline-block;animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:0}}
+section{border:1px solid var(--border);background:var(--panel);padding:23px;margin:18px 0}section:nth-of-type(even){background:var(--panel2)}
+.kicker{font-size:12px;letter-spacing:.1em;color:var(--accent);margin-bottom:7px}pre{background:#030605;border:1px solid var(--border);padding:15px;overflow-x:auto;line-height:1.6;color:var(--soft)}code{color:var(--soft)}
+table{width:100%;border-collapse:collapse;margin:14px 0}td,th{text-align:left;padding:9px;border-bottom:1px solid var(--border)}th{color:var(--accent)}li{margin:9px 0}ol,ul{padding-left:23px}
+details{border-top:1px solid var(--border);padding-top:12px;margin-top:19px}summary{cursor:pointer;color:var(--accent)}details p{color:var(--muted)}
+.warning{border-left:3px solid #bba75a}label{display:block;margin:11px 0}input[type=checkbox]{accent-color:var(--accent)}footer{color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:32px;padding-top:17px}
+@media(max-width:600px){main{padding:20px 13px 45px}section{padding:16px}pre{font-size:11px}}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+<div class="eyebrow">// NETWORK TECHNOLOGY · PHYSICAL &amp; DATA LINK LAYERS</div>
+<h1>Fiber mellan två FortiSwitchar</h1>
+<p class="muted">Praktisk labb: bygg en Ethernet-förbindelse över en enda optisk fiber och verifiera kommunikationen.</p>
+<div class="status">● NETWORK LAB ONLINE<span class="cursor">_</span></div>
+
+<section>
+<div class="kicker">// MISSION BRIEF</div>
+<h2>Två switchar. En fiber. Ett nät.</h2>
+<p>Du arbetar som nätverkstekniker. Två arbetsplatser ska anslutas till samma lokala nätverk, men switcharna ska kopplas ihop med fiber i stället för koppar.</p>
+<pre>PC1                                     PC2
+ |                                       |
+RJ45                                   RJ45
+ |                                       |
+FortiSwitch A ===== LC simplex ===== FortiSwitch B
+  VLAN 10          BiDi-SFP              VLAN 10</pre>
+<p><strong>Utrustning:</strong> två FortiSwitch 248D, två datorer, två RJ45-kablar, en LC-simplex singlemodefiber och två BiDi-SFP-moduler.</p>
+</section>
+
+<section class="warning">
+<div class="kicker">// SAFETY &amp; COMPATIBILITY</div>
+<h2>Kontroll före anslutning</h2>
+<p>De befintliga modulerna är <strong>inte ett verifierat kompatibelt par</strong>. En blå TF är märkt 2,5 Gbit/s (TX 1310/RX 1550 nm) och en gul TF 1 Gbit/s (TX 1550/RX 1310 nm). Våglängderna passar men hastigheterna skiljer sig.</p>
+<p><strong>Läraren ska först godkänna</strong> kombinationen, switcharnas stöd samt optisk effektbudget och mottagarens maximala nivå vid kort fiber. Anslut inte om det är oklart. Titta aldrig in i en fiberkontakt eller optisk port.</p>
+<p>Frågor om SFP-moduler, kompatibilitet och våglängder kan ställas till <strong>D.H.</strong></p>
+</section>
+
+<section>
+<div class="kicker">CHALLENGE 01</div>
+<h2>Inspect the optics</h2>
+<ol><li>Identifiera SFP-portarna på båda switcharna och anteckna portnumren.</li><li>Undersök SFP-modulernas etiketter: hastighet, TX och RX.</li><li>Förklara varför en BiDi-förbindelse kan använda en enda fiber.</li></ol>
+<details><summary>Reveal discussion</summary><p>BiDi använder olika optiska våglängder för sändning och mottagning över samma fiber. De två ändarnas TX och RX måste vara kompatibla. Matchande våglängder garanterar inte kompatibel hastighet eller optisk effekt.</p></details>
+</section>
+
+<section>
+<div class="kicker">CHALLENGE 02</div>
+<h2>Configure the network</h2>
+<p>Konfigurera båda FortiSwitcharna via deras administrationsgränssnitt eller CLI. Om de hanteras med FortiLink görs ändringarna i FortiGate.</p>
+<ol><li>Skapa VLAN 10 på båda switcharna.</li><li>Konfigurera datorernas RJ45-portar som <strong>otaggade portar i VLAN 10</strong> med PVID 10.</li><li>Konfigurera SFP-portarna mellan switcharna på samma sätt: otaggat VLAN 10, PVID 10.</li><li>Kontrollera att portarna är aktiverade.</li><li>Efter lärarens godkännande: sätt i SFP-modulerna, anslut fibern och kontrollera länkstatus.</li></ol>
+<p class="muted">Portnamn och menyval varierar med FortiSwitchOS-version. Ingen router, SVI eller trunk behövs i den här övningen.</p>
+<details><summary>Reveal discussion</summary><p>En switch-till-switch-länk kan vara en accessförbindelse när den bara transporterar ett VLAN. Ethernet-ramarna skickas då otaggade på länken. En trunk blir relevant när flera VLAN behöver passera samma förbindelse.</p></details>
+</section>
+
+<section>
+<div class="kicker">CHALLENGE 03</div>
+<h2>Make it ping</h2>
+<table><thead><tr><th>Inställning</th><th>PC1</th><th>PC2</th></tr></thead><tbody>
+<tr><td>IP</td><td>192.168.10.10</td><td>192.168.10.20</td></tr>
+<tr><td>Mask</td><td>255.255.255.0</td><td>255.255.255.0</td></tr>
+<tr><td>Gateway</td><td>Ingen</td><td>Ingen</td></tr>
+<tr><td>VLAN</td><td>10</td><td>10</td></tr>
+</tbody></table>
+<label><input type="checkbox"> Kontrollera IP-adresser och nätmasker.</label>
+<label><input type="checkbox"> Kontrollera att båda fiberportarna har länk.</label>
+<label><input type="checkbox"> Pinga PC2 från PC1.</label>
+<label><input type="checkbox"> Pinga PC1 från PC2.</label>
+<pre>ping 192.168.10.20</pre>
+<p>Anteckna pingresultat, portnummer, länkhastighet och eventuella fel.</p>
+<details><summary>Reveal discussion</summary><p>PC1 och PC2 ligger i samma IP-subnät och VLAN. De kan därför kommunicera via Layer 2-switchning utan en router eller default gateway. ARP används för att hitta destinationens MAC-adress.</p></details>
+</section>
+
+<section>
+<div class="kicker">CHALLENGE 04</div>
+<h2>Investigate the switch</h2>
+<ol><li>Undersök MAC-adresstabellen på båda switcharna.</li><li>Vilken port lär sig respektive switch den avlägsna datorns MAC-adress på?</li><li>När ping fungerar: låt läraren koppla bort fibern. Vad händer med ping och länkstatus?</li><li>Återanslut fibern och observera återhämtningen.</li></ol>
+<details><summary>Reveal discussion</summary><p>Switcharna lär sig avsändarnas MAC-adresser på de portar där Ethernet-ramarna anländer. Den avlägsna datorns MAC-adress bör därför läras på fiberporten. När länken bryts kan ingen trafik passera mellan switcharna.</p></details>
+</section>
+
+<section>
+<div class="kicker">CHALLENGE 05</div>
+<h2>Troubleshoot like a network technician</h2>
+<p><strong>Scenario A:</strong> Fiberportarna visar ingen länk. Är felet nödvändigtvis VLAN-konfigurationen?</p>
+<p><strong>Scenario B:</strong> Fiberlänken är uppe, men ping misslyckas. Vilka inställningar kontrollerar du först?</p>
+<p><strong>Scenario C:</strong> Du behöver transportera både VLAN 10 och VLAN 20 mellan switcharna. Vad behöver ändras?</p>
+<details><summary>Reveal discussion</summary><p>A: Nej. Kontrollera SFP-kompatibilitet, hastighet, optiska nivåer och portstatus. B: Kontrollera IP, nätmask, VLAN-tilldelning, PVID och MAC-inlärning. C: Konfigurera en VLAN-trunk som transporterar båda VLANen med rätt taggning på båda switcharna.</p></details>
+</section>
+
+<section>
+<div class="kicker">// HIDDEN CHALLENGE</div>
+<h2>Find the fiber flag</h2>
+<p>En nätverkstekniker undersöker inte bara det som visas på sidan. Det finns en flagga gömd i den här sidans källkod. Kan du hitta den?</p>
+<details><summary>Reveal discussion</summary><p>Öppna webbläsarens sidkälla och sök efter FLAG. Kommentarer i klientlevererad HTML är synliga för den som granskar källkoden.</p></details>
+</section>
+<!-- FLAG{fiber_is_layer_one_but_ethernet_still_switches} -->
+<footer>BAALSTORM / ALEF-93 · NETWORK LAB · Frågor om SFP: D.H.</footer>
+</main>
+</body>
+</html>
