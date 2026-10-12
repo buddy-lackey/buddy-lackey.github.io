@@ -1,397 +1,153 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ALEF-93 | Inter-VLAN Routing Challenge</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BAALSTORM | Packet Tracer – Inter-VLAN Routing</title>
 <style>
-:root {
-  --bg:#05070a; --panel:#080d0c; --panel2:#0b1411;
-  --green:#00e89d; --soft:#7dffcf; --text:#d8eee7;
-  --muted:#77968b; --border:#163c31; --orange:#e5ad69;
-}
-* {box-sizing:border-box}
-body {
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:Consolas,"Courier New",monospace;
-  line-height:1.65;
-}
-main {max-width:960px;margin:auto;padding:35px 22px 90px}
-a {color:var(--green);text-decoration:none}
-a:hover {text-decoration:underline}
-.back {font-size:13px}
-.eyebrow {color:var(--green);margin-top:50px;letter-spacing:2px}
-h1 {font-size:clamp(30px,5vw,49px);line-height:1.15;margin:12px 0}
-h2 {font-size:23px;color:var(--soft);margin-top:0}
-h3 {font-size:16px;color:var(--green)}
-.muted {color:var(--muted)}
-.status {color:var(--green);font-size:13px;margin:25px 0 40px}
-.cursor {animation:blink 1s steps(2) infinite}
-@keyframes blink {50% {opacity:0}}
-.section-label {
-  color:var(--green);font-size:13px;letter-spacing:2px;
-  margin:44px 0 16px
-}
-.panel,.challenge {
-  border:1px solid var(--border);background:var(--panel);
-  border-radius:5px;padding:26px;margin:20px 0
-}
-.challenge {border-left:3px solid var(--green)}
-.boss {border-left-color:var(--orange)}
-.boss .level {color:var(--orange)}
-.level {color:var(--green);font-size:12px;letter-spacing:2px}
-p {margin:12px 0}
-ul,ol {padding-left:24px}
-li {margin:8px 0}
-table {width:100%;border-collapse:collapse;font-size:14px}
-th,td {border-bottom:1px solid var(--border);padding:12px;text-align:left}
-th {color:var(--green)}
-pre {
-  overflow-x:auto;background:#030605;
-  border:1px solid var(--border);border-radius:4px;
-  padding:17px;color:var(--soft);font-size:13px
-}
-code {color:var(--soft)}
-details {
-  margin-top:22px;border-top:1px solid var(--border);
-  padding-top:15px
-}
-summary {cursor:pointer;color:var(--green)}
-.checklist {list-style:none;padding:0}
-.checklist label {cursor:pointer}
-.checklist input {accent-color:var(--green);margin-right:10px}
-.progress {color:var(--muted);font-size:13px}
-button {
-  background:transparent;border:1px solid var(--green);
-  color:var(--green);padding:10px 15px;
-  font:inherit;cursor:pointer;border-radius:4px
-}
-button:hover {background:var(--panel2)}
-.small {font-size:13px}
-footer {margin-top:65px;border-top:1px solid var(--border);
-padding-top:25px;color:var(--muted);font-size:12px}
-@media(max-width:600px) {
-  .panel,.challenge {padding:18px}
-  table {font-size:12px}
-  th,td {padding:8px}
-}
+:root{--bg:#05070a;--panel:#080d0c;--panel2:#0b1411;--accent:#00e89d;--soft:#7dffcf;--text:#d8eee7;--muted:#77968b;--border:#163c31}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 Consolas,"Courier New",monospace}main{max-width:920px;margin:auto;padding:32px 22px 75px}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}h1{font-size:clamp(26px,5vw,43px);line-height:1.2;margin:12px 0}h2{font-size:19px;color:var(--soft);margin:0 0 10px}h3{font-size:15px;color:var(--accent)}.muted{color:var(--muted)}.kicker{font-size:12px;letter-spacing:.1em;color:var(--accent)}.status{color:var(--accent);font-size:12px;margin:20px 0 30px}.cursor{animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:0}}section{border:1px solid var(--border);background:var(--panel);padding:23px;margin:18px 0}section:nth-of-type(even){background:var(--panel2)}pre{background:#030605;border:1px solid var(--border);padding:15px;overflow:auto;color:var(--soft);font-size:13px;line-height:1.55}code{color:var(--soft)}li{margin:7px 0}ol,ul{padding-left:24px}details{border-top:1px solid var(--border);margin-top:16px;padding-top:12px}summary{color:var(--accent);cursor:pointer}details p{color:var(--muted)}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:8px;border-bottom:1px solid var(--border)}th{color:var(--accent)}.note{border-left:3px solid #c7a14a}.note strong{color:#f4d99a}footer{border-top:1px solid var(--border);color:var(--muted);font-size:12px;padding-top:16px;margin-top:30px}@media(max-width:600px){main{padding:20px 12px}section{padding:16px}pre{font-size:11px}}
 </style>
 </head>
-<body>
-<main>
-<a class="back" href="index.html">&lt; RETURN TO HOME</a>
-
-<div class="eyebrow">NETWORK LAB // PACKET TRACER</div>
-<h1>INTER-VLAN<br>ROUTING CHALLENGE</h1>
-<p class="muted">Four architectures. Same networks. Different solutions.</p>
+<body><main>
+<a href="index.html">&lt; RETURN TO HOME</a>
+<div class="kicker" style="margin-top:30px">// NETWORK TECHNOLOGY · PACKET TRACER</div>
+<h1>Inter-VLAN Routing</h1>
+<p class="muted">Fyra metoder. Samma mål: låt datorer i olika VLAN kommunicera och förstå vilken enhet som routar trafiken.</p>
 <div class="status">● NETWORK LAB ONLINE<span class="cursor">_</span></div>
 
-<section class="panel">
-  <h2>// THE MISSION</h2>
-  <p>
-    Ett företag har tre avdelningar som ligger i separata VLAN.
-    De ska kunna kommunicera med varandra, men en vanlig
-    Layer 2-switch kan inte routa trafik mellan VLAN.
-  </p>
-  <p>
-    Din uppgift är att lösa problemet på fyra olika sätt
-    i Cisco Packet Tracer.
-  </p>
-  <p><strong>Regel:</strong> Använd samma IP-plan genom hela utmaningen.
-    Bygg gärna varje nivå i en separat Packet Tracer-fil.</p>
+<section>
+<div class="kicker">// MISSION BRIEF</div>
+<h2>Bygg nätet steg för steg</h2>
+<p>Utgå från en Layer 2-switch (t.ex. Cisco 2960), två PC och två VLAN. Behåll gärna samma IP-plan när du byter routingmetod.</p>
+<table>
+<tr><th></th><th>PC1</th><th>PC2</th></tr>
+<tr><td>VLAN</td><td>10</td><td>20</td></tr>
+<tr><td>IP</td><td>192.168.10.10/24</td><td>192.168.20.10/24</td></tr>
+<tr><td>Gateway</td><td>192.168.10.1</td><td>192.168.20.1</td></tr>
+</table>
+<p>Skapa VLAN 10 och 20 på switchen och anslut datorerna till var sin accessport. Testa ping innan routing finns: vad händer?</p>
 </section>
 
-<div class="section-label">// NETWORK SPECIFICATION</div>
-<section class="panel">
-  <h2>Gemensam IP-plan</h2>
-  <table>
-    <thead>
-      <tr><th>VLAN</th><th>Nätverk</th><th>Gateway</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>10 – ADMIN</td><td>192.168.10.0/24</td><td>192.168.10.1</td></tr>
-      <tr><td>20 – SALES</td><td>192.168.20.0/24</td><td>192.168.20.1</td></tr>
-      <tr><td>30 – IT</td><td>192.168.30.0/24</td><td>192.168.30.1</td></tr>
-    </tbody>
-  </table>
-  <p class="small muted">
-    Exempel: PC10 = 192.168.10.10, PC20 = 192.168.20.10,
-    PC30 = 192.168.30.10. Alla använder /24.
-  </p>
-  <p><strong>Starttest:</strong> Kontrollera att datorer i olika VLAN
-    inte kan pinga varandra innan routing konfigureras.</p>
+<section>
+<div class="kicker">CHALLENGE 01 · LEGACY</div>
+<h2>One physical interface per VLAN</h2>
+<p>Använd en router med två Ethernet-interface. Anslut ett interface till en accessport i VLAN 10 och det andra till en accessport i VLAN 20. Ge routern gateway-adresserna i tabellen.</p>
+<ol>
+<li>Skapa två separata fysiska förbindelser mellan router och switch.</li>
+<li>Konfigurera routerinterface med rätt IP-adresser.</li>
+<li>Testa ping mellan PC1 och PC2.</li>
+</ol>
+<details><summary>Reveal discussion</summary>
+<p>Varje VLAN har en egen fysisk anslutning till routern. Trafiken passerar en Layer 3-enhet när den ska mellan olika IP-subnät. Ingen trunk krävs.</p>
+</details>
 </section>
 
-<div class="section-label">// LEVEL 01</div>
-<article class="challenge">
-  <div class="level">CHALLENGE 01 // LEGACY</div>
-  <h2>One interface per VLAN</h2>
-  <p>Den första lösningen använder ett separat fysiskt
-    routerinterface för varje VLAN.</p>
-
-  <h3>Din uppgift</h3>
-  <ol>
-    <li>Placera en router, en Layer 2-switch och tre datorer.</li>
-    <li>Skapa VLAN 10, 20 och 30 på switchen.</li>
-    <li>Konfigurera accessportar för datorerna.</li>
-    <li>Anslut varje VLAN till ett eget fysiskt routerinterface
-      via en accessport.</li>
-    <li>Konfigurera IP-adresser på routerinterfacen.</li>
-    <li>Konfigurera datorernas IP-adresser och default gateway.</li>
-    <li>Verifiera kommunikation mellan alla tre VLAN.</li>
-  </ol>
-  <p class="muted small">Tips: Välj en routermodell med minst tre
-    användbara Ethernet-interface. Moduler kan behövas.</p>
-
-  <h3>Verifiering</h3>
-  <pre>show ip interface brief
-show ip route
-show vlan brief
-
-PC10 > ping 192.168.20.10
-PC10 > ping 192.168.30.10</pre>
-
-  <ul class="checklist">
-    <li><label><input type="checkbox"> Tre VLAN skapade</label></li>
-    <li><label><input type="checkbox"> Tre separata routeranslutningar</label></li>
-    <li><label><input type="checkbox"> Ping fungerar mellan VLAN</label></li>
-  </ul>
-
-  <details>
-    <summary>Reveal discussion</summary>
-    <p>Varje routerinterface fungerar som gateway för sitt VLAN.
-      Lösningen fungerar, men kräver ett nytt fysiskt interface
-      för varje ytterligare VLAN. Det gör den svår att skala.</p>
-  </details>
-</article>
-
-<div class="section-label">// LEVEL 02</div>
-<article class="challenge">
-  <div class="level">CHALLENGE 02 // ROUTER-ON-A-STICK</div>
-  <h2>One link. Multiple VLANs.</h2>
-  <p>Nu ska du lösa samma problem med endast en fysisk
-    anslutning mellan router och switch.</p>
-
-  <h3>Din uppgift</h3>
-  <ol>
-    <li>Skapa samma tre VLAN och anslut samma tre datorer.</li>
-    <li>Använd en enda fysisk anslutning mellan router och switch.</li>
-    <li>Konfigurera switchporten som 802.1Q-trunk.</li>
-    <li>Skapa ett subinterface på routern för varje VLAN.</li>
-    <li>Konfigurera <code>encapsulation dot1Q</code>
-      med rätt VLAN-ID.</li>
-    <li>Tilldela varje subinterface rätt gateway-adress.</li>
-    <li>Verifiera att datorerna kan kommunicera mellan VLAN.</li>
-  </ol>
-
-  <h3>Verifiering</h3>
-  <pre>show interfaces trunk
-show ip interface brief
-show ip route
-
-PC10 > ping 192.168.20.10
-PC20 > ping 192.168.30.10</pre>
-
-  <ul class="checklist">
-    <li><label><input type="checkbox"> Trunk konfigurerad</label></li>
-    <li><label><input type="checkbox"> Tre subinterface skapade</label></li>
-    <li><label><input type="checkbox"> Ping fungerar mellan VLAN</label></li>
-  </ul>
-
-  <details>
-    <summary>Reveal discussion</summary>
-    <p>Subinterfacen är logiska gränssnitt på samma fysiska
-      routerinterface. 802.1Q identifierar vilket VLAN varje
-      Ethernet-frame tillhör.</p>
-    <p>Fördelen är att flera VLAN delar en fysisk anslutning.
-      Nackdelen är att trafik mellan VLAN måste passera
-      samma länk till routern och tillbaka.</p>
-  </details>
-</article>
-
-<div class="section-label">// LEVEL 03</div>
-<article class="challenge">
-  <div class="level">CHALLENGE 03 // LAYER 3 SWITCH</div>
-  <h2>Routing inside the switch</h2>
-  <p>Routern är borta. Nu ska Layer 3-switchen själv utföra routingen.</p>
-
-  <h3>Din uppgift</h3>
-  <ol>
-    <li>Välj en multilayer-switch, exempelvis Cisco 3560.</li>
-    <li>Skapa VLAN 10, 20 och 30.</li>
-    <li>Konfigurera accessportar för datorerna.</li>
-    <li>Skapa ett SVI för varje VLAN med rätt IP-adress.</li>
-    <li>Aktivera IP-routing på switchen.</li>
-    <li>Konfigurera datorernas default gateway.</li>
-    <li>Verifiera kommunikation mellan alla VLAN.</li>
-  </ol>
-
-  <h3>Verifiering</h3>
-  <pre>show vlan brief
-show ip interface brief
-show ip route
-
-PC10 > ping 192.168.20.10
-PC10 > ping 192.168.30.10</pre>
-
-  <ul class="checklist">
-    <li><label><input type="checkbox"> Tre SVI skapade</label></li>
-    <li><label><input type="checkbox"> IP-routing aktiverad</label></li>
-    <li><label><input type="checkbox"> Ping fungerar mellan VLAN</label></li>
-  </ul>
-
-  <details>
-    <summary>Reveal discussion</summary>
-    <p>Ett SVI är ett virtuellt Layer 3-interface kopplat till
-      ett VLAN. IP-adressen på SVI:t fungerar som gateway.</p>
-    <p>Med kommandot <code>ip routing</code> kan switchen routa
-      mellan sina direktanslutna VLAN-subnät utan en extern router.</p>
-  </details>
-</article>
-
-<div class="section-label">// FINAL LEVEL</div>
-<article class="challenge boss">
-  <div class="level">BOSS CHALLENGE // CISCO ASA</div>
-  <h2>Routing is not permission</h2>
-  <p>
-    Företaget har infört en brandvägg. Nu räcker det inte att
-    routa mellan nätverken. Du ska också undersöka vilken
-    trafik brandväggen tillåter.
-  </p>
-
-  <p><strong>Boss-scenario:</strong> ADMIN och SALES ligger i olika
-    VLAN. ADMIN ska kunna initiera kommunikation till SALES,
-    men SALES ska inte automatiskt kunna initiera nya
-    anslutningar till ADMIN.</p>
-
-  <h3>Din uppgift</h3>
-  <ol>
-    <li>Placera en Cisco ASA 5505, en Layer 2-switch och två datorer.</li>
-    <li>Använd VLAN 10 och VLAN 20 från IP-planen.</li>
-    <li>Skapa två VLAN-interface på ASA med rätt IP-adresser.</li>
-    <li>Anslut ASA till switchen med två separata accessanslutningar,
-      en för varje VLAN.</li>
-    <li>Konfigurera <code>nameif</code> och olika
-      <code>security-level</code> på VLAN-interfacen.</li>
-    <li>Konfigurera datorernas IP-adresser och default gateway.</li>
-    <li>Undersök vilka pingtester som fungerar och vilka som blockeras.</li>
-    <li>Förklara skillnaden mellan routing och tillåten trafik.</li>
-  </ol>
-
-  <p class="small muted">
-    Packet Tracer simulerar ASA 5505 med begränsad funktionalitet.
-    Denna grunduppgift använder därför separata accessanslutningar,
-    inte en 802.1Q-trunk. Exakta pingresultat kan påverkas av
-    ASA:s ICMP-hantering och simulatorversion.
-  </p>
-
-  <h3>Verifiering</h3>
-  <pre>show interface ip brief
-show running-config
-show route
-
-PC10 > ping 192.168.20.10
-PC20 > ping 192.168.10.10</pre>
-
-  <ul class="checklist">
-    <li><label><input type="checkbox"> Två VLAN-interface konfigurerade</label></li>
-    <li><label><input type="checkbox"> Rätt IP och gateway på datorerna</label></li>
-    <li><label><input type="checkbox"> Säkerhetsnivåer undersökta</label></li>
-    <li><label><input type="checkbox"> Trafikresultaten förklarade</label></li>
-  </ul>
-
-  <details>
-    <summary>Reveal discussion</summary>
-    <p>ASA kan routa mellan direktanslutna VLAN-subnät, men
-      säkerhetspolicyer avgör vilken trafik som får passera.</p>
-    <p>Med olika security levels tillåter ASA normalt nya
-      anslutningar från högre till lägre säkerhetsnivå, men
-      inte omvänt utan uttrycklig tillåtelse.</p>
-    <p>ICMP kräver särskild uppmärksamhet. Ett misslyckat ping
-      betyder därför inte nödvändigtvis att routingen är fel.</p>
-    <p><strong>Bonus:</strong> Undersök om din ASA-version stöder
-      802.1Q-trunk. Jämför i så fall arkitekturen med
-      router-on-a-stick.</p>
-  </details>
-</article>
-
-<div class="section-label">// FINAL DEBRIEF</div>
-<section class="panel">
-  <h2>Which architecture would you choose?</h2>
-  <p>Du har nu byggt flera lösningar på samma nätverksproblem.</p>
-  <ol>
-    <li>Vilken metod kräver flest fysiska routerinterface?</li>
-    <li>Vilken metod använder subinterface och 802.1Q?</li>
-    <li>Vilken metod routar internt i switchen?</li>
-    <li>Varför kan en brandvägg blockera trafik trots att
-      det finns en fungerande route?</li>
-    <li>Vilken metod skulle du välja för ett större företagsnät
-      med mycket intern trafik? Varför?</li>
-    <li>När är det motiverat att låta trafik mellan VLAN
-      passera en brandvägg?</li>
-  </ol>
-
-  <details>
-    <summary>Reveal discussion</summary>
-    <p>Legacy kräver ett fysiskt routerinterface per VLAN.
-      Router-on-a-stick använder 802.1Q och subinterface.
-      Layer 3-switchen använder SVI och intern routing.</p>
-    <p>En brandvägg kan utföra samma grundläggande routing,
-      men kan också kontrollera kommunikationen med
-      säkerhetspolicyer.</p>
-    <p>I större företagsnät är Layer 3-switchar vanliga för
-      högpresterande intern routing. Brandväggar används ofta
-      där trafiken behöver säkerhetskontrolleras.</p>
-  </details>
+<section>
+<div class="kicker">CHALLENGE 02 · ROUTER-ON-A-STICK</div>
+<h2>One trunk, multiple VLANs</h2>
+<p>Byt till en enda kabel mellan routern och switchen. Konfigurera switchporten som 802.1Q-trunk och skapa ett subinterface per VLAN på routern.</p>
+<pre>! Exempel på router med GigabitEthernet0/0
+interface GigabitEthernet0/0
+ no shutdown
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0</pre>
+<p class="muted">Anpassa interfacenamnen efter routern du använder.</p>
+<details><summary>Reveal discussion</summary>
+<p>Trunken transporterar flera VLAN över en fysisk kabel. Subinterfacen routar mellan IP-subnäten. 802.1Q-taggar identifierar VLAN på trunken.</p>
+</details>
 </section>
 
-<div class="section-label">// SUBMISSION</div>
-<section class="panel">
-  <h2>Mission complete?</h2>
-  <p>Lämna in:</p>
-  <ul>
-    <li>En <code>.pkt</code>-fil per genomförd nivå.</li>
-    <li>Skärmbild på lyckade pingtester.</li>
-    <li>Kort förklaring av varför respektive metod fungerar.</li>
-    <li>För Boss-nivån: beskriv vilka trafiktester som
-      fungerade och varför.</li>
-  </ul>
-  <p class="progress" id="progress">0 checkpoints completed</p>
-  <button onclick="resetProgress()">Reset checkpoints</button>
+<section>
+<div class="kicker">CHALLENGE 03 · LAYER 3 SWITCH</div>
+<h2>Route with SVIs</h2>
+<p>Byt routern mot en Layer 3-switch, exempelvis Cisco 3560. Skapa ett SVI per VLAN och aktivera IP-routing.</p>
+<pre>ip routing
+interface Vlan10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+interface Vlan20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown</pre>
+<p>Kontrollera att VLAN finns och att minst en aktiv port tillhör respektive VLAN. Testa ping.</p>
+<details><summary>Reveal discussion</summary>
+<p>Layer 3-switchen routar mellan VLAN via sina virtuella VLAN-interface (SVI). Ingen separat router behövs.</p>
+</details>
 </section>
 
-<!-- FLAG{vlan_separation_requires_layer3} -->
+<section class="note">
+<div class="kicker">// IMPORTANT · PACKET TRACER LIMITATION</div>
+<h2>ASA 5506-X: inte router-on-a-stick i vår simulator</h2>
+<p><strong>I den Packet Tracer-version vi använder avvisar ASA 5506-X kommandot <code>interface GigabitEthernet1/1.10</code>.</strong> Det innebär att vi inte kan genomföra ASA-delen med 802.1Q-subinterface i just denna simulator.</p>
+<p>Det är <strong>inte en generell begränsning i den verkliga ASA 5506-X</strong>, som har stöd för VLAN-subinterface. I Packet Tracer-labben använder vi i stället <strong>två fysiska ASA-interface, ett per VLAN</strong>.</p>
+</section>
 
-<footer>
-  ALEF-93 // NETWORK TRAINING LAB<br>
-  Observe. Configure. Verify. Explain.
-</footer>
-</main>
+<section>
+<div class="kicker">CHALLENGE 04 · BOSS LEVEL · CISCO ASA 5506-X</div>
+<h2>Inter-VLAN routing with a firewall</h2>
+<p>Nu ersätter du routern med en ASA 5506-X. Använd <strong>GigabitEthernet1/1 för VLAN 10</strong> och <strong>GigabitEthernet1/2 för VLAN 20</strong>. Det kräver två kablar till switchen, inte en trunk.</p>
+<pre>PC1 -- access VLAN 10 -- Cisco 2960 -- access VLAN 10 -- G1/1 ASA
+PC2 -- access VLAN 20 -- Cisco 2960 -- access VLAN 20 -- G1/2 ASA</pre>
+<h3>Switch – två accessportar mot ASA</h3>
+<pre>vlan 10
+vlan 20
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+interface GigabitEthernet0/2
+ switchport mode access
+ switchport access vlan 20</pre>
+<p class="muted">Byt portnummer om du har anslutit kablarna annorlunda. PC-portarna ska också ligga i respektive VLAN.</p>
+<h3>ASA – routade fysiska interface</h3>
+<pre>enable
+configure terminal
+interface GigabitEthernet1/1
+ nameif VLAN10
+ security-level 100
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+interface GigabitEthernet1/2
+ nameif VLAN20
+ security-level 100
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+same-security-traffic permit inter-interface</pre>
+<p><strong>Uppdrag:</strong> Kontrollera interface-status och routing. Pinga från PC1 till PC2. Om ping inte fungerar, felsök systematiskt: VLAN, gateway, ASA-policy och ICMP-inspektion. Beroende på simulatorns beteende kan ytterligare ICMP-regler eller inspektion behövas.</p>
+<p>Fundera: Vad skiljer ASA-lösningen från legacy-routing med en vanlig router, trots att båda använder två fysiska kablar?</p>
+<details><summary>Reveal discussion</summary>
+<p>Den fysiska topologin liknar legacy-routing, men ASA är en stateful brandvägg som kan tillämpa säkerhetspolicy mellan näten. Kommandot <code>same-security-traffic permit inter-interface</code> tillåter trafik mellan interface med samma security level, men ersätter inte felsökning av andra policyer och ICMP-beteende. I en riktig ASA 5506-X kan man även använda VLAN-subinterface på en trunk.</p>
+</details>
+</section>
 
-<script>
-const boxes = [...document.querySelectorAll('input[type=checkbox]')];
-const progress = document.getElementById('progress');
+<section>
+<div class="kicker">CHALLENGE 05 · COMPARE</div>
+<h2>Four solutions, one problem</h2>
+<ol>
+<li>Vilka metoder kräver flera kablar till routing-enheten?</li>
+<li>Vilka metoder använder 802.1Q?</li>
+<li>Vilken enhet är default gateway i respektive lösning?</li>
+<li>Var kan du tillämpa stateful brandväggsregler?</li>
+<li>Varför fungerar inte ping mellan VLAN utan routing?</li>
+</ol>
+<details><summary>Reveal discussion</summary>
+<p>Legacy och vår ASA-labb använder en fysisk kabel per VLAN. Router-on-a-stick använder 802.1Q-trunk; en Layer 3-switch använder SVI. ASA kan filtrera trafik statefully. VLAN separerar Layer 2-domäner och olika IP-subnät kräver Layer 3-routing för att kommunicera.</p>
+</details>
+</section>
 
-function updateProgress() {
-  const done = boxes.filter(b => b.checked).length;
-  progress.textContent = done + ' / ' + boxes.length +
-    ' checkpoints completed';
-}
+<section>
+<div class="kicker">// HIDDEN CHALLENGE</div>
+<h2>Look beyond the interface</h2>
+<p>Det finns en flagga gömd i sidans källkod. Kan du hitta den?</p>
+<details><summary>Reveal discussion</summary>
+<p>Visa sidkällan och leta efter en HTML-kommentar. Klientlevererad HTML är inte hemlig.</p>
+</details>
+</section>
 
-boxes.forEach(box => box.addEventListener('change', updateProgress));
-
-function resetProgress() {
-  boxes.forEach(box => box.checked = false);
-  updateProgress();
-}
-
-updateProgress();
-
-// FLAG{a_route_is_not_a_firewall_policy}
-console.log('%cNETWORK DIAGNOSTICS ONLINE',
-  'color:#00e89d;font-family:monospace');
-console.log('Hint: A valid route does not guarantee permitted traffic.');
-</script>
-</body>
-</html>
+<!-- FLAG{packet_tracer_is_not_real_hardware} -->
+<footer>BAALSTORM / ALEF-93 · PACKET TRACER · INTER-VLAN ROUTING</footer>
+</main></body></html>
