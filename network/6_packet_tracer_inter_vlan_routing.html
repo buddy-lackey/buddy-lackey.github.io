@@ -1,16 +1,45 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>BAALSTORM | Packet Tracer – Inter-VLAN Routing</title>
 <style>
 :root{--bg:#05070a;--panel:#080d0c;--panel2:#0b1411;--accent:#00e89d;--soft:#7dffcf;--text:#d8eee7;--muted:#77968b;--border:#163c31}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 Consolas,"Courier New",monospace}main{max-width:920px;margin:auto;padding:32px 22px 75px}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}h1{font-size:clamp(26px,5vw,43px);line-height:1.2;margin:12px 0}h2{font-size:19px;color:var(--soft);margin:0 0 10px}h3{font-size:15px;color:var(--accent)}.muted{color:var(--muted)}.kicker{font-size:12px;letter-spacing:.1em;color:var(--accent)}.status{color:var(--accent);font-size:12px;margin:20px 0 30px}.cursor{animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:0}}section{border:1px solid var(--border);background:var(--panel);padding:23px;margin:18px 0}section:nth-of-type(even){background:var(--panel2)}pre{background:#030605;border:1px solid var(--border);padding:15px;overflow:auto;color:var(--soft);font-size:13px;line-height:1.55}code{color:var(--soft)}li{margin:7px 0}ol,ul{padding-left:24px}details{border-top:1px solid var(--border);margin-top:16px;padding-top:12px}summary{color:var(--accent);cursor:pointer}details p{color:var(--muted)}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:8px;border-bottom:1px solid var(--border)}th{color:var(--accent)}.note{border-left:3px solid #c7a14a}.note strong{color:#f4d99a}footer{border-top:1px solid var(--border);color:var(--muted);font-size:12px;padding-top:16px;margin-top:30px}@media(max-width:600px){main{padding:20px 12px}section{padding:16px}pre{font-size:11px}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 Consolas,"Courier New",monospace}
+main{max-width:920px;margin:auto;padding:32px 22px 75px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+h1{font-size:clamp(26px,5vw,43px);line-height:1.2;margin:12px 0}
+h2{font-size:19px;color:var(--soft);margin:0 0 10px}
+h3{font-size:15px;color:var(--accent)}
+.muted{color:var(--muted)}
+.kicker{font-size:12px;letter-spacing:.1em;color:var(--accent)}
+.status{color:var(--accent);font-size:12px;margin:20px 0 30px}
+.cursor{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+section{border:1px solid var(--border);background:var(--panel);padding:23px;margin:18px 0}
+section:nth-of-type(even){background:var(--panel2)}
+pre{background:#030605;border:1px solid var(--border);padding:15px;overflow:auto;color:var(--soft);font-size:13px;line-height:1.55}
+code{color:var(--soft)}
+li{margin:7px 0}
+ol,ul{padding-left:24px}
+details{border-top:1px solid var(--border);margin-top:16px;padding-top:12px}
+summary{color:var(--accent);cursor:pointer}
+details p{color:var(--muted)}
+table{border-collapse:collapse;width:100%}
+td,th{text-align:left;padding:8px;border-bottom:1px solid var(--border)}
+th{color:var(--accent)}
+.note{border-left:3px solid #c7a14a}
+.note strong{color:#f4d99a}
+footer{border-top:1px solid var(--border);color:var(--muted);font-size:12px;padding-top:16px;margin-top:30px}
+@media(max-width:600px){main{padding:20px 12px}section{padding:16px}pre{font-size:11px}}
 </style>
 </head>
-<body><main>
+<body>
+<main>
 <a href="index.html">&lt; RETURN TO HOME</a>
 <div class="kicker" style="margin-top:30px">// NETWORK TECHNOLOGY · PACKET TRACER</div>
 <h1>Inter-VLAN Routing</h1>
@@ -84,26 +113,43 @@ interface Vlan20
 <div class="kicker">// IMPORTANT · PACKET TRACER LIMITATION</div>
 <h2>ASA 5506-X: inte router-on-a-stick i vår simulator</h2>
 <p><strong>I den Packet Tracer-version vi använder avvisar ASA 5506-X kommandot <code>interface GigabitEthernet1/1.10</code>.</strong> Det innebär att vi inte kan genomföra ASA-delen med 802.1Q-subinterface i just denna simulator.</p>
-<p>Det är <strong>inte en generell begränsning i den verkliga ASA 5506-X</strong>, som har stöd för VLAN-subinterface. I Packet Tracer-labben använder vi i stället <strong>två fysiska ASA-interface, ett per VLAN</strong>.</p>
+<p>Detta är en begränsning i den simulatorversion som testades, inte ett bevis för hur all verklig ASA-hårdvara fungerar. Här använder vi två fysiska ASA-interface med var sin accessport på switchen.</p>
 </section>
 
 <section>
 <div class="kicker">CHALLENGE 04 · BOSS LEVEL · CISCO ASA 5506-X</div>
 <h2>Inter-VLAN routing with a firewall</h2>
-<p>Nu ersätter du routern med en ASA 5506-X. Använd <strong>GigabitEthernet1/1 för VLAN 10</strong> och <strong>GigabitEthernet1/2 för VLAN 20</strong>. Det kräver två kablar till switchen, inte en trunk.</p>
-<pre>PC1 -- access VLAN 10 -- Cisco 2960 -- access VLAN 10 -- G1/1 ASA
-PC2 -- access VLAN 20 -- Cisco 2960 -- access VLAN 20 -- G1/2 ASA</pre>
-<h3>Switch – två accessportar mot ASA</h3>
-<pre>vlan 10
+<p>Byt ut routern mot en <strong>ASA 5506-X</strong>. Bygg med <strong>en fysisk ASA-port per VLAN</strong>. Använd inte trunk eller subinterface i den här Packet Tracer-övningen.</p>
+<pre>PC1 (VLAN 10) -- Fa0/1   Cisco 2960   Fa0/22 -- G1/1 ASA
+PC2 (VLAN 20) -- Fa0/2                Fa0/23 -- G1/2 ASA</pre>
+<table>
+<tr><th>Enhet</th><th>IP / mask</th><th>Gateway</th></tr>
+<tr><td>PC1</td><td>192.168.10.50 /24</td><td>192.168.10.1</td></tr>
+<tr><td>PC2</td><td>192.168.20.200 /24</td><td>192.168.20.1</td></tr>
+<tr><td>ASA G1/1</td><td>192.168.10.1 /24</td><td>—</td></tr>
+<tr><td>ASA G1/2</td><td>192.168.20.1 /24</td><td>—</td></tr>
+</table>
+<h3>Steg 1 · Switch</h3>
+<p>Skapa VLAN 10 och 20. Lägg PC-portarna och motsvarande ASA-portar i rätt VLAN som <strong>accessportar</strong>. Exempel:</p>
+<pre>enable
+configure terminal
+vlan 10
 vlan 20
-interface GigabitEthernet0/1
+interface FastEthernet0/1
  switchport mode access
  switchport access vlan 10
-interface GigabitEthernet0/2
+interface FastEthernet0/22
  switchport mode access
- switchport access vlan 20</pre>
-<p class="muted">Byt portnummer om du har anslutit kablarna annorlunda. PC-portarna ska också ligga i respektive VLAN.</p>
-<h3>ASA – routade fysiska interface</h3>
+ switchport access vlan 10
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+interface FastEthernet0/23
+ switchport mode access
+ switchport access vlan 20
+end</pre>
+<h3>Steg 2 · ASA</h3>
+<p>Konfigurera två routade interface med <strong>olika security levels</strong>. VLAN10 är mer betrott än VLAN20 i den här övningen.</p>
 <pre>enable
 configure terminal
 interface GigabitEthernet1/1
@@ -113,14 +159,30 @@ interface GigabitEthernet1/1
  no shutdown
 interface GigabitEthernet1/2
  nameif VLAN20
- security-level 100
+ security-level 50
  ip address 192.168.20.1 255.255.255.0
  no shutdown
-same-security-traffic permit inter-interface</pre>
-<p><strong>Uppdrag:</strong> Kontrollera interface-status och routing. Pinga från PC1 till PC2. Om ping inte fungerar, felsök systematiskt: VLAN, gateway, ASA-policy och ICMP-inspektion. Beroende på simulatorns beteende kan ytterligare ICMP-regler eller inspektion behövas.</p>
-<p>Fundera: Vad skiljer ASA-lösningen från legacy-routing med en vanlig router, trots att båda använder två fysiska kablar?</p>
-<details><summary>Reveal discussion</summary>
-<p>Den fysiska topologin liknar legacy-routing, men ASA är en stateful brandvägg som kan tillämpa säkerhetspolicy mellan näten. Kommandot <code>same-security-traffic permit inter-interface</code> tillåter trafik mellan interface med samma security level, men ersätter inte felsökning av andra policyer och ICMP-beteende. I en riktig ASA 5506-X kan man även använda VLAN-subinterface på en trunk.</p>
+end</pre>
+<p><strong>Uppdrag:</strong> Pinga från PC1 till PC2. Förklara hur trafiken färdas via switchen och brandväggen. Testa sedan om kommunikationen fungerar även när den initieras från PC2. Varför kan resultatet skilja sig?</p>
+
+<details><summary>Ledtråd 1 · Kontrollera kablar och VLAN</summary>
+<p>På switchen: <code>show vlan brief</code> och <code>show mac address-table</code>. PC1 och ASA G1/1 ska finnas i VLAN10, PC2 och ASA G1/2 i VLAN20. En switch vidarebefordrar inte en ram direkt mellan VLAN.</p>
+</details>
+
+<details><summary>Ledtråd 2 · Kontrollera IP och routing</summary>
+<p>Kontrollera IP, nätmask och default gateway på båda datorerna. På ASA: <code>show running-config interface GigabitEthernet1/1</code>, <code>show running-config interface GigabitEthernet1/2</code> och <code>show route</code>. Routingtabellen bör visa <code>192.168.10.0/24</code> via G1/1 och <code>192.168.20.0/24</code> via G1/2.</p>
+</details>
+
+<details><summary>Ledtråd 3 · Felsök i Simulation Mode</summary>
+<p>Filtrera på ARP och ICMP. Skicka en Simple PDU från PC1 till PC2. Följ Echo Request och Echo Reply separat. Kontrollera särskilt <em>vilket ASA-interface</em> returtrafiken lämnar. Om switchen floodar en ram med PC1:s MAC i VLAN20 är det ett symptom på att ramen finns i fel VLAN — flytta inte PC1 till VLAN20 som en genväg.</p>
+</details>
+
+<details><summary>Ledtråd 4 · Brandväggspolicy och ICMP</summary>
+<p>En ASA har stateful filtrering och security levels. Trafik från högre till lägre security level behandlas annorlunda än trafik som initieras från lägre till högre. Om routingen ser korrekt ut men ping inte fungerar, undersök ACL och eventuell ICMP-inspektion. Börja inte med att öppna <code>permit ip any any</code> på alla interface. Tänk också på att ping <em>till ASA:s eget interface</em> och ping <em>genom ASA</em> är olika tester.</p>
+</details>
+
+<details><summary>Lärarens facit · Vad behövdes?</summary>
+<p>I den testade Packet Tracer-topologin fungerade PC1 → PC2 med två separata ASA-interface, olika security levels och nätverken <code>192.168.10.0/24</code> respektive <code>192.168.20.0/24</code>. Kommandot <code>same-security-traffic permit inter-interface</code> avvisades av simulatorn och behövs inte i denna konfiguration. Vi behövde inte heller trunk, ASA-subinterface eller någon statisk route mellan de direktanslutna näten. De tidigare angränsande <code>192.168.1.0/25</code> och <code>192.168.1.128/25</code> gav i vår testmiljö en märklig routingtabell och felaktig returväg; grundorsaken fastställdes inte. Exakt vilka ACL- och ICMP-inställningar som behövs för andra trafikflöden måste testas separat.</p>
 </details>
 </section>
 
@@ -147,7 +209,8 @@ same-security-traffic permit inter-interface</pre>
 <p>Visa sidkällan och leta efter en HTML-kommentar. Klientlevererad HTML är inte hemlig.</p>
 </details>
 </section>
-
 <!-- FLAG{packet_tracer_is_not_real_hardware} -->
 <footer>BAALSTORM / ALEF-93 · PACKET TRACER · INTER-VLAN ROUTING</footer>
-</main></body></html>
+</main>
+</body>
+</html>
