@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALEF-93 | Lecture 07 — ICMP, ARP &amp; DHCP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 0;
+      background: #05070a;
+      color: #d8eee7;
+      font: 16px/1.7 Consolas, "Courier New", monospace;
+    }
+
+    main {
+      max-width: 1020px;
+      margin: auto;
+      padding: 40px 24px 70px;
+    }
+
+    a {
+      color: #7dffcf;
+      text-underline-offset: 4px;
+    }
+
+    header {
+      border-bottom: 1px solid #163c31;
+      padding: 28px 0 34px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 6vw, 54px);
+      line-height: 1.15;
+      margin: 16px 0;
+    }
+
+    h2 {
+      color: #00e89d;
+      font-size: 21px;
+      margin: 44px 0 18px;
+    }
+
+    h3 {
+      font-size: 23px;
+      line-height: 1.3;
+      margin: 8px 0 18px;
+    }
+
+    .eyebrow,
+    .meta {
+      font-size: 13px;
+      color: #97b9ab;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      color: #00e89d;
+    }
+
+    .cursor {
+      animation: blink 1.2s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    nav a {
+      border: 1px solid #163c31;
+      padding: 5px 14px;
+      text-decoration: none;
+    }
+
+    .intro,
+    .challenge {
+      background: #080d0c;
+      border: 1px solid #163c31;
+      padding: 26px;
+      margin: 18px 0;
+    }
+
+    .challenge:target {
+      border-color: #00e89d;
+    }
+
+    pre {
+      background: #0b1411;
+      border-left: 3px solid #00e89d;
+      padding: 18px;
+      overflow: auto;
+      font: 14px/1.65 Consolas, monospace;
+    }
+
+    code {
+      color: #7dffcf;
+      overflow-wrap: anywhere;
+    }
+
+    pre code {
+      overflow-wrap: normal;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    summary {
+      color: #7dffcf;
+      cursor: pointer;
+      padding: 12px 0;
+    }
+
+    details {
+      border-top: 1px solid #163c31;
+      margin-top: 22px;
+    }
+
+    details[open] {
+      padding-bottom: 8px;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #97b9ab;
+      font-size: 13px;
+    }
+
+    input {
+      accent-color: #00e89d;
+      width: 17px;
+      height: 17px;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      background: #05070a;
+      border: 1px solid #163c31;
+      padding: 12px;
+      color: #d8eee7;
+      font: inherit;
+      margin-top: 8px;
+    }
+
+    button {
+      background: #0b1411;
+      color: #7dffcf;
+      border: 1px solid #163c31;
+      padding: 9px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    a:focus-visible,
+    summary:focus-visible,
+    button:focus-visible,
+    textarea:focus-visible,
+    input:focus-visible {
+      outline: 2px solid #00e89d;
+      outline-offset: 4px;
+    }
+
+    footer {
+      margin-top: 40px;
+      border-top: 1px solid #163c31;
+      padding-top: 20px;
+      color: #97b9ab;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 20px 14px;
+      }
+
+      .challenge,
+      .intro {
+        padding: 18px;
+      }
+
+      pre {
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor {
+        animation: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+
+      main {
+        max-width: none;
+      }
+
+      header,
+      .challenge,
+      .intro {
+        background: white;
+        border-color: #999;
+        break-inside: avoid;
+      }
+
+      pre {
+        white-space: pre-wrap;
+        background: #eee;
+        color: black;
+      }
+
+      textarea,
+      button,
+      nav,
+      .check {
+        display: none;
+      }
+
+      h2,
+      h3,
+      summary,
+      a,
+      .meta,
+      .eyebrow,
+      .status {
+        color: black;
+      }
+    }
+
+    /* FLAG{arp_stays_on_the_local_link} */
+  </style>
+</head>
+
+<body>
+<main>
+
+  <a href="index.html">&lt; RETURN TO HOME</a>
+
+  <header>
+    <div class="eyebrow">
+      ALEF-93 / NETWORK TECHNOLOGY / LECTURE 07
+    </div>
+
+    <h1>ICMP, ARP &amp; DHCP</h1>
+
+    <div class="status">
+      ● NETWORK DIAGNOSTICS ONLINE<span class="cursor">_</span>
+    </div>
+
+    <p>
+      Get an address. Find the next hop.
+      Ask the network what happened.
+    </p>
+  </header>
+
+  <nav aria-label="Protocol sections">
+    <a href="#icmp">ICMP</a>
+    <a href="#arp">ARP</a>
+    <a href="#dhcp">DHCP</a>
+    <a href="#boss">BOSS</a>
+  </nav>
+
+  <section class="intro">
+    <h3>Mission briefing</h3>
+
+    <p>
+      Work in pairs. Explain your reasoning before opening the
+      discussion. The examples use IPv4. All packet records and
+      command outputs shown on this page are simplified teaching
+      examples.
+    </p>
+
+    <p>
+      About 80 minutes for all challenges. For a shorter session,
+      do 01, 03, 05, 06, 09, 10 and 12. Practical work uses
+      Windows, Wireshark or Packet Tracer; the reasoning tasks
+      need only this page.
+    </p>
+
+    <p>
+      Replace command placeholders with real lab addresses.
+      Use the teacher’s lab network for configuration changes.
+      A DHCP release interrupts connectivity, so it is not
+      required here.
+    </p>
+
+    <p id="progress" aria-live="polite">
+      0 / 12 challenges marked complete
+    </p>
+
+    <p class="meta">
+      Notes and checkboxes last for this open page only.
+      Copy your notes before closing or reloading.
+    </p>
+
+    <button type="button" onclick="window.print()">
+      Print / save as PDF
+    </button>
+  </section>
+
+  <!-- FLAG{icmp_has_no_udp_port} -->
+
+  <h2 id="icmp">// ICMP</h2>
+
+  <article class="challenge" id="challenge-01">
+    <div class="meta">CHALLENGE 01 / ICMP / 5 min</div>
+    <h3>A reply is not a website</h3>
+
+    <p>A user says: “The server must work. It answers ping.”</p>
+
+    <pre>ping 192.168.10.20
+Reply from 192.168.10.20: bytes=32 time=2ms TTL=64
+
+Browser: https://192.168.10.20 → connection failed</pre>
+
+    <ol>
+      <li>What does the ping reply actually show?</li>
+      <li>Which ICMP types were exchanged?</li>
+      <li>Give two reasons why the website might still fail.</li>
+    </ol>
+
+    <label for="notes-1">Your observations</label>
+    <textarea
+      id="notes-1"
+      aria-label="Notes for challenge 01"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        An Echo Request (type 8, code 0) received an Echo Reply
+        (type 0, code 0). The target answered ICMP at that moment
+        and a return path worked. This does not test the web
+        service or TCP port 443. The service might be stopped,
+        or a firewall might block HTTPS. A failed ping also does
+        not prove that a host is down: ICMP may be filtered.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-02">
+    <div class="meta">CHALLENGE 02 / ICMP / 5 min</div>
+    <h3>Read the control messages</h3>
+
+    <p>
+      These are simplified IPv4 capture records. Explain each
+      one and identify who reports the problem.
+    </p>
+
+    <pre>A  192.168.10.50 → 192.168.10.1  ICMP type 8  code 0
+B  192.168.10.1  → 192.168.10.50 ICMP type 0  code 0
+C  192.168.20.1  → 192.168.10.50 ICMP type 11 code 0
+D  192.168.30.20 → 192.168.10.50 ICMP type 3  code 3</pre>
+
+    <p>
+      Before D, the client sent a UDP packet to 192.168.30.20.
+      Does D mean that ping failed?
+    </p>
+
+    <label for="notes-2">Your observations</label>
+    <textarea
+      id="notes-2"
+      aria-label="Notes for challenge 02"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        A is an Echo Request; B is an Echo Reply. C reports TTL
+        expiry in transit, typically from a router. D reports
+        “Destination Unreachable: Port Unreachable”, commonly
+        because no application listens on the destination UDP
+        port. It reports a problem with the original UDP packet,
+        not necessarily a ping. ICMP errors include information
+        from the packet that triggered them.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-03">
+    <div class="meta">CHALLENGE 03 / ICMP / 10 min</div>
+    <h3>Watch a single ping</h3>
+
+    <p>
+      Use Windows and Wireshark. Identify your active adapter
+      and default gateway using <code>ipconfig</code>.
+    </p>
+
+    <ol>
+      <li>Start a capture on that adapter.</li>
+      <li>Apply the display filter <code>icmp</code>.</li>
+      <li>
+        Run <code>ping -n 1 GATEWAY_IP</code>, replacing the
+        placeholder with the gateway address.
+      </li>
+      <li>
+        Find the request and reply. Record source, destination,
+        type, code, identifier and sequence number.
+      </li>
+      <li>
+        How can you tell that the reply belongs to the request?
+      </li>
+    </ol>
+
+    <p>
+      Compare results with a neighbour. If the gateway does not
+      answer, use a lab host selected by the teacher.
+    </p>
+
+    <label for="notes-3">Your observations</label>
+    <textarea
+      id="notes-3"
+      aria-label="Notes for challenge 03"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        The request normally has type 8/code 0; the reply has
+        type 0/code 0. Source and destination swap. Identifier
+        and sequence number link the pair; the payload is
+        echoed. A display filter hides other packets without
+        stopping their capture. ICMP runs directly inside IPv4
+        and has no TCP/UDP port numbers.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-04">
+    <div class="meta">CHALLENGE 04 / ICMP / 7 min</div>
+    <h3>Follow the TTL</h3>
+
+    <pre>tracert -d 8.8.8.8
+
+1    1 ms    1 ms    1 ms   192.168.10.1
+2    *       *       *      Request timed out.
+3    9 ms    8 ms    9 ms   198.51.100.1
+...  destination eventually responds</pre>
+
+    <ol>
+      <li>
+        Why does the first router respond to a probe sent
+        with TTL=1?
+      </li>
+      <li>
+        Does row 2 prove that router 2 cannot forward traffic?
+      </li>
+      <li>
+        Which filter shows TTL-expiry messages in Wireshark?
+      </li>
+    </ol>
+
+    <p>
+      Optional: run the command yourself and compare the output
+      with the capture.
+    </p>
+
+    <label for="notes-4">Your observations</label>
+    <textarea
+      id="notes-4"
+      aria-label="Notes for challenge 04"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        The router reduces TTL to zero, discards that probe and
+        normally sends ICMP Time Exceeded (type 11/code 0).
+        Later probes use higher TTL values. Row 2 only shows
+        that no response arrived in time; replies may be filtered
+        or rate limited. Later replies show that some probes got
+        farther. Use <code>icmp.type == 11</code>. Windows
+        tracert uses ICMP Echo probes; Linux traceroute commonly
+        defaults to UDP.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <h2 id="arp">// ARP</h2>
+
+  <article class="challenge" id="challenge-05">
+    <div class="meta">CHALLENGE 05 / ARP / 5 min</div>
+    <h3>Whose MAC do we need?</h3>
+
+    <pre>PC-A:     192.168.10.50/24
+Gateway:  192.168.10.1
+PC-B:     192.168.10.60/24
+Server:   192.168.20.20/24
+ARP cache: empty</pre>
+
+    <ol>
+      <li>
+        PC-A sends to PC-B. Which IP address does it ask
+        about using ARP?
+      </li>
+      <li>
+        PC-A sends to the server. Which IP address does it
+        ask about now?
+      </li>
+      <li>
+        For the server packet, state the destination IP and
+        the destination Ethernet MAC on PC-A’s first link.
+      </li>
+    </ol>
+
+    <label for="notes-5">Your observations</label>
+    <textarea
+      id="notes-5"
+      aria-label="Notes for challenge 05"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        For PC-B, PC-A resolves 192.168.10.60. For the remote
+        server, it resolves its next hop: 192.168.10.1.
+        The server remains the destination IP; the gateway’s
+        MAC is the destination Ethernet address on the first
+        link. ARP resolves a local next hop, not a remote host
+        across routers. Assume ordinary connected routes and
+        a default route via this gateway.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-06">
+    <div class="meta">CHALLENGE 06 / ARP / 7 min</div>
+    <h3>Two headers, two purposes</h3>
+
+    <p>Decode this ordinary ARP request:</p>
+
+    <pre>Ethernet source:       02:00:00:00:00:50
+Ethernet destination:  ff:ff:ff:ff:ff:ff
+EtherType:             0x0806
+
+ARP opcode:            1
+Sender MAC:            02:00:00:00:00:50
+Sender IP:             192.168.10.50
+Target MAC:            00:00:00:00:00:00
+Target IP:             192.168.10.1</pre>
+
+    <ol>
+      <li>
+        Why are the Ethernet destination and ARP target
+        MAC different?
+      </li>
+      <li>What would opcode 2 mean?</li>
+      <li>
+        Is an IPv4 header needed between Ethernet and ARP?
+      </li>
+    </ol>
+
+    <label for="notes-6">Your observations</label>
+    <textarea
+      id="notes-6"
+      aria-label="Notes for challenge 06"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        The Ethernet broadcast reaches devices in the VLAN.
+        Inside ARP, the target MAC is unknown and is represented
+        here by zeros. Opcode 2 means ARP Reply, normally sent
+        as unicast to the requester in this exchange. ARP is
+        carried directly in Ethernet with EtherType 0x0806,
+        without an IPv4 header.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-07">
+    <div class="meta">CHALLENGE 07 / ARP / 10 min</div>
+    <h3>Catch ARP before ICMP</h3>
+
+    <ol>
+      <li>
+        In Wireshark, capture on your active adapter and
+        use <code>arp || icmp</code>.
+      </li>
+      <li>
+        Run <code>arp -a</code> and check whether your gateway
+        already appears.
+      </li>
+      <li>
+        Ping the gateway once:
+        <code>ping -n 1 GATEWAY_IP</code>.
+      </li>
+      <li>
+        Find any ARP request/reply followed by ICMP.
+        Explain the order.
+      </li>
+    </ol>
+
+    <p>
+      No ARP exchange? The mapping may already be cached.
+      In an isolated lab, an elevated Windows terminal can
+      remove only that entry with <code>arp -d GATEWAY_IP</code>.
+      Start capturing before pinging again.
+      Avoid clearing the entire table.
+    </p>
+
+    <p>
+      Alternative: use two PCs and one switch in Packet Tracer,
+      in the same /24. In Simulation mode, filter for ARP and
+      ICMP and send one Simple PDU between the PCs.
+    </p>
+
+    <label for="notes-7">Your observations</label>
+    <textarea
+      id="notes-7"
+      aria-label="Notes for challenge 07"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        Before sending the unicast Ethernet frame, the sender
+        needs the next-hop MAC. If it has no usable mapping,
+        ARP normally runs first. A cached mapping removes that
+        need. Background traffic may also resolve the address
+        before your ping. In Packet Tracer, the first PDU can
+        fail or take extra steps while ARP completes; inspect
+        the event list and repeat if needed.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-08">
+    <div class="meta">CHALLENGE 08 / ARP / 5 min</div>
+    <h3>The table changed</h3>
+
+    <pre>Previously verified gateway MAC:
+192.168.10.1 → 02:00:00:00:00:01
+
+Current PC ARP cache:
+192.168.10.1 → 02:00:00:00:00:99
+192.168.10.60 → 02:00:00:00:00:60</pre>
+
+    <ol>
+      <li>What could happen to outgoing frames?</li>
+      <li>Is this sufficient evidence of an attack?</li>
+      <li>
+        How does this table differ from a switch MAC table?
+      </li>
+    </ol>
+
+    <label for="notes-8">Your observations</label>
+    <textarea
+      id="notes-8"
+      aria-label="Notes for challenge 08"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        Frames for the gateway go to the newly mapped MAC.
+        A false mapping could enable interception or cause
+        an outage. A legitimate gateway replacement or failover
+        could also change it, so verify against trusted
+        configuration and captures. An ARP cache maps IPv4
+        addresses to MAC addresses; a switch MAC table maps
+        MAC addresses to switch ports within VLANs. A managed
+        L2 switch may use ARP for its own management IP traffic.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <h2 id="dhcp">// DHCP</h2>
+
+  <article class="challenge" id="challenge-09">
+    <div class="meta">CHALLENGE 09 / DHCP / 5 min</div>
+    <h3>Rebuild DORA</h3>
+
+    <p>
+      A newly connected client has no usable lease. Put these
+      messages in order and describe who sends each:
+    </p>
+
+    <pre>A  DHCPACK
+B  DHCPDISCOVER
+C  DHCPREQUEST
+D  DHCPOFFER</pre>
+
+    <ol>
+      <li>
+        Which UDP ports do the client and server use?
+      </li>
+      <li>
+        How can the client send its first message before
+        it has an assigned IPv4 address?
+      </li>
+      <li>
+        Name three settings besides the IP address that
+        DHCP can provide.
+      </li>
+    </ol>
+
+    <label for="notes-9">Your observations</label>
+    <textarea
+      id="notes-9"
+      aria-label="Notes for challenge 09"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        B → D → C → A: Discover, Offer, Request, Acknowledge.
+        The client sends Discover and Request; the server
+        sends Offer and ACK. DHCPv4 uses UDP 68 on the client
+        and UDP 67 on the server. Initial Discover can use
+        source 0.0.0.0 and destination 255.255.255.255,
+        carried in an Ethernet broadcast. Settings include
+        subnet mask, default gateway and DNS servers.
+        Offer and ACK delivery can vary; do not assume
+        every DHCP message is always broadcast.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-10">
+    <div class="meta">CHALLENGE 10 / DHCP / 7 min</div>
+    <h3>An address is not enough</h3>
+
+    <p>Compare these simplified Windows outputs:</p>
+
+    <pre>CLIENT A                     CLIENT B
+DHCP enabled: Yes             DHCP enabled: Yes
+IPv4: 169.254.44.12           IPv4: 192.168.10.75
+Mask: 255.255.0.0             Mask: 255.255.255.0
+Gateway: (none)               Gateway: 192.168.10.1
+DHCP server: (none)           DHCP server: 192.168.10.5
+DNS: (none)                   DNS: 192.168.10.53</pre>
+
+    <ol>
+      <li>Which client appears to have a DHCP lease?</li>
+      <li>Suggest two checks for client A.</li>
+      <li>
+        Client B reaches a server by IP but not by name.
+        What should you investigate next?
+      </li>
+    </ol>
+
+    <p>
+      Inspect your own configuration with
+      <code>ipconfig /all</code>. Find the lease times,
+      DHCP server and DNS servers.
+      Do not publish your full output.
+    </p>
+
+    <label for="notes-10">Your observations</label>
+    <textarea
+      id="notes-10"
+      aria-label="Notes for challenge 10"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        B appears to have received a lease. A has a
+        link-local/APIPA address, suggesting that it did not
+        obtain a usable DHCP lease. Check link/Wi-Fi and VLAN
+        membership, then DHCP availability, pool capacity or
+        relay configuration. The address alone does not
+        identify the root cause. For B, investigate DNS
+        configuration and name resolution; an IP test does
+        not test DNS.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <article class="challenge" id="challenge-11">
+    <div class="meta">CHALLENGE 11 / DHCP / 7 min</div>
+    <h3>The lease clock</h3>
+
+    <p>
+      A client receives an 8-hour lease at 08:00.
+      Assume the usual T1=50% and T2=87.5%,
+      no successful renewal and no DHCPNAK.
+    </p>
+
+    <ol>
+      <li>
+        When does it first try to renew, and to which server?
+      </li>
+      <li>
+        When does it begin rebinding using broadcast?
+      </li>
+      <li>When must it stop using the address?</li>
+      <li>
+        Must the client immediately stop working if the
+        DHCP server goes offline at 09:00?
+      </li>
+    </ol>
+
+    <p>
+      Bonus: does <code>ipconfig /renew</code> necessarily
+      produce all four DORA messages?
+    </p>
+
+    <label for="notes-11">Your observations</label>
+    <textarea
+      id="notes-11"
+      aria-label="Notes for challenge 11"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        T1 is 12:00: the client normally unicasts DHCPREQUEST
+        to its original server. T2 is 15:00: it broadcasts
+        DHCPREQUEST to seek a response from any suitable
+        server. The lease expires at 16:00, so it must stop
+        using that address if no renewal succeeded.
+        An existing valid lease remains usable during a
+        server outage. DHCP can specify different T1/T2
+        values. A manual renew may renew an existing lease
+        using Request/ACK without a complete
+        Discover/Offer exchange.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <h2 id="boss">// BOSS</h2>
+
+  <article class="challenge" id="challenge-12">
+    <div class="meta">CHALLENGE 12 / BOSS / 10 min</div>
+    <h3>A new VLAN, a silent client</h3>
+
+    <pre>VLAN 10 clients: 192.168.10.0/24 — DHCP works
+VLAN 20 clients: 192.168.20.0/24 — DHCP fails
+DHCP server:    192.168.10.5
+VLAN 20 gateway:192.168.20.1
+
+Capture inside VLAN 20:
+0.0.0.0:68 → 255.255.255.255:67  DHCPDISCOVER
+(repeated; no offer seen)</pre>
+
+    <ol>
+      <li>
+        Why does an ordinary router not simply forward
+        this broadcast?
+      </li>
+      <li>
+        What function could relay the request to the server?
+      </li>
+      <li>
+        What scope and gateway setting does the server
+        need for VLAN 20?
+      </li>
+      <li>
+        Could a pure L2 switch forwarding broadcasts inside
+        VLAN 20 solve the cross-subnet problem?
+      </li>
+      <li>
+        After DHCP works, describe the roles of DHCP,
+        ARP and ICMP when the client pings 192.168.10.5.
+      </li>
+    </ol>
+
+    <label for="notes-12">Your observations</label>
+    <textarea
+      id="notes-12"
+      aria-label="Notes for challenge 12"
+      placeholder="What did you observe? Why?"
+    ></textarea>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <p>
+        Routers do not normally forward local IPv4 limited
+        broadcasts. A DHCP relay on the VLAN 20 gateway can
+        relay requests to 192.168.10.5. The server needs a
+        suitable 192.168.20.0/24 scope with default gateway
+        192.168.20.1; routing and relevant firewall rules
+        must permit the exchange. The relay provides subnet
+        information so the server can choose the scope.
+        A plain L2 switch cannot solve this by ordinary
+        switching; a managed switch needs an explicit
+        relay feature to act as a relay.
+      </p>
+
+      <p>
+        DHCP supplies the client configuration. For the
+        remote server, ARP resolves the local gateway MAC.
+        ICMP supplies Echo Request/Reply. Inter-VLAN routing
+        and policy must permit the ping. The missing Offer
+        is a clue, not proof that relay is the only
+        possible fault.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mark challenge complete
+    </label>
+  </article>
+
+  <footer>
+    <p>
+      EXTRA SIGNAL / Three small flags are hidden in this file.
+      Look beyond the rendered page. Can you explain the
+      networking lesson in each?
+    </p>
+
+    <p>
+      ALEF-93 / BAALSTORM · Lecture 07 · ICMP / ARP / DHCP
+    </p>
+
+    <a href="#">&lt; BACK TO TOP</a>
+  </footer>
+
+</main>
+
+<script>
+  const boxes = [...document.querySelectorAll(".done")];
+
+  boxes.forEach(box => {
+    box.addEventListener("change", () => {
+      const completed = boxes.filter(box => box.checked).length;
+
+      document.getElementById("progress").textContent =
+        completed + " / 12 challenges marked complete";
+    });
+  });
+
+  console.info("FLAG{dhcp_offer_is_not_the_final_ack}");
+</script>
+
+</body>
+</html>
