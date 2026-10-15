@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BAALSTORM | DHCP Relay Lab</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 0;
+      background: #05070a;
+      color: #d8eee7;
+      font: 16px/1.7 Consolas, "Courier New", monospace;
+    }
+
+    main {
+      max-width: 1020px;
+      margin: auto;
+      padding: 40px 24px 70px;
+    }
+
+    a {
+      color: #7dffcf;
+      text-underline-offset: 4px;
+    }
+
+    header {
+      border-bottom: 1px solid #163c31;
+      padding: 28px 0 34px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 6vw, 54px);
+      line-height: 1.15;
+      margin: 16px 0;
+    }
+
+    h3 {
+      font-size: 23px;
+      line-height: 1.3;
+      margin: 8px 0 18px;
+    }
+
+    .eyebrow,
+    .meta {
+      font-size: 13px;
+      color: #97b9ab;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      color: #00e89d;
+    }
+
+    .cursor {
+      animation: blink 1.2s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    nav a {
+      border: 1px solid #163c31;
+      padding: 5px 14px;
+      text-decoration: none;
+    }
+
+    .intro,
+    .challenge {
+      background: #080d0c;
+      border: 1px solid #163c31;
+      padding: 26px;
+      margin: 18px 0;
+    }
+
+    .challenge:target {
+      border-color: #00e89d;
+    }
+
+    pre {
+      background: #0b1411;
+      border-left: 3px solid #00e89d;
+      padding: 18px;
+      overflow: auto;
+      font: 14px/1.65 Consolas, monospace;
+    }
+
+    code {
+      color: #7dffcf;
+      overflow-wrap: anywhere;
+    }
+
+    pre code {
+      overflow-wrap: normal;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    summary {
+      color: #7dffcf;
+      cursor: pointer;
+      padding: 12px 0;
+    }
+
+    details {
+      border-top: 1px solid #163c31;
+      margin-top: 22px;
+    }
+
+    details[open] {
+      padding-bottom: 8px;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #97b9ab;
+      font-size: 13px;
+    }
+
+    input {
+      accent-color: #00e89d;
+      width: 17px;
+      height: 17px;
+    }
+
+    button {
+      background: #0b1411;
+      color: #7dffcf;
+      border: 1px solid #163c31;
+      padding: 9px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    a:focus-visible,
+    summary:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid #00e89d;
+      outline-offset: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #163c31;
+    }
+
+    th {
+      color: #7dffcf;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    footer {
+      margin-top: 40px;
+      border-top: 1px solid #163c31;
+      padding-top: 20px;
+      color: #97b9ab;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 20px 14px;
+      }
+
+      .challenge,
+      .intro {
+        padding: 18px;
+      }
+
+      pre {
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor {
+        animation: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+
+      main {
+        max-width: none;
+      }
+
+      header,
+      .challenge,
+      .intro {
+        background: white;
+        border-color: #999;
+        break-inside: avoid;
+      }
+
+      pre {
+        white-space: pre-wrap;
+        background: #eee;
+        color: black;
+      }
+
+      button,
+      nav,
+      .check {
+        display: none;
+      }
+
+      h3,
+      summary,
+      a,
+      code,
+      th,
+      .meta,
+      .eyebrow,
+      .status {
+        color: black;
+      }
+    }
+
+    /* FLAG{arp_stays_on_the_local_link} */
+  </style>
+</head>
+
+<body>
+<main>
+
+  <a href="index.html">&lt; RETURN TO HOME</a>
+
+  <header>
+    <div class="eyebrow">
+      ALEF-93 / LECTURE 07 / PACKET TRACER
+    </div>
+
+    <h1>DHCP: ACROSS THE VLANs</h1>
+
+    <div class="status">
+      ● ADDRESS ALLOCATION ONLINE<span class="cursor">_</span>
+    </div>
+
+    <p>
+      One server. Three client networks.
+      Make the broadcasts cross the boundary.
+    </p>
+  </header>
+
+  <nav aria-label="Lab sections">
+    <a href="#step-1">ONE LAN</a>
+    <a href="#step-4">THREE VLANs</a>
+    <a href="#step-7">RELAY</a>
+    <a href="#step-10">ROUTER OPTION</a>
+  </nav>
+
+  <section class="intro">
+    <h3>Mission briefing</h3>
+
+    <p>
+      Start with a single switched LAN. Then move three PCs
+      into separate VLANs, put the DHCP server in a server
+      VLAN, and implement DHCP relay and inter-VLAN routing.
+    </p>
+
+    <p>
+      Main path: Server-PT, three PC-PT devices, a 2960 for
+      part 1 and a 3560 for part 2. Allow 60–90 minutes.
+      The router-on-a-stick path is an optional extension.
+    </p>
+
+    <p>
+      Build first. Predict the result. Test it. Open the
+      discussion when you need a hint or want to compare
+      your explanation.
+    </p>
+
+    <p id="progress" aria-live="polite">
+      0 / 10 missions marked complete
+    </p>
+
+    <p class="meta">
+      Checkboxes last for this open page only.
+      Save your work as .pkt files.
+    </p>
+
+    <button type="button" onclick="window.print()">
+      Print / save as PDF
+    </button>
+  </section>
+
+  <!-- FLAG{broadcasts_need_a_relay} -->
+
+  <article class="challenge" id="step-1">
+    <div class="meta">MISSION 01</div>
+    <h3>One LAN. One DHCP server.</h3>
+
+    <p>
+      Build a network using one 2960 switch, one Server-PT
+      and three PC-PT devices. Connect all devices using
+      copper straight-through cables. Leave the switch
+      ports in VLAN 1.
+    </p>
+
+    <ul>
+      <li>Server → Fa0/1</li>
+      <li>PC-A → Fa0/2</li>
+      <li>PC-B → Fa0/3</li>
+      <li>PC-C → Fa0/4</li>
+    </ul>
+
+    <p>
+      On Server-PT, open
+      <strong>Desktop → IP Configuration</strong>
+      and select Static:
+    </p>
+
+    <pre><code>IP address:      192.168.10.10
+Subnet mask:     255.255.255.0
+Default gateway: leave unset (0.0.0.0)</code></pre>
+
+    <p>Do we need a router for these devices to communicate?</p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+      <p>
+        No. All devices are in the same IPv4 subnet and VLAN.
+        They can communicate directly using Ethernet and ARP.
+        A default gateway becomes necessary when they
+        communicate outside their subnet.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-2">
+    <div class="meta">MISSION 02</div>
+    <h3>Build the first address pool</h3>
+
+    <p>
+      On the server, open <strong>Services → DHCP</strong>,
+      select the connected interface if asked, and turn
+      the service On. Configure a pool:
+    </p>
+
+    <pre><code>Pool name:       LAN10
+Default gateway: 0.0.0.0
+DNS server:      0.0.0.0
+Start IP address:192.168.10.100
+Subnet mask:     255.255.255.0
+Maximum users:   50</code></pre>
+
+    <p>
+      Click <strong>Add</strong>, or <strong>Save</strong>
+      when editing an existing pool. Remove or edit any
+      default pool that could overlap. No DNS service is
+      needed for this lab because all tests use IP addresses.
+    </p>
+
+    <p>
+      On each PC, open
+      <strong>Desktop → IP Configuration → DHCP</strong>.
+      Record the assigned address and mask.
+      Ping the other PCs and the server.
+    </p>
+
+    <p>
+      Why must the server’s address stay outside the
+      client allocation range?
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+      <p>
+        Clients should receive addresses in
+        192.168.10.100–149, with mask 255.255.255.0.
+        The exact allocation order can vary.
+        Keeping 192.168.10.10 outside the pool avoids
+        the DHCP server assigning its own address to a client.
+        Repeat an initial ping if ARP resolution delays
+        the first response.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-3">
+    <div class="meta">MISSION 03</div>
+    <h3>Catch DORA</h3>
+
+    <ol>
+      <li>Switch to <strong>Simulation</strong> mode.</li>
+      <li>
+        In Edit Filters, select DHCP.
+        Some versions group related traffic under DHCP/BOOTP.
+      </li>
+      <li>
+        On one PC, select Static and then DHCP
+        to request a fresh configuration.
+      </li>
+      <li>
+        Use Capture/Forward and open the packet details.
+      </li>
+    </ol>
+
+    <p>
+      Find Discover, Offer, Request and ACK.
+      Record the source/destination IPv4 addresses and
+      UDP ports of the initial Discover.
+      Which messages come from the client?
+    </p>
+
+    <p>
+      If the client reuses an existing lease, you may see
+      a shorter exchange. A newly added PC is an easy way
+      to observe a first-time exchange.
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+      <p>
+        The usual first-time sequence is
+        Discover → Offer → Request → ACK.
+        The client sends Discover and Request.
+        Initial Discover normally uses
+        0.0.0.0:68 → 255.255.255.255:67.
+        A client can broadcast before it has an assigned
+        IPv4 address. Offer and ACK are not always broadcast;
+        inspect what the simulation actually shows.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-4">
+    <div class="meta">MISSION 04</div>
+    <h3>Upgrade to three VLANs</h3>
+
+    <p>
+      Save the first topology as <code>dhcp_step1.pkt</code>.
+      Create a second copy as <code>dhcp_step2.pkt</code>.
+      Replace the 2960 with a
+      <strong>3560 multilayer switch</strong>.
+      Use this port plan:
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>Port</th>
+            <th>VLAN</th>
+            <th>Subnet</th>
+            <th>Gateway</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PC-A</td>
+            <td>Fa0/2</td>
+            <td>10</td>
+            <td>192.168.10.0/24</td>
+            <td>192.168.10.1</td>
+          </tr>
+          <tr>
+            <td>PC-B</td>
+            <td>Fa0/3</td>
+            <td>20</td>
+            <td>192.168.20.0/24</td>
+            <td>192.168.20.1</td>
+          </tr>
+          <tr>
+            <td>PC-C</td>
+            <td>Fa0/4</td>
+            <td>30</td>
+            <td>192.168.30.0/24</td>
+            <td>192.168.30.1</td>
+          </tr>
+          <tr>
+            <td>Server</td>
+            <td>Fa0/1</td>
+            <td>99</td>
+            <td>192.168.99.0/24</td>
+            <td>192.168.99.1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Change the server’s static address to
+      <strong>192.168.99.10/24</strong>, with default gateway
+      <strong>192.168.99.1</strong>.
+      Configure the VLANs and access ports.
+      Keep DHCP clients waiting until the new pools
+      and relay are ready.
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+
+      <pre><code>enable
+configure terminal
+
+vlan 10
+ name CLIENT_A
+vlan 20
+ name CLIENT_B
+vlan 30
+ name CLIENT_C
+vlan 99
+ name SERVERS
+
+interface fastEthernet0/1
+ switchport mode access
+ switchport access vlan 99
+ no shutdown
+
+interface fastEthernet0/2
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+
+interface fastEthernet0/3
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+
+interface fastEthernet0/4
+ switchport mode access
+ switchport access vlan 30
+ no shutdown
+
+end
+show vlan brief</code></pre>
+
+      <p>
+        All four links are access links.
+        A trunk is not needed here because each attached
+        endpoint belongs to one VLAN and routing happens
+        inside the multilayer switch.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-5">
+    <div class="meta">MISSION 05</div>
+    <h3>Enable routing — then predict DHCP</h3>
+
+    <p>
+      Create an SVI with the gateway address for each VLAN
+      and enable IPv4 routing.
+      Do not configure DHCP relay yet.
+    </p>
+
+    <p>
+      Temporarily set PC-B to <code>192.168.20.50/24</code>,
+      gateway <code>192.168.20.1</code>.
+      Verify that it can ping <code>192.168.99.10</code>,
+      then switch PC-B back to DHCP.
+    </p>
+
+    <p>
+      Does working inter-VLAN routing automatically
+      make the DHCP broadcast reach the server?
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+
+      <pre><code>configure terminal
+ip routing
+
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+
+interface vlan 30
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+
+interface vlan 99
+ ip address 192.168.99.1 255.255.255.0
+ no shutdown
+
+end
+show ip interface brief
+show ip route</code></pre>
+
+      <p>
+        Routing allows unicast traffic between connected
+        subnets, but does not normally forward a limited
+        broadcast to another subnet.
+        An SVI requires its VLAN to exist and an active
+        forwarding port in that VLAN.
+        Wait for link/STP convergence before testing.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-6">
+    <div class="meta">MISSION 06</div>
+    <h3>Three pools. One server.</h3>
+
+    <p>
+      On Server-PT, open Services → DHCP.
+      Edit the existing LAN10 pool and add LAN20 and LAN30.
+      Keep DHCP On.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pool</th>
+            <th>Start address</th>
+            <th>Mask</th>
+            <th>Gateway</th>
+            <th>Users</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LAN10</td>
+            <td>192.168.10.100</td>
+            <td>255.255.255.0</td>
+            <td>192.168.10.1</td>
+            <td>50</td>
+          </tr>
+          <tr>
+            <td>LAN20</td>
+            <td>192.168.20.100</td>
+            <td>255.255.255.0</td>
+            <td>192.168.20.1</td>
+            <td>50</td>
+          </tr>
+          <tr>
+            <td>LAN30</td>
+            <td>192.168.30.100</td>
+            <td>255.255.255.0</td>
+            <td>192.168.30.1</td>
+            <td>50</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Set DNS to 0.0.0.0 for each pool.
+      Save each change.
+      The server VLAN uses static addressing and needs
+      no DHCP pool for this exercise.
+    </p>
+
+    <p>
+      What would happen if LAN20 supplied 192.168.10.1
+      as its gateway?
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+      <p>
+        The client would receive a gateway outside its
+        own /24 subnet, making normal off-subnet
+        communication fail.
+        DHCP must provide settings appropriate to the
+        client’s subnet, not the server’s subnet.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-7">
+    <div class="meta">MISSION 07</div>
+    <h3>Relay the request</h3>
+
+    <p>
+      On the L3 switch, configure
+      <code>ip helper-address 192.168.99.10</code>
+      on each <strong>client SVI</strong>.
+      Request DHCP again on all PCs.
+    </p>
+
+    <p>
+      Verify that PC-A gets a VLAN 10 address,
+      PC-B a VLAN 20 address and PC-C a VLAN 30 address.
+      How can the server choose the right pool when every
+      request reaches the same server IP?
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+
+      <pre><code>configure terminal
+
+interface vlan 10
+ ip helper-address 192.168.99.10
+
+interface vlan 20
+ ip helper-address 192.168.99.10
+
+interface vlan 30
+ ip helper-address 192.168.99.10
+
+end
+copy running-config startup-config</code></pre>
+
+      <p>
+        The helper belongs on the interface that receives
+        the client broadcast.
+        The relay forwards the request to the server
+        and supplies the client-side subnet context
+        through the relay-agent address (giaddr).
+        The server uses that information to select
+        a matching pool.
+        You do not need a helper on VLAN 99 for these clients.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-8">
+    <div class="meta">MISSION 08</div>
+    <h3>Prove the whole chain</h3>
+
+    <ol>
+      <li>
+        On every PC, run <code>ipconfig /all</code>
+        and record IP, mask and gateway.
+      </li>
+      <li>
+        Ping the local gateway, then 192.168.99.10,
+        then each of the other PCs.
+      </li>
+      <li>
+        On the switch, inspect the VLANs, SVIs
+        and routing table.
+      </li>
+      <li>
+        In Simulation mode, request DHCP on a client
+        and follow the packet through the relay to the server.
+      </li>
+      <li>
+        Filter for ARP and ICMP, then ping between VLANs.
+      </li>
+    </ol>
+
+    <p>
+      Deliver a screenshot of the topology, the three client
+      configurations and successful inter-VLAN pings.
+      Explain the roles of DHCP, ARP and ICMP in three sentences.
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+
+      <pre><code>show vlan brief
+show ip interface brief
+show ip route
+show ip arp
+show running-config</code></pre>
+
+      <p>
+        DHCP provides client addressing and gateway settings.
+        ARP resolves the local next-hop MAC; for a remote
+        subnet, this is the gateway MAC.
+        ICMP Echo Request/Reply tests IP reachability.
+        The L3 switch routes the packet and builds a new
+        Ethernet frame for the outgoing VLAN.
+        Its ARP table and MAC table have different purposes.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-9">
+    <div class="meta">MISSION 09</div>
+    <h3>Break one thing. Explain the symptom.</h3>
+
+    <p>
+      Save a working copy first.
+      Make one change at a time, test, then restore it:
+    </p>
+
+    <ol>
+      <li>
+        Remove the helper from VLAN 20 and make PC-B
+        request a fresh lease.
+      </li>
+      <li>
+        Restore the helper, then remove <code>ip routing</code>.
+      </li>
+      <li>
+        Restore routing, then assign PC-C’s access port
+        to VLAN 20 instead of 30. Request DHCP again.
+      </li>
+    </ol>
+
+    <p>
+      For each fault, predict the outcome before testing.
+      An existing DHCP lease may remain usable:
+      use <code>ipconfig /release</code> then
+      <code>ipconfig /renew</code> in this isolated lab,
+      or add a fresh test PC.
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+
+      <p>
+        Without the helper, a fresh VLAN 20 request cannot
+        reach the remote DHCP server through the intended relay.
+        Without IP routing, cross-subnet communication fails;
+        do not assume that an existing client lease immediately
+        disappears. A client moved into VLAN 20 should receive
+        a VLAN 20 lease on a new allocation:
+        DHCP follows the network attachment, not the PC’s name.
+      </p>
+
+      <pre><code>configure terminal
+interface vlan 20
+ no ip helper-address 192.168.99.10
+end
+
+! Restore before continuing:
+configure terminal
+interface vlan 20
+ ip helper-address 192.168.99.10
+exit
+no ip routing
+end
+
+! Restore routing:
+configure terminal
+ip routing
+end</code></pre>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <article class="challenge" id="step-10">
+    <div class="meta">MISSION 10</div>
+    <h3>Alternative route: router-on-a-stick</h3>
+
+    <p>
+      Optional: instead of the 3560, use a 2960 and a
+      1941 router. Retain the same VLANs, access ports,
+      server settings and DHCP pools.
+      Connect switch <strong>Gi0/1</strong>
+      to router <strong>Gi0/0</strong>.
+    </p>
+
+    <p>
+      Create VLANs 10, 20, 30 and 99 on the 2960 as above.
+      Configure the uplink as a trunk.
+      On the router, create one subinterface per VLAN
+      and place the helpers on the three client subinterfaces.
+    </p>
+
+    <p>
+      Interface names vary by router model;
+      adapt them to your device.
+      Which link carries traffic for all four VLANs?
+    </p>
+
+    <details>
+      <summary>Reveal discussion / configuration</summary>
+
+      <p>2960 uplink:</p>
+
+      <pre><code>enable
+configure terminal
+
+interface gigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,99
+ no shutdown
+
+end</code></pre>
+
+      <p>1941 router:</p>
+
+      <pre><code>enable
+configure terminal
+
+interface gigabitEthernet0/0
+ no ip address
+ no shutdown
+
+interface gigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ ip helper-address 192.168.99.10
+
+interface gigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ ip helper-address 192.168.99.10
+
+interface gigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ ip helper-address 192.168.99.10
+
+interface gigabitEthernet0/0.99
+ encapsulation dot1Q 99
+ ip address 192.168.99.1 255.255.255.0
+
+end
+copy running-config startup-config</code></pre>
+
+      <p>
+        The switch–router trunk carries the four VLANs
+        using 802.1Q tagging.
+        The router subinterfaces provide the gateways
+        and relay function.
+        Leave the L2 switch without these gateway addresses.
+        Test using the same verification steps as the main path.
+      </p>
+    </details>
+
+    <label class="check">
+      <input type="checkbox" class="done">
+      Mission complete
+    </label>
+  </article>
+
+  <footer>
+    <p>
+      EXTRA SIGNAL / Find the hidden flags and explain
+      their networking lessons.
+    </p>
+
+    <p>
+      ALEF-93 / BAALSTORM · DHCP / VLAN / RELAY / ROUTING
+    </p>
+
+    <a href="#">&lt; BACK TO TOP</a>
+  </footer>
+
+</main>
+
+<script>
+  const boxes = [...document.querySelectorAll(".done")];
+
+  boxes.forEach(box => {
+    box.addEventListener("change", () => {
+      const completed = boxes.filter(item => item.checked).length;
+
+      document.getElementById("progress").textContent =
+        completed + " / 10 missions marked complete";
+    });
+  });
+
+  console.info("FLAG{the_pool_follows_the_client_subnet}");
+</script>
+
+</body>
+</html>
