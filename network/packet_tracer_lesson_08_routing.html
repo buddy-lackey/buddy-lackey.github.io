@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baalstorm | Routing Challenge</title>
+<style>
+:root {
+  --bg: #05070a;
+  --panel: #101820;
+  --green: #00e89d;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --border: #28403b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 Consolas, monospace;
+}
+header {
+  padding: 35px 20px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+h1, h2, h3 { color: var(--green); }
+h1 { font-size: 2rem; margin-bottom: 5px; }
+.subtitle { color: var(--muted); }
+main { max-width: 950px; margin: auto; padding: 25px 18px; }
+section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px;
+  margin-bottom: 24px;
+}
+.tag {
+  color: var(--green);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+pre {
+  background: #020405;
+  border: 1px solid #254339;
+  border-radius: 6px;
+  padding: 15px;
+  overflow-x: auto;
+  color: #a7f3d0;
+}
+code { color: #a7f3d0; }
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  padding: 9px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+th { color: var(--green); }
+details {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+}
+summary { cursor: pointer; color: var(--green); }
+.warning { color: #fbbf24; }
+.topology {
+  text-align: center;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--green);
+}
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="tag">BAALSTORM NETWORK LABS</div>
+  <h1>ROUTING CHALLENGE</h1>
+  <div class="subtitle">
+    The Missing Route // Packet Tracer
+  </div>
+</header>
+
+<main>
+
+<section>
+  <span class="tag">MISSION BRIEFING</span>
+  <h2>Två LAN. Två routrar. Ingen kommunikation.</h2>
+  <p>
+    Du är nätverkstekniker och ska koppla samman två
+    lokala nätverk. Alla enheter är korrekt anslutna,
+    men datorerna kan ännu inte kommunicera.
+  </p>
+  <p>
+    Ditt uppdrag är att konfigurera IP-adresser,
+    undersöka routingtabeller och skapa fungerande
+    routing mellan nätverken.
+  </p>
+  <p><strong>Tidsåtgång:</strong> cirka 60–90 minuter.</p>
+  <p><strong>Verktyg:</strong> Cisco Packet Tracer.</p>
+</section>
+
+<section>
+  <span class="tag">NETWORK TOPOLOGY</span>
+  <h2>Bygg nätverket</h2>
+
+  <div class="topology">
+PC1          R1              R2          PC2
+ |            |               |            |
+ |            |               |            |
+ +--- SW1 ----+---------------+---- SW2 ----+
+       LAN A       TRANSIT         LAN B
+  </div>
+
+  <p>
+    Använd två Cisco-routrar, två switchar och
+    två datorer. Koppla routrarna direkt till
+    varandra med Ethernet.
+  </p>
+
+  <h3>IP-plan</h3>
+  <table>
+    <tr>
+      <th>Enhet</th><th>Interface</th>
+      <th>IP-adress</th><th>Gateway</th>
+    </tr>
+    <tr>
+      <td>PC1</td><td>Ethernet</td>
+      <td>192.168.10.10/24</td>
+      <td>192.168.10.1</td>
+    </tr>
+    <tr>
+      <td>R1</td><td>G0/0</td>
+      <td>192.168.10.1/24</td><td>–</td>
+    </tr>
+    <tr>
+      <td>R1</td><td>G0/1</td>
+      <td>10.0.0.1/30</td><td>–</td>
+    </tr>
+    <tr>
+      <td>R2</td><td>G0/0</td>
+      <td>10.0.0.2/30</td><td>–</td>
+    </tr>
+    <tr>
+      <td>R2</td><td>G0/1</td>
+      <td>192.168.20.1/24</td><td>–</td>
+    </tr>
+    <tr>
+      <td>PC2</td><td>Ethernet</td>
+      <td>192.168.20.10/24</td>
+      <td>192.168.20.1</td>
+    </tr>
+  </table>
+  <p class="warning">
+    Kontrollera interfacenamnen på din routermodell.
+    De kan skilja sig från tabellen.
+  </p>
+</section>
+
+<section>
+  <span class="tag">CHALLENGE 01</span>
+  <h2>Configure the Interfaces</h2>
+  <p>
+    Konfigurera IP-adresserna på routrarnas
+    interface enligt IP-planen.
+  </p>
+  <p>
+    Glöm inte att aktivera interfacen.
+  </p>
+
+  <h3>Verifiera</h3>
+  <pre>show ip interface brief
+show ip route</pre>
+
+  <p>Besvara följande frågor:</p>
+  <ol>
+    <li>Vilka interface är up/up?</li>
+    <li>Vilka nät finns i routingtabellen?</li>
+    <li>Vad betyder bokstaven C i routingtabellen?</li>
+    <li>Vad betyder bokstaven L?</li>
+  </ol>
+
+  <details>
+    <summary>REVEAL DISCUSSION</summary>
+    <p>
+      C betyder Connected och visar ett direktanslutet
+      nätverk. L betyder Local och visar routerns
+      egen IP-adress som en /32-route.
+    </p>
+    <pre>interface gigabitEthernet0/0
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown</pre>
+    <p>
+      Exemplet gäller R1:s LAN-interface.
+      Övriga interface konfigureras på motsvarande sätt.
+    </p>
+  </details>
+</section>
+
+<section>
+  <span class="tag">CHALLENGE 02</span>
+  <h2>The Missing Route</h2>
+  <p>
+    Konfigurera PC1 och PC2 enligt IP-planen.
+    Kontrollera först att datorerna når sina
+    respektive default gateways.
+  </p>
+
+  <pre>ping 192.168.10.1</pre>
+
+  <p>
+    Försök sedan pinga PC2 från PC1.
+  </p>
+
+  <pre>ping 192.168.20.10</pre>
+
+  <p>Undersök följande:</p>
+  <ol>
+    <li>Varför fungerar ping till default gateway?</li>
+    <li>Varför fungerar inte ping till PC2?</li>
+    <li>Vilken information saknas i R1?</li>
+    <li>Vilken information saknas i R2?</li>
+  </ol>
+
+  <details>
+    <summary>REVEAL DISCUSSION</summary>
+    <p>
+      R1 känner endast till sina direktanslutna nät.
+      Den saknar en route till 192.168.20.0/24.
+    </p>
+    <p>
+      R2 saknar motsvarande route till
+      192.168.10.0/24.
+    </p>
+    <p>
+      Routrarna behöver information om både
+      framvägen och returvägen.
+    </p>
+  </details>
+</section>
+
+<section>
+  <span class="tag">CHALLENGE 03</span>
+  <h2>Static Routing</h2>
+
+  <p>
+    Konfigurera statiska routes så att R1
+    känner till LAN B och R2 känner till LAN A.
+  </p>
+
+  <p>
+    Använd nästa routers IP-adress som next hop.
+  </p>
+
+  <details>
+    <summary>HINT – Static route syntax</summary>
+    <pre>ip route NETWORK MASK NEXT-HOP</pre>
+  </details>
+
+  <p>Verifiera med:</p>
+  <pre>show ip route
+ping 192.168.20.10</pre>
+
+  <details>
+    <summary>REVEAL SOLUTION</summary>
+    <h3>R1</h3>
+    <pre>configure terminal
+ip route 192.168.20.0 255.255.255.0 10.0.0.2
+end</pre>
+    <h3>R2</h3>
+    <pre>configure terminal
+ip route 192.168.10.0 255.255.255.0 10.0.0.1
+end</pre>
+    <p>
+      Kontrollera att S visas i routingtabellen.
+      S betyder Static.
+    </p>
+  </details>
+</section>
+
+<section>
+  <span class="tag">CHALLENGE 04</span>
+  <h2>Follow the Packet</h2>
+
+  <p>
+    Växla till Simulation Mode i Packet Tracer.
+    Filtrera gärna på ARP och ICMP.
+  </p>
+
+  <p>
+    Skicka ett ping från PC1 till PC2 och följ
+    paketet genom nätverket.
+  </p>
+
+  <ol>
+    <li>Vilken MAC-adress använder PC1 som destination?</li>
+    <li>Ändras IP-paketets destinationsadress?</li>
+    <li>Vad händer med Ethernet-headern i R1?</li>
+    <li>Vad händer med TTL när paketet routas?</li>
+    <li>Varför behöver routern göra ARP?</li>
+  </ol>
+
+  <details>
+    <summary>REVEAL DISCUSSION</summary>
+    <p>
+      PC1 skickar ramen till sin default gateway,
+      eftersom PC2 finns i ett annat IP-nät.
+    </p>
+    <p>
+      Routern tar bort den inkommande Ethernet-
+      inkapslingen och skapar en ny för nästa länk.
+    </p>
+    <p>
+      IP-destinationsadressen är fortfarande PC2.
+      TTL minskas med ett för varje routerhopp.
+    </p>
+    <p>
+      ARP används för att hitta nästa hops
+      MAC-adress på Ethernet-länken.
+    </p>
+  </details>
+</section>
+
+<section>
+  <span class="tag">BOSS CHALLENGE</span>
+  <h2>Broken Network</h2>
+
+  <p>
+    En kollega har råkat konfigurera fel
+    next-hop-adress på R1.
+  </p>
+
+  <p>
+    Ta bort den fungerande statiska routen
+    på R1 och lägg till följande felaktiga route:
+  </p>
+
+  <pre>configure terminal
+no ip route 192.168.20.0 255.255.255.0 10.0.0.2
+ip route 192.168.20.0 255.255.255.0 10.0.0.6
+end</pre>
+
+  <p>
+    Din uppgift är att felsöka och återställa
+    kommunikationen.
+  </p>
+
+  <ol>
+    <li>Undersök R1:s routingtabell.</li>
+    <li>Kontrollera next-hop-adressen.</li>
+    <li>Förklara varför routen inte fungerar.</li>
+    <li>Återställ korrekt routing.</li>
+    <li>Verifiera med ping och tracert.</li>
+  </ol>
+
+  <details>
+    <summary>REVEAL SOLUTION</summary>
+    <p>
+      10.0.0.6 är inte en nåbar next hop i
+      den aktuella topologin. Den statiska
+      routen kan därför inte användas.
+    </p>
+    <pre>configure terminal
+no ip route 192.168.20.0 255.255.255.0 10.0.0.6
+ip route 192.168.20.0 255.255.255.0 10.0.0.2
+end</pre>
+  </details>
+</section>
+
+<section>
+  <span class="tag">BONUS CHALLENGE</span>
+  <h2>Dynamic Routing – RIPv2</h2>
+
+  <p>
+    Hittills har ni manuellt berättat för
+    routrarna var de olika nätverken finns.
+  </p>
+  <p>
+    Men vad händer om nätverket växer till
+    20 eller 100 routrar?
+  </p>
+  <p>
+    Undersök hur RIPv2 kan användas för att
+    automatiskt utbyta routinginformation.
+  </p>
+
+  <details>
+    <summary>REVEAL CONFIGURATION</summary>
+    <h3>R1</h3>
+    <pre>configure terminal
+no ip route 192.168.20.0 255.255.255.0 10.0.0.2
+router rip
+ version 2
+ no auto-summary
+ network 192.168.10.0
+ network 10.0.0.0
+end</pre>
+
+    <h3>R2</h3>
+    <pre>configure terminal
+no ip route 192.168.10.0 255.255.255.0 10.0.0.1
+router rip
+ version 2
+ no auto-summary
+ network 192.168.20.0
+ network 10.0.0.0
+end</pre>
+
+    <p>
+      Kontrollera routingtabellen efter att
+      routrarna har utbytt information.
+    </p>
+    <pre>show ip route
+show ip protocols</pre>
+    <p>
+      Routes som lärts in via RIP markeras
+      med bokstaven R.
+    </p>
+  </details>
+</section>
+
+<section>
+  <span class="tag">MISSION COMPLETE</span>
+  <h2>Vad har du lärt dig?</h2>
+
+  <p>Efter labben ska du kunna förklara:</p>
+  <ul>
+    <li>Skillnaden mellan switching och routing.</li>
+    <li>Vad en default gateway gör.</li>
+    <li>Hur en routingtabell används.</li>
+    <li>Vad en connected route är.</li>
+    <li>Hur statiska routes fungerar.</li>
+    <li>Varför returvägen är viktig.</li>
+    <li>Hur MAC-adresser och TTL förändras.</li>
+    <li>Skillnaden mellan statisk och dynamisk routing.</li>
+  </ul>
+
+  <p class="tag">FLAG{ROUTE_FOUND}</p>
+</section>
+
+</main>
+
+<footer>
+  BAALSTORM // NETWORK ENGINEERING LABS
+</footer>
+</body>
+</html>
