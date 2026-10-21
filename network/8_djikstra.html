@@ -7,402 +7,739 @@
 <title>Dijkstra // ALEF-93 Network Lab</title>
 <style>
 :root {
-  --bg: #05070a;
-  --panel: #080d0c;
-  --panel2: #0b1411;
-  --green: #00e89d;
-  --soft: #7dffcf;
-  --text: #d8eee7;
-  --muted: #77968b;
-  --border: #163c31;
-  --gold: #ffd166;
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --green:#00e89d;
+  --soft:#7dffcf;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+  --yellow:#f5d56b;
+  --red:#ff7b87;
 }
-* { box-sizing: border-box; }
+* { box-sizing:border-box; }
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Consolas, "Courier New", monospace;
-  line-height: 1.65;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.65 Consolas,'Courier New',monospace;
 }
-main { max-width: 1040px; margin: auto; padding: 28px 20px 80px; }
-a { color: var(--green); }
-.back { font-size: 13px; text-decoration: none; }
-.eyebrow { color: var(--green); font-size: 12px; letter-spacing: 2px; margin-top: 38px; }
-h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.15; margin: 10px 0; }
-h2 { font-size: 22px; margin: 0 0 12px; }
-h3 { font-size: 16px; color: var(--soft); }
-p { margin: 10px 0 16px; }
-.muted, small { color: var(--muted); }
-.status { color: var(--green); font-size: 12px; }
-.cursor { animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-section { margin-top: 42px; }
-.panel {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 5px;
-  padding: 22px;
+main,header,footer {
+  max-width:1040px;
+  margin:auto;
+  padding:22px;
 }
-.subpanel {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  padding: 16px;
-  border-radius: 4px;
+a { color:var(--soft); }
+.back { font-size:12px; text-decoration:none; }
+.eyebrow {
+  color:var(--green);
+  letter-spacing:.15em;
+  font-size:12px;
+  margin-top:24px;
 }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-button, select {
-  background: #0b211a;
-  border: 1px solid #28634d;
-  color: var(--green);
-  font: inherit;
-  padding: 9px 14px;
-  cursor: pointer;
-  border-radius: 3px;
+h1 {
+  font-size:clamp(28px,5vw,48px);
+  line-height:1.15;
+  margin:8px 0 16px;
 }
-button:hover { background: #12392a; }
-button:disabled { opacity: .35; cursor: default; }
-.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 15px 0; }
-.tag { color: var(--green); font-size: 12px; letter-spacing: 1px; }
-svg { width: 100%; height: auto; display: block; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-td, th { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--border); }
-th { color: var(--green); }
-.log { min-height: 95px; color: var(--soft); font-size: 13px; }
-code { color: var(--gold); }
-details { border-top: 1px solid var(--border); padding: 12px 0; }
-summary { cursor: pointer; color: var(--green); }
-.maze { display: grid; gap: 3px; justify-content: start; margin: 15px 0; }
-.cell { width: 27px; height: 27px; background: #102019; border-radius: 2px; display: grid; place-items: center; font-size: 19px; }
-.wall { background: #28495b; }
-.path { background: #66501b; }
-.pac { color: #ffe14b; }
-.ghost { color: #ff7070; }
-@media(max-width: 750px) {
-  .grid { grid-template-columns: 1fr; }
-  .panel { padding: 15px; }
-  .cell { width: 23px; height: 23px; }
+h2 { font-size:20px; color:var(--soft); margin:0 0 12px; }
+h3 { font-size:15px; color:var(--green); margin:0 0 8px; }
+.status { color:var(--green); font-size:12px; }
+.blink { animation:blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.intro { max-width:800px; color:var(--muted); }
+section {
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:24px;
+  margin:25px 0;
+}
+.tag {
+  font-size:12px;
+  letter-spacing:.1em;
+  color:var(--green);
+  margin-bottom:10px;
+}
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+.note {
+  background:var(--panel2);
+  border-left:2px solid var(--green);
+  padding:14px;
+  color:var(--text);
+}
+.muted { color:var(--muted); }
+button,select {
+  font:inherit;
+  background:var(--panel2);
+  color:var(--soft);
+  border:1px solid #286a51;
+  padding:9px 14px;
+  cursor:pointer;
+}
+button:hover { border-color:var(--green); }
+button:disabled { opacity:.35; cursor:default; }
+.controls {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin:14px 0;
+}
+svg {
+  display:block;
+  width:100%;
+  height:auto;
+  border:1px solid var(--border);
+  background:#060d0b;
+}
+.edge { stroke:#3b6357; stroke-width:2.5; }
+.edge.active { stroke:var(--yellow); stroke-width:5; }
+.node { fill:#0b2119; stroke:var(--green); stroke-width:2; }
+.node.done { fill:#175d45; }
+.node.current { stroke:var(--yellow); stroke-width:4; }
+.node-label {
+  fill:var(--text);
+  font:700 17px Consolas,monospace;
+  text-anchor:middle;
+  dominant-baseline:middle;
+}
+.weight {
+  fill:var(--yellow);
+  font:14px Consolas,monospace;
+  text-anchor:middle;
+  paint-order:stroke;
+  stroke:#060d0b;
+  stroke-width:5px;
+}
+.data { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; font-size:13px; }
+th,td {
+  text-align:left;
+  padding:9px;
+  border-bottom:1px solid var(--border);
+}
+th { color:var(--green); }
+.small { font-size:12px; }
+.challenge {
+  margin-top:20px;
+  border-top:1px solid var(--border);
+  padding-top:18px;
+}
+details {
+  margin-top:10px;
+  border:1px solid var(--border);
+  padding:10px 14px;
+}
+summary { cursor:pointer; color:var(--soft); }
+.maze {
+  display:grid;
+  grid-template-columns:repeat(11,minmax(0,1fr));
+  gap:2px;
+  max-width:430px;
+  background:#030907;
+  padding:8px;
+  border:1px solid var(--border);
+}
+.cell {
+  aspect-ratio:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(11px,2.2vw,23px);
+  background:#10241b;
+  color:var(--muted);
+  border:1px solid #18362b;
+}
+.wall { background:#152438; border-color:#31537c; }
+.visited { background:#28503e; }
+.route { background:#71622d; color:#fff; }
+.ghost { color:#ff8b9e; }
+.pac { color:#f8d65c; }
+.legend { font-size:12px; color:var(--muted); }
+.foot {
+  font-size:12px;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+}
+@media(max-width:720px) {
+  .grid { grid-template-columns:1fr; }
+  section { padding:16px; }
+  main,header,footer { padding:16px; }
 }
 </style>
 </head>
 <body>
+
+<header>
+  <a class="back" href="index.html">&lt; RETURN TO HOME</a>
+  <div class="eyebrow">ALEF-93 // NETWORK LAB // BONUS MODULE</div>
+  <h1>DIJKSTRA'S ALGORITHM</h1>
+  <div class="status">
+    ● ROUTING SYSTEM ONLINE<span class="blink">_</span>
+  </div>
+  <p class="intro">
+    How does a router find the lowest-cost path through a network?
+    Meet the computer scientist behind the algorithm, then run it
+    yourself. Finally: can a ghost use the same idea to catch Pac-Man?
+  </p>
+</header>
+
 <main>
-<a class="back" href="index.html">&lt; RETURN TO HOME</a>
 
-<div class="eyebrow">NETWORK LAB // ALGORITHMS</div>
-<h1>DIJKSTRA'S ALGORITHM</h1>
-<div class="status">● ROUTING SYSTEM ONLINE<span class="cursor">_</span></div>
-<p class="muted">Shortest paths, link costs, routing protocols — and a hungry yellow circle.</p>
-
-<section class="panel">
-  <div class="tag">// THE PERSON BEHIND THE ALGORITHM</div>
+<section>
+  <div class="tag">// THE PERSON BEHIND THE PATH</div>
   <h2>Edsger W. Dijkstra (1930–2002)</h2>
-  <p>Edsger Wybe Dijkstra was a Dutch computer scientist and mathematician. In 1956, he devised an elegant method for finding shortest paths through a network. The algorithm was published in 1959.</p>
-  <p>His original problem was inspired by finding the shortest route between two cities. The solution later became fundamental to computer science, navigation systems, and IP routing.</p>
-  <p>Dijkstra's algorithm finds shortest paths from one starting node to all reachable nodes in a graph with <strong>non-negative edge weights</strong>.</p>
-  <p class="muted">In networking, those weights can represent link costs rather than geographical distance.</p>
-  <div class="subpanel">
-    <strong>Fun fact:</strong> Dijkstra developed the algorithm without a computer, and later recalled designing it in about twenty minutes.
-  </div>
-</section>
-
-<section>
-  <div class="tag">// THE BASIC IDEA</div>
-  <h2>Finding the cheapest route</h2>
-  <p>Imagine a network of routers. Each connection has a cost. Your task is to calculate the lowest total cost from one router to every other router.</p>
-  <div class="panel">
-    <p><strong>The algorithm:</strong></p>
-    <ol>
-      <li>Set the starting router's distance to 0. All others begin at infinity.</li>
-      <li>Select the unvisited router with the lowest known distance.</li>
-      <li>Check whether travelling through it improves the distance to its neighbours.</li>
-      <li>Mark that router as visited.</li>
-      <li>Repeat until all reachable routers have been processed.</li>
-    </ol>
-    <p class="muted">The algorithm considers total path cost, not simply the cheapest next link.</p>
-  </div>
-</section>
-
-<section>
-  <div class="tag">// INTERACTIVE ROUTING LAB</div>
-  <h2>Calculate the shortest paths</h2>
-  <p>Choose a starting router and step through the algorithm. Watch how the tentative distances change.</p>
-  <div class="panel">
-    <div class="controls">
-      <label for="start">Starting router:</label>
-      <select id="start"></select>
-      <button id="reset">Reset</button>
-      <button id="step">Next step →</button>
-      <button id="run">Run all</button>
+  <div class="grid">
+    <div>
+      <p>
+        Dijkstra was a Dutch computer scientist. He conceived his
+        shortest-path algorithm in <strong>1956</strong> and published
+        it in <strong>1959</strong>. His work influenced programming
+        languages, algorithms, and how we reason about correct software.
+      </p>
+      <p>
+        His idea: starting from one node, repeatedly select the
+        <strong>unvisited node with the lowest known total cost</strong>,
+        then see whether traveling through it improves the routes
+        to its neighbors.
+      </p>
+      <p class="muted small">
+        Historical note: the algorithm works with non-negative edge
+        weights. Dijkstra received the ACM Turing Award in 1972.
+      </p>
     </div>
-    <div class="grid">
-      <div class="subpanel">
-        <svg id="network" viewBox="0 0 500 340" role="img" aria-label="Router network graph"></svg>
-        <small>Green: visited. Gold: current router. Numbers on links: costs.</small>
+    <div class="note">
+      <strong>WHY NETWORK ENGINEERS CARE</strong>
+      <p>
+        OSPF is a link-state routing protocol. Routers build a view
+        of the network topology and run a shortest-path-first
+        calculation based on Dijkstra's algorithm.
+      </p>
+      <p>
+        OSPF cost is a routing metric, <em>not necessarily</em>
+        physical distance or delay.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="tag">// BEFORE YOU START</div>
+  <h2>What does "visit" mean?</h2>
+  <p>
+    Think of each router as having a
+    <strong>best known total cost from the source</strong>.
+    At first we only know one thing for certain: the cost from A
+    to itself is <strong>0</strong>.
+    The other costs are <strong>∞ (unknown so far)</strong> —
+    this does <em>not</em> mean the physical links cost infinity.
+  </p>
+
+  <div class="grid">
+    <div>
+      <svg viewBox="0 0 420 230" role="img"
+           aria-label="Triangle example: A to B costs 2, A to C costs 7, B to C costs 1">
+        <line x1="75" y1="110" x2="300" y2="48"
+              stroke="#3b6357" stroke-width="3"/>
+        <line x1="75" y1="110" x2="300" y2="185"
+              stroke="#3b6357" stroke-width="3"/>
+        <line x1="300" y1="48" x2="300" y2="185"
+              stroke="#3b6357" stroke-width="3"/>
+        <g fill="#f5d56b" font-size="18" text-anchor="middle">
+          <text x="183" y="62">2</text>
+          <text x="180" y="175">7</text>
+          <text x="318" y="120">1</text>
+        </g>
+        <g fill="#0b2119" stroke="#00e89d" stroke-width="3">
+          <circle cx="75" cy="110" r="28"/>
+          <circle cx="300" cy="48" r="28"/>
+          <circle cx="300" cy="185" r="28"/>
+        </g>
+        <g fill="#d8eee7" font-size="21" font-weight="bold"
+           text-anchor="middle">
+          <text x="75" y="117">A</text>
+          <text x="300" y="55">B</text>
+          <text x="300" y="192">C</text>
+        </g>
+      </svg>
+      <p class="muted small">
+        Example: links have costs 2, 7 and 1. We start at A.
+      </p>
+    </div>
+
+    <div class="note">
+      <strong>FOLLOW THE FIRST TWO VISITS</strong>
+      <p>
+        <strong>Initially:</strong>
+        A = 0, B = ∞, C = ∞. Nothing is visited.
+      </p>
+      <p>
+        <strong>Visit A:</strong>
+        A is the lowest unvisited cost (0). Check its links:
+        B = 0 + 2 = 2; C = 0 + 7 = 7.
+        Now mark A visited.
+      </p>
+      <p>
+        <strong>Visit B:</strong>
+        B has the lowest unvisited cost (2).
+        Going via B gives C = 2 + 1 = <strong>3</strong>,
+        better than 7. Update C to 3, then mark B visited.
+      </p>
+      <p>
+        <strong>Visit C:</strong>
+        Its cost 3 is now final.
+        We have found A → B → C, total cost 3.
+      </p>
+    </div>
+  </div>
+
+  <p>
+    <strong>Important:</strong> "Visited" means the shortest total
+    cost to that router is now final. An <strong>unvisited</strong>
+    router can have a tentative cost that improves later.
+    Each click in the simulator below performs one full visit:
+    <strong>
+      select the lowest-cost unvisited router →
+      inspect its neighbours →
+      update cheaper costs →
+      mark it visited
+    </strong>.
+  </p>
+</section>
+
+<section>
+  <div class="tag">// INTERACTIVE ROUTING SIMULATOR</div>
+  <h2>Find the lowest-cost routes</h2>
+  <p>
+    Each line is a link. Each yellow number is its cost.
+    Choose a starting router and press <strong>NEXT STEP</strong>.
+    At the beginning, A is the only router with a finite cost.
+    The first click visits A and discovers costs to its neighbours.
+    Watch the tentative distances change; they may improve on
+    later clicks.
+  </p>
+
+  <div class="controls">
+    <label for="start">SOURCE ROUTER</label>
+    <select id="start">
+      <option>A</option><option>B</option><option>C</option>
+      <option>D</option><option>E</option><option>F</option>
+    </select>
+    <button id="next">NEXT STEP →</button>
+    <button id="reset">RESET</button>
+  </div>
+
+  <svg viewBox="0 0 740 370" role="img"
+       aria-label="Interactive network graph with six routers A through F and weighted links"
+       id="graph"></svg>
+
+  <p id="stepText" class="note" aria-live="polite">
+    Select a source and click NEXT STEP to begin.
+  </p>
+
+  <div class="data">
+    <table>
+      <thead>
+        <tr>
+          <th>ROUTER</th>
+          <th>BEST KNOWN COST</th>
+          <th>PREVIOUS HOP</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody id="routes"></tbody>
+    </table>
+  </div>
+
+  <div class="challenge">
+    <h3>CHALLENGE 01 // THINK BEFORE CLICKING</h3>
+    <p>
+      Start at A. Is the direct link A → C the cheapest route to C?
+      Predict the best route and then verify it with the simulator.
+    </p>
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        No. A → B → C costs 2 + 1 = <strong>3</strong>,
+        while A → C costs <strong>7</strong>.
+        The shortest route can involve more hops.
+      </p>
+    </details>
+  </div>
+
+  <div class="challenge">
+    <h3>CHALLENGE 02 // ROUTING VS FORWARDING</h3>
+    <p>
+      Does Dijkstra's algorithm forward an IP packet, or help
+      calculate which path the routing system should prefer?
+    </p>
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        It calculates shortest paths. Forwarding is the separate
+        act of sending an actual packet toward its next hop using
+        the forwarding information derived from routing decisions.
+      </p>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="tag">// SIDE QUEST: ARCADE PATHFINDING</div>
+  <h2>Ghost vs. Pac-Man</h2>
+  <p>
+    Imagine a ghost navigating a maze.
+    Every walkable square is a node; each move to an adjacent
+    square costs <strong>1</strong>.
+    Walls are not traversable.
+    Dijkstra can find a shortest path to Pac-Man.
+  </p>
+
+  <div class="grid">
+    <div>
+      <div class="maze" id="maze"
+           aria-label="Pac-Man maze with ghost, walls and shortest path"></div>
+      <p class="legend">
+        🟦 Wall &nbsp; 👻 Ghost &nbsp;
+        🟡 Pac-Man &nbsp; Gold = shortest route
+      </p>
+    </div>
+
+    <div>
+      <div class="controls">
+        <button id="hunt">FIND PAC-MAN</button>
+        <button id="mazeReset">CLEAR PATH</button>
       </div>
-      <div class="subpanel">
-        <h3>Distance table</h3>
-        <table>
-          <thead><tr><th>Router</th><th>Cost</th><th>Previous</th><th>Status</th></tr></thead>
-          <tbody id="distances"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="subpanel" style="margin-top:18px">
-      <div class="tag">// ALGORITHM OUTPUT</div>
-      <div id="log" class="log"></div>
+      <p id="mazeInfo" class="note" aria-live="polite">
+        The ghost has not calculated its route yet.
+      </p>
+      <p class="muted small">
+        This is a simplified pathfinding example, not a claim
+        about the actual AI used in the original Pac-Man arcade game.
+        In an unweighted maze, breadth-first search also finds
+        shortest paths.
+      </p>
     </div>
   </div>
-</section>
 
-<section class="panel">
-  <div class="tag">// ROUTING IN THE REAL WORLD</div>
-  <h2>Where does OSPF fit in?</h2>
-  <p>OSPF (Open Shortest Path First) is a link-state routing protocol. Routers exchange information about the network topology and build a link-state database.</p>
-  <p>Each router runs a shortest-path-first calculation using Dijkstra's algorithm to build a shortest-path tree rooted at itself. This information helps determine the routes installed in its routing table.</p>
-  <p><strong>Remember:</strong> Dijkstra calculates paths. A router forwards packets using forwarding information derived from its routing table. These are related but different operations.</p>
-</section>
-
-<section>
-  <div class="tag">// SIDE QUEST: PAC-MAN</div>
-  <h2>Can a ghost find Pac-Man?</h2>
-  <p>Imagine that a ghost knows the entire maze and wants to find the shortest path to Pac-Man. Treat every walkable tile as a node, and every legal move as an edge with cost 1.</p>
-  <p>Click the button to calculate the path. The gold tiles show the route the ghost could follow.</p>
-  <div class="panel">
-    <div class="controls">
-      <button id="chase">Find Pac-Man</button>
-      <button id="clearMaze">Clear path</button>
-    </div>
-    <div id="maze" class="maze"></div>
-    <p id="mazeResult" class="muted">The ghost is waiting...</p>
-    <small>This is a simplified pathfinding demonstration. It does not describe the actual ghost AI used in the original Pac-Man game.</small>
+  <div class="challenge">
+    <h3>CHALLENGE 03 // WHAT CHANGES?</h3>
+    <p>
+      If some tiles cost 5 instead of 1, could the ghost prefer
+      a longer route with a lower total cost?
+    </p>
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        Yes. Dijkstra minimizes <strong>total weight</strong>,
+        not necessarily the number of steps.
+        With equal weights, a shortest-cost path is also a
+        shortest-step path.
+      </p>
+    </details>
   </div>
 </section>
 
 <section>
-  <div class="tag">// CHALLENGES</div>
-  <h2>Think before revealing</h2>
-  <div class="panel">
-    <h3>CHALLENGE 01 — Cheapest link?</h3>
-    <p>Why is choosing the cheapest outgoing link at every step not always enough to find the cheapest complete route?</p>
-    <details><summary>Reveal discussion</summary>
-      <p>A cheap first link may lead to expensive later links. Dijkstra compares accumulated costs from the source and systematically updates the best known distances.</p>
-    </details>
-    <h3>CHALLENGE 02 — Routing vs forwarding</h3>
-    <p>Does a router run Dijkstra's algorithm for every IP packet it forwards?</p>
-    <details><summary>Reveal discussion</summary>
-      <p>No. OSPF calculates routes when building or updating routing information. Packet forwarding uses the forwarding table, normally without recalculating shortest paths for each packet.</p>
-    </details>
-    <h3>CHALLENGE 03 — Link costs</h3>
-    <p>Can the shortest path in terms of hop count be different from the shortest path in terms of OSPF cost?</p>
-    <details><summary>Reveal discussion</summary>
-      <p>Yes. A path with more hops may have a lower total OSPF cost. OSPF optimizes the sum of link costs, not necessarily the number of routers crossed.</p>
-    </details>
+  <div class="tag">// TAKEAWAYS</div>
+  <h2>Three things to remember</h2>
+  <p>01 / Dijkstra computes shortest paths using cumulative, non-negative link costs.</p>
+  <p>02 / OSPF uses shortest-path-first calculations, but calculating a route is not the same as forwarding a packet.</p>
+  <p>03 / The same graph idea works for networks, maps, and mazes.</p>
+  <div class="note small">
+    OPTIONAL INVESTIGATION: Inspect the HTML source.
+    What else is hiding in this lab?
   </div>
 </section>
-<footer class="muted" style="margin-top:45px;font-size:12px">
-  ALEF-93 // NETWORK TRAINING // END OF FILE_
-</footer>
+
 </main>
 
-<!-- FLAG{shortest_path_requires_the_whole_graph} -->
+<footer class="foot">
+  ALEF-93 // BAALSTORM // LEARN BY INVESTIGATING
+</footer>
+
+<!-- FLAG{shortest_path_not_fewest_hops} -->
 
 <script>
-"use strict";
+'use strict';
 
 // ROUTER NETWORK
 const nodes = {
-  A: [65, 160],
-  B: [190, 55],
-  C: [190, 270],
-  D: [330, 65],
-  E: [330, 255],
-  F: [445, 160]
+  A:[90,170],
+  B:[260,65],
+  C:[270,275],
+  D:[450,65],
+  E:[460,270],
+  F:[650,170]
 };
+
 const edges = [
-  ["A","B",4], ["A","C",2], ["B","C",1],
-  ["B","D",5], ["C","D",8], ["C","E",10],
-  ["D","E",2], ["D","F",6], ["E","F",3]
+  ['A','B',2],
+  ['A','C',7],
+  ['B','C',1],
+  ['B','D',5],
+  ['C','D',2],
+  ['C','E',3],
+  ['D','E',1],
+  ['D','F',6],
+  ['E','F',2]
 ];
-const names = Object.keys(nodes);
-const adjacency = Object.fromEntries(names.map(n => [n, []]));
-edges.forEach(([a,b,w]) => {
-  adjacency[a].push([b,w]);
-  adjacency[b].push([a,w]);
-});
 
-const startSelect = document.getElementById("start");
-names.forEach(n => startSelect.add(new Option(n,n)));
-let distance, previous, visited, current, finished, history;
+let state;
+const $ = id => document.getElementById(id);
 
-function reset() {
-  distance = Object.fromEntries(names.map(n => [n, Infinity]));
-  previous = Object.fromEntries(names.map(n => [n, null]));
-  visited = new Set();
-  current = null;
-  finished = false;
-  history = [];
-  distance[startSelect.value] = 0;
-  history.push("Starting from router " + startSelect.value + ". All other distances are infinity.");
-  render();
+function init() {
+  const start = $('start').value;
+  state = {
+    dist:Object.fromEntries(
+      Object.keys(nodes).map(k => [k,k===start?0:Infinity])
+    ),
+    prev:{},
+    done:new Set(),
+    current:null,
+    step:0
+  };
+  draw();
 }
 
-function nextStep() {
-  if (finished) return;
-  const remaining = names.filter(n => !visited.has(n));
-  remaining.sort((a,b) => distance[a] - distance[b]);
-  const u = remaining[0];
-  if (!u || !Number.isFinite(distance[u])) {
-    finished = true;
-    current = null;
-    history.push("Algorithm complete. No more reachable unvisited routers.");
-    render();
-    return;
-  }
-  current = u;
-  const changes = [];
-  for (const [v,w] of adjacency[u]) {
-    if (visited.has(v)) continue;
-    const candidate = distance[u] + w;
-    if (candidate < distance[v]) {
-      const old = distance[v];
-      distance[v] = candidate;
-      previous[v] = u;
-      changes.push(v + ": " + (Number.isFinite(old) ? old : "∞") + " → " + candidate + " via " + u);
+function step() {
+  const available = Object.keys(nodes).filter(
+    k => !state.done.has(k)
+  );
+  available.sort(
+    (a,b) => state.dist[a]-state.dist[b] || a.localeCompare(b)
+  );
+  const u = available[0];
+
+  if (!u || state.dist[u]===Infinity) return;
+
+  state.done.add(u);
+  state.current = u;
+  let changes = [];
+
+  for (const [a,b,w] of edges) {
+    const v = a===u ? b : b===u ? a : null;
+
+    if (
+      v &&
+      !state.done.has(v) &&
+      state.dist[u]+w < state.dist[v]
+    ) {
+      state.dist[v] = state.dist[u]+w;
+      state.prev[v] = u;
+      changes.push(v+' = '+state.dist[v]);
     }
   }
-  visited.add(u);
-  history.push("Visited " + u + " (cost " + distance[u] + "). " + (changes.length ? changes.join("; ") : "No improvements."));
-  if (visited.size === names.length) {
-    finished = true;
-    history.push("All routers processed.");
-  }
-  render();
+
+  state.step++;
+
+  $('stepText').textContent =
+    'STEP '+state.step+
+    ' // Confirm '+u+
+    ' (cost '+state.dist[u]+'). '+
+    (changes.length
+      ? 'Update: '+changes.join(', ')
+      : 'No improvements to neighbors.')+'.';
+
+  draw();
 }
 
-function runAll() {
-  while (!finished) nextStep();
-}
+function draw() {
+  const svg = $('graph');
+  let out = '';
 
-function render() {
-  const svg = document.getElementById("network");
-  let html = "";
   for (const [a,b,w] of edges) {
-    const [x1,y1] = nodes[a], [x2,y2] = nodes[b];
-    html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#28634d" stroke-width="2"/>`;
-    html += `<text x="${(x1+x2)/2}" y="${(y1+y2)/2-7}" fill="#ffd166" font-size="15" text-anchor="middle">${w}</text>`;
-  }
-  for (const n of names) {
-    const [x,y] = nodes[n];
-    const fill = current === n ? "#ffd166" : visited.has(n) ? "#00e89d" : "#102019";
-    const text = current === n || visited.has(n) ? "#05070a" : "#d8eee7";
-    html += `<circle cx="${x}" cy="${y}" r="23" fill="${fill}" stroke="#7dffcf" stroke-width="2"/>`;
-    html += `<text x="${x}" y="${y+6}" fill="${text}" font-size="19" font-weight="bold" text-anchor="middle">${n}</text>`;
-  }
-  svg.innerHTML = html;
+    const [x1,y1] = nodes[a];
+    const [x2,y2] = nodes[b];
+    const active = state.current &&
+      (state.prev[a]===b || state.prev[b]===a);
 
-  document.getElementById("distances").innerHTML = names.map(n => `
+    out += `
+      <line class="edge ${active?'active':''}"
+            x1="${x1}" y1="${y1}"
+            x2="${x2}" y2="${y2}"/>
+      <text class="weight"
+            x="${(x1+x2)/2}"
+            y="${(y1+y2)/2-8}">${w}</text>`;
+  }
+
+  for (const [k,[x,y]] of Object.entries(nodes)) {
+    out += `
+      <circle class="node
+        ${state.done.has(k)?'done':''}
+        ${state.current===k?'current':''}"
+        cx="${x}" cy="${y}" r="24"/>
+      <text class="node-label" x="${x}" y="${y}">${k}</text>`;
+  }
+
+  svg.innerHTML = out;
+
+  $('routes').innerHTML = Object.keys(nodes).map(k => `
     <tr>
-      <td>${n}</td>
-      <td>${Number.isFinite(distance[n]) ? distance[n] : "∞"}</td>
-      <td>${previous[n] || "—"}</td>
-      <td>${visited.has(n) ? "visited" : "tentative"}</td>
-    </tr>`).join("");
-  document.getElementById("log").textContent = history.slice(-5).join("\n");
-  document.getElementById("step").disabled = finished;
-  document.getElementById("run").disabled = finished;
+      <td>${k}</td>
+      <td>${Number.isFinite(state.dist[k])?state.dist[k]:'∞'}</td>
+      <td>${state.prev[k]||'—'}</td>
+      <td>${state.done.has(k)?'CONFIRMED':'tentative'}</td>
+    </tr>`).join('');
+
+  $('next').disabled =
+    state.done.size===Object.keys(nodes).length;
 }
 
-document.getElementById("reset").onclick = reset;
-document.getElementById("step").onclick = nextStep;
-document.getElementById("run").onclick = runAll;
-startSelect.onchange = reset;
-reset();
+$('next').onclick = step;
+$('reset').onclick = () => {
+  init();
+  $('stepText').textContent =
+    'Reset. Choose NEXT STEP to begin.';
+};
+$('start').onchange = () => { $('reset').click(); };
+init();
 
 // PAC-MAN MAZE
-const layout = [
-  "###############",
-  "#G....#.......#",
-  "#.##.#.#.###..#",
-  "#....#.#...#..#",
-  "###.##.###.#.##",
-  "#...#.....#...#",
-  "#.###.###.###.#",
-  "#.....#.....P.#",
-  "###############"
+const mazeRows = [
+  '###########',
+  '#G..#.....#',
+  '#.#.#.###.#',
+  '#.#...#...#',
+  '#.###.#.#.#',
+  '#.....#.#.#',
+  '###.###.#.#',
+  '#...#...#.#',
+  '#.#...#...#',
+  '#...#....P#',
+  '###########'
 ];
-const rows = layout.length;
-const cols = layout[0].length;
-const cells = layout.map(row => row.split(""));
-let ghost, pac;
-for (let y=0; y<rows; y++) for (let x=0; x<cols; x++) {
-  if (cells[y][x] === "G") ghost = [x,y];
-  if (cells[y][x] === "P") pac = [x,y];
-}
-const key = (x,y) => x + "," + y;
-const neighbours = ([x,y]) => [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]
-  .filter(([nx,ny]) => nx>=0 && ny>=0 && nx<cols && ny<rows && cells[ny][nx] !== "#");
 
-function mazePath() {
-  const start = key(...ghost), target = key(...pac);
-  const dist = new Map([[start,0]]);
+const H = mazeRows.length;
+const W = mazeRows[0].length;
+
+let mazePath = [];
+let visited = [];
+
+function renderMaze() {
+  let html = '';
+
+  for (let y=0;y<H;y++) {
+    for (let x=0;x<W;x++) {
+      const c = mazeRows[y][x];
+      const key = x+','+y;
+
+      const cls = c==='#'
+        ? 'wall'
+        : mazePath.includes(key)
+          ? 'route'
+          : visited.includes(key)
+            ? 'visited'
+            : '';
+
+      html += `
+        <div class="cell ${cls}
+                    ${c==='G'?'ghost':''}
+                    ${c==='P'?'pac':''}"
+             title="(${x},${y})">
+          ${c==='G'?'👻':c==='P'?'🟡':''}
+        </div>`;
+    }
+  }
+
+  $('maze').innerHTML = html;
+}
+
+function solveMaze() {
+  const start = [1,1];
+  const goal = [9,9];
+
+  const dist = new Map([[start.join(','),0]]);
   const prev = new Map();
   const done = new Set();
-  while (true) {
-    let u = null, best = Infinity;
-    for (const [k,d] of dist) {
-      if (!done.has(k) && d < best) { u=k; best=d; }
-    }
-    if (u === null || u === target) break;
-    done.add(u);
-    const [x,y] = u.split(",").map(Number);
-    for (const [nx,ny] of neighbours([x,y])) {
-      const v = key(nx,ny);
-      const nd = best + 1;
-      if (nd < (dist.get(v) ?? Infinity)) {
-        dist.set(v,nd);
-        prev.set(v,u);
+  const frontier = [start];
+
+  visited = [];
+
+  while (frontier.length) {
+    frontier.sort(
+      (a,b) =>
+        dist.get(a.join(','))-dist.get(b.join(','))
+    );
+
+    const [x,y] = frontier.shift();
+    const k = x+','+y;
+
+    if (done.has(k)) continue;
+
+    done.add(k);
+    visited.push(k);
+
+    if (x===goal[0] && y===goal[1]) break;
+
+    for (const [dx,dy] of [
+      [1,0],[0,1],[-1,0],[0,-1]
+    ]) {
+      const nx = x+dx;
+      const ny = y+dy;
+      const nk = nx+','+ny;
+
+      if (
+        nx<0 || nx>=W ||
+        ny<0 || ny>=H ||
+        mazeRows[ny][nx]==='#'
+      ) continue;
+
+      const alt = dist.get(k)+1;
+
+      if (alt<(dist.get(nk)??Infinity)) {
+        dist.set(nk,alt);
+        prev.set(nk,k);
+        frontier.push([nx,ny]);
       }
     }
   }
-  if (!dist.has(target)) return null;
-  const path = [];
-  let k = target;
-  while (k !== start) {
-    path.push(k);
-    k = prev.get(k);
-  }
-  path.push(start);
-  return path.reverse();
-}
 
-function renderMaze(path = []) {
-  const highlighted = new Set(path);
-  const maze = document.getElementById("maze");
-  maze.style.gridTemplateColumns = `repeat(${cols}, 27px)`;
-  maze.innerHTML = "";
-  for (let y=0; y<rows; y++) for (let x=0; x<cols; x++) {
-    const c = document.createElement("div");
-    c.className = "cell";
-    if (cells[y][x] === "#") c.classList.add("wall");
-    else if (highlighted.has(key(x,y))) c.classList.add("path");
-    if (cells[y][x] === "G") { c.textContent = "ᗣ"; c.classList.add("ghost"); }
-    if (cells[y][x] === "P") { c.textContent = "●"; c.classList.add("pac"); }
-    maze.appendChild(c);
-  }
-}
+  const end = goal.join(',');
+  mazePath = [];
 
-document.getElementById("chase").onclick = () => {
-  const path = mazePath();
-  renderMaze(path || []);
-  document.getElementById("mazeResult").textContent =
-    path ? "Shortest path found: " + (path.length-1) + " moves." : "Pac-Man is unreachable!";
-};
-document.getElementById("clearMaze").onclick = () => {
+  if (dist.has(end)) {
+    let k = end;
+
+    while (k) {
+      mazePath.push(k);
+      k = prev.get(k);
+    }
+
+    mazePath.reverse();
+
+    $('mazeInfo').textContent =
+      'PATH FOUND // '+dist.get(end)+
+      ' moves. The ghost follows a shortest route through the walkable tiles.';
+  } else {
+    $('mazeInfo').textContent =
+      'NO PATH // Pac-Man is unreachable.';
+  }
+
   renderMaze();
-  document.getElementById("mazeResult").textContent = "The ghost is waiting...";
+}
+
+$('hunt').onclick = solveMaze;
+
+$('mazeReset').onclick = () => {
+  mazePath = [];
+  visited = [];
+  renderMaze();
+  $('mazeInfo').textContent =
+    'The ghost has not calculated its route yet.';
 };
+
 renderMaze();
+
+console.log(
+  'Network lab initialized. Look for the source-code flag.'
+);
 </script>
+
 </body>
 </html>
