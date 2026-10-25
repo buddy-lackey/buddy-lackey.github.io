@@ -1,0 +1,645 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALEF-93 | ACL Lab</title>
+
+<style>
+:root {
+  --bg: #05070a;
+  --panel: #080d0c;
+  --panel2: #0b1411;
+  --green: #00e89d;
+  --soft: #7dffcf;
+  --text: #d8eee7;
+  --muted: #77968b;
+  --border: #163c31;
+  --red: #ff7777;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Consolas, "Courier New", monospace;
+  line-height: 1.65;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 38px 24px 90px;
+}
+
+a {
+  color: var(--green);
+  text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+.back {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin-top: 42px;
+  color: var(--green);
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+
+h1 {
+  font-size: clamp(32px, 5vw, 54px);
+  line-height: 1.15;
+  margin: 10px 0 14px;
+  letter-spacing: -1px;
+}
+
+h2 {
+  font-size: 20px;
+  color: var(--green);
+  margin: 0 0 20px;
+}
+
+h3 {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+
+p { margin: 0 0 16px; }
+
+.intro {
+  color: var(--muted);
+  max-width: 780px;
+}
+
+.status {
+  margin: 22px 0 38px;
+  color: var(--green);
+  font-size: 13px;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 9px;
+}
+
+.cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.section {
+  margin-top: 46px;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 24px;
+  margin: 16px 0;
+}
+
+.panel.secondary {
+  background: var(--panel2);
+}
+
+.label {
+  color: var(--green);
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 9px;
+}
+
+.muted { color: var(--muted); }
+
+code {
+  color: var(--soft);
+}
+
+pre {
+  background: #030605;
+  border: 1px solid var(--border);
+  padding: 17px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--soft);
+}
+
+.topology {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 28px 0;
+}
+
+.device {
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  padding: 18px 12px;
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.device strong {
+  display: block;
+  color: var(--green);
+  font-size: 18px;
+}
+
+.device small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.cable {
+  height: 1px;
+  background: var(--green);
+  flex: .25;
+  min-width: 12px;
+}
+
+.networks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.networks .panel { margin: 0; }
+
+ul, ol {
+  padding-left: 22px;
+}
+
+li { margin: 7px 0; }
+
+.challenge {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 24px;
+  margin: 18px 0;
+}
+
+.challenge-head {
+  color: var(--green);
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+details {
+  border-top: 1px solid var(--border);
+  margin-top: 22px;
+  padding-top: 15px;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--green);
+  font-size: 13px;
+}
+
+details p, details pre {
+  margin-top: 15px;
+}
+
+.note {
+  border-left: 3px solid var(--green);
+  padding: 12px 17px;
+  background: var(--panel2);
+  color: var(--muted);
+  margin: 22px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+th { color: var(--green); }
+
+footer {
+  margin-top: 70px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  main { padding: 24px 16px 60px; }
+
+  .topology {
+    flex-direction: column;
+  }
+
+  .device {
+    width: 100%;
+  }
+
+  .cable {
+    height: 24px;
+    width: 1px;
+    flex: none;
+  }
+
+  .networks {
+    grid-template-columns: 1fr;
+  }
+
+  .panel, .challenge {
+    padding: 17px;
+  }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="eyebrow">NETWORK LAB / 01</div>
+
+<h1>ACCESS CONTROL LISTS</h1>
+
+<p class="intro">
+  Configure a Cisco router to filter traffic between two networks.
+  Build the topology in Packet Tracer, create an ACL and verify
+  how packets are handled.
+</p>
+
+<div class="status">
+  <span class="dot"></span>
+  NETWORK FILTERING LAB ONLINE<span class="cursor">_</span>
+</div>
+
+<section class="section">
+  <h2>// MISSION</h2>
+
+  <div class="panel">
+    <p>
+      Du ska bygga två nätverk som kommunicerar via en router.
+      När kommunikationen fungerar ska du konfigurera en ACL
+      som blockerar trafik från LAN 1 till LAN 2.
+    </p>
+
+    <p class="muted">
+      Målet är att förstå hur ACL-regler skapas, var de appliceras
+      och hur du verifierar resultatet.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>// NETWORK TOPOLOGY</h2>
+
+  <div class="topology">
+    <div class="device">
+      <strong>PC1</strong>
+      <small>192.168.10.10</small>
+    </div>
+
+    <div class="cable"></div>
+
+    <div class="device">
+      <strong>R1</strong>
+      <small>G0/0 | G0/1</small>
+    </div>
+
+    <div class="cable"></div>
+
+    <div class="device">
+      <strong>PC2</strong>
+      <small>192.168.20.10</small>
+    </div>
+  </div>
+
+  <div class="networks">
+    <div class="panel secondary">
+      <div class="label">LAN 1</div>
+      <strong>192.168.10.0/24</strong>
+      <p class="muted">
+        PC1: 192.168.10.10<br>
+        Gateway: 192.168.10.1<br>
+        Router G0/0: 192.168.10.1
+      </p>
+    </div>
+
+    <div class="panel secondary">
+      <div class="label">LAN 2</div>
+      <strong>192.168.20.0/24</strong>
+      <p class="muted">
+        PC2: 192.168.20.10<br>
+        Gateway: 192.168.20.1<br>
+        Router G0/1: 192.168.20.1
+      </p>
+    </div>
+  </div>
+
+  <div class="note">
+    Använd en router med två Ethernet-interface, exempelvis
+    Cisco 2911. Du kan ansluta datorerna direkt till routern
+    eller använda en switch i varje LAN.
+  </div>
+</section>
+
+<section class="section">
+  <h2>// CHALLENGES</h2>
+
+  <article class="challenge">
+    <div class="challenge-head">CHALLENGE 01</div>
+    <h3>Build the network</h3>
+
+    <p>Bygg topologin i Cisco Packet Tracer.</p>
+
+    <ol>
+      <li>Konfigurera IP-adresser på routerns två interface.</li>
+      <li>Aktivera interfacen med <code>no shutdown</code>.</li>
+      <li>Konfigurera IP-adress, nätmask och gateway på PC1 och PC2.</li>
+      <li>Verifiera att PC1 kan pinga PC2.</li>
+    </ol>
+
+    <p>
+      <strong>Fråga:</strong> Varför behövs en router för
+      kommunikationen mellan PC1 och PC2?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        PC1 och PC2 ligger i olika IP-nätverk. Trafiken måste
+        därför routas via R1. Datorerna använder sina respektive
+        default gateways för att nå det andra nätverket.
+      </p>
+    </details>
+  </article>
+
+  <article class="challenge">
+    <div class="challenge-head">CHALLENGE 02</div>
+    <h3>Create a standard ACL</h3>
+
+    <p>
+      Skapa en standard ACL med nummer <code>10</code>.
+    </p>
+
+    <p>ACL:en ska:</p>
+
+    <ul>
+      <li>Neka trafik med källadress i 192.168.10.0/24.</li>
+      <li>Tillåta övrig trafik.</li>
+    </ul>
+
+    <p>
+      <strong>Fråga:</strong> Varför behöver du lägga till
+      en regel som tillåter övrig trafik?
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        Varje traditionell Cisco ACL avslutas logiskt med
+        <code>implicit deny</code>. Utan en tillåtande regel
+        blockeras all trafik som inte matchar en tidigare ACE.
+      </p>
+
+      <pre>access-list 10 deny 192.168.10.0 0.0.0.255
+access-list 10 permit any</pre>
+    </details>
+  </article>
+
+  <article class="challenge">
+    <div class="challenge-head">CHALLENGE 03</div>
+    <h3>Apply the ACL</h3>
+
+    <p>
+      Applicera ACL 10 så att trafik från PC1 mot LAN 2 blockeras.
+    </p>
+
+    <p>Fundera innan du konfigurerar:</p>
+
+    <ul>
+      <li>På vilket interface bör ACL:en placeras?</li>
+      <li>Ska den appliceras som <code>in</code> eller <code>out</code>?</li>
+      <li>Vad betyder riktningen i förhållande till routern?</li>
+    </ul>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        En standard ACL matchar bara käll-IP. Därför placeras
+        den traditionellt nära destinationen.
+      </p>
+
+      <pre>interface GigabitEthernet0/1
+ ip access-group 10 out</pre>
+
+      <p>
+        Trafik från LAN 1 mot LAN 2 lämnar routern genom G0/1
+        och kontrolleras av ACL:en.
+      </p>
+    </details>
+  </article>
+
+  <article class="challenge">
+    <div class="challenge-head">CHALLENGE 04</div>
+    <h3>Test and verify</h3>
+
+    <p>Testa från PC1:</p>
+
+    <pre>ping 192.168.20.10</pre>
+
+    <p>Kontrollera sedan routern:</p>
+
+    <pre>show ip access-lists
+show ip interface GigabitEthernet0/1</pre>
+
+    <p>Besvara:</p>
+
+    <ol>
+      <li>Fungerar ping från PC1 till PC2?</li>
+      <li>Vilken ACL-regel matchar trafiken?</li>
+      <li>Vad visar kommandot <code>show ip interface</code>?</li>
+      <li>Vad händer om ACL:en tas bort från interfacet?</li>
+    </ol>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        Ping från PC1 till PC2 ska blockeras när ACL 10
+        är korrekt applicerad. Den första ACE:n nekar
+        paket med käll-IP 192.168.10.0/24.
+      </p>
+
+      <p>
+        <code>show ip interface</code> kan visa vilken ACL
+        som är applicerad i inkommande respektive utgående riktning.
+      </p>
+    </details>
+  </article>
+</section>
+
+<section class="section">
+  <h2>// COMMAND REFERENCE</h2>
+
+  <div class="panel">
+    <table>
+      <thead>
+        <tr>
+          <th>Funktion</th>
+          <th>Cisco IOS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Skapa standard ACL</td>
+          <td><code>access-list 10 deny ...</code></td>
+        </tr>
+        <tr>
+          <td>Tillåt övrig trafik</td>
+          <td><code>access-list 10 permit any</code></td>
+        </tr>
+        <tr>
+          <td>Applicera inkommande</td>
+          <td><code>ip access-group 10 in</code></td>
+        </tr>
+        <tr>
+          <td>Applicera utgående</td>
+          <td><code>ip access-group 10 out</code></td>
+        </tr>
+        <tr>
+          <td>Visa ACL</td>
+          <td><code>show ip access-lists</code></td>
+        </tr>
+        <tr>
+          <td>Visa interface</td>
+          <td><code>show ip interface g0/1</code></td>
+        </tr>
+        <tr>
+          <td>Ta bort ACL från interface</td>
+          <td><code>no ip access-group 10 out</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    Wildcard: <code>0.0.0.255</code> matchar alla adresser
+    inom ett /24-nät när nätadressen anges korrekt.
+    Nollor måste matcha, ettor får variera.
+  </div>
+</section>
+
+<section class="section">
+  <h2>// BONUS CHALLENGE</h2>
+
+  <article class="challenge">
+    <div class="challenge-head">CHALLENGE 05 / OPTIONAL</div>
+    <h3>Extended ACL</h3>
+
+    <p>
+      Ta bort standard ACL 10 från interfacet.
+      Skapa sedan en extended ACL som:
+    </p>
+
+    <ul>
+      <li>Nekar ICMP från LAN 1 till LAN 2.</li>
+      <li>Tillåter övrig IP-trafik.</li>
+    </ul>
+
+    <p>
+      Placera ACL:en inkommande på G0/0.
+      Testa sedan ping igen.
+    </p>
+
+    <details>
+      <summary>Reveal discussion</summary>
+
+      <pre>ip access-list extended BLOCK-PING
+ deny icmp 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+ permit ip any any
+exit
+
+interface GigabitEthernet0/0
+ ip access-group BLOCK-PING in</pre>
+
+      <p>
+        En extended ACL kan matcha både käll- och
+        destinationsadress samt protokoll.
+        Den kan därför placeras närmare källan.
+      </p>
+    </details>
+  </article>
+</section>
+
+<section class="section">
+  <h2>// FINAL QUESTIONS</h2>
+
+  <div class="panel secondary">
+    <ol>
+      <li>Vad är skillnaden mellan en ACL och en ACE?</li>
+      <li>Vad innebär implicit deny?</li>
+      <li>Varför är ordningen på ACL-regler viktig?</li>
+      <li>Vad betyder IN och OUT?</li>
+      <li>Vad är skillnaden mellan standard och extended ACL?</li>
+      <li>Varför kan stateless ACL:er skapa problem med returtrafik?</li>
+    </ol>
+
+    <details>
+      <summary>Reveal discussion</summary>
+      <p>
+        ACL är hela regellistan, medan ACE är en enskild regel.
+        Regler utvärderas uppifrån och ned och den första
+        matchningen avgör vad som händer.
+      </p>
+      <p>
+        IN och OUT beskriver paketets riktning i förhållande
+        till interfacet. Traditionella ACL:er håller inte
+        reda på etablerade anslutningar och måste därför
+        konfigureras med hänsyn till trafik i båda riktningarna.
+      </p>
+    </details>
+  </div>
+</section>
+
+<!-- FLAG{implicit_deny_is_always_there} -->
+
+<footer>
+  ALEF-93 / NETWORK SECURITY LABS<br>
+  Access Control Lists · Cisco Packet Tracer
+</footer>
+
+</main>
+
+<script>
+console.log("ACL LAB INITIALIZED");
+console.log("FLAG{first_match_wins}");
+</script>
+
+</body>
+</html>
