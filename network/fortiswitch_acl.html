@@ -1,0 +1,544 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAALSTORM | FortiSwitch ICMP ACL</title>
+<style>
+:root {
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --accent:#00e89d;
+  --soft:#7dffcf;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+  --amber:#e4b86d;
+  --red:#ff8585;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.7 Consolas,"Courier New",monospace;
+}
+main { max-width:1050px; margin:auto; padding:35px 24px 90px; }
+a { color:var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+.back { color:var(--muted); font-size:13px; }
+.kicker {
+  margin-top:42px;
+  color:var(--accent);
+  letter-spacing:2px;
+  font-size:12px;
+}
+h1 {
+  font-size:clamp(32px,5vw,52px);
+  line-height:1.15;
+  margin:12px 0 16px;
+}
+h2 { color:var(--accent); font-size:20px; margin:0 0 18px; }
+h3 { font-size:19px; margin:5px 0 15px; }
+p { margin:0 0 15px; }
+.intro { color:var(--muted); max-width:830px; }
+.status { color:var(--accent); margin:24px 0 45px; font-size:13px; }
+.dot {
+  display:inline-block;
+  width:8px;
+  height:8px;
+  background:var(--accent);
+  border-radius:50%;
+  margin-right:8px;
+}
+.cursor { animation:blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity:0; } }
+section { margin-top:46px; }
+.panel,.challenge {
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:25px;
+  margin:18px 0;
+}
+.challenge { border-left:3px solid var(--accent); }
+.challenge-id,.label {
+  font-size:12px;
+  letter-spacing:1px;
+  color:var(--accent);
+}
+.muted { color:var(--muted); }
+code { color:var(--soft); }
+pre {
+  background:#030605;
+  border:1px solid var(--border);
+  color:var(--soft);
+  padding:18px;
+  overflow-x:auto;
+  line-height:1.7;
+  font-size:13px;
+}
+details {
+  border-top:1px solid var(--border);
+  margin-top:23px;
+  padding-top:15px;
+}
+summary { cursor:pointer; color:var(--accent); font-size:13px; }
+details p,details pre { margin-top:16px; }
+ul,ol { padding-left:23px; }
+li { margin:8px 0; }
+.question { margin-top:20px; }
+.note {
+  background:var(--panel2);
+  border-left:3px solid var(--amber);
+  padding:15px 19px;
+  margin:20px 0;
+  color:var(--text);
+}
+.diagram {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  padding:18px 8px;
+  background:#030605;
+  border:1px solid var(--border);
+}
+.node {
+  border:1px solid var(--accent);
+  padding:12px 15px;
+  text-align:center;
+  min-width:160px;
+}
+.node strong { color:var(--soft); }
+.wire { color:var(--muted); }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+.grid .panel { margin:0; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td {
+  padding:11px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  vertical-align:top;
+}
+th { color:var(--accent); }
+.tag { color:var(--amber); font-size:12px; }
+footer {
+  border-top:1px solid var(--border);
+  margin-top:70px;
+  padding-top:20px;
+  color:var(--muted);
+  font-size:12px;
+}
+input[type=checkbox] { accent-color:var(--accent); margin-right:10px; }
+label { cursor:pointer; }
+@media(max-width:650px) {
+  main { padding:22px 15px 60px; }
+  .panel,.challenge { padding:18px; }
+  .grid { grid-template-columns:1fr; }
+  .wire { width:100%; text-align:center; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="kicker">NETWORK SECURITY / PHYSICAL SWITCH LAB</div>
+<h1>BLOCK THE PING</h1>
+
+<p class="intro">
+  FortiSwitch · Standalone · Access Control Lists.
+  En praktisk övning där ni först verifierar kommunikationen
+  mellan två Windows-datorer och sedan blockerar ICMP
+  med en ACL på switchen.
+</p>
+
+<div class="status">
+  <span class="dot"></span>
+  SWITCH SECURITY LAB ONLINE<span class="cursor">_</span>
+</div>
+
+<section>
+<h2>// MISSION</h2>
+<div class="panel">
+<p>
+  <strong>Mål:</strong> PC1 ska kunna pinga PC2 innan ACL:en
+  aktiveras. När ni applicerar en ingress ACL på porten
+  där PC1 är ansluten ska ICMP Echo Request från PC1
+  till PC2 blockeras. Efter att ACL:en tas bort ska
+  ping fungera igen.
+</p>
+<p class="muted">
+  Arbeta endast på de portar och den FortiSwitch som
+  läraren har anvisat. Ändra inte managementport,
+  uplink eller portar som andra grupper använder.
+</p>
+</div>
+
+<div class="diagram" role="img"
+  aria-label="PC1 192.168.10.10 ansluten till port 1 på FortiSwitch, PC2 192.168.10.20 ansluten till port 2. Båda i VLAN 10.">
+  <div class="node">
+    <strong>PC1</strong><br>
+    192.168.10.10/24<br>
+    <span class="muted">Windows</span>
+  </div>
+  <div class="wire">── Port 1 ──</div>
+  <div class="node">
+    <strong>FortiSwitch</strong><br>
+    Standalone<br>
+    <span class="muted">VLAN 10</span>
+  </div>
+  <div class="wire">── Port 2 ──</div>
+  <div class="node">
+    <strong>PC2</strong><br>
+    192.168.10.20/24<br>
+    <span class="muted">Windows</span>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Viktigt:</strong> PC1 och PC2 ligger i samma
+  IP-subnät och VLAN. Trafiken behöver inte routas.
+  Syftet är att undersöka om switchens ACL-funktion
+  kan filtrera ICMP på ingressporten även när trafiken
+  switchas på lager 2. Stödet måste verifieras för
+  er modell och firmware.
+</div>
+</section>
+
+<section>
+<h2>// CHALLENGES</h2>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 01 / BUILD</div>
+<h3>Connect the hosts</h3>
+<ol>
+  <li>Anslut PC1 och PC2 till var sin anvisad switchport.</li>
+  <li>Kontrollera att båda portarna tillhör samma VLAN.</li>
+  <li>Konfigurera IP-adresser enligt topologin.
+      Nätmask: <code>255.255.255.0</code>.</li>
+  <li>Kontrollera adresserna med <code>ipconfig</code>.</li>
+</ol>
+<pre>PC1: 192.168.10.10 / 255.255.255.0
+PC2: 192.168.10.20 / 255.255.255.0</pre>
+
+<p class="question">
+  Behöver datorerna en default gateway för att
+  kommunicera med varandra?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Nej. De ligger i samma subnät. PC1 kan använda ARP
+  för att hitta PC2:s MAC-adress och därefter skicka
+  Ethernetramar direkt via switchen.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 02 / PREPARE WINDOWS</div>
+<h3>Allow ICMP in Windows Firewall</h3>
+
+<p>
+  Windows Defender-brandväggen kan blockera inkommande
+  ping även när nätverket fungerar. För att testet ska
+  bli meningsfullt behöver PC2 tillåta
+  <strong>inkommande ICMPv4 Echo Request</strong>.
+</p>
+
+<ol>
+  <li>
+    Öppna Start och sök efter
+    <strong>Windows Defender-brandväggen med avancerad säkerhet</strong>,
+    eller kör <code>wf.msc</code>.
+  </li>
+  <li>
+    Välj <strong>Regler för inkommande trafik</strong>
+    (Inbound Rules).
+  </li>
+  <li>
+    Leta efter en regel med namnet
+    <strong>File and Printer Sharing (Echo Request - ICMPv4-In)</strong>
+    eller motsvarande svensk benämning.
+  </li>
+  <li>
+    Aktivera rätt regel för den nätverksprofil som används.
+    Om regeln saknas, skapa en ny inkommande anpassad
+    regel som tillåter
+    <strong>ICMPv4, typ 8 (Echo Request)</strong>.
+  </li>
+  <li>
+    Begränsa gärna regeln till den andra datorns
+    IP-adress, och låt endast regeln vara aktiv
+    under labben.
+  </li>
+</ol>
+
+<div class="note">
+  Stäng <strong>inte</strong> av hela Windows-brandväggen.
+  En avgränsad regel för ICMP Echo Request är tillräcklig.
+  Windows kan ha flera liknande regler för olika
+  nätverksprofiler.
+</div>
+
+<p class="question">
+  Varför behöver vi kontrollera Windows-brandväggen
+  innan vi skapar en ACL på switchen?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Om PC2 blockerar ICMP redan från början kan vi inte
+  avgöra om switchens ACL faktiskt orsakar blockeringen.
+  Vi behöver först ett fungerande utgångsläge.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 03 / BASELINE</div>
+<h3>Verify communication</h3>
+
+<p>Kör från PC1:</p>
+<pre>ping 192.168.10.20
+arp -a</pre>
+
+<p>
+  Dokumentera om ping fungerar och vilken MAC-adress
+  som hittas för PC2. Testa även från PC2 till PC1,
+  men kom ihåg att PC1 då också behöver tillåta
+  inkommande Echo Request.
+</p>
+
+<p class="question">
+  Om ping misslyckas redan nu: vilka tre saker
+  kontrollerar ni först?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Kontrollera IP-adresser och nätmask, att switchportarna
+  ligger i samma VLAN och att Windows-brandväggen
+  tillåter inkommande ICMP Echo Request på mottagaren.
+  Kontrollera även länkstatus.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 04 / INVESTIGATE</div>
+<h3>Find the ACL feature</h3>
+
+<p>
+  Identifiera FortiSwitch-modell, firmwareversion och
+  hur ACL:er hanteras i standalone-läge. Använd switchens
+  hjälp, GUI eller dokumentation för
+  <strong>just er modell</strong>.
+</p>
+
+<p>Ta reda på om den kan matcha:</p>
+<ul>
+  <li>Käll-IP: <code>192.168.10.10</code></li>
+  <li>Destinations-IP: <code>192.168.10.20</code></li>
+  <li>Protokoll: <code>ICMP</code> (IPv4)</li>
+  <li>Ingressport: porten där PC1 är ansluten</li>
+</ul>
+
+<p class="question">
+  Kan modellen tillämpa en ACL på trafik som
+  switchas mellan två portar i samma VLAN?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Detta måste verifieras för modellen och
+  FortiSwitchOS-versionen. Anta inte att Cisco IOS-kommandon
+  fungerar eller att alla FortiSwitch-modeller har samma
+  ACL-kapacitet.
+</p>
+<p>
+  Om stödet saknas: dokumentera begränsningen i stället
+  för att ändra topologin på egen hand.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 05 / FILTER</div>
+<h3>Block ICMP from PC1</h3>
+
+<p>
+  Skapa en ACL som nekar
+  <strong>ICMP från PC1 till PC2</strong>
+  men tillåter övrig relevant trafik.
+  Applicera ACL:en <strong>inbound/ingress</strong>
+  på porten där PC1 är ansluten, om er modell stöder det.
+</p>
+
+<pre>ÖNSKAD LOGIK (inte FortiSwitch CLI):
+
+1. DENY   ICMP  192.168.10.10 -> 192.168.10.20
+2. PERMIT övrig trafik
+
+APPLICERING: ingress på PC1:s switchport</pre>
+
+<p class="question">
+  Varför är en uttrycklig tillåt-regel för
+  övrig trafik viktig?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  För att undvika att oavsiktligt blockera annan trafik.
+  Den exakta hanteringen av omatchad trafik beror på
+  ACL-typen och plattformen; kontrollera standardbeteendet
+  i FortiSwitch-dokumentationen.
+</p>
+<p>Använd inte Cisco-syntax som facit.</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 06 / VERIFY</div>
+<h3>Did the switch block it?</h3>
+
+<p>Testa från PC1:</p>
+<pre>ping 192.168.10.20
+arp -a</pre>
+
+<p>
+  Kontrollera därefter om annan trafik fortfarande
+  fungerar, exempelvis en av läraren anvisad TCP-tjänst
+  mellan datorerna. Kontrollera ACL-räknare eller
+  statistik om switchen stöder det.
+</p>
+
+<div class="grid">
+  <div class="panel">
+    <div class="label">BEFORE ACL</div>
+    <p>PC1 → PC2: ICMP ska fungera.</p>
+  </div>
+  <div class="panel">
+    <div class="label">AFTER ACL</div>
+    <p>PC1 → PC2: ICMP ska blockeras om ACL:en fungerar.</p>
+  </div>
+</div>
+
+<p class="question">
+  Kan PC2 fortfarande pinga PC1? Vad avgör svaret?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Det går inte att dra slutsatsen att PC2 → PC1 fungerar
+  bara för att ACL:en sitter på PC1:s ingressport.
+</p>
+<p>
+  PC2:s Echo Request kan nå PC1, men PC1:s Echo Reply
+  går sedan in genom samma filtrerade port.
+  Om ACL:en nekar all ICMP från PC1 till PC2
+  blockeras även svaret.
+</p>
+<p>
+  Windows-brandväggen kan också påverka testet.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 07 / RESTORE</div>
+<h3>Remove and retest</h3>
+
+<ol>
+  <li>Ta bort ACL:en från den aktuella switchporten.</li>
+  <li>Verifiera att ping från PC1 till PC2 fungerar igen.</li>
+  <li>Återställ tillfälliga Windows-brandväggsregler
+      enligt lärarens instruktioner.</li>
+  <li>Dokumentera vad som fungerade, vad som blockerades
+      och hur ni verifierade orsaken.</li>
+</ol>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Ett bra test har tre lägen: fungerande trafik före
+  ändring, blockerad trafik efter ändring och återställd
+  trafik efter rollback. Då blir det lättare att
+  visa orsakssambandet.
+</p>
+</details>
+</article>
+</section>
+
+<section>
+<h2>// LAB REPORT</h2>
+<div class="panel">
+<p>Redovisa kort:</p>
+<ul>
+  <li>FortiSwitch-modell och FortiSwitchOS-version.</li>
+  <li>Vilka portar och IP-adresser ni använde.</li>
+  <li>Hur ni tillät ICMP i Windows-brandväggen.</li>
+  <li>ACL-konfiguration eller skärmbilder från GUI.</li>
+  <li>Resultat före ACL, med ACL och efter återställning.</li>
+  <li>En förklaring av vad <strong>ingress</strong>
+      betyder i detta test.</li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>// FINAL CHECK</h2>
+<div class="panel">
+<p><label>
+  <input type="checkbox">
+  Jag har verifierat ping före ACL.
+</label></p>
+<p><label>
+  <input type="checkbox">
+  Jag har kontrollerat Windows-brandväggen.
+</label></p>
+<p><label>
+  <input type="checkbox">
+  Jag har verifierat att switchen, inte Windows,
+  blockerar trafiken.
+</label></p>
+<p><label>
+  <input type="checkbox">
+  Jag har tagit bort ACL:en och testat igen.
+</label></p>
+<p><label>
+  <input type="checkbox">
+  Jag har återställt tillfälliga ändringar.
+</label></p>
+</div>
+</section>
+
+<!-- FLAG{baseline_filter_rollback} -->
+
+<footer>
+  ALEF-93 / BAALSTORM<br>
+  NETWORK SECURITY · FORTISWITCH ACL LAB
+</footer>
+
+</main>
+<script>
+console.log('FLAG{verify_the_ingress_port}');
+</script>
+</body>
+</html>
