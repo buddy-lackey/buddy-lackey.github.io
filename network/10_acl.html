@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAALSTORM | ACL Challenges</title>
+<style>
+:root {
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --green:#00e89d;
+  --soft:#7dffcf;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+  --red:#ff7777;
+  --amber:#e4b86d;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.7 Consolas,"Courier New",monospace;
+}
+main { max-width:1050px; margin:auto; padding:35px 24px 90px; }
+a { color:var(--green); text-decoration:none; }
+a:hover { text-decoration:underline; }
+.back { color:var(--muted); font-size:13px; }
+.kicker {
+  margin-top:42px;
+  color:var(--green);
+  letter-spacing:2px;
+  font-size:12px;
+}
+h1 {
+  font-size:clamp(34px,5vw,54px);
+  line-height:1.15;
+  margin:12px 0 16px;
+}
+h2 { color:var(--green); font-size:20px; margin:0 0 20px; }
+h3 { font-size:19px; margin:5px 0 15px; }
+p { margin:0 0 15px; }
+.intro { color:var(--muted); max-width:780px; }
+.status { color:var(--green); margin:24px 0 45px; font-size:13px; }
+.dot {
+  display:inline-block;
+  width:8px;height:8px;
+  background:var(--green);
+  border-radius:50%;
+  margin-right:8px;
+}
+.cursor { animation:blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity:0; } }
+section { margin-top:46px; }
+.panel,.challenge {
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:25px;
+  margin:18px 0;
+}
+.challenge { border-left:3px solid var(--green); }
+.challenge-id {
+  font-size:12px;
+  letter-spacing:1px;
+  color:var(--green);
+}
+.muted { color:var(--muted); }
+code { color:var(--soft); }
+pre {
+  background:#030605;
+  border:1px solid var(--border);
+  color:var(--soft);
+  padding:18px;
+  overflow-x:auto;
+  line-height:1.7;
+  font-size:13px;
+}
+details {
+  border-top:1px solid var(--border);
+  margin-top:23px;
+  padding-top:15px;
+}
+summary {
+  cursor:pointer;
+  color:var(--green);
+  font-size:13px;
+}
+details p,details pre { margin-top:16px; }
+ul,ol { padding-left:23px; }
+li { margin:8px 0; }
+.question { color:var(--text); margin-top:20px; }
+.note {
+  background:var(--panel2);
+  border-left:3px solid var(--green);
+  padding:15px 19px;
+  margin:20px 0;
+  color:var(--muted);
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+.grid .panel { margin:0; }
+.label { color:var(--green); font-size:12px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td {
+  padding:11px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+}
+th { color:var(--green); }
+.tag { color:var(--amber); font-size:12px; }
+footer {
+  border-top:1px solid var(--border);
+  margin-top:70px;
+  padding-top:20px;
+  color:var(--muted);
+  font-size:12px;
+}
+@media(max-width:650px) {
+  main { padding:22px 15px 60px; }
+  .panel,.challenge { padding:18px; }
+  .grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="kicker">NETWORK SECURITY / LESSON CHALLENGES</div>
+<h1>ACCESS CONTROL LISTS</h1>
+<p class="intro">
+  Eight challenges about Cisco ACLs. Read the scenarios,
+  predict what happens to the packets and explain why.
+  No Packet Tracer required.
+</p>
+
+<div class="status">
+  <span class="dot"></span>
+  PACKET FILTERING ONLINE<span class="cursor">_</span>
+</div>
+
+<section>
+<h2>// BEFORE YOU START</h2>
+<div class="panel">
+  <p>
+    En ACL består av regler som avgör om trafik ska
+    tillåtas eller nekas. I den här lektionen använder
+    vi traditionella Cisco IOS ACL:er.
+  </p>
+  <p class="muted">
+    Kom ihåg: regler kontrolleras uppifrån och ned,
+    första matchningen avgör, och en implicit deny
+    finns sist i listan.
+  </p>
+</div>
+</section>
+
+<section>
+<h2>// CHALLENGES</h2>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 01 / RECOGNISE</div>
+<h3>What can the ACL see?</h3>
+<p>En router får följande paket:</p>
+<pre>Source IP:       192.168.10.25
+Destination IP:  192.168.20.10
+Protocol:        TCP
+Source port:     51234
+Destination port:443</pre>
+<p class="question">
+  Vilka uppgifter kan en <strong>standard ACL</strong>
+  använda? Vilka kan en <strong>extended ACL</strong> använda?
+</p>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  En standard IPv4 ACL matchar i huvudsak käll-IP-adressen.
+  En extended IPv4 ACL kan även matcha destinations-IP,
+  protokoll och TCP/UDP-portar.
+</p>
+<p>
+  Att destinationsporten är 443 innebär inte automatiskt
+  att trafiken faktiskt innehåller HTTPS.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 02 / RULE ORDER</div>
+<h3>First match wins</h3>
+<p>Studera följande ACL:</p>
+<pre>access-list 10 permit 192.168.10.0 0.0.0.255
+access-list 10 deny host 192.168.10.50
+access-list 10 deny any</pre>
+<p class="question">
+  En dator med IP-adress <code>192.168.10.50</code>
+  skickar ett paket. Tillåts eller nekas det?
+</p>
+<p>Hur skulle du ändra ACL:en för att blockera just den datorn?</p>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Paketet tillåts. Den första regeln matchar hela
+  192.168.10.0/24, inklusive 192.168.10.50.
+  Den andra regeln nås aldrig för det paketet.
+</p>
+<pre>access-list 10 deny host 192.168.10.50
+access-list 10 permit 192.168.10.0 0.0.0.255</pre>
+<p>
+  Den specifika deny-regeln måste ligga före den bredare
+  permit-regeln.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 03 / IMPLICIT DENY</div>
+<h3>The invisible rule</h3>
+<p>En extended ACL innehåller endast:</p>
+<pre>ip access-list extended WEB
+ permit tcp any any eq 443</pre>
+<p>Vad händer med följande trafik?</p>
+<ol>
+  <li>TCP till destinationsport 443</li>
+  <li>TCP till destinationsport 80</li>
+  <li>ICMP Echo Request (ping)</li>
+  <li>UDP till destinationsport 53</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Endast TCP-trafik till destinationsport 443 matchar
+  permit-regeln. Övrig trafik nekas genom implicit deny.
+</p>
+<p>
+  ACL:en säger inget om vilken applikation som faktiskt
+  använder TCP/443.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 04 / WILDCARD</div>
+<h3>Which addresses match?</h3>
+<p>Du hittar följande ACE:</p>
+<pre>access-list 10 deny 192.168.16.0 0.0.3.255</pre>
+<p class="question">
+  Vilket sammanhängande adressintervall matchas?
+  Vilken vanlig nätmask motsvarar wildcard-masken?
+</p>
+<div class="grid">
+  <div class="panel">
+    <div class="label">ADDRESS A</div>
+    <code>192.168.17.200</code>
+  </div>
+  <div class="panel">
+    <div class="label">ADDRESS B</div>
+    <code>192.168.20.1</code>
+  </div>
+</div>
+<p class="question">
+  Vilken av adresserna ovan matchar regeln?
+</p>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Wildcard <code>0.0.3.255</code> motsvarar nätmask
+  <code>255.255.252.0</code>, alltså /22.
+</p>
+<p>
+  Intervallet är 192.168.16.0–192.168.19.255.
+  Adress A matchar. Adress B matchar inte.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 05 / DIRECTION</div>
+<h3>IN or OUT?</h3>
+<p>En router kopplar samman två nätverk:</p>
+<pre>LAN 10                R1                LAN 20
+
+192.168.10.0/24 -- G0/0 | G0/1 -- 192.168.20.0/24</pre>
+<p>
+  PC1 i LAN 10 skickar ett paket till PC2 i LAN 20.
+</p>
+<p class="question">
+  Är paketet inkommande eller utgående på G0/0?
+  Och på G0/1?
+</p>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Paketet kommer <strong>IN</strong> på G0/0
+  och lämnar routern <strong>OUT</strong> på G0/1.
+</p>
+<p>
+  IN/OUT är alltid relativt det interface där
+  ACL:en appliceras, inte relativt hela nätverket.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 06 / STATELESS</div>
+<h3>The return packet</h3>
+<p>
+  PC1 i LAN 10 ansluter till en webbserver i LAN 20.
+  Routern har följande ACL inkommande på G0/0:
+</p>
+<pre>ip access-list extended WEB
+ permit tcp 192.168.10.0 0.0.0.255 any eq 443
+ deny ip any any</pre>
+<p>
+  Ingen ACL finns på G0/1.
+</p>
+<ol>
+  <li>Kan PC1 skicka en TCP SYN till serverns port 443?</li>
+  <li>Passerar serverns SYN-ACK samma inkommande ACL på G0/0?</li>
+  <li>Vad händer om en separat ACL på G0/1 blockerar returtrafiken?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  SYN-paketet matchar permit-regeln och kan passera G0/0.
+  Returpaketet kommer in på G0/1 och går ut på G0/0.
+  Det passerar alltså inte den inkommande ACL:en på G0/0.
+</p>
+<p>
+  Om en separat ACL blockerar returtrafiken på dess väg
+  kan TCP-anslutningen inte etableras.
+</p>
+<p>
+  Traditionella Cisco ACL:er är stateless:
+  de håller inte reda på vilka anslutningar som etablerats.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 07 / TROUBLESHOOT</div>
+<h3>Why does ping fail?</h3>
+<p>
+  En elev har konfigurerat följande ACL inkommande på
+  routerns G0/0:
+</p>
+<pre>access-list 100 permit tcp 192.168.10.0 0.0.0.255 any eq 80
+access-list 100 permit tcp 192.168.10.0 0.0.0.255 any eq 443</pre>
+<p>
+  PC1 kan inte pinga PC2. Eleven säger:
+  "Men jag har ju tillåtit trafiken!"
+</p>
+<p class="question">
+  Varför fungerar inte ping? Föreslå en kompletterande ACE
+  som tillåter ICMP från LAN 10 till LAN 20.
+</p>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  Reglerna tillåter endast TCP till port 80 och 443.
+  Ping använder ICMP, som inte matchar någon av reglerna.
+  Därför träffas implicit deny.
+</p>
+<pre>access-list 100 permit icmp 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255</pre>
+<p>
+  Regeln måste ligga i rätt ordning och läggas till
+  innan en eventuell explicit deny-regel som annars matchar.
+</p>
+</details>
+</article>
+
+<article class="challenge">
+<div class="challenge-id">CHALLENGE 08 / DESIGN</div>
+<h3>Where would you filter?</h3>
+<p>Du har följande nätverk:</p>
+<pre>VLAN 10  Users        192.168.10.0/24
+VLAN 20  Servers      192.168.20.0/24
+VLAN 30  Management   192.168.30.0/24
+
+        [ Layer 3 Switch ]
+             ip routing</pre>
+<p>
+  Företaget vill begränsa åtkomsten från användarnätet
+  till management-nätet, men tillåta användarna att nå
+  vissa tjänster på servrarna.
+</p>
+<ol>
+  <li>Var skulle du placera filtreringen?</li>
+  <li>Standard eller extended ACL?</li>
+  <li>Vilka problem kan uppstå med returtrafik?</li>
+  <li>Vad skulle en stateful brandvägg kunna förenkla?</li>
+</ol>
+<details>
+<summary>Reveal discussion</summary>
+<p>
+  En extended ACL inkommande på VLAN 10:s SVI kan vara
+  ett alternativ. Den kan matcha både destinationer,
+  protokoll och portar.
+</p>
+<p>
+  En stateful brandvägg kan förenkla hantering av
+  returtrafik genom att hålla reda på anslutningarnas
+  tillstånd. Men då måste trafiken också passera
+  brandväggen; lokal inter-VLAN-routing på L3-switchen
+  kan annars gå förbi den.
+</p>
+<p>
+  Det finns flera rimliga designalternativ. Valet beror
+  på säkerhetskrav, utrustning och nätverkets arkitektur.
+</p>
+</details>
+</article>
+
+</section>
+
+<section>
+<h2>// QUICK REFERENCE</h2>
+<div class="panel">
+<table>
+<thead>
+<tr><th>Begrepp</th><th>Betydelse</th></tr>
+</thead>
+<tbody>
+<tr><td>ACL</td><td>Access Control List</td></tr>
+<tr><td>ACE</td><td>En enskild regel i en ACL</td></tr>
+<tr><td>permit</td><td>Tillåt matchande trafik</td></tr>
+<tr><td>deny</td><td>Neka matchande trafik</td></tr>
+<tr><td>implicit deny</td><td>Osynlig avslutande deny-regel</td></tr>
+<tr><td>in</td><td>Inkommande till interfacet</td></tr>
+<tr><td>out</td><td>Utgående från interfacet</td></tr>
+<tr><td>standard ACL</td><td>Matchar käll-IP</td></tr>
+<tr><td>extended ACL</td><td>Kan matcha IP, protokoll och portar</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<h2>// FINAL CHECK</h2>
+<div class="panel">
+<p>Du bör nu kunna förklara:</p>
+<ul>
+<li>Varför ordningen på ACL-regler spelar roll.</li>
+<li>Hur implicit deny påverkar trafik.</li>
+<li>Skillnaden mellan standard och extended ACL.</li>
+<li>Vad IN och OUT betyder på ett interface.</li>
+<li>Varför en stateless ACL inte automatiskt tillåter returtrafik.</li>
+</ul>
+<p class="tag">NEXT STEP: CONFIGURE AND TEST IN PACKET TRACER</p>
+</div>
+</section>
+
+<!-- FLAG{implicit_deny_is_the_last_rule} -->
+
+<footer>
+  ALEF-93 / BAALSTORM<br>
+  NETWORK SECURITY · ACCESS CONTROL LISTS
+</footer>
+
+</main>
+
+<script>
+console.log("ACL CHALLENGES LOADED");
+console.log("FLAG{first_matching_ace_wins}");
+</script>
+
+</body>
+</html>
