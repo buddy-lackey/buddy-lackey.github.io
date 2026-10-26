@@ -1,0 +1,427 @@
+
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BAALSTORM // Simulera Internet</title>
+<style>
+:root {
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --accent:#00e89d;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.6 Consolas,'Courier New',monospace;
+}
+main {
+  max-width:1080px;
+  margin:auto;
+  padding:38px 22px 90px;
+}
+a { color:var(--accent); }
+.back,.eyebrow {
+  color:var(--accent);
+  font-size:13px;
+  letter-spacing:.12em;
+}
+h1 {
+  font-size:clamp(30px,5vw,56px);
+  line-height:1.1;
+  margin:12px 0;
+}
+h2 {
+  color:var(--accent);
+  font-size:21px;
+  margin:0 0 15px;
+}
+h3 { font-size:16px; margin:0 0 8px; }
+.sub { color:var(--muted); max-width:800px; }
+.status {
+  color:var(--accent);
+  font-size:12px;
+  letter-spacing:.12em;
+}
+.blink { animation:blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.card {
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:24px;
+  margin-top:20px;
+  border-radius:5px;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:16px;
+}
+.mini {
+  background:var(--panel2);
+  border:1px solid var(--border);
+  padding:18px;
+  border-radius:4px;
+}
+.tag {
+  color:var(--accent);
+  font-size:12px;
+  letter-spacing:.1em;
+}
+.diagram {
+  white-space:pre;
+  overflow-x:auto;
+  color:#9deacb;
+  background:#050a09;
+  border:1px solid var(--border);
+  padding:18px;
+  font-size:13px;
+  line-height:1.65;
+}
+pre {
+  white-space:pre-wrap;
+  overflow:auto;
+  background:#030807;
+  border:1px solid var(--border);
+  padding:14px;
+  color:#b9f5df;
+  font-size:13px;
+}
+code { color:#9ff6d1; }
+li { margin:7px 0; }
+details {
+  border-top:1px solid var(--border);
+  margin-top:18px;
+  padding-top:13px;
+}
+summary { cursor:pointer; color:var(--accent); }
+.muted { color:var(--muted); }
+table {
+  border-collapse:collapse;
+  width:100%;
+  font-size:13px;
+}
+th,td {
+  border-bottom:1px solid var(--border);
+  padding:9px;
+  text-align:left;
+  vertical-align:top;
+}
+th { color:var(--accent); }
+.challenge {
+  border-left:3px solid var(--accent);
+  padding-left:15px;
+  margin:20px 0;
+}
+.check {
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  margin:9px 0;
+}
+.check input { accent-color:#00e89d; margin-top:6px; }
+.note {
+  border:1px solid #4c4630;
+  background:#15130c;
+  padding:13px;
+  color:#e9d8a0;
+}
+.footer {
+  margin-top:38px;
+  color:var(--muted);
+  font-size:12px;
+}
+button {
+  font:inherit;
+  background:transparent;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  padding:8px 13px;
+  cursor:pointer;
+}
+@media print {
+  body { background:white; color:black; }
+  .card,.mini,pre,.diagram { background:white; color:black; }
+  details { display:block; }
+  summary { color:black; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<div class="back">&lt; RETURN TO HOME</div>
+<p class="eyebrow">BAALSTORM // NETWORK LAB</p>
+<h1>SIMULERA INTERNET<span class="blink">_</span></h1>
+<p class="status">● PACKET TRACER / NAT / ROUTING ONLINE</p>
+<p class="sub">
+Du ska bygga tre varianter av ett simulerat Internet och undersöka
+vad som faktiskt krävs för att klienten ska kunna nå en extern
+destination. Börja enkelt med loopback, fortsätt med en riktig server
+och bygg slutligen ett nät med flera routrar.
+</p>
+
+<section class="card">
+<h2>// UPPDRAGET</h2>
+<p><strong>Din roll:</strong> Du är nätverkstekniker. Ett internt LAN
+ska kunna kommunicera med externa resurser utan anslutning till det
+riktiga Internet. Använd Cisco Packet Tracer.</p>
+
+<div class="grid">
+  <div class="mini">
+    <span class="tag">SCENARIO A / GRUND</span>
+    <h3>Loopback på ISP-router</h3>
+    <p>Simulera en extern IP-adress som kan svara på ping.</p>
+  </div>
+  <div class="mini">
+    <span class="tag">SCENARIO B / FORTSÄTTNING</span>
+    <h3>Extern HTTP/FTP-server</h3>
+    <p>Testa verkliga TCP-tjänster och observera PAT.</p>
+  </div>
+  <div class="mini">
+    <span class="tag">SCENARIO C / UTMANING</span>
+    <h3>Flera routrar</h3>
+    <p>Lägg till ett transitnät och felsök routing.</p>
+  </div>
+</div>
+
+<p class="note"><strong>Viktigt:</strong>
+Adresserna 203.0.113.0/24 och 198.51.100.0/24 är dokumentationsnät.
+Här används de endast i den simulerade miljön.
+Loopback-adressen 8.8.8.8 i scenario A är också enbart simulerad.
+</p>
+</section>
+
+<section class="card">
+<h2>// GEMENSAM STARTTOPOLOGI</h2>
+
+<div class="diagram">PC ─── L2-switch ─── NAT-router ─── ISP-router ─── [extern destination]
+       LAN             inside/outside     simulering av Internet</div>
+
+<table>
+<tr><th>Enhet/gränssnitt</th><th>IP-adress</th><th>Kommentar</th></tr>
+<tr><td>PC</td><td>192.168.1.100/24</td><td>Gateway 192.168.1.1</td></tr>
+<tr><td>NAT-router G0/0</td><td>192.168.1.1/24</td><td>Inside</td></tr>
+<tr><td>NAT-router G0/1</td><td>203.0.113.1/24</td><td>Outside</td></tr>
+<tr><td>ISP-router G0/0</td><td>203.0.113.2/24</td><td>Mot NAT-router</td></tr>
+</table>
+
+<p class="muted">Gränssnittsnamn kan skilja mellan routermodeller
+i Packet Tracer. Anpassa G0/0 och G0/1 efter den modell du valt.</p>
+
+<div class="challenge">
+<h3>CHALLENGE 01 — Bygg grunden</h3>
+<label class="check"><input type="checkbox">Placera PC, L2-switch och två routrar i Packet Tracer.</label>
+<label class="check"><input type="checkbox">Anslut enheterna och konfigurera IP-adresser, gateway och <code>no shutdown</code>.</label>
+<label class="check"><input type="checkbox">Konfigurera NAT-routerns default route mot <code>203.0.113.2</code>.</label>
+<label class="check"><input type="checkbox">Konfigurera PAT för <code>192.168.1.0/24</code> via NAT-routerns outside-interface.</label>
+</div>
+
+<details>
+<summary>Reveal discussion / Cisco IOS-lathund</summary>
+<p>Exempel på NAT-routern (förutsätter att gränssnitten finns):</p>
+<pre>interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ ip nat inside
+ no shutdown
+interface g0/1
+ ip address 203.0.113.1 255.255.255.0
+ ip nat outside
+ no shutdown
+access-list 1 permit 192.168.1.0 0.0.0.255
+ip nat inside source list 1 interface g0/1 overload
+ip route 0.0.0.0 0.0.0.0 203.0.113.2</pre>
+<p>På ISP-routern: konfigurera <code>203.0.113.2/24</code> på
+gränssnittet mot NAT-routern och aktivera det.
+ACL 1 väljer adresser som ska NAT-översättas; den är inte i detta
+exempel en interface-applicerad filtreringsregel.</p>
+</details>
+</section>
+
+<section class="card">
+<h2>// SCENARIO A — LOOPBACK</h2>
+
+<div class="diagram">PC ── L2 ── NAT ── ISP
+                   └── Loopback0: 8.8.8.8/32</div>
+
+<div class="challenge">
+<h3>CHALLENGE 02 — Ett Internet utan server</h3>
+<ol>
+<li>Skapa <code>Loopback0</code> på ISP-routern med IP-adressen <code>8.8.8.8/32</code>.</li>
+<li>Pinga <code>8.8.8.8</code> från PC:n.</li>
+<li>Visa NAT-översättningar på NAT-routern.</li>
+<li>Förklara varför ISP-routern kan svara trots att ingen server finns.</li>
+</ol>
+</div>
+
+<pre>interface loopback0
+ ip address 8.8.8.8 255.255.255.255</pre>
+
+<p><strong>Fundera:</strong> Kan du öppna <code>http://8.8.8.8</code>
+i Packet Tracer och förvänta dig en webbsida? Varför/varför inte?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>Loopback är ett virtuellt interface som tillhör ISP-routern.
+Den kan besvara ICMP echo requests till sin adress men erbjuder
+inte automatiskt HTTP eller FTP. Med PAT blir returtrafikens
+destination NAT-routerns outside-adress <code>203.0.113.1</code>,
+som ISP-routern når direkt. På NAT-routern kan ICMP-översättningar
+synas i <code>show ip nat translations</code> under pågående trafik.</p>
+</details>
+</section>
+
+<section class="card">
+<h2>// SCENARIO B — EXTERN SERVER</h2>
+
+<div class="diagram">192.168.1.100 ── L2 ── NAT ── ISP ── 198.51.100.10
+                                    198.51.100.1/24   HTTP / FTP</div>
+
+<div class="challenge">
+<h3>CHALLENGE 03 — Internet med riktiga tjänster</h3>
+<ol>
+<li>Behåll grundtopologin. Lägg till en server bakom ISP-routern.</li>
+<li>Ge ISP-routerns andra interface <code>198.51.100.1/24</code>.</li>
+<li>Ge servern <code>198.51.100.10/24</code> och gateway <code>198.51.100.1</code>.</li>
+<li>Aktivera HTTP på servern (Services → HTTP). Aktivera FTP om du vill testa det också.</li>
+<li>Från PC:n: pinga servern, öppna <code>http://198.51.100.10</code> och undersök NAT-tabellen.</li>
+</ol>
+</div>
+
+<p><strong>Fundera:</strong> Vad skiljer en ICMP-översättning från
+en TCP-översättning? Varför kan en enda publik IP-adress användas
+för flera TCP-anslutningar?</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>HTTP ger TCP-trafik mot destinationsport 80.
+PAT kan översätta käll-IP och vid behov källport, så att flera
+anslutningar kan dela outside-adressen. ICMP använder inte TCP/UDP-portar;
+NAT-implementationer kan i stället använda ICMP-identifierare
+för att hålla isär flöden. ISP-routern har båda näten direktanslutna
+och behöver ingen extra statisk route för den här PAT-trafiken.</p>
+</details>
+</section>
+
+<section class="card">
+<h2>// SCENARIO C — FLERA ROUTRAR</h2>
+
+<div class="diagram">PC ── L2 ── NAT ── ISP ── INTERNET-router ── Server
+            203.0.113.0/24  198.51.100.0/30   192.0.2.0/24</div>
+
+<table>
+<tr><th>Länk / enhet</th><th>Adress</th></tr>
+<tr><td>ISP mot Internet-router</td><td>198.51.100.1/30</td></tr>
+<tr><td>Internet-router mot ISP</td><td>198.51.100.2/30</td></tr>
+<tr><td>Internet-router mot server</td><td>192.0.2.1/24</td></tr>
+<tr><td>Extern server</td><td>192.0.2.10/24, GW 192.0.2.1</td></tr>
+</table>
+
+<div class="challenge">
+<h3>CHALLENGE 04 — Routing över flera hopp</h3>
+<ol>
+<li>Utgå från grundtopologin, men använd adresserna ovan för de två nya näten.</li>
+<li>Konfigurera Internet-routern och servern.</li>
+<li>På ISP-routern: skapa en statisk route till <code>192.0.2.0/24</code> via <code>198.51.100.2</code>.</li>
+<li>På Internet-routern: skapa en route tillbaka till <code>203.0.113.0/24</code> via <code>198.51.100.1</code>.</li>
+<li>Testa ping, HTTP och <code>tracert</code> från PC:n. Jämför med scenario B.</li>
+</ol>
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<pre>! ISP-router
+ip route 192.0.2.0 255.255.255.0 198.51.100.2
+
+! Internet-router
+ip route 203.0.113.0 255.255.255.0 198.51.100.1</pre>
+<p>Returvägen behöver nå den NAT-översatta adressen
+<code>203.0.113.1</code>, inte klientens privata adress.
+Traceroute kan visa flera hopp, men NAT och ICMP-beteende
+kan påverka vad som syns.</p>
+</details>
+</section>
+
+<section class="card">
+<h2>// VERIFIERA OCH FELSÖK</h2>
+
+<div class="grid">
+<div class="mini">
+<h3>På PC:n</h3>
+<pre>ipconfig
+ping 192.168.1.1
+ping 203.0.113.2
+ping 8.8.8.8
+tracert 192.0.2.10</pre>
+</div>
+<div class="mini">
+<h3>På Cisco-routern</h3>
+<pre>show ip interface brief
+show ip route
+show ip nat translations
+show ip nat statistics
+show access-lists</pre>
+</div>
+</div>
+
+<p class="muted">Använd bara tester som hör till det scenario
+du byggt. Generera trafik samtidigt som du tittar i NAT-tabellen,
+eftersom poster kan försvinna när de löper ut.</p>
+
+<div class="challenge">
+<h3>CHALLENGE 05 — Förklara dina resultat</h3>
+<ol>
+<li>Vilka funktioner kan testas med loopback, men inte med en riktig tjänst?</li>
+<li>Vad måste finnas för att HTTP ska fungera i scenario B?</li>
+<li>Varför behöver Internet-routern i scenario C en returroute?</li>
+<li>Vilken IP-adress ser den externa servern som källa när PAT fungerar?</li>
+<li>Vad händer om du tar bort NAT-routerns default route?</li>
+</ol>
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>A: Loopback ger IP-nåbarhet och ICMP-svar men inte automatiskt
+applikationstjänster. B: IP-konfiguration, fungerande routing/NAT
+och aktiv HTTP-tjänst. C: Serverns svar till <code>203.0.113.1</code>
+måste kunna routas tillbaka via ISP. Den externa servern ser normalt
+<code>203.0.113.1</code> som käll-IP. Utan default route saknar
+NAT-routern väg till de externa näten, om ingen annan passande route finns.</p>
+</details>
+</section>
+
+<section class="card">
+<h2>// SLUTRAPPORT</h2>
+<p>Visa läraren en fungerande Packet Tracer-fil och förklara muntligt
+skillnaden mellan de tre Internet-simuleringarna. Du ska kunna visa
+minst en NAT-översättning och förklara hur returtrafiken hittar tillbaka.</p>
+
+<label class="check"><input type="checkbox">A: Ping till loopback fungerar.</label>
+<label class="check"><input type="checkbox">B: HTTP till extern server fungerar.</label>
+<label class="check"><input type="checkbox">C: HTTP fungerar över flera routrar.</label>
+<label class="check"><input type="checkbox">Jag kan förklara PAT och returvägen.</label>
+
+<p class="muted">BONUS // En ledtråd till ett dolt meddelande finns
+i sidans källkod. Vad säger den om NAT?</p>
+</section>
+
+<!-- FLAG{nat_changes_addresses_not_destinations} -->
+<script>
+console.log('BAALSTORM diagnostic: FLAG{the_return_path_matters}');
+</script>
+
+<div class="footer">
+BAALSTORM // ALEF-93 // PRACTICAL NETWORK LAB
+<span class="blink">_</span>
+</div>
+
+</main>
+</body>
+</html>
