@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALEF-93 | WLAN LAB</title>
+<style>
+:root {
+  --bg:#05070a;
+  --panel:#080d0c;
+  --panel2:#0b1411;
+  --green:#00e89d;
+  --soft:#7dffcf;
+  --text:#d8eee7;
+  --muted:#77968b;
+  --border:#163c31;
+  --amber:#e7bd72;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Consolas,"Courier New",monospace;
+  line-height:1.65;
+}
+main { max-width:1000px; margin:auto; padding:35px 22px 90px; }
+a { color:var(--soft); }
+.back { color:var(--muted); text-decoration:none; }
+.back:hover { color:var(--green); }
+.eyebrow {
+  color:var(--green);
+  margin-top:45px;
+  letter-spacing:3px;
+  font-size:13px;
+}
+h1 { font-size:clamp(35px,6vw,64px); margin:5px 0; line-height:1.1; }
+h2 { font-size:23px; margin:0 0 12px; }
+h3 { font-size:17px; color:var(--soft); }
+.subtitle { color:var(--muted); max-width:750px; }
+.status { color:var(--green); margin:24px 0 45px; font-size:13px; }
+.cursor { animation:blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.section {
+  margin:42px 0 17px;
+  color:var(--green);
+  letter-spacing:2px;
+  font-size:14px;
+}
+.challenge {
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:25px;
+  margin:20px 0;
+  border-radius:5px;
+}
+.number {
+  font-size:12px;
+  color:var(--green);
+  letter-spacing:2px;
+}
+.question {
+  border-left:2px solid var(--green);
+  padding:8px 0 8px 16px;
+  margin:20px 0;
+}
+pre {
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  background:#030605;
+  color:var(--soft);
+  border:1px solid var(--border);
+  padding:18px;
+  font-size:13px;
+  line-height:1.55;
+}
+code { color:var(--soft); }
+details {
+  border-top:1px solid var(--border);
+  margin-top:22px;
+  padding-top:15px;
+}
+summary { color:var(--green); cursor:pointer; }
+details p { color:var(--muted); }
+.note {
+  background:var(--panel2);
+  border-left:3px solid var(--amber);
+  padding:16px 20px;
+  margin:20px 0;
+}
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th,td { padding:11px; border-bottom:1px solid var(--border); text-align:left; }
+th { color:var(--green); }
+input[type=text] {
+  background:#030605;
+  color:var(--text);
+  border:1px solid var(--border);
+  padding:12px;
+  font-family:inherit;
+  width:min(100%,450px);
+}
+button {
+  background:var(--green);
+  color:#00170f;
+  border:0;
+  padding:12px 18px;
+  font-family:inherit;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover { background:var(--soft); }
+.result { color:var(--soft); min-height:25px; }
+.small { color:var(--muted); font-size:13px; }
+footer {
+  border-top:1px solid var(--border);
+  padding-top:25px;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:60px;
+}
+@media(max-width:600px) {
+  .challenge { padding:17px; }
+  th,td { padding:7px; font-size:12px; }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<a class="back" href="index.html">&lt; RETURN TO HOME</a>
+
+<div class="eyebrow">ALEF-93 // NETWORK LAB</div>
+<h1>WIRELESS<br>NETWORKS</h1>
+
+<p class="subtitle">
+WLAN, 802.11, accesspunkter, kanaler och säkerhet.
+Undersök hur trådlösa nät fungerar och vad som faktiskt
+går att observera.
+</p>
+
+<div class="status">
+● WLAN LAB ONLINE<span class="cursor">_</span>
+</div>
+
+<div class="note">
+<strong>MISSION BRIEFING</strong>
+<p>
+Du är nätverkstekniker på BAALSTORM LABS.
+Företaget har installerat flera accesspunkter,
+men användarna rapporterar störningar och
+IT-avdelningen är osäker på säkerhetsinställningarna.
+</p>
+<p>
+Din uppgift är att undersöka WLAN-miljön,
+tolka teknisk information och föreslå förbättringar.
+</p>
+</div>
+
+<!-- FLAG{the_air_is_a_shared_medium} -->
+
+<div class="section">// RECONNAISSANCE</div>
+
+<section class="challenge">
+<div class="number">CHALLENGE 01</div>
+<h2>What is in the air?</h2>
+
+<p>
+Börja med att undersöka vilka trådlösa nät
+som finns omkring dig.
+</p>
+
+<p>Öppna PowerShell eller kommandotolken:</p>
+
+<pre>netsh wlan show networks mode=bssid</pre>
+
+<p>Undersök resultatet.</p>
+
+<div class="question">
+1. Hur många olika SSID hittar du?<br>
+2. Finns det flera BSSID för samma SSID?<br>
+3. Vilka kanaler används?<br>
+4. Vilka autentiserings- och krypteringsmetoder visas?
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+SSID är nätverksnamnet. BSSID identifierar normalt
+en specifik BSS, ofta en radio/virtuell AP-instans.
+Flera accesspunkter kan annonsera samma SSID
+men använda olika BSSID.
+</p>
+<p>
+Olika kanaler gör att närliggande accesspunkter
+kan minska konkurrensen om samma radiomedium.
+</p>
+</details>
+</section>
+
+<section class="challenge">
+<div class="number">CHALLENGE 02</div>
+<h2>Who am I connected to?</h2>
+
+<p>Kör:</p>
+
+<pre>netsh wlan show interfaces</pre>
+
+<div class="question">
+Identifiera följande information om din anslutning:
+<ul>
+<li>SSID</li>
+<li>BSSID</li>
+<li>Radiotyp / 802.11-standard</li>
+<li>Kanal</li>
+<li>Signalstyrka</li>
+<li>Autentisering och kryptering</li>
+</ul>
+</div>
+
+<p>
+<strong>Fundera:</strong> Om två elever använder samma SSID,
+måste de vara anslutna till samma fysiska accesspunkt?
+</p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Nej. Ett ESS kan bestå av flera BSS med samma SSID.
+Eleverna kan vara anslutna till olika AP:er och ändå
+uppleva att de använder samma trådlösa nät.
+</p>
+<p>
+BSSID hjälper oss att se vilken BSS klienten
+är associerad med.
+</p>
+</details>
+</section>
+
+<div class="section">// RADIO PLANNING</div>
+
+<section class="challenge">
+<div class="number">CHALLENGE 03</div>
+<h2>The channel problem</h2>
+
+<p>
+BAALSTORM LABS har fem accesspunkter.
+Alla använder 2,4 GHz med 20 MHz kanalbredd.
+</p>
+
+<table>
+<tr><th>Accesspunkt</th><th>Kanal</th></tr>
+<tr><td>AP-01</td><td>1</td></tr>
+<tr><td>AP-02</td><td>2</td></tr>
+<tr><td>AP-03</td><td>3</td></tr>
+<tr><td>AP-04</td><td>4</td></tr>
+<tr><td>AP-05</td><td>5</td></tr>
+</table>
+
+<div class="question">
+IT-chefen säger:
+"Perfekt! Alla AP:er har olika kanaler,
+så de kan inte störa varandra."
+<br><br>
+Har IT-chefen rätt? Föreslå en bättre kanalplan.
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Nej. På 2,4 GHz överlappar många kanaler varandra
+i frekvens även om kanalnumren är olika.
+</p>
+<p>
+I en vanlig kanalplan med 20 MHz använder man
+ofta kanalerna 1, 6 och 11.
+Fem AP:er behöver återanvända vissa kanaler,
+men AP:ernas placering, effekt och täckning
+avgör hur det bör göras.
+</p>
+</details>
+</section>
+
+<section class="challenge">
+<div class="number">CHALLENGE 04</div>
+<h2>One AP, many channels?</h2>
+
+<p>En dual-band-AP rapporterar:</p>
+
+<pre>RADIO 0
+Band:          2.4 GHz
+Primary:       Channel 6
+Width:         20 MHz
+
+RADIO 1
+Band:          5 GHz
+Primary:       Channel 36
+Width:         80 MHz
+
+SSID:
+BAALSTORM
+BAALSTORM-GUEST</pre>
+
+<div class="question">
+1. Hur många aktiva radioenheter har AP:n?<br>
+2. Använder den en kanal per SSID?<br>
+3. Vad innebär 80 MHz kanalbredd på 5 GHz?<br>
+4. Kan båda SSID:erna annonseras på samma radio?
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+AP:n har två aktiva radioenheter. SSID är inte
+samma sak som kanal: flera SSID kan annonseras
+på samma radio och därmed dela radiokanal.
+</p>
+<p>
+80 MHz innebär att fyra intilliggande 20 MHz-delkanaler
+kombineras till en bredare kanal.
+Det betyder inte fyra oberoende klientkanaler.
+</p>
+</details>
+</section>
+
+<div class="section">// PACKET ANALYSIS</div>
+
+<section class="challenge">
+<div class="number">CHALLENGE 05</div>
+<h2>Find the 802.11 frames</h2>
+
+<p>
+En elev startar Wireshark på sin Windows-dator.
+Hon ser DNS, TCP, UDP och IP-paket men inga
+Beacon Frames.
+</p>
+
+<div class="question">
+Varför syns inte Beacon Frames i fångsten?
+Hur skulle eleven kunna fånga dem?
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Vanliga Wi-Fi-drivrutiner levererar ofta
+Ethernet-liknande trafik till Wireshark och
+exponerar inte råa 802.11-managementramar.
+</p>
+<p>
+Med ett kompatibelt Wi-Fi-kort och drivrutin
+som stöder monitor mode kan man fånga
+Beacon, Probe, Authentication och Association.
+</p>
+<p>
+En Linux-VM med NAT eller bridged networking
+räcker normalt inte. En kompatibel USB-Wi-Fi-adapter
+med USB-passthrough kan däremot fungera.
+</p>
+</details>
+
+<div class="note">
+<strong>OPTIONAL LIVE LAB</strong>
+<p>
+Om läraren har en dator med monitor mode:
+öppna Wireshark och filtrera fram Beacon Frames.
+</p>
+<pre>wlan.fc.type_subtype == 0x08</pre>
+<p class="small">
+Fånga endast trafik i den egna eller uttryckligen
+godkända labbmiljön.
+</p>
+</div>
+</section>
+
+<section class="challenge">
+<div class="number">CHALLENGE 06</div>
+<h2>Read the air traffic</h2>
+
+<p>
+Följande är en förenklad 802.11-fångst
+från en kontrollerad labbmiljö.
+</p>
+
+<pre>No.  Type                 Source       Destination
+01   Beacon               AP-A         Broadcast
+02   Probe Request        CLIENT-1     Broadcast
+03   Probe Response       AP-A         CLIENT-1
+04   Authentication       CLIENT-1     AP-A
+05   Authentication       AP-A         CLIENT-1
+06   Association Request  CLIENT-1     AP-A
+07   Association Response AP-A         CLIENT-1
+08   EAPOL Key            AP-A         CLIENT-1
+09   EAPOL Key            CLIENT-1     AP-A
+10   EAPOL Key            AP-A         CLIENT-1
+11   EAPOL Key            CLIENT-1     AP-A
+12   Data (Protected)     CLIENT-1     AP-A</pre>
+
+<div class="question">
+1. Vilken ram annonserar accesspunktens närvaro?<br>
+2. Vilka ramar etablerar associationen?<br>
+3. Vad representerar EAPOL Key-ramarna här?<br>
+4. Varför är sista dataramen markerad Protected?<br>
+5. Kan du läsa applikationsinnehållet direkt ur den
+   skyddade 802.11-dataramen utan dekryptering?
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Beacon annonserar AP:ns BSS. Association Request
+och Association Response etablerar associationen.
+</p>
+<p>
+De fyra EAPOL Key-ramarna representerar här
+WPA2:s fyrvägshandskakning.
+Den används bland annat för att etablera
+nyckelmaterial för skyddad datatrafik.
+</p>
+<p>
+Protected visar att dataramens innehåll är skyddat
+på 802.11-länken. Utan relevant nyckelmaterial
+och dekryptering kan man inte läsa innehållet
+som vanlig klartext.
+</p>
+<p>
+Denna fångst visar ett typiskt WPA2-flöde.
+Alla WLAN-varianter använder inte exakt samma
+anslutningssekvens.
+</p>
+</details>
+</section>
+
+<div class="section">// SECURITY REVIEW</div>
+
+<section class="challenge">
+<div class="number">CHALLENGE 07</div>
+<h2>Security audit</h2>
+
+<p>
+Du hittar följande konfiguration i företagets AP:
+</p>
+
+<pre>SSID:               BAALSTORM-LAB
+Security:           WEP
+Key type:           Shared static key
+Key length:         104-bit secret + 24-bit IV
+SSID broadcast:     Enabled
+Firmware:           Outdated</pre>
+
+<div class="question">
+Identifiera minst tre säkerhetsproblem eller
+relevanta risker. Vad skulle du rekommendera
+att administratören ändrar?
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+WEP är osäkert och ska inte användas.
+Dess 24-bitars IV återanvänds relativt snabbt,
+och WEP:s konstruktion med RC4 och svag
+integritetskontroll har kända sårbarheter.
+</p>
+<p>
+Den statiska delade nyckeln är också svår
+att hantera säkert när många klienter använder den.
+</p>
+<p>
+Uppgradera till WPA3-Personal där det stöds,
+eller WPA2-Personal med AES-CCMP som kompatibilitetsval.
+I större organisationer kan 802.1X/Enterprise
+vara lämpligare.
+</p>
+<p>
+Uppdatera firmware. Att dölja SSID är däremot
+inte en ersättning för autentisering eller kryptering.
+</p>
+</details>
+</section>
+
+<section class="challenge">
+<div class="number">CHALLENGE 08</div>
+<h2>The roaming mystery</h2>
+
+<p>Två AP:er i samma byggnad är konfigurerade så här:</p>
+
+<table>
+<tr><th>Inställning</th><th>AP-A</th><th>AP-B</th></tr>
+<tr><td>SSID</td><td>BAALSTORM</td><td>BAALSTORM</td></tr>
+<tr><td>Band</td><td>5 GHz</td><td>5 GHz</td></tr>
+<tr><td>Kanal</td><td>36</td><td>44</td></tr>
+<tr><td>Säkerhet</td><td>WPA2-Personal</td><td>WPA2-Personal</td></tr>
+<tr><td>Lösenord</td><td>alpha12345</td><td>beta12345</td></tr>
+</table>
+
+<div class="question">
+En användare går från AP-A till AP-B och tappar
+sin anslutning.
+<br><br>
+Vad är ett sannolikt konfigurationsproblem?
+Räcker det att båda accesspunkterna har samma SSID?
+</div>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Nej. Samma SSID räcker inte.
+AP:erna använder olika PSK, vilket hindrar
+en sömlös övergång inom ett gemensamt
+WPA2-Personal-nät.
+</p>
+<p>
+De bör använda samma relevanta säkerhetsprofil
+och nyckelmaterial om de ska ingå i samma ESS
+för roaming.
+</p>
+<p>
+Även med korrekt konfiguration kan roaming
+påverkas av klientens beteende, signalstyrka,
+kanalplanering och andra WLAN-inställningar.
+</p>
+</details>
+</section>
+
+<div class="section">// BONUS CHALLENGE</div>
+
+<section class="challenge">
+<div class="number">HIDDEN OBJECTIVE</div>
+<h2>Something is hidden</h2>
+
+<p>
+En nätverkstekniker bör inte bara undersöka
+vad gränssnittet visar.
+</p>
+
+<p>
+Det finns tre dolda flaggor på denna sida.
+De kan hittas med webbläsarens utvecklarverktyg.
+</p>
+
+<p class="small">
+Tips: HTML, CSS och JavaScript är olika ställen
+att leta på.
+</p>
+
+<input id="flagInput" type="text"
+       placeholder="FLAG{...}" autocomplete="off">
+<button onclick="checkFlag()">VERIFY</button>
+<p id="flagResult" class="result" aria-live="polite"></p>
+
+<details>
+<summary>Reveal discussion</summary>
+<p>
+Webbsidans HTML, CSS och JavaScript skickas
+till användarens webbläsare.
+Information som finns där är inte hemlig
+bara för att den inte visas på skärmen.
+</p>
+<p>
+Detta illustrerar skillnaden mellan
+att gömma information i ett gränssnitt
+och att faktiskt skydda den.
+</p>
+</details>
+</section>
+
+<div class="note">
+<strong>MISSION COMPLETE?</strong>
+<p>
+Kan du nu förklara skillnaden mellan SSID och BSSID,
+varför kanalplanering behövs, vad en Beacon Frame är,
+och varför WEP inte bör användas?
+</p>
+<p>
+Då har du klarat grunderna i WLAN-uppdraget.
+</p>
+</div>
+
+<footer>
+ALEF-93 // BAALSTORM LABS<br>
+WIRELESS NETWORK INVESTIGATION<br>
+END OF TRANSMISSION_
+</footer>
+
+</main>
+
+<script>
+/*
+ FLAG{monitor_mode_reveals_management_frames}
+*/
+
+const flags = new Set([
+  "FLAG{the_air_is_a_shared_medium}",
+  "FLAG{monitor_mode_reveals_management_frames}",
+  "FLAG{ssid_is_not_a_security_boundary}"
+]);
+
+function checkFlag() {
+  const input = document.getElementById("flagInput");
+  const result = document.getElementById("flagResult");
+  const value = input.value.trim();
+
+  if (flags.has(value)) {
+    result.textContent = "ACCESS GRANTED // VALID FLAG";
+    result.style.color = "#00e89d";
+  } else {
+    result.textContent = "ACCESS DENIED // TRY AGAIN";
+    result.style.color = "#e7bd72";
+  }
+}
+
+console.log(
+  "WIRELESS DIAGNOSTICS: " +
+  "FLAG{ssid_is_not_a_security_boundary}"
+);
+</script>
+
+</body>
+</html>
