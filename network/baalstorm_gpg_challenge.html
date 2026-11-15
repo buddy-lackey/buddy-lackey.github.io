@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAALSTORM – GPG Challenge</title>
+<style>
+  body { font-family:Arial,sans-serif; background:#101827;
+         color:#e5e7eb; max-width:850px; margin:40px auto;
+         padding:20px; line-height:1.6; }
+  h1,h2 { color:#7dd3fc; }
+  .card { background:#1e293b; padding:22px;
+          margin:20px 0; border-radius:10px; }
+  pre { background:#020617; padding:15px; overflow-x:auto;
+        border-radius:6px; }
+  code { color:#bae6fd; }
+  .muted { color:#94a3b8; }
+</style>
+</head>
+<body>
+<h1>BAALSTORM – Secure Message Challenge</h1>
+<p>Grundläggande kryptografi – GPG</p>
+
+<div class="card">
+<h2>Uppdrag</h2>
+<p>Du har fått ett krypterat meddelande.
+Din uppgift är att dekryptera meddelandet, besvara
+frågan i det och signera ditt svar digitalt.</p>
+<p>Du får använda GnuPG eller Kleopatra.</p>
+</div>
+
+<div class="card">
+<h2>Steg 1 – Förbered din nyckel</h2>
+<p>Du behöver ett eget GPG-nyckelpar.</p>
+<p>Om du saknar ett nyckelpar kan du skapa ett:</p>
+<pre><code>gpg --full-generate-key</code></pre>
+<p>Exportera sedan din publika nyckel:</p>
+<pre><code>gpg --armor --export DIN_NYCKEL_ID > public.asc</code></pre>
+<p class="muted">Din privata nyckel ska aldrig lämnas in.</p>
+</div>
+
+<div class="card">
+<h2>Steg 2 – Dekryptera meddelandet</h2>
+<p>Ladda ned den krypterade fil som läraren
+tillhandahåller: <code>challenge.asc</code>.</p>
+<p>Dekryptera filen:</p>
+<pre><code>gpg --decrypt challenge.asc</code></pre>
+<p>Läs meddelandet och följ instruktionerna i det.</p>
+</div>
+
+<div class="card">
+<h2>Steg 3 – Svara och signera</h2>
+<p>Skriv ditt svar i en textfil med namnet
+<code>svar.txt</code>.</p>
+<p>Skapa en digital signatur:</p>
+<pre><code>gpg --armor --detach-sign svar.txt</code></pre>
+<p>Det skapar normalt filen <code>svar.txt.asc</code>.</p>
+</div>
+
+<div class="card">
+<h2>Steg 4 – Kontrollera signaturen</h2>
+<p>Verifiera din signatur lokalt:</p>
+<pre><code>gpg --verify svar.txt.asc svar.txt</code></pre>
+<p>Kontrollera att signaturen är giltig och att den
+tillhör rätt nyckel.</p>
+</div>
+
+<div class="card">
+<h2>Inlämning</h2>
+<p>Lämna in följande tre filer:</p>
+<ul>
+<li><code>svar.txt</code> – ditt svar</li>
+<li><code>svar.txt.asc</code> – din digitala signatur</li>
+<li><code>public.asc</code> – din publika nyckel</li>
+</ul>
+<p>Din privata nyckel får inte lämnas in.</p>
+</div>
+
+<div class="card">
+<h2>Bedömning</h2>
+<p>För godkänt ska du kunna:</p>
+<ul>
+<li>Dekryptera ett meddelande avsett för din publika nyckel.</li>
+<li>Förklara skillnaden mellan publik och privat nyckel.</li>
+<li>Signera ett svar med din privata nyckel.</li>
+<li>Förklara vad en digital signatur verifierar.</li>
+</ul>
+</div>
+</body>
+</html>
