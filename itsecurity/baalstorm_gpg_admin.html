@@ -70,9 +70,8 @@ button:disabled { opacity: .5; cursor: wait; }
 button.secondary { background: transparent; color: var(--green-soft); border-color: #245242; }
 button.secondary:hover:not(:disabled) { color: #021009; background: var(--green-soft); }
 .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 24px; }
-.tabs button { background: transparent; border-color: var(--line); color: var(--green-soft); }
-.tabs button[aria-selected="true"] { background: var(--green); border-color: var(--green); color: #021009; }
+.type-label { display: inline-block; border: 1px solid var(--line); border-radius: 3px; padding: 2px 7px; color: var(--green-soft); font-size: .78rem; white-space: nowrap; }
+.type-label.malware { border-color: #43856f; background: #10231b; }
 .status { margin-top: 14px; min-height: 23px; overflow-wrap: anywhere; }
 .status.error { color: var(--error); }
 .status.success { color: var(--green-soft); }
@@ -110,7 +109,7 @@ td.actions button { margin: 0 4px 4px 0; font-size: .82rem; padding: 8px 10px; }
     <label for="adminToken">ADMIN_TOKEN</label>
     <input id="adminToken" type="password" autocomplete="off" spellcheck="false" placeholder="Klistra in din administratörsnyckel">
     <div class="controls">
-      <button id="loadButton" type="button">LOAD SUBMISSIONS →</button>
+      <button id="loadButton" type="button">VISA ALLA INLÄMNINGAR →</button>
       <button id="clearButton" class="secondary" type="button">CLEAR SESSION</button>
     </div>
     <div id="status" class="status" role="status" aria-live="polite"></div>
@@ -119,24 +118,20 @@ td.actions button { margin: 0 4px 4px 0; font-size: .82rem; padding: 8px 10px; }
 
   <section class="panel alt">
     <div class="panel-title">// SUBMISSIONS</div>
-    <div class="tabs" role="tablist" aria-label="Välj uppgift">
-      <button id="tabGpg" role="tab" aria-selected="true" type="button">GPG CHALLENGE</button>
-      <button id="tabMalware" role="tab" aria-selected="false" type="button">MALWARE EXAM</button>
-    </div>
-    <h2 id="listTitle">Studenternas GPG-svar</h2>
+    <h2>Alla studentinlämningar <span id="submissionCount" class="note"></span></h2>
     <label for="filter">FILTER // STUDENT-ID</label>
     <input id="filter" type="search" placeholder="Sök student-ID">
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>ID</th><th>STUDENT</th><th>INLÄMNAD (SVENSK TID)</th><th id="actionsHeading">DOWNLOAD</th></tr>
+          <tr><th>ID</th><th>UPPGIFT</th><th>STUDENT</th><th>INLÄMNAD (SVENSK TID)</th><th>SVAR</th></tr>
         </thead>
         <tbody id="rows">
-          <tr><td colspan="4" class="muted">Inga inlämningar inlästa.</td></tr>
+          <tr><td colspan="5" class="muted">Logga in för att visa alla inlämningar.</td></tr>
         </tbody>
       </table>
     </div>
-    <p id="listHelp" class="note">Hämta först studentens publika nyckel och importera den i Kleopatra. Hämta sedan det krypterade svaret och använd Decrypt/Verify.</p>
+    <p class="note">Malware: klicka på READ ANSWERS för att läsa svaren direkt. GPG: hämta svar och publik nyckel som .asc-filer för Kleopatra.</p>
   </section>
 
   <section class="panel" id="malwareDetail" hidden>
@@ -167,12 +162,10 @@ const clearButton = document.getElementById("clearButton");
 const filterInput = document.getElementById("filter");
 const rows = document.getElementById("rows");
 const statusElement = document.getElementById("status");
-const tabGpg = document.getElementById("tabGpg");
-const tabMalware = document.getElementById("tabMalware");
+const submissionCount = document.getElementById("submissionCount");
 const detail = document.getElementById("malwareDetail");
 let adminToken = "";
 let submissions = [];
-let activeType = "gpg";
 let openedMalware = null;
 
 function showStatus(message, kind) {
@@ -184,7 +177,7 @@ function clearRows(message) {
   rows.replaceChildren();
   const row = document.createElement("tr");
   const cell = document.createElement("td");
-  cell.colSpan = 4;
+  cell.colSpan = 5;
   cell.className = "muted";
   cell.textContent = message;
   row.append(cell);
@@ -272,7 +265,7 @@ async function showMalwareAnswers(id) {
 function renderRows() {
   const filter = filterInput.value.trim().toLocaleLowerCase("sv");
   const visible = submissions.filter(item =>
-    String(item.student_id || "").toLocaleLowerCase("sv").includes(filter)
+    (String(item.student_id || "") + " " + item.type).toLocaleLowerCase("sv").includes(filter)
   );
   if (!visible.length) { clearRows("Inga matchande inlämningar."); return; }
 
@@ -282,7 +275,16 @@ function renderRows() {
     if (!Number.isSafeInteger(id) || id < 1) continue;
 
     const tr = document.createElement("tr");
-    const columns = [String(id), String(item.student_id || ""), displayTime(item.submitted_at)];
+    const idCell = document.createElement("td");
+    idCell.textContent = String(id);
+    tr.append(idCell);
+    const typeCell = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = "type-label " + item.type;
+    badge.textContent = item.type === "gpg" ? "GPG" : "MALWARE";
+    typeCell.append(badge);
+    tr.append(typeCell);
+    const columns = [String(item.student_id || ""), displayTime(item.submitted_at)];
     for (const value of columns) {
       const td = document.createElement("td");
       td.textContent = value;
@@ -291,7 +293,7 @@ function renderRows() {
 
     const td = document.createElement("td");
     td.className = "actions";
-    if (activeType === "gpg") {
+    if (item.type === "gpg") {
       const answer = document.createElement("button");
       answer.type = "button";
       answer.textContent = "ANSWER .ASC";
@@ -328,13 +330,31 @@ async function loadSubmissions() {
   showStatus("Hämtar inlämningar ...");
 
   try {
-    const result = await apiGet(API_PATHS[activeType]);
-    if (!Array.isArray(result.submissions)) throw new Error("Oväntat svar från API:et.");
-    submissions = result.submissions;
+    const results = await Promise.allSettled([
+      apiGet(API_PATHS.malware),
+      apiGet(API_PATHS.gpg)
+    ]);
+    const types = ["malware", "gpg"];
+    const errors = [];
+    submissions = [];
+    results.forEach((result, index) => {
+      if (result.status === "fulfilled" && Array.isArray(result.value.submissions)) {
+        submissions.push(...result.value.submissions.map(item => ({ ...item, type: types[index] })));
+      } else {
+        errors.push(types[index].toUpperCase() + ": " +
+          (result.status === "rejected" ? result.reason.message : "Oväntat API-svar"));
+      }
+    });
+    if (errors.length === 2) throw new Error(errors.join(" | "));
+    submissions.sort((a, b) => String(b.submitted_at || "").localeCompare(String(a.submitted_at || "")));
+    submissionCount.textContent = "(" + submissions.length + ")";
     renderRows();
-    showStatus(submissions.length + " inlämningar hämtade.", "success");
+    showStatus(submissions.length + " inlämningar hämtade." +
+      (errors.length ? " Kunde inte hämta: " + errors.join(" | ") : ""),
+      errors.length ? "error" : "success");
   } catch (error) {
     submissions = [];
+    submissionCount.textContent = "";
     adminToken = "";
     clearRows("Kunde inte hämta inlämningar.");
     showStatus(error.message, "error");
@@ -343,27 +363,7 @@ async function loadSubmissions() {
   }
 }
 
-function switchTab(type) {
-  if (type === activeType) return;
-  activeType = type;
-  tabGpg.setAttribute("aria-selected", String(type === "gpg"));
-  tabMalware.setAttribute("aria-selected", String(type === "malware"));
-  document.getElementById("listTitle").textContent = type === "gpg"
-    ? "Studenternas GPG-svar" : "Studenternas malware-svar";
-  document.getElementById("actionsHeading").textContent = type === "gpg" ? "DOWNLOAD" : "ANSWERS";
-  document.getElementById("listHelp").textContent = type === "gpg"
-    ? "Hämta först studentens publika nyckel och importera den i Kleopatra. Hämta sedan det krypterade svaret och använd Decrypt/Verify."
-    : "Klicka på READ ANSWERS för att se studentens tre svar. Du kan exportera dem som JSON.";
-  submissions = [];
-  openedMalware = null;
-  detail.hidden = true;
-  clearRows("Inga inlämningar inlästa.");
-  if (adminToken) loadSubmissions();
-}
-
 loadButton.addEventListener("click", loadSubmissions);
-tabGpg.addEventListener("click", () => switchTab("gpg"));
-tabMalware.addEventListener("click", () => switchTab("malware"));
 tokenInput.addEventListener("keydown", event => {
   if (event.key === "Enter") { event.preventDefault(); loadSubmissions(); }
 });
@@ -381,6 +381,7 @@ clearButton.addEventListener("click", () => {
   adminToken = "";
   tokenInput.value = "";
   submissions = [];
+  submissionCount.textContent = "";
   openedMalware = null;
   detail.hidden = true;
   clearRows("Sessionen är rensad.");
