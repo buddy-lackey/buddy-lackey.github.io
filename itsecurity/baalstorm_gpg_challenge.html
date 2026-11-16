@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BAALSTORM – GPG Challenge</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0b1220;
+      color: #e5e7eb;
+      font: 16px/1.6 system-ui, Arial, sans-serif;
+    }
+    main {
+      max-width: 850px;
+      margin: 36px auto;
+      padding: 0 20px 40px;
+    }
+    h1, h2 { color: #7dd3fc; }
+    h1 { margin-bottom: 0; }
+    h2 { font-size: 1.16rem; margin-top: 0; }
+    .muted { color: #a5b4c8; }
+    .card {
+      background: #172337;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 22px;
+      margin: 20px 0;
+    }
+    .steps { padding-left: 23px; }
+    .steps li { margin-bottom: 11px; }
+    label {
+      display: block;
+      font-weight: 650;
+      margin-bottom: 8px;
+    }
+    input, textarea {
+      display: block;
+      width: 100%;
+      background: #0b1220;
+      color: #f8fafc;
+      border: 1px solid #64748b;
+      border-radius: 7px;
+      padding: 12px;
+      font: inherit;
+    }
+    textarea {
+      min-height: 155px;
+      resize: vertical;
+      font: 13px/1.5 ui-monospace, Consolas, monospace;
+    }
+    input:focus,
+    textarea:focus,
+    button:focus-visible {
+      outline: 2px solid #38bdf8;
+      outline-offset: 2px;
+    }
+    .field { margin: 18px 0; }
+    .help {
+      color: #a5b4c8;
+      font-size: .91rem;
+      margin: 6px 0 0;
+    }
+    a { color: #7dd3fc; }
+    code { color: #bae6fd; }
+    button {
+      border: 0;
+      border-radius: 7px;
+      background: #0284c7;
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      padding: 13px 20px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+    .status {
+      padding: 10px 0;
+      font-weight: 600;
+    }
+    .error { color: #fca5a5; }
+    .success { color: #86efac; }
+    .notice {
+      border-left: 3px solid #fbbf24;
+      padding-left: 13px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>BAALSTORM – GPG Challenge</h1>
+  <p class="muted">
+    Praktisk övning · Kryptering och digital signering
+  </p>
+
+  <section class="card">
+    <h2>Uppdraget</h2>
+    <p>
+      Förklara kort skillnaden mellan
+      <strong>kryptering</strong> och
+      <strong>digital signering</strong>.
+      Beskriv också varför det kan vara relevant att
+      använda båda när du skickar ett meddelande.
+    </p>
+    <p>
+      Du ska lämna in ett svar som är
+      <strong>signerat med din privata GPG-nyckel</strong>
+      och
+      <strong>krypterat med lärarens publika GPG-nyckel</strong>.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Så gör du i Kleopatra</h2>
+    <ol class="steps">
+      <li>
+        Skapa ett eget GPG-nyckelpar om du inte redan
+        har ett. Behåll din privata nyckel för dig själv.
+      </li>
+      <li>
+        Ladda ned
+        <a href="teacher_public.asc" download>
+          lärarens publika nyckel (.asc)
+        </a>
+        och importera den i Kleopatra.
+        Kontrollera dess fingeravtryck mot uppgifterna
+        från läraren.
+      </li>
+      <li>
+        Skriv ditt svar i en textfil,
+        exempelvis <code>svar.txt</code>.
+      </li>
+      <li>
+        Använd Kleopatras funktion
+        <strong>Sign/Encrypt</strong>.
+        Signera med din privata nyckel och kryptera
+        till lärarens publika nyckel.
+        Välj <strong>ASCII armor (.asc)</strong>.
+      </li>
+      <li>
+        Öppna den krypterade .asc-filen i en texteditor.
+        Kopiera hela blocket, inklusive BEGIN PGP MESSAGE
+        och END PGP MESSAGE.
+      </li>
+      <li>
+        Exportera din publika nyckel som ASCII-armored
+        .asc, öppna den i en texteditor och kopiera
+        hela PGP PUBLIC KEY BLOCK.
+      </li>
+      <li>
+        Klistra in båda textblocken nedan och skicka in.
+      </li>
+    </ol>
+    <p class="help">
+      Läraren behöver publicera teacher_public.asc
+      i samma katalog som HTML-filen.
+    </p>
+  </section>
+
+  <form id="submissionForm" novalidate>
+    <section class="card">
+      <h2>Inlämning</h2>
+
+      <div class="field">
+        <label for="studentId">Student-ID</label>
+        <input
+          id="studentId"
+          name="student_id"
+          autocomplete="off"
+          maxlength="100"
+          required
+          placeholder="Ange student-ID, inte personnummer"
+        >
+      </div>
+
+      <div class="field">
+        <label for="encryptedMessage">
+          1. Signerat och krypterat svar
+        </label>
+        <textarea
+          id="encryptedMessage"
+          name="encrypted_message"
+          required
+          spellcheck="false"
+          placeholder="-----BEGIN PGP MESSAGE-----&#10;...&#10;-----END PGP MESSAGE-----"
+        ></textarea>
+        <p class="help">
+          Klistra in hela PGP-meddelandet.
+          Svaret ska redan vara signerat och
+          krypterat i Kleopatra.
+        </p>
+      </div>
+
+      <div class="field">
+        <label for="publicKey">
+          2. Din publika GPG-nyckel
+        </label>
+        <textarea
+          id="publicKey"
+          name="public_key"
+          required
+          spellcheck="false"
+          placeholder="-----BEGIN PGP PUBLIC KEY BLOCK-----&#10;...&#10;-----END PGP PUBLIC KEY BLOCK-----"
+        ></textarea>
+        <p class="help">
+          Enbart din publika nyckel.
+          Klistra aldrig in en privat nyckel.
+        </p>
+      </div>
+
+      <button id="submitButton" type="submit">
+        Skicka in
+      </button>
+
+      <p
+        id="status"
+        class="status"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+      <p class="muted notice">
+        Inlämningsfunktionen aktiveras när
+        Cloudflare-anslutningen är färdig.
+      </p>
+    </section>
+  </form>
+</main>
+
+<script>
+"use strict";
+
+// Aktiveras när vi har byggt och testat backend.
+const SUBMISSIONS_ENABLED = false;
+
+const API_URL =
+  "https://baalstorm-exam-api.christer-l-s-andersson.workers.dev/gpg/submit";
+
+const EXAM_ID = "gpg-challenge-v1";
+
+const form = document.getElementById("submissionForm");
+const button = document.getElementById("submitButton");
+const status = document.getElementById("status");
+
+function message(text, kind = "") {
+  status.textContent = text;
+  status.className = "status " + kind;
+}
+
+function isArmor(text, type) {
+  const begin = "-----BEGIN PGP " + type + "-----";
+  const end = "-----END PGP " + type + "-----";
+
+  return text.startsWith(begin) &&
+    text.endsWith(end) &&
+    text.slice(begin.length, -end.length).trim().length > 15;
+}
+
+if (!SUBMISSIONS_ENABLED) {
+  button.disabled = true;
+  button.textContent = "Inlämning öppnas snart";
+}
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!SUBMISSIONS_ENABLED) return;
+
+  const student_id =
+    document.getElementById("studentId").value.trim();
+
+  const encrypted_message =
+    document.getElementById("encryptedMessage").value.trim();
+
+  const public_key =
+    document.getElementById("publicKey").value.trim();
+
+  if (student_id.length < 2 || student_id.length > 100) {
+    message("Ange ett giltigt student-ID.", "error");
+    return;
+  }
+
+  if (public_key.includes(
+    "-----BEGIN PGP PRIVATE KEY BLOCK-----"
+  )) {
+    message(
+      "Du får inte lämna in en privat nyckel!",
+      "error"
+    );
+    return;
+  }
+
+  if (!isArmor(encrypted_message, "MESSAGE") ||
+      !isArmor(public_key, "PUBLIC KEY BLOCK")) {
+    message(
+      "Kontrollera att båda textblocken har rätt " +
+      "BEGIN- och END-rader.",
+      "error"
+    );
+    return;
+  }
+
+  if (
+    new TextEncoder().encode(encrypted_message).length > 32768 ||
+    new TextEncoder().encode(public_key).length > 32768
+  ) {
+    message(
+      "Ett textblock är större än 32 KiB. Kontakta läraren.",
+      "error"
+    );
+    return;
+  }
+
+  button.disabled = true;
+  message("Skickar in …");
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        student_id,
+        exam_id: EXAM_ID,
+        encrypted_message,
+        public_key
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        "Servern bekräftade inte inlämningen."
+      );
+    }
+
+    message(
+      "Inlämningen är sparad! Kvittensnummer: " +
+      result.submission_id,
+      "success"
+    );
+
+    button.textContent = "Inlämnat";
+
+    form.querySelectorAll("input, textarea")
+      .forEach(element => element.readOnly = true);
+
+  } catch (error) {
+    message(
+      "Ingen kvittens mottogs. Kontrollera med läraren " +
+      "före ett nytt försök – svaret kan ändå ha sparats.",
+      "error"
+    );
+
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
