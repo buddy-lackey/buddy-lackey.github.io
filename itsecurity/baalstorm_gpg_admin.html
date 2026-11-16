@@ -1,10 +1,11 @@
+
 <!doctype html>
 <html lang="sv">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>BAALSTORM // GPG Admin</title>
+<title>BAALSTORM // Exam Admin</title>
 <style>
 :root {
   color-scheme: dark;
@@ -25,80 +26,24 @@ body {
   color: var(--text);
   font: 15px/1.65 Consolas, "Courier New", monospace;
 }
-main {
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: 28px 20px 65px;
-}
-a {
-  color: var(--green-soft);
-  text-underline-offset: 3px;
-}
-.back {
-  display: inline-block;
-  color: var(--muted);
-  text-decoration: none;
-  margin-bottom: 32px;
-}
+main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 65px; }
+a { color: var(--green-soft); text-underline-offset: 3px; }
+.back { display: inline-block; color: var(--muted); text-decoration: none; margin-bottom: 32px; }
 .back:hover { color: var(--green); }
-.eyebrow {
-  color: var(--green);
-  letter-spacing: .12em;
-  font-size: .81rem;
-}
-h1 {
-  margin: 8px 0;
-  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
-  line-height: 1.15;
-  letter-spacing: -.04em;
-}
-.subtitle {
-  color: var(--muted);
-  margin: 0 0 16px;
-}
-.online {
-  color: var(--green-soft);
-  font-size: .82rem;
-  letter-spacing: .05em;
-}
-.dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: var(--green);
-}
+.eyebrow { color: var(--green); letter-spacing: .12em; font-size: .81rem; }
+h1 { margin: 8px 0 8px; font-size: clamp(1.8rem, 4.5vw, 2.8rem); line-height: 1.15; letter-spacing: -.04em; }
+.subtitle { color: var(--muted); margin: 0 0 16px; }
+.online { color: var(--green-soft); font-size: .82rem; letter-spacing: .05em; }
+.dot { display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--green); }
 .cursor { animation: blink 1.2s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-.panel {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  padding: 24px;
-  margin-top: 22px;
-}
+.panel { border: 1px solid var(--line); background: var(--panel); padding: 24px; margin-top: 22px; }
 .panel.alt { background: var(--panel-alt); }
-.panel-title {
-  color: var(--green);
-  font-size: .77rem;
-  letter-spacing: .1em;
-  margin-bottom: 8px;
-}
-h2 {
-  font-size: 1.12rem;
-  margin: 0 0 12px;
-}
+.panel-title { color: var(--green); font-size: .77rem; letter-spacing: .1em; margin-bottom: 8px; }
+h2 { font-size: 1.12rem; margin: 0 0 12px; }
 p { margin: 8px 0 14px; }
-.note {
-  color: var(--muted);
-  font-size: .87rem;
-}
-label {
-  display: block;
-  color: var(--green-soft);
-  font-weight: bold;
-  margin: 10px 0 7px;
-}
+.note { color: var(--muted); font-size: .87rem; }
+label { display: block; color: var(--green-soft); font-weight: bold; margin: 10px 0 7px; }
 input {
   width: 100%;
   border: 1px solid #245242;
@@ -108,15 +53,8 @@ input {
   padding: 12px 13px;
   font: inherit;
 }
-input:focus,
-button:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 2px;
-}
-::placeholder {
-  color: #587667;
-  opacity: 1;
-}
+input:focus, button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+::placeholder { color: #587667; opacity: 1; }
 button {
   border: 1px solid var(--green);
   border-radius: 3px;
@@ -127,370 +65,224 @@ button {
   font: inherit;
   font-weight: bold;
 }
-button:hover:not(:disabled) {
-  background: var(--green-soft);
-  border-color: var(--green-soft);
-}
-button:disabled {
-  opacity: .5;
-  cursor: wait;
-}
-button.secondary {
-  background: transparent;
-  color: var(--green-soft);
-  border-color: #245242;
-}
-button.secondary:hover:not(:disabled) {
-  color: #021009;
-  background: var(--green-soft);
-}
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
-}
-.status {
-  margin-top: 14px;
-  min-height: 23px;
-  overflow-wrap: anywhere;
-}
+button:hover:not(:disabled) { background: var(--green-soft); border-color: var(--green-soft); }
+button:disabled { opacity: .5; cursor: wait; }
+button.secondary { background: transparent; color: var(--green-soft); border-color: #245242; }
+button.secondary:hover:not(:disabled) { color: #021009; background: var(--green-soft); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 24px; }
+.tabs button { background: transparent; border-color: var(--line); color: var(--green-soft); }
+.tabs button[aria-selected="true"] { background: var(--green); border-color: var(--green); color: #021009; }
+.status { margin-top: 14px; min-height: 23px; overflow-wrap: anywhere; }
 .status.error { color: var(--error); }
 .status.success { color: var(--green-soft); }
-.table-wrap {
-  overflow-x: auto;
-  margin-top: 16px;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 640px;
-}
-th, td {
-  text-align: left;
-  padding: 14px 9px;
-  border-bottom: 1px solid var(--line);
-  vertical-align: middle;
-}
-th {
-  color: var(--green);
-  font-size: .8rem;
-  letter-spacing: .05em;
-}
+.table-wrap { overflow-x: auto; margin-top: 16px; }
+table { width: 100%; border-collapse: collapse; min-width: 640px; }
+th, td { text-align: left; padding: 14px 9px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { color: var(--green); font-size: .8rem; letter-spacing: .05em; }
 td { font-size: .91rem; }
 td.actions { white-space: nowrap; }
-td.actions button {
-  margin: 0 4px 4px 0;
-  font-size: .82rem;
-  padding: 8px 10px;
-}
+td.actions button { margin: 0 4px 4px 0; font-size: .82rem; padding: 8px 10px; }
 .muted { color: var(--muted); }
-.footer {
-  border-top: 1px solid var(--line);
-  padding-top: 18px;
-  margin-top: 34px;
-  color: var(--muted);
-  font-size: .83rem;
-}
-@media (max-width: 560px) {
-  .panel { padding: 17px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cursor { animation: none; }
-}
+.answer { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+.answer h3 { font-size: .93rem; color: var(--green-soft); margin: 8px 0; }
+.answer pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
+[hidden] { display: none !important; }
+.footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 34px; color: var(--muted); font-size: .83rem; }
+@media (max-width: 560px) { .panel { padding: 17px; } }
+@media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
 </style>
 </head>
 <body>
 <main>
+  <a class="back" href="../">&lt; RETURN TO HOME</a>
+  <header>
+    <div class="eyebrow">BAALSTORM // TEACHER AREA</div>
+    <h1>EXAM ADMIN</h1>
+    <p class="subtitle">GPG-inlämningar och malware-tenta på samma plats.</p>
+    <div class="online"><span class="dot"></span>PROTECTED API READY<span class="cursor">_</span></div>
+  </header>
 
-<a class="back" href="../">&lt; RETURN TO HOME</a>
+  <section class="panel">
+    <div class="panel-title">// AUTHENTICATION</div>
+    <h2>Administratörsnyckel</h2>
+    <p>Klistra in den Base64-sträng du sparade när du skapade <code>ADMIN_TOKEN</code> i Cloudflare. Värdet skickas endast via HTTPS till Workern.</p>
+    <label for="adminToken">ADMIN_TOKEN</label>
+    <input id="adminToken" type="password" autocomplete="off" spellcheck="false" placeholder="Klistra in din administratörsnyckel">
+    <div class="controls">
+      <button id="loadButton" type="button">LOAD SUBMISSIONS →</button>
+      <button id="clearButton" class="secondary" type="button">CLEAR SESSION</button>
+    </div>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <p class="note">Nyckeln lagras inte i localStorage eller cookies. Den hålls bara i sidans minne tills du rensar sessionen eller stänger fliken. Själva HTML-sidan är publik; det är Cloudflare-API:et som skyddar uppgifterna.</p>
+  </section>
 
-<header>
-  <div class="eyebrow">
-    BAALSTORM // TEACHER AREA
-  </div>
-  <h1>GPG ADMIN</h1>
-  <p class="subtitle">
-    Inlämningar och export till Kleopatra.
-  </p>
-  <div class="online">
-    <span class="dot"></span>
-    PROTECTED API READY<span class="cursor">_</span>
-  </div>
-</header>
+  <section class="panel alt">
+    <div class="panel-title">// SUBMISSIONS</div>
+    <div class="tabs" role="tablist" aria-label="Välj uppgift">
+      <button id="tabGpg" role="tab" aria-selected="true" type="button">GPG CHALLENGE</button>
+      <button id="tabMalware" role="tab" aria-selected="false" type="button">MALWARE EXAM</button>
+    </div>
+    <h2 id="listTitle">Studenternas GPG-svar</h2>
+    <label for="filter">FILTER // STUDENT-ID</label>
+    <input id="filter" type="search" placeholder="Sök student-ID">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>STUDENT</th><th>INLÄMNAD (SVENSK TID)</th><th id="actionsHeading">DOWNLOAD</th></tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="4" class="muted">Inga inlämningar inlästa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p id="listHelp" class="note">Hämta först studentens publika nyckel och importera den i Kleopatra. Hämta sedan det krypterade svaret och använd Decrypt/Verify.</p>
+  </section>
 
-<section class="panel">
-  <div class="panel-title">// AUTHENTICATION</div>
-  <h2>Administratörsnyckel</h2>
+  <section class="panel" id="malwareDetail" hidden>
+    <div class="panel-title">// MALWARE EXAM / ANSWERS</div>
+    <h2 id="detailTitle">Studentens svar</h2>
+    <p class="note" id="detailMeta"></p>
+    <div class="answer"><h3>01 // Typer av skadlig kod</h3><pre id="answer1"></pre></div>
+    <div class="answer"><h3>02 // Varför räcker det inte att radera filen?</h3><pre id="answer2"></pre></div>
+    <div class="answer"><h3>03 // Vad gör du?</h3><pre id="answer3"></pre></div>
+    <div class="controls">
+      <button id="exportAnswers" type="button">EXPORT ANSWERS .JSON</button>
+      <button id="closeAnswers" class="secondary" type="button">CLOSE</button>
+    </div>
+  </section>
 
-  <p>
-    Klistra in den Base64-sträng du sparade när
-    du skapade <code>ADMIN_TOKEN</code> i Cloudflare.
-    Värdet skickas endast via HTTPS till Workern.
-  </p>
-
-  <label for="adminToken">ADMIN_TOKEN</label>
-  <input
-    id="adminToken"
-    type="password"
-    autocomplete="off"
-    spellcheck="false"
-    placeholder="Klistra in din administratörsnyckel"
-  >
-
-  <div class="controls">
-    <button id="loadButton" type="button">
-      LOAD SUBMISSIONS →
-    </button>
-    <button id="clearButton"
-      class="secondary" type="button">
-      CLEAR SESSION
-    </button>
-  </div>
-
-  <div id="status"
-    class="status"
-    role="status"
-    aria-live="polite"></div>
-
-  <p class="note">
-    Nyckeln lagras inte i localStorage eller cookies.
-    Den hålls bara i sidans minne tills du rensar
-    sessionen eller stänger fliken.
-
-    Själva HTML-sidan är publik. Det är
-    Cloudflare-API:et som skyddar uppgifterna.
-  </p>
-</section>
-
-<section class="panel alt">
-  <div class="panel-title">// SUBMISSIONS</div>
-  <h2>Studenternas GPG-svar</h2>
-
-  <label for="filter">FILTER // STUDENT-ID</label>
-  <input
-    id="filter"
-    type="search"
-    placeholder="Sök student-ID"
-  >
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>STUDENT</th>
-          <th>INLÄMNAD (SVENSK TID)</th>
-          <th>DOWNLOAD</th>
-        </tr>
-      </thead>
-      <tbody id="rows">
-        <tr>
-          <td colspan="4" class="muted">
-            Inga inlämningar inlästa.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p class="note">
-    Hämta först studentens publika nyckel och
-    importera den i Kleopatra. Hämta sedan det
-    krypterade svaret och använd Decrypt/Verify.
-  </p>
-</section>
-
-<div class="footer">
-  BAALSTORM // GPG ADMIN // READ ACCESS REQUIRES ADMIN_TOKEN
-</div>
-
+  <div class="footer">BAALSTORM // EXAM ADMIN // READ ACCESS REQUIRES ADMIN_TOKEN</div>
 </main>
-
 <script>
 "use strict";
-
-const API_BASE =
-  "https://baalstorm-exam-api.christer-l-s-andersson.workers.dev";
-
-const LIST_PATH = "/gpg/admin/submissions";
-
+const API_BASE = "https://baalstorm-exam-api.christer-l-s-andersson.workers.dev";
+const API_PATHS = {
+  gpg: "/gpg/admin/submissions",
+  malware: "/malware/admin/submissions"
+};
 const tokenInput = document.getElementById("adminToken");
 const loadButton = document.getElementById("loadButton");
 const clearButton = document.getElementById("clearButton");
 const filterInput = document.getElementById("filter");
 const rows = document.getElementById("rows");
 const statusElement = document.getElementById("status");
-
+const tabGpg = document.getElementById("tabGpg");
+const tabMalware = document.getElementById("tabMalware");
+const detail = document.getElementById("malwareDetail");
 let adminToken = "";
 let submissions = [];
+let activeType = "gpg";
+let openedMalware = null;
 
 function showStatus(message, kind) {
   statusElement.textContent = message;
-  statusElement.className =
-    "status" + (kind ? " " + kind : "");
+  statusElement.className = "status" + (kind ? " " + kind : "");
 }
 
 function clearRows(message) {
   rows.replaceChildren();
-
   const row = document.createElement("tr");
   const cell = document.createElement("td");
-
   cell.colSpan = 4;
   cell.className = "muted";
   cell.textContent = message;
-
   row.append(cell);
   rows.append(row);
 }
 
 function displayTime(raw) {
   if (typeof raw !== "string") return "";
-
-  const parsed = new Date(
-    raw.replace(" ", "T") +
-    (raw.includes("Z") ? "" : "Z")
-  );
-
-  if (!Number.isFinite(parsed.getTime())) {
-    return raw;
-  }
-
+  const iso = raw.replace(" ", "T");
+  const parsed = new Date(iso + (/(?:Z|[+-][0-9]{2}:[0-9]{2})$/i.test(iso) ? "" : "Z"));
+  if (!Number.isFinite(parsed.getTime())) return raw;
   return new Intl.DateTimeFormat("sv-SE", {
     timeZone: "Europe/Stockholm",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit"
   }).format(parsed);
 }
 
 async function apiGet(path) {
-  if (!adminToken) {
-    throw new Error("Administratörsnyckel saknas.");
-  }
-
+  if (!adminToken) throw new Error("Administratörsnyckel saknas.");
   const response = await fetch(API_BASE + path, {
     method: "GET",
-    headers: {
-      "Authorization": "Bearer " + adminToken,
-      "Accept": "application/json"
-    },
+    headers: { "Authorization": "Bearer " + adminToken, "Accept": "application/json" },
     cache: "no-store"
   });
-
-  if (
-    response.status === 401 ||
-    response.status === 403
-  ) {
-    throw new Error(
-      "Åtkomst nekad. Kontrollera administratörsnyckeln."
-    );
+  if (response.status === 401 || response.status === 403) {
+    throw new Error("Åtkomst nekad. Kontrollera administratörsnyckeln.");
   }
-
-  if (!response.ok) {
-    throw new Error(
-      "Serverfel: HTTP " + response.status
-    );
-  }
-
+  if (!response.ok) throw new Error("Serverfel: HTTP " + response.status);
   return response.json();
 }
 
 function downloadAsc(text, filename) {
-  const blob = new Blob(
-    [text],
-    { type: "text/plain;charset=utf-8" }
-  );
-
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
-
   anchor.href = url;
   anchor.download = filename;
-
   document.body.append(anchor);
   anchor.click();
   anchor.remove();
-
   setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
 
 async function downloadPart(id, field) {
-  if (!adminToken) {
-    showStatus("Logga in först.", "error");
-    return;
-  }
-
+  if (!adminToken) { showStatus("Logga in först.", "error"); return; }
   try {
     showStatus("Hämtar inlämning " + id + " ...");
+    const result = await apiGet(API_PATHS.gpg + "/" + encodeURIComponent(id));
+    if (!result.submission || typeof result.submission[field] !== "string") {
+      throw new Error("Inlämningen saknar förväntat textblock.");
+    }
+    const suffix = field === "public_key" ? "public_key" : "signed_encrypted_answer";
+    downloadAsc(result.submission[field], "gpg_submission_" + id + "_" + suffix + ".asc");
+    showStatus("Fil hämtad för inlämning " + id + ".", "success");
+  } catch (error) {
+    showStatus(error.message, "error");
+  }
+}
 
-    const result = await apiGet(
-      LIST_PATH + "/" + encodeURIComponent(id)
-    );
-
-    if (
-      !result.submission ||
-      typeof result.submission[field] !== "string"
-    ) {
-      throw new Error(
-        "Inlämningen saknar förväntat textblock."
-      );
+async function showMalwareAnswers(id) {
+  try {
+    showStatus("Hämtar svar för inlämning " + id + " ...");
+    const result = await apiGet(API_PATHS.malware + "/" + encodeURIComponent(id));
+    const submission = result.submission;
+    if (!submission || !Array.isArray(submission.answers) || submission.answers.length !== 3) {
+      throw new Error("Svar saknas eller har fel format.");
     }
 
-    const suffix = field === "public_key"
-      ? "public_key"
-      : "signed_encrypted_answer";
-
-    downloadAsc(
-      result.submission[field],
-      "gpg_submission_" + id + "_" + suffix + ".asc"
-    );
-
-    showStatus(
-      "Fil hämtad för inlämning " + id + ".",
-      "success"
-    );
-
+    openedMalware = submission;
+    document.getElementById("detailTitle").textContent = "Svar från " + submission.student_id;
+    document.getElementById("detailMeta").textContent =
+      "Inlämning #" + submission.id + " • " + displayTime(submission.submitted_at);
+    submission.answers.forEach((answer, index) => {
+      document.getElementById("answer" + (index + 1)).textContent = answer;
+    });
+    detail.hidden = false;
+    showStatus("Svar hämtade för inlämning " + id + ".", "success");
+    detail.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     showStatus(error.message, "error");
   }
 }
 
 function renderRows() {
-  const filter = filterInput.value.trim()
-    .toLocaleLowerCase("sv");
-
+  const filter = filterInput.value.trim().toLocaleLowerCase("sv");
   const visible = submissions.filter(item =>
-    String(item.student_id || "")
-      .toLocaleLowerCase("sv")
-      .includes(filter)
+    String(item.student_id || "").toLocaleLowerCase("sv").includes(filter)
   );
-
-  if (!visible.length) {
-    clearRows("Inga matchande inlämningar.");
-    return;
-  }
+  if (!visible.length) { clearRows("Inga matchande inlämningar."); return; }
 
   rows.replaceChildren();
-
   for (const item of visible) {
     const id = Number(item.id);
-
-    if (!Number.isSafeInteger(id) || id < 1) {
-      continue;
-    }
+    if (!Number.isSafeInteger(id) || id < 1) continue;
 
     const tr = document.createElement("tr");
-
-    const columns = [
-      String(id),
-      String(item.student_id || ""),
-      displayTime(item.submitted_at)
-    ];
-
+    const columns = [String(id), String(item.student_id || ""), displayTime(item.submitted_at)];
     for (const value of columns) {
       const td = document.createElement("td");
       td.textContent = value;
@@ -499,37 +291,28 @@ function renderRows() {
 
     const td = document.createElement("td");
     td.className = "actions";
+    if (activeType === "gpg") {
+      const answer = document.createElement("button");
+      answer.type = "button";
+      answer.textContent = "ANSWER .ASC";
+      answer.setAttribute("aria-label", "Ladda ned krypterat svar för inlämning " + id);
+      answer.addEventListener("click", () => downloadPart(id, "encrypted_message"));
 
-    const answer = document.createElement("button");
-    answer.type = "button";
-    answer.textContent = "ANSWER .ASC";
-
-    answer.setAttribute(
-      "aria-label",
-      "Ladda ned krypterat svar för inlämning " + id
-    );
-
-    answer.addEventListener(
-      "click",
-      () => downloadPart(id, "encrypted_message")
-    );
-
-    const key = document.createElement("button");
-    key.type = "button";
-    key.className = "secondary";
-    key.textContent = "PUBLIC KEY .ASC";
-
-    key.setAttribute(
-      "aria-label",
-      "Ladda ned publik nyckel för inlämning " + id
-    );
-
-    key.addEventListener(
-      "click",
-      () => downloadPart(id, "public_key")
-    );
-
-    td.append(answer, key);
+      const key = document.createElement("button");
+      key.type = "button";
+      key.className = "secondary";
+      key.textContent = "PUBLIC KEY .ASC";
+      key.setAttribute("aria-label", "Ladda ned publik nyckel för inlämning " + id);
+      key.addEventListener("click", () => downloadPart(id, "public_key"));
+      td.append(answer, key);
+    } else {
+      const read = document.createElement("button");
+      read.type = "button";
+      read.textContent = "READ ANSWERS →";
+      read.setAttribute("aria-label", "Visa tre svar för inlämning " + id);
+      read.addEventListener("click", () => showMalwareAnswers(id));
+      td.append(read);
+    }
     tr.append(td);
     rows.append(tr);
   }
@@ -537,77 +320,71 @@ function renderRows() {
 
 async function loadSubmissions() {
   const entered = tokenInput.value.trim();
-
-  if (entered) {
-    adminToken = entered;
-  }
-
-  if (!adminToken) {
-    showStatus("Klistra in ADMIN_TOKEN.", "error");
-    return;
-  }
+  if (entered) adminToken = entered;
+  if (!adminToken) { showStatus("Klistra in ADMIN_TOKEN.", "error"); return; }
 
   tokenInput.value = "";
   loadButton.disabled = true;
-
   showStatus("Hämtar inlämningar ...");
 
   try {
-    const result = await apiGet(LIST_PATH);
-
-    if (!Array.isArray(result.submissions)) {
-      throw new Error(
-        "Oväntat svar från API:et."
-      );
-    }
-
+    const result = await apiGet(API_PATHS[activeType]);
+    if (!Array.isArray(result.submissions)) throw new Error("Oväntat svar från API:et.");
     submissions = result.submissions;
     renderRows();
-
-    showStatus(
-      submissions.length + " inlämningar hämtade.",
-      "success"
-    );
-
+    showStatus(submissions.length + " inlämningar hämtade.", "success");
   } catch (error) {
     submissions = [];
     adminToken = "";
-
     clearRows("Kunde inte hämta inlämningar.");
     showStatus(error.message, "error");
-
   } finally {
     loadButton.disabled = false;
   }
 }
 
-loadButton.addEventListener(
-  "click",
-  loadSubmissions
-);
+function switchTab(type) {
+  if (type === activeType) return;
+  activeType = type;
+  tabGpg.setAttribute("aria-selected", String(type === "gpg"));
+  tabMalware.setAttribute("aria-selected", String(type === "malware"));
+  document.getElementById("listTitle").textContent = type === "gpg"
+    ? "Studenternas GPG-svar" : "Studenternas malware-svar";
+  document.getElementById("actionsHeading").textContent = type === "gpg" ? "DOWNLOAD" : "ANSWERS";
+  document.getElementById("listHelp").textContent = type === "gpg"
+    ? "Hämta först studentens publika nyckel och importera den i Kleopatra. Hämta sedan det krypterade svaret och använd Decrypt/Verify."
+    : "Klicka på READ ANSWERS för att se studentens tre svar. Du kan exportera dem som JSON.";
+  submissions = [];
+  openedMalware = null;
+  detail.hidden = true;
+  clearRows("Inga inlämningar inlästa.");
+  if (adminToken) loadSubmissions();
+}
 
+loadButton.addEventListener("click", loadSubmissions);
+tabGpg.addEventListener("click", () => switchTab("gpg"));
+tabMalware.addEventListener("click", () => switchTab("malware"));
 tokenInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    loadSubmissions();
-  }
+  if (event.key === "Enter") { event.preventDefault(); loadSubmissions(); }
 });
-
-filterInput.addEventListener(
-  "input",
-  renderRows
-);
-
+filterInput.addEventListener("input", renderRows);
+document.getElementById("closeAnswers").addEventListener("click", () => {
+  detail.hidden = true;
+  openedMalware = null;
+});
+document.getElementById("exportAnswers").addEventListener("click", () => {
+  if (!openedMalware) return;
+  const payload = JSON.stringify(openedMalware, null, 2);
+  downloadAsc(payload, "malware_submission_" + openedMalware.id + ".json");
+});
 clearButton.addEventListener("click", () => {
   adminToken = "";
   tokenInput.value = "";
   submissions = [];
-
+  openedMalware = null;
+  detail.hidden = true;
   clearRows("Sessionen är rensad.");
-
-  showStatus(
-    "Administratörsnyckeln är borttagen från sidans minne."
-  );
+  showStatus("Administratörsnyckeln är borttagen från sidans minne.");
 });
 </script>
 </body>
